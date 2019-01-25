@@ -1,13 +1,13 @@
 package de.chojo.shepard;
 
 import de.chojo.shepard.Collections.ServerCollection;
-import de.chojo.shepard.listener.LogListener;
+import de.chojo.shepard.listener.*;
 import de.chojo.shepard.modules.commands.Fun.*;
+import de.chojo.shepard.modules.commands.admin.RegisterInviteLink;
+import de.chojo.shepard.modules.commands.admin.SetGreetingChannel;
+import de.chojo.shepard.modules.commands.admin.SetPrefix;
 import de.chojo.shepard.modules.commands.exklusive.*;
 import de.chojo.shepard.modules.commands.util.*;
-import de.chojo.shepard.listener.CommandListener;
-import de.chojo.shepard.listener.KeyWordListener;
-import de.chojo.shepard.listener.MessageSniffer;
 import de.chojo.shepard.modules.keywords.keyword.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -27,12 +27,17 @@ public class ShepardBot {
         org.apache.log4j.BasicConfigurator.configure();
         // Note: It is important to register your ReadyListener before building
         jda = new JDABuilder("NTEyNDEzMDQ5ODk0NzMxNzgw.DxjtCg.6nF2czGITfrX-HHR4cN7eCfil7I")
-                //Listener
+                //JoinListener
                 .addEventListeners(new CommandListener())
                 .addEventListeners(new KeyWordListener())
                 .addEventListeners(new MessageSniffer())
                 .addEventListeners(new LogListener())
+                .addEventListeners(new JoinListener())
                 //Commands
+                //admin
+                .addEventListeners(new SetGreetingChannel())
+                .addEventListeners(new RegisterInviteLink())
+                .addEventListeners(new SetPrefix())
                 //exklusive
                 .addEventListeners(new IsHaddeWorking())
                 .addEventListeners(new Meetings())
@@ -51,6 +56,7 @@ public class ShepardBot {
                 .addEventListeners(new Test())
                 .addEventListeners(new ListServer())
                 .addEventListeners(new UserInfo())
+                .addEventListeners(new GetRaw())
                 //Keywords
                 .addEventListeners(new Nudes())
                 .addEventListeners(new Communism())

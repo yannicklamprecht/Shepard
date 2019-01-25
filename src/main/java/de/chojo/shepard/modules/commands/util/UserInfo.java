@@ -32,13 +32,11 @@ public class UserInfo extends Command {
     public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
 
         if (args.length == 1) {
-            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Too few arguments", "Usage: " + Settings.getPrefix() + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
+            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Too few arguments", "Usage: " + Settings.getPrefix(receivedEvent.getGuild()) + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
         }
 
-        User searchedUser = null;
-
-        InternUser internUser = new InternUser(args[1], receivedEvent, searchedUser).invoke();
-        searchedUser = internUser.getSearchedUser();
+        InternUser internUser = new InternUser(args[1], receivedEvent).invoke();
+        User searchedUser = internUser.getSearchedUser();
         String id = internUser.getId();
 
         if (searchedUser == null) {
@@ -89,10 +87,10 @@ public class UserInfo extends Command {
         private User searchedUser;
         private String id;
 
-        public InternUser(String arg, MessageReceivedEvent receivedEvent, User searchedUser) {
+        public InternUser(String arg, MessageReceivedEvent receivedEvent) {
             this.arg = arg;
             this.receivedEvent = receivedEvent;
-            this.searchedUser = searchedUser;
+            this.searchedUser = null;
         }
 
         public User getSearchedUser() {
