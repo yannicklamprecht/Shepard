@@ -1,21 +1,41 @@
 package de.chojo.shepard;
 
-import de.chojo.shepard.messageHandler.Messages;
-import net.dv8tion.jda.api.entities.MessageChannel;
+import de.chojo.shepard.database.DatabaseQuery;
+import net.dv8tion.jda.api.entities.Guild;
 
-public class Settings {
-    private static String prefix = "&";
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
-    public static String getPrefix() {
-        return prefix;
+public final class Settings {
+    private static final String DEFAULT_PREFIX = "&";
+    private static Map<Guild, Properties> settings = new HashMap<>();
+
+    public static String getPrefix(Guild context) {
+        return getOrDefault(context, "prefix", DEFAULT_PREFIX);
     }
 
-    public void setPrefix(String prefix, MessageChannel channel) {
-        if (prefix.length() > 2) {
-            Messages.sendMessage("Prefix too long. Max 2 chars.", channel);
-            return;
-        }
+    public static void setPrefix(Guild context, char prefix) {
+        set(context, "prefix", String.valueOf(prefix));
 
-        this.prefix = prefix;
+    }
+
+    private static String getOrDefault(Guild context, String key, String def) {
+        if (!settings.containsKey(context)) {
+            settings.put(context, loadProperties(context));
+        }
+        return settings.get(context).getProperty(key, def);
+    }
+
+    private static void set(Guild context, String key, String property) {
+        if (!settings.containsKey(context)) {
+            settings.put(context, loadProperties(context));
+        }
+        DatabaseQuery.saveProperty(context, key, property);
+        settings.get(context).setProperty(key, property);
+    }
+
+    private static Properties loadProperties(Guild context) {
+        return DatabaseQuery.loadProperties(context);
     }
 }
