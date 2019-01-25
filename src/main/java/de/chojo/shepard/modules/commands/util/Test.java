@@ -20,10 +20,6 @@ public class Test extends Command {
 
     @Override
     public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
-
-        for (DatabaseInvite inv : DatabaseConnector.getInvites(receivedEvent.getGuild().getId())) {
-        Messages.sendMessage(inv.getName() + "", receivedEvent.getChannel());
-        }
         return true;
     }
 }

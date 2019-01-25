@@ -5,6 +5,7 @@ import de.chojo.shepard.messageHandler.Messages;
 import de.chojo.shepard.Settings;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.modules.commands.CommandArg;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -24,6 +25,7 @@ public class Help extends Command {
 
     @Override
     public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
+        String prefix = Settings.getPrefix(receivedEvent.getGuild());
 
         //Command List
         if (args.length == 1) {
@@ -32,7 +34,7 @@ public class Help extends Command {
 
         Command command = CommandCollection.getInstance().getCommand(args[1]);
         if (command == null || !command.isCommandValid(receivedEvent)) {
-            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Command not found!", "Type " + Settings.getPrefix() + "help for a full list of available commands!", false)}, receivedEvent.getChannel());
+            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Command not found!", "Type " + prefix + "help for a full list of available commands!", false)}, receivedEvent.getChannel());
             return true;
         }
 
@@ -48,10 +50,10 @@ public class Help extends Command {
 
         }
 
-        Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Usage:", "Type:" + System.lineSeparator()
-                + Settings.getPrefix() + "help for a list of commands." + System.lineSeparator()
-                + Settings.getPrefix() + "help [command] for help for a specific command." + System.lineSeparator() +
-                Settings.getPrefix() + "help [command] [arg] for a description of the argument.", false)}, receivedEvent.getChannel());
+        Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Usage:", "Type:\n"
+                + prefix + "help for a list of commands.\n"
+                + prefix + "help [command] for help for a specific command.\n"
+                + prefix + "help [command] [arg] for a description of the argument.", false)}, receivedEvent.getChannel());
         return true;
     }
 
@@ -131,7 +133,7 @@ public class Help extends Command {
                 continue;
             }
 
-            aliases = aliases.concat(Settings.getPrefix());
+            aliases = aliases.concat(Settings.getPrefix(event.getGuild()));
             aliases = aliases.concat(command.getCommandName() + " ");
 
             //Build aliases string
