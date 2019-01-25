@@ -1,32 +1,20 @@
 package de.chojo.shepard.database;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 
-public class DatabaseConnector {
-
-    private static DatabaseConnector instance;
+public final class DatabaseConnector {
 
     private static Connection conn = null;
 
-    public static DatabaseConnector getInstance() {
-        if (instance == null) {
-            synchronized (DatabaseConnector.class) {
-                if (instance == null) {
-                    instance = new DatabaseConnector();
-                }
-            }
-        }
-        return instance;
+    public static Connection getConn() {
+        checkConnection();
+        return conn;
     }
 
-    private DatabaseConnector() {
-        CreateConnection();
-    }
+    private DatabaseConnector() { }
 
-    private static void CreateConnection() {
+    private static void createConnection() {
         try {
             conn = DriverManager.getConnection("jdbc:mysql://localhost/shepard?" + "user=root&password=");
         } catch (SQLException ex) {
@@ -34,116 +22,8 @@ public class DatabaseConnector {
         }
     }
 
-    public static ArrayList<DatabaseInvite> getInvites(String discordServerId) {
-        CheckConnection();
-        Statement stmt = null;
-        ResultSet rs = null;
 
-        try {
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT * FROM invites WHERE server_id = '" + DatabaseCache.getInstance().getServerId(discordServerId) + "'");
-
-            ArrayList<DatabaseInvite> invites = new ArrayList<>();
-            while (rs.next()) {
-                invites.add(new DatabaseInvite(rs.getString("code"), rs.getString("name"), rs.getInt("count")));
-            }
-            return invites;
-
-        } catch (SQLException ex) {
-            handleException(ex);
-        } finally {
-            close(stmt, rs);
-        }
-        return null;
-    }
-
-    public static HashMap<String, Integer> getInternalServers() {
-        CheckConnection();
-        Statement stmt = null;
-        ResultSet rs = null;
-
-        try {
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT * FROM server");
-
-            HashMap<String, Integer> internalServers = new HashMap<>();
-            rs.next();
-            while (rs.next()) {
-                internalServers.put(rs.getString("discord_server_id"), rs.getInt("id"));
-                if (rs.isLast()) {
-                    break;
-                }
-            }
-            DatabaseCache.getInstance().setDatabaseServers(internalServers);
-            return internalServers;
-
-        } catch (SQLException ex) {
-            handleException(ex);
-        } finally {
-            close(stmt, rs);
-        }
-        return null;
-    }
-
-
-    public static int getInternalServerID(String discordId) {
-        CheckConnection();
-        Statement stmt = null;
-        ResultSet rs = null;
-
-        try {
-            stmt = conn.createStatement();
-            rs = stmt.executeQuery("SELECT * FROM server WHERE discord_server_id = '" + discordId + "';");
-
-            if (rs.next()) {
-                return rs.getInt("id");
-            } else {
-                return createInternalServer(discordId);
-            }
-
-        } catch (SQLException ex) {
-            handleException(ex);
-        } finally {
-            close(stmt, rs);
-        }
-        return 0;
-    }
-
-    private static int createInternalServer(String discordId) {
-        CheckConnection();
-        Statement stmt = null;
-        ResultSet rs = null;
-
-        try {
-            stmt = conn.createStatement();
-
-
-            stmt.execute("INSERT INTO server (discord_server_id) VALUES ('" + discordId + "');");
-
-            stmt.close();
-
-            while (true) {
-                stmt = conn.createStatement();
-
-                rs = stmt.executeQuery("SELECT * FROM server WHERE discord_server_id = '" + discordId + "';");
-
-                if (rs.next()) {
-                    getInternalServers();
-                    return rs.getInt("id");
-                }
-                Thread.sleep(250);
-            }
-
-
-        } catch (SQLException ex) {
-            handleException(ex);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
-
-    private static void close(Statement stmt, ResultSet rs) {
+    public static void close(Statement stmt, ResultSet rs) {
         if (rs != null) {
             try {
                 rs.close();
@@ -163,16 +43,16 @@ public class DatabaseConnector {
         }
     }
 
-    private static void handleException(SQLException ex) {
+    public static void handleException(SQLException ex) {
         System.out.println("SQLException: " + ex.getMessage());
         System.out.println("SQLState: " + ex.getSQLState());
         System.out.println("VendorError: " + ex.getErrorCode());
     }
 
-    private static void CheckConnection() {
+    private static void checkConnection() {
         try {
             if (conn == null || conn.isClosed()) {
-                CreateConnection();
+                createConnection();
             }
         } catch (SQLException e) {
             e.printStackTrace();

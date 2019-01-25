@@ -4,12 +4,12 @@ public class DatabaseInvite {
 
     private String code;
     private String name;
-    private int count;
+    private int uses;
 
-    public DatabaseInvite (String code, String name, int count) {
+    public DatabaseInvite (String code, String name, int uses) {
         this.code = code;
         this.name = name;
-        this.count = count;
+        this.uses = uses;
     }
 
     public String getCode() {
@@ -20,7 +20,7 @@ public class DatabaseInvite {
         return name;
     }
 
-    public int getCount() {
-        return count;
+    public int getUses() {
+        return uses;
     }
 }

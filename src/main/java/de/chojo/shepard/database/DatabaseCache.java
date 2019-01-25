@@ -18,14 +18,6 @@ public class DatabaseCache {
         return instance;
     }
 
-    private DatabaseCache(){
-        databaseServers = DatabaseConnector.getInternalServers();
-    }
-
-    public int getServerId(String discordId){
-        return databaseServers.get(discordId);
-    }
-
     public HashMap<String, Integer> getDatabaseServers() {
         return databaseServers;
     }
