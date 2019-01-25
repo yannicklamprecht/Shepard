@@ -35,41 +35,11 @@ public class UserInfo extends Command {
             Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Too few arguments", "Usage: " + Settings.getPrefix() + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
         }
 
-        String id = args[1].replace("<", "").replace(">", "").replace("@", "").replace("!", "");
         User searchedUser = null;
 
-        try {
-            searchedUser = getJDA().getUserById(id);
-        } catch (NumberFormatException e) /*is not a id*/ {
-            if (args[1].contains("#")) {
-                //Name is Tag
-                List<User> users = ShepardBot.getJDA().getUsersByName(id.substring(0, (args[1].length() - 5)), true);
-                for (User user : users) {
-                    if (user.getAsTag().equalsIgnoreCase(id)) {
-                        searchedUser = user;
-                        break;
-                    }
-                }
-            } else {
-                List<User> users = ShepardBot.getJDA().getUsersByName(id, true);
-                for (User user : users) {
-                    if (user.getName().equalsIgnoreCase(id)) {
-                        searchedUser = user;
-                        break;
-                    }
-                }
-                if(searchedUser == null){
-                    List<Member> members = receivedEvent.getGuild().getMembers();
-                    for (Member member : members) {
-                        if (member.getNickname().equalsIgnoreCase(id)) {
-                            searchedUser = member.getUser();
-                            break;
-                        }
-                    }
-                }
-            }
-
-        }
+        InternUser internUser = new InternUser(args[1], receivedEvent, searchedUser).invoke();
+        searchedUser = internUser.getSearchedUser();
+        String id = internUser.getId();
 
         if (searchedUser == null) {
             Messages.sendMessage("Can't find this user (" + id + ")", receivedEvent.getChannel());
@@ -111,5 +81,63 @@ public class UserInfo extends Command {
         receivedEvent.getChannel().sendMessage(builder.build()).queue();
 
         return true;
+    }
+
+    private class InternUser {
+        private String arg;
+        private MessageReceivedEvent receivedEvent;
+        private User searchedUser;
+        private String id;
+
+        public InternUser(String arg, MessageReceivedEvent receivedEvent, User searchedUser) {
+            this.arg = arg;
+            this.receivedEvent = receivedEvent;
+            this.searchedUser = searchedUser;
+        }
+
+        public User getSearchedUser() {
+            return searchedUser;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public InternUser invoke() {
+            id = arg.replace("<", "").replace(">", "").replace("@", "").replace("!", "");
+            try {
+                searchedUser = getJDA().getUserById(id);
+            } catch (NumberFormatException e) /*is not a id*/ {
+                if (arg.contains("#")) {
+                    //Name is Tag
+                    List<User> users = ShepardBot.getJDA().getUsersByName(id.substring(0, (arg.length() - 5)), true);
+                    for (User user : users) {
+                        if (user.getAsTag().equalsIgnoreCase(id)) {
+                            searchedUser = user;
+                            break;
+                        }
+                    }
+                } else {
+                    List<User> users = ShepardBot.getJDA().getUsersByName(id, true);
+                    for (User user : users) {
+                        if (user.getName().equalsIgnoreCase(id)) {
+                            searchedUser = user;
+                            break;
+                        }
+                    }
+                    if(searchedUser == null){
+                        List<Member> members = receivedEvent.getGuild().getMembers();
+                        for (Member member : members) {
+                            if (member.getNickname().equalsIgnoreCase(id)) {
+                                searchedUser = member.getUser();
+                                break;
+                            }
+                        }
+                    }
+                }
+
+            }
+            return this;
+        }
     }
 }
