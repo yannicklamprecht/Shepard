@@ -50,6 +50,7 @@ public class ShepardBot {
                 .addEventListeners(new HireMe())
                 .addEventListeners(new Test())
                 .addEventListeners(new ListServer())
+                .addEventListeners(new UserInfo())
                 //Keywords
                 .addEventListeners(new Nudes())
                 .addEventListeners(new Communism())
@@ -70,17 +71,10 @@ public class ShepardBot {
 
         }
 
-        Instant instant = Instant.now(); // get The current time in instant object
-        Timestamp t=java.sql.Timestamp.from(instant); // Convert instant to Timestamp
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-        Date date = new Date(System.currentTimeMillis());
-        Messages.sendMessage( "["+formatter.format(date)+"] Shepard meldet sich zum Dienst! Erwarte ihre Befehle! Derzeit stehe ich auf " + ShepardBot.getJDA().getGuilds().size() + " Servern zur Verfügung!",
-                ServerCollection.getNormandy().getTextChannelById("538094461381640192"));
 
     }
 
     public static JDA getJDA() {
         return jda;
     }
-
 }
