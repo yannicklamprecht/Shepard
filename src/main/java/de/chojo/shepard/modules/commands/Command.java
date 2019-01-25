@@ -2,7 +2,6 @@ package de.chojo.shepard.modules.commands;
 
 import de.chojo.shepard.Collections.CommandCollection;
 import de.chojo.shepard.modules.ContextSensitive;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Command extends ContextSensitive {
@@ -38,7 +37,7 @@ public class Command extends ContextSensitive {
     }
 
     /* */
-    public boolean execute(String[] args, MessageChannel channel, MessageReceivedEvent receivedEvent) {
+    public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
         return false;
     }
 
