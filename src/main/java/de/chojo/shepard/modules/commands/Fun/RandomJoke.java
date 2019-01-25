@@ -1,8 +1,7 @@
 package de.chojo.shepard.modules.commands.Fun;
 
-import de.chojo.shepard.Messages;
+import de.chojo.shepard.messageHandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.json.JSONObject;
@@ -11,7 +10,6 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class RandomJoke extends Command {
@@ -23,7 +21,7 @@ public class RandomJoke extends Command {
     }
 
     @Override
-    public boolean execute(String[] args, MessageChannel channel, MessageReceivedEvent receivedEvent) {
+    public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
         try {
             Messages.sendSimpleTextBox("Random Joke", getRandomJoke(), receivedEvent.getChannel());
         } catch (IOException e) {

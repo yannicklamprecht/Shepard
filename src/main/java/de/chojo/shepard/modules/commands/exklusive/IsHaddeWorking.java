@@ -1,9 +1,8 @@
 package de.chojo.shepard.modules.commands.exklusive;
 
 import de.chojo.shepard.calendar.CalendarEvent;
-import de.chojo.shepard.Messages;
+import de.chojo.shepard.messageHandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -26,7 +25,7 @@ public class IsHaddeWorking extends Command {
 
 
     @Override
-    public boolean execute(String[] args, MessageChannel channel, MessageReceivedEvent receivedEvent) {
+    public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
         try {
             java.util.Calendar cal = java.util.Calendar.getInstance();
             Date currentDate = cal.getTime();
@@ -50,18 +49,18 @@ public class IsHaddeWorking extends Command {
 
                 if (currentDate.after(event.getStart()) && currentDate.before(event.getEnd())) {
                     fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?", "Ja, bis " + getTime.format(event.getEnd()) + " Uhr " + endDate, false));
-                    Messages.sendTextBox(null, fields, channel);
+                    Messages.sendTextBox(null, fields, receivedEvent.getChannel());
                 } else {
                     fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?", "Nein, er arbeitet " + startDate + " von " + getTime.format(event.getStart()) + " Uhr bis " + getTime.format(event.getEnd()) + " Uhr.", false));
-                    Messages.sendTextBox(null, fields, channel);
+                    Messages.sendTextBox(null, fields, receivedEvent.getChannel());
                 }
             } else {
                 fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?","Ich hab derzeit leider keine Arbeitszeiten", false));
-                Messages.sendTextBox(null, fields, channel);
+                Messages.sendTextBox(null, fields, receivedEvent.getChannel());
 
             }
         } catch (IOException | GeneralSecurityException e) {
-            channel.sendMessage("**Exception** occurred :confused:").queue();
+            receivedEvent.getChannel().sendMessage("**Exception** occurred :confused:").queue();
         }
 
         return true;

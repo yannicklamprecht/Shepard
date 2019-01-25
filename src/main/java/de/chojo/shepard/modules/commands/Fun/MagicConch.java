@@ -1,8 +1,7 @@
 package de.chojo.shepard.modules.commands.Fun;
 
-import de.chojo.shepard.Messages;
+import de.chojo.shepard.messageHandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class MagicConch extends Command {
     String[] neutral = new String[]{"How should I know?", "Maybe", "You should ask someone else instead."};
 
     @Override
-    public boolean execute(String[] args, MessageChannel channel, MessageReceivedEvent receivedEvent) {
+    public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
         Integer type = 0;
         String word = "";
         Random rand = new Random();
@@ -42,7 +41,7 @@ public class MagicConch extends Command {
 
         fields.add(new MessageEmbed.Field("The magic conch says:", word, false));
 
-        Messages.sendTextBox(null, fields, channel);
+        Messages.sendTextBox(null, fields, receivedEvent.getChannel());
 
         return true;
     }

@@ -1,10 +1,9 @@
 package de.chojo.shepard.modules.commands.exklusive;
 
 import de.chojo.shepard.util.ListType;
-import de.chojo.shepard.Messages;
+import de.chojo.shepard.messageHandler.Messages;
 import de.chojo.shepard.calendar.CalendarEvent;
 import de.chojo.shepard.modules.commands.Command;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -29,7 +28,7 @@ public class Meetings extends Command {
     }
 
     @Override
-    public boolean execute(String[] args, MessageChannel channel, MessageReceivedEvent receivedEvent) {
+    public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
         try {
             java.util.Calendar cal = java.util.Calendar.getInstance();
             Date currentDate = cal.getTime();
@@ -41,9 +40,9 @@ public class Meetings extends Command {
             ArrayList<MessageEmbed.Field> fields = new ArrayList<>();
             fields.add(new MessageEmbed.Field("Nächste Meetings:", calendarEvent.get(0).getSummary() + " am " + getDate.format(calendarEvent.get(0).getStart()) + " von " + getTime.format(calendarEvent.get(0).getStart()) + " bis " + getTime.format(calendarEvent.get(0).getEnd()) + System.lineSeparator() +
                     calendarEvent.get(1).getSummary() + " am " + getDate.format(calendarEvent.get(1).getStart()) + " von " + getTime.format(calendarEvent.get(1).getStart()) + " bis " + getTime.format(calendarEvent.get(1).getEnd()), false));
-            Messages.sendTextBox(null, fields, channel);
+            Messages.sendTextBox(null, fields, receivedEvent.getChannel());
         } catch (IOException | GeneralSecurityException e) {
-            channel.sendMessage("**Exception** occurred :confused:").queue();
+            receivedEvent.getChannel().sendMessage("**Exception** occurred :confused:").queue();
         }
 
         return true;

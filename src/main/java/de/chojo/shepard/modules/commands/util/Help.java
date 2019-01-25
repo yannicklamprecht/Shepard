@@ -1,7 +1,7 @@
 package de.chojo.shepard.modules.commands.util;
 
 import de.chojo.shepard.Collections.CommandCollection;
-import de.chojo.shepard.Messages;
+import de.chojo.shepard.messageHandler.Messages;
 import de.chojo.shepard.Settings;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.modules.commands.CommandArg;
@@ -23,7 +23,7 @@ public class Help extends Command {
     }
 
     @Override
-    public boolean execute(String[] args, MessageChannel channel, MessageReceivedEvent receivedEvent) {
+    public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
 
         //Command List
         if (args.length == 1) {
@@ -32,26 +32,26 @@ public class Help extends Command {
 
         Command command = CommandCollection.getInstance().getCommand(args[1]);
         if (command == null || !command.isCommandValid(receivedEvent)) {
-            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Command not found!", "Type " + Settings.getPrefix() + "help for a full list of available commands!", false)}, channel);
+            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Command not found!", "Type " + Settings.getPrefix() + "help for a full list of available commands!", false)}, receivedEvent.getChannel());
             return true;
         }
 
         //Command Help
         if (args.length == 2) {
-            return commandHelp(channel, command);
+            return commandHelp(receivedEvent.getChannel(), command);
         }
 
 
         //Arg help
         if (args.length == 3) {
-            return argumentHelp(args[2], channel, command);
+            return argumentHelp(args[2], receivedEvent.getChannel(), command);
 
         }
 
         Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Usage:", "Type:" + System.lineSeparator()
                 + Settings.getPrefix() + "help for a list of commands." + System.lineSeparator()
                 + Settings.getPrefix() + "help [command] for help for a specific command." + System.lineSeparator() +
-                Settings.getPrefix() + "help [command] [arg] for a description of the argument.", false)}, channel);
+                Settings.getPrefix() + "help [command] [arg] for a description of the argument.", false)}, receivedEvent.getChannel());
         return true;
     }
 

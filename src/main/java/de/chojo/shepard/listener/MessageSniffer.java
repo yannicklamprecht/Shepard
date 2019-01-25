@@ -1,7 +1,7 @@
 package de.chojo.shepard.listener;
 
 import de.chojo.shepard.Collections.ServerCollection;
-import de.chojo.shepard.Messages;
+import de.chojo.shepard.messageHandler.Messages;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 

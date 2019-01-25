@@ -1,6 +1,6 @@
 package de.chojo.shepard.listener;
 
-import de.chojo.shepard.DatabaseConnector;
+import de.chojo.shepard.database.DatabaseConnector;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

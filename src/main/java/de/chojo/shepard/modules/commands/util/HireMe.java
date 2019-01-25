@@ -1,8 +1,7 @@
 package de.chojo.shepard.modules.commands.util;
 
-import de.chojo.shepard.Messages;
+import de.chojo.shepard.messageHandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -18,7 +17,7 @@ public class HireMe extends Command {
     }
 
     @Override
-    public boolean execute(String[] args, MessageChannel channel, MessageReceivedEvent receivedEvent) {
+    public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
         ArrayList<MessageEmbed.Field> fields = new ArrayList();
         if (args[0].equalsIgnoreCase(commandName)) {
             fields.add(new MessageEmbed.Field("You wanna hire me? Please give me 100k Credits or click on the link",
@@ -30,7 +29,7 @@ public class HireMe extends Command {
             fields.add(new MessageEmbed.Field("I love you! Please take me!",
                     "http://bit.ly/shepardbot", false));
         }
-        Messages.sendTextBox(null, fields, channel);
+        Messages.sendTextBox(null, fields, receivedEvent.getChannel());
 
         return true;
 

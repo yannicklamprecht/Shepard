@@ -1,5 +1,6 @@
 package de.chojo.shepard;
 
+import de.chojo.shepard.messageHandler.Messages;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
 public class Settings {

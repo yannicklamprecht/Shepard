@@ -1,30 +1,30 @@
 package de.chojo.shepard.modules.commands.util;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes;
-import de.chojo.shepard.Messages;
+import de.chojo.shepard.messageHandler.Messages;
 import de.chojo.shepard.ShepardBot;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.util.ListType;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ListServer extends Command {
     public ListServer() {
         commandName = "listServer";
-        commandDesc = "Lists all Server Shepard is online";
+        commandAliases = new String[]{"serverList", "servers", "server"};
+        commandDesc = "Lists all Server where Shepard is online";
         serverListType = ListType.Whitelist;
-        serverCheckEnabled = true;
         listedServer = new String[]{"538084337984208906"};
+        serverCheckEnabled = true;
     }
 
     @Override
-    public boolean execute(String[] args, MessageChannel channel, MessageReceivedEvent receivedEvent) {
+    public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
         List<Guild> guilds = ShepardBot.getJDA().getGuilds();
-        String message = "Auf folgenden Servern stehe ich zur Verfügung (" + guilds.size() + "):\n";
+        String message = "I am currently serving " + guilds.size() + " server:\n";
         String[][] text = new String[guilds.size()][3];
         int sizeName = 0;
         int sizeOwner = 0;
@@ -38,18 +38,23 @@ public class ListServer extends Command {
             if (text[i][1].length() > sizeOwner) sizeOwner = text[i][1].length();
 
             OffsetDateTime time = guilds.get(i).getMemberById("512413049894731780").getTimeJoined();
-            text[i][2] = time.getDayOfMonth() + "." + time.getMonthValue() + "." + time.getYear();
+
+            LocalDate date = time.toLocalDate();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            String formatted = date.format(formatter);
+
+            text[i][2] = formatted;
             if (text[i][2].length() > sizeSince) sizeSince = text[i][2].length();
         }
 
         //Build Message
-        String messagepart = "```java\n";
+        String messagepart = "```json\n";
         for (int i = 0; i < guilds.size(); i++) {
-            messagepart = messagepart.concat(fillString(text[i][0], sizeName) + " by " + fillString(text[i][1], sizeOwner) + " since " + fillString(text[i][2], sizeSince) + "\n");
+            messagepart = messagepart.concat("\"" + fillString(text[i][0] + "\"", sizeName + 1) + " by " + fillString(text[i][1], sizeOwner) + " since: " + fillString(text[i][2], sizeSince) + "\n");
         }
         messagepart = messagepart.concat("```");
 
-        Messages.sendMessage(message.concat(messagepart), channel);
+        Messages.sendMessage(message.concat(messagepart), receivedEvent.getChannel());
         return true;
     }
 

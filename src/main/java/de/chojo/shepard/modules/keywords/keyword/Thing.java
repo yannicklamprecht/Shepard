@@ -1,9 +1,8 @@
 package de.chojo.shepard.modules.keywords.keyword;
 
-import de.chojo.shepard.Messages;
+import de.chojo.shepard.messageHandler.Messages;
 import de.chojo.shepard.ShepardBot;
 import de.chojo.shepard.modules.keywords.Keyword;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Thing extends Keyword {

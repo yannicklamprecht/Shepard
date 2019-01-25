@@ -2,7 +2,7 @@ package de.chojo.shepard.listener;
 
 import de.chojo.shepard.Collections.CommandCollection;
 import de.chojo.shepard.Collections.ServerCollection;
-import de.chojo.shepard.Messages;
+import de.chojo.shepard.messageHandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.Settings;
 import net.dv8tion.jda.api.entities.Message;
@@ -29,7 +29,7 @@ public class CommandListener extends ListenerAdapter {
             for (Command command : CommandCollection.getInstance().getCommands()) {
                 if (command.isCommand(args[0])) {
                     if (command.isCommandValid(event)) {
-                        command.execute(args, event.getChannel(), event);
+                        command.execute(args, event);
                         Messages.LogMessageAsEmbedded(event, ServerCollection.getNormandy().getTextChannelById("538087478960324630"));
                         return;
                     }

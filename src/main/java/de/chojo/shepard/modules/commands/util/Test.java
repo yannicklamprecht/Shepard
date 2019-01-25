@@ -1,11 +1,10 @@
 package de.chojo.shepard.modules.commands.util;
 
-import de.chojo.shepard.DatabaseConnector;
-import de.chojo.shepard.Messages;
-import de.chojo.shepard.util.DatabaseInvite;
+import de.chojo.shepard.database.DatabaseConnector;
+import de.chojo.shepard.messageHandler.Messages;
+import de.chojo.shepard.database.DatabaseInvite;
 import de.chojo.shepard.util.ListType;
 import de.chojo.shepard.modules.commands.Command;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Test extends Command {
@@ -20,10 +19,10 @@ public class Test extends Command {
     }
 
     @Override
-    public boolean execute(String[] args, MessageChannel channel, MessageReceivedEvent receivedEvent) {
+    public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
 
         for (DatabaseInvite inv : DatabaseConnector.getInvites(receivedEvent.getGuild().getId())) {
-        Messages.sendMessage(inv.getName() + "", channel);
+        Messages.sendMessage(inv.getName() + "", receivedEvent.getChannel());
         }
         return true;
     }
