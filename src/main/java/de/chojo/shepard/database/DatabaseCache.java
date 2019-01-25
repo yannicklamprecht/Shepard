@@ -1,7 +1,5 @@
-package de.chojo.shepard.Collections;
+package de.chojo.shepard.database;
 
-
-import de.chojo.shepard.DatabaseConnector;
 
 import java.util.HashMap;
 

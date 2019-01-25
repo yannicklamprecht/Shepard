@@ -1,4 +1,4 @@
-package de.chojo.shepard.util;
+package de.chojo.shepard.database;
 
 public class DatabaseInvite {
 

@@ -1,4 +1,4 @@
-package de.chojo.shepard;
+package de.chojo.shepard.messageHandler;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;

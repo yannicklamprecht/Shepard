@@ -1,7 +1,4 @@
-package de.chojo.shepard;
-
-import de.chojo.shepard.Collections.DatabaseCache;
-import de.chojo.shepard.util.DatabaseInvite;
+package de.chojo.shepard.database;
 
 import java.sql.*;
 import java.util.ArrayList;
