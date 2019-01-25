@@ -36,6 +36,7 @@ public class Command extends ContextSensitive {
         return commandAliases;
     }
 
+
     /* */
     public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
         return false;
