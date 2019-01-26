@@ -7,6 +7,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
 
+/**
+ * A command for retrieving a invite link for this bot.
+ */
 public class HireMe extends Command {
 
     public HireMe() {

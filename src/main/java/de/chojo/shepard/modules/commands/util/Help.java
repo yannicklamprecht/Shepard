@@ -11,6 +11,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
 
+/**
+ * A command for listing all possible commands.
+ */
 public class Help extends Command {
 
     public Help() {

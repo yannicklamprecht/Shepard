@@ -4,6 +4,9 @@ import de.chojo.shepard.util.ListType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+/**
+ * A {@link ListenerAdapter} filtering events for different contexts.
+ */
 public class ContextSensitive extends ListenerAdapter {
 
     //Server sensitive
@@ -19,17 +22,20 @@ public class ContextSensitive extends ListenerAdapter {
     protected boolean isNSFW = false;
 
 
-    //** Returns true ID the command execution is allowed
-    // @return boolean
-    // */
+    /**
+     * Get whether a command is valid or not.
+     * A command is valid if it is not excluded to use on a specific guild
+     * or if the author is restricted to use it.
+     *
+     * @param event the event of the command.
+     * @return {@code true} if the command is valid, {@code false} otherwise.
+     */
     public boolean isCommandValid(MessageReceivedEvent event) {
         if (!serverCheckEnabled && !characterCheckEnabled) {
             return true;
         }
 
         boolean value = false;
-
-
 
         //Server Check
         if (serverCheckEnabled) {

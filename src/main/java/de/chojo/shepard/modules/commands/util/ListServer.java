@@ -11,6 +11,9 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * A command to list all servers the bot is a member of.
+ */
 public class ListServer extends Command {
 
     public ListServer() {

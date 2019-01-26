@@ -20,6 +20,9 @@ import java.util.List;
 
 import static de.chojo.shepard.ShepardBot.getJDA;
 
+/**
+ * A command to get important information about a user.
+ */
 public class UserInfo extends Command {
 
     public UserInfo() {
