@@ -8,15 +8,15 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class JoinListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         List<Invite> invites = event.getGuild().getInvites().complete();
-        HashMap<String, DatabaseInvite> databaseInvites = DatabaseQuery.getInvites(event.getGuild().getId());
+        Set<DatabaseInvite> databaseInvites = DatabaseQuery.getInvites(event.getGuild().getId());
         //TODO: compare old and new join count for invites
 
         //Get Invites from Server DONE
@@ -29,11 +29,12 @@ public class JoinListener extends ListenerAdapter {
 
 
         for (Invite invite : invites) {
-            var dInvite = databaseInvites.get(invite.getCode());
-            if (dInvite == null) continue;
-            if (invite.getUses() != dInvite.getUses()) {
+            var dInvite = databaseInvites.stream()
+                    .filter(inv -> inv.getCode().equals(invite.getCode())).findAny();
+            if (!dInvite.isPresent()) continue;
+            if (invite.getUses() != dInvite.get().getUses()) {
                 MessageChannel channel = event.getGuild().getTextChannelById(DatabaseQuery.getGreetingChannel(event.getGuild().getId()));
-                Messages.sendGreeting(event, dInvite.getName(), channel);
+                Messages.sendGreeting(event, dInvite.get().getName(), channel);
                 DatabaseQuery.updateInvite(invite);
             }
         }

@@ -6,132 +6,114 @@ import net.dv8tion.jda.api.entities.Invite;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static de.chojo.shepard.database.DatabaseConnector.close;
 import static de.chojo.shepard.database.DatabaseConnector.handleException;
 
-public class DatabaseQuery {
+/**
+ * A class for querying and updating tha database.
+ */
+public final class DatabaseQuery {
     private static final Pattern ID_PATTERN = Pattern.compile("(?:<[@#!&]{1,2})?(?<id>[0-9]{18})(?:>)?");
 
-    static int createInternalServer(String discordId) {
-        discordId = getIdRaw(discordId);
+    private DatabaseQuery() { }
 
-        Statement stmt = null;
-        ResultSet rs = null;
-
-        try {
-            stmt = DatabaseConnector.getConn().createStatement();
-            stmt.execute("INSERT INTO server (discord_server_id) VALUES ('" + discordId + "');");
-            stmt.close();
-
-            while (true) {
-                stmt = DatabaseConnector.getConn().createStatement();
-
-                rs = stmt.executeQuery("SELECT * FROM server WHERE discord_server_id = '" + discordId + "';");
-
-                if (rs.next()) {
-                    getInternalServerID(discordId);
-                    return rs.getInt("id");
-                }
-                Thread.sleep(250);
-            }
-
-
-        } catch (SQLException ex) {
-            handleException(ex);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
-
-    public static HashMap<String, DatabaseInvite> getInvites(String discordServerId) {
-        Statement stmt = null;
-        ResultSet rs = null;
-
-        try {
-            stmt = DatabaseConnector.getConn().createStatement();
-            rs = stmt.executeQuery("SELECT * FROM invites WHERE server_id = '" + getInternalServerID(discordServerId) + "'");
-
-            HashMap<String, DatabaseInvite> invites = new HashMap<>();
-            while (rs.next()) {
-                invites.put(rs.getString("code"), new DatabaseInvite(rs.getString("code"), rs.getString("name"), rs.getInt("count")));
+    /**
+     * Get a set off all invites from a guild which where saved to the database.
+     *
+     * @param guildId the guild's id to look for.
+     * @return a set of all invites.
+     */
+    public static Set<DatabaseInvite> getInvites(String guildId) {
+        try (PreparedStatement statement = DatabaseConnector.getConn().prepareStatement("SELECT * FROM invites WHERE server_id=?")) {
+            statement.setInt(1, getInternalServerID(guildId));
+            ResultSet set = statement.executeQuery();
+            Set<DatabaseInvite> invites = new HashSet<>();
+            while (set.next()) {
+                invites.add(new DatabaseInvite(set.getString("code"), set.getString("name"), set.getInt("count")));
             }
             return invites;
-
-        } catch (SQLException ex) {
-            handleException(ex);
-        } finally {
-            close(stmt, rs);
+        } catch (SQLException e) {
+            handleException(e);
         }
-        return new HashMap<>();
+        return Collections.emptySet();
     }
 
-    public static int getInternalServerID(String discordId) {
-        Statement stmt = null;
-        ResultSet rs = null;
-
-        try {
-            stmt = DatabaseConnector.getConn().createStatement();
-            rs = stmt.executeQuery("SELECT * FROM server WHERE discord_server_id = '" + discordId + "';");
-
-            if (rs.next()) {
-                return rs.getInt("id");
+    /**
+     * Get the internal auto-incremented id associated with a guild.
+     *
+     * @param guildId the guild's id to look for.
+     * @return the numeric id. May return {@code -1} if an error occurred.
+     */
+    public static int getInternalServerID(String guildId) {
+        try (PreparedStatement statement = DatabaseConnector.getConn().prepareStatement("SELECT * FROM server WHERE discord_server_id=?")) {
+            statement.setString(1, guildId);
+            ResultSet set = statement.executeQuery();
+            if (set.next()) {
+                return set.getInt("id");
             } else {
-                return DatabaseQuery.createInternalServer(discordId);
+                return DatabaseQuery.createInternalServer(guildId);
             }
-
-        } catch (SQLException ex) {
-            handleException(ex);
-        } finally {
-            close(stmt, rs);
+        } catch (SQLException e) {
+            handleException(e);
         }
-        return 0;
+        return -1;
     }
 
-    public static String getGreetingChannel(String discordId) {
-        discordId = getIdRaw(discordId);
-        Statement stmt = null;
-        ResultSet rs = null;
-        try {
-            stmt = DatabaseConnector.getConn().createStatement();
-            rs = stmt.executeQuery("SELECT * FROM greeting WHERE id = '" + getInternalServerID(discordId) + "';");
-            if (rs.next()) {
-                return rs.getString("channel");
+    /**
+     * Get the greeting channel of a guild.
+     *
+     * @param guildId the guild's id to look for.
+     * @return the id of the channel.
+     */
+    public static String getGreetingChannel(String guildId) {
+        guildId = getIdRaw(guildId);
+        try (PreparedStatement statement = DatabaseConnector.getConn().prepareStatement("SELECT * FROM greeting WHERE id=?")) {
+            statement.setInt(1, getInternalServerID(guildId));
+            ResultSet set = statement.executeQuery();
+            if (set.first()) {
+                return set.getString("channel");
             }
-        } catch (SQLException ex) {
-            handleException(ex);
-        } finally {
-            close(stmt, rs);
+        } catch (SQLException e) {
+            handleException(e);
         }
         return "";
     }
 
-    public static void saveGreetingChannel(String discordId, String channel){
-        PreparedStatement stmt;
+    /**
+     * Update the greeting channel for a guild.
+     *
+     * @param guildId the guild's id to look for.
+     * @param channelId the channel's id to look for.
+     */
+    public static void saveGreetingChannel(String guildId, String channelId){
+        int id = getInternalServerID(guildId);
+        try (PreparedStatement statement = DatabaseConnector.getConn().prepareStatement("INSERT INTO greeting (id, channel) VALUES (?, ?) ON DUPLICATE KEY UPDATE channel=?")) {
+            statement.setInt(1, id);
+            statement.setString(2, channelId);
+            statement.setString(3, channelId);
+            statement.executeUpdate();
 
-        int id = getInternalServerID(discordId);
-        try {
-            stmt = DatabaseConnector.getConn().prepareStatement("INSERT INTO greeting (id, channel) VALUES (?, ?) ON DUPLICATE KEY UPDATE channel=?");
-            stmt.setInt(1, id);
-            stmt.setString(2, channel);
-            stmt.setString(3, channel);
-            stmt.executeUpdate();
-            // stmt.executeQuery("INSERT INTO greeting (id, channel) VALUES (:id, :channel) ON DUPLICATE KEY UPDATE channel=:channel");
-
-        }catch (SQLException ex){
+        } catch (SQLException ex){
             handleException(ex);
         }
     }
 
-    public static void saveInvite(Invite invite, String name, String serverId) {
+    /**
+     * Save a new invite associated with a service to the database
+     *
+     * @param invite the invite to save.
+     * @param name the associated service name.
+     * @param guildId the guild's id to save the invites for.
+     */
+    public static void saveInvite(Invite invite, String name, String guildId) {
         try (PreparedStatement statement = DatabaseConnector.getConn().prepareStatement("INSERT INTO invites (server_id, code, name, count) VALUES (?, ?, ?, ?)")) {
-            statement.setInt(1, getInternalServerID(getIdRaw(serverId)));
+            statement.setInt(1, getInternalServerID(getIdRaw(guildId)));
             statement.setString(2, invite.getCode());
             statement.setString(3, name);
             statement.setInt(4, invite.getUses());
@@ -141,6 +123,11 @@ public class DatabaseQuery {
         }
     }
 
+    /**
+     * Update the uses of a specific invite.
+     *
+     * @param invite the invite to update.
+     */
     public static void updateInvite(Invite invite) {
         try (PreparedStatement statement = DatabaseConnector.getConn().prepareStatement("UPDATE invites SET count=? WHERE code=?")) {
             statement.setInt(1, invite.getUses());
@@ -151,6 +138,13 @@ public class DatabaseQuery {
         }
     }
 
+    /**
+     * Save a property for a guild to the database.
+     *
+     * @param guild the guild to save the property for.
+     * @param key the property key.
+     * @param value the property value.
+     */
     public static void saveProperty(Guild guild, String key, String value) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("INSERT INTO settings (guild_id, property_key, property_value) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE property_value=?")) {
@@ -164,6 +158,12 @@ public class DatabaseQuery {
         }
     }
 
+    /**
+     * Load the properties of a guild.
+     *
+     * @param guild the guild to load properties for.
+     * @return the properties loaded for the given guild.
+     */
     public static Properties loadProperties(Guild guild) {
         try (PreparedStatement statement = DatabaseConnector.getConn().prepareStatement("SELECT * FROM settings WHERE guild_id=?")) {
             statement.setInt(1, getInternalServerID(guild.getId()));
@@ -179,11 +179,44 @@ public class DatabaseQuery {
         return new Properties();
     }
 
+    /**
+     * Extracts an id from discord's formatting.
+     *
+     * @param id the formatted id.
+     * @return the extracted id.
+     */
     private static String getIdRaw(String id){
         Matcher matcher = ID_PATTERN.matcher(id);
         if (!matcher.matches()) {
             throw new IllegalArgumentException("lol dis is not a channel");
         }
         return matcher.group(1);
+    }
+
+    /**
+     * Create a database entry for a guild.
+     *
+     * @param guildId the guild to create the database entry for.
+     * @return the id associated with the guild.
+     */
+    private static int createInternalServer(String guildId) {
+        guildId = getIdRaw(guildId);
+
+        try (PreparedStatement createStatement = DatabaseConnector.getConn()
+                .prepareStatement("INSERT INTO server (discord_server_id) VALUES (?);");
+             PreparedStatement receiveStatement = DatabaseConnector.getConn()
+                     .prepareStatement("SELECT id FROM server WHERE discord_server_id=?;")) {
+
+            createStatement.setString(1, guildId);
+            createStatement.executeUpdate();
+            receiveStatement.setString(1, guildId);
+            ResultSet set = receiveStatement.executeQuery();
+            if (set.first()) {
+                return set.getInt("id");
+            }
+        } catch (SQLException e) {
+            handleException(e);
+        }
+        return -1;
     }
 }
