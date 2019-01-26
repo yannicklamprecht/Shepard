@@ -1,11 +1,10 @@
-package de.chojo.shepard.Collections;
+package de.chojo.shepard.collections;
 
 import de.chojo.shepard.modules.commands.Command;
 
 import java.util.ArrayList;
 
 public class CommandCollection {
-
     private static CommandCollection instance;
 
     public static CommandCollection getInstance() {

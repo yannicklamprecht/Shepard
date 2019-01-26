@@ -1,6 +1,6 @@
 package de.chojo.shepard.modules.commands.util;
 
-import de.chojo.shepard.messageHandler.Messages;
+import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.Settings;
 import de.chojo.shepard.ShepardBot;
 import de.chojo.shepard.modules.commands.Command;
@@ -21,6 +21,7 @@ import java.util.List;
 import static de.chojo.shepard.ShepardBot.getJDA;
 
 public class UserInfo extends Command {
+
     public UserInfo() {
         commandName = "UserInfo";
         commandAliases = new String[]{"aboutuser"};

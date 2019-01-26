@@ -37,6 +37,46 @@ public class CalendarQuickstart {
     private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR_READONLY);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
+    public static CalendarEvent getHaddeWorktimes() throws IOException, GeneralSecurityException {
+        Calendar service = getService();
+
+        DateTime now = new DateTime(System.currentTimeMillis());
+        Events events = service.events().list("s5kep8plfrqdavov4pe4m8bptk@group.calendar.google.com")
+                .setMaxResults(1)
+                .setTimeMin(now)
+                .setOrderBy("startTime")
+                .setSingleEvents(true)
+                .execute();
+
+        List<Event> items = events.getItems();
+        if (!items.isEmpty()) {
+            return new CalendarEvent(items.get(0));
+        }
+        return null;
+    }
+
+    public static ArrayList<CalendarEvent> getEldoriaMeetings() throws IOException, GeneralSecurityException {
+        Calendar service = getService();
+
+        DateTime now = new DateTime(System.currentTimeMillis());
+        Events events = service.events().list("8hg2clhm5uip667uoj8apv7rtc@group.calendar.google.com")
+                .setMaxResults(2)
+                .setTimeMin(now)
+                .setOrderBy("startTime")
+                .setSingleEvents(true)
+                .execute();
+
+        List<Event> items = events.getItems();
+        ArrayList<CalendarEvent> nextEvent = new ArrayList<>();
+        nextEvent.add(new CalendarEvent(items.get(0)));
+        nextEvent.add(new CalendarEvent(items.get(1)));
+
+        return nextEvent;
+    }
+
+    public static void sendCalendarEvent(MessageChannel channel) {
+    }
+
     /**
      * Creates an authorized Credential object.
      *
@@ -59,53 +99,11 @@ public class CalendarQuickstart {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
-    public static CalendarEvent getHaddeWorktimes() throws IOException, GeneralSecurityException {
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Calendar service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+    private static Calendar getService() throws GeneralSecurityException, IOException {
+        NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
-
-        DateTime now = new DateTime(System.currentTimeMillis());
-        Events events = service.events().list("s5kep8plfrqdavov4pe4m8bptk@group.calendar.google.com")
-                .setMaxResults(1)
-                .setTimeMin(now)
-                .setOrderBy("startTime")
-                .setSingleEvents(true)
-                .execute();
-
-        List<Event> items = events.getItems();
-        if (!items.isEmpty()) {
-            CalendarEvent nextEvent = new CalendarEvent(items.get(0));
-            return nextEvent;
-        }
-        return null;
     }
-
-    public static void sendCalendarEvent(MessageChannel channel) {
-    }
-
-
-    public static ArrayList<CalendarEvent> getEldoriaMeetings() throws IOException, GeneralSecurityException {
-        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        Calendar service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
-                .setApplicationName(APPLICATION_NAME)
-                .build();
-
-        DateTime now = new DateTime(System.currentTimeMillis());
-        Events events = service.events().list("8hg2clhm5uip667uoj8apv7rtc@group.calendar.google.com")
-                .setMaxResults(2)
-                .setTimeMin(now)
-                .setOrderBy("startTime")
-                .setSingleEvents(true)
-                .execute();
-
-        List<Event> items = events.getItems();
-        ArrayList<CalendarEvent> nextEvent = new ArrayList<>();
-        nextEvent.add(new CalendarEvent(items.get(0)));
-        nextEvent.add(new CalendarEvent(items.get(1)));
-
-        return nextEvent;
-    }
-
 }
 

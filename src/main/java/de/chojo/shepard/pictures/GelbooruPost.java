@@ -2,6 +2,7 @@ package de.chojo.shepard.pictures;
 
 import com.google.gson.annotations.SerializedName;
 
+@SuppressWarnings("unused")
 public class GelbooruPost {
     private int id;
 

@@ -1,7 +1,6 @@
 package de.chojo.shepard.database;
 
 public class DatabaseInvite {
-
     private String code;
     private String name;
     private int uses;

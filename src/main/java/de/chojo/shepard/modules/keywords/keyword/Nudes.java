@@ -1,6 +1,6 @@
 package de.chojo.shepard.modules.keywords.keyword;
 
-import de.chojo.shepard.messageHandler.Messages;
+import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.keywords.Keyword;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Nudes extends Keyword {
+
     public Nudes() {
         keywords = new String[]{"nudes", "pr0n", "porn", "p0rn", "noot"};
     }

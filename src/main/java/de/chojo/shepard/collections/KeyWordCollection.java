@@ -1,4 +1,4 @@
-package de.chojo.shepard.Collections;
+package de.chojo.shepard.collections;
 
 import de.chojo.shepard.modules.keywords.KeyWordArgs;
 import de.chojo.shepard.modules.keywords.Keyword;
@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class KeyWordCollection {
-
     private static KeyWordCollection instance;
 
     private ArrayList<Keyword> keywordsArrayList = new ArrayList<>();

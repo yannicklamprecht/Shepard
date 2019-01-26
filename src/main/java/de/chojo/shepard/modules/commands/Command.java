@@ -1,11 +1,10 @@
 package de.chojo.shepard.modules.commands;
 
-import de.chojo.shepard.Collections.CommandCollection;
+import de.chojo.shepard.collections.CommandCollection;
 import de.chojo.shepard.modules.ContextSensitive;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Command extends ContextSensitive {
-
     protected String commandName;
     protected String[] commandAliases;
     protected String commandDesc;

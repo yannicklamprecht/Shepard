@@ -1,8 +1,7 @@
 package de.chojo.shepard;
 
-import de.chojo.shepard.Collections.ServerCollection;
 import de.chojo.shepard.listener.*;
-import de.chojo.shepard.modules.commands.Fun.*;
+import de.chojo.shepard.modules.commands.fun.*;
 import de.chojo.shepard.modules.commands.admin.RegisterInviteLink;
 import de.chojo.shepard.modules.commands.admin.SetGreetingChannel;
 import de.chojo.shepard.modules.commands.admin.SetPrefix;
@@ -13,13 +12,8 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
 import javax.security.auth.login.LoginException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.util.Date;
 
 public class ShepardBot {
-
     private static JDA jda;
 
     public static void main(String[] args)
@@ -67,17 +61,12 @@ public class ShepardBot {
                 .addEventListeners(new Thing())
                 .build();
 
-
         // optionally block until JDA is ready
         jda.awaitReady();
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-        } catch (Exception ex) {
-
-        }
-
-
+        } catch (Exception ignore) { }
     }
 
     public static JDA getJDA() {

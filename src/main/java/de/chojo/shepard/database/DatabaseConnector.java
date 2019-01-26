@@ -4,7 +4,6 @@ import java.sql.*;
 
 
 public final class DatabaseConnector {
-
     private static Connection conn = null;
 
     public static Connection getConn() {
@@ -22,24 +21,17 @@ public final class DatabaseConnector {
         }
     }
 
-
     public static void close(Statement stmt, ResultSet rs) {
         if (rs != null) {
             try {
                 rs.close();
-            } catch (SQLException sqlEx) {
-            } // ignore
-
-            rs = null;
+            } catch (SQLException ignore) { } // ignore
         }
 
         if (stmt != null) {
             try {
                 stmt.close();
-            } catch (SQLException sqlEx) {
-            } // ignore
-
-            stmt = null;
+            } catch (SQLException ignore) { } // ignore
         }
     }
 

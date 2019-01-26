@@ -1,12 +1,13 @@
 package de.chojo.shepard.modules.commands.admin;
 
 import de.chojo.shepard.Settings;
-import de.chojo.shepard.messageHandler.Messages;
+import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.modules.commands.CommandArg;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class SetPrefix extends Command {
+
     public SetPrefix() {
         commandName = "setPrefix";
         commandDesc = "Changes the prefix for the Server";

@@ -1,6 +1,6 @@
 package de.chojo.shepard.modules.commands.util;
 
-import de.chojo.shepard.messageHandler.Messages;
+import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -18,7 +18,7 @@ public class HireMe extends Command {
 
     @Override
     public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
-        ArrayList<MessageEmbed.Field> fields = new ArrayList();
+        ArrayList<MessageEmbed.Field> fields = new ArrayList<>();
         if (args[0].equalsIgnoreCase(commandName)) {
             fields.add(new MessageEmbed.Field("You wanna hire me? Please give me 100k Credits or click on the link",
                     "http://bit.ly/shepardbot", false));

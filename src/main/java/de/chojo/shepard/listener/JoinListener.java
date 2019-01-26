@@ -2,7 +2,7 @@ package de.chojo.shepard.listener;
 
 import de.chojo.shepard.database.DatabaseInvite;
 import de.chojo.shepard.database.DatabaseQuery;
-import de.chojo.shepard.messageHandler.Messages;
+import de.chojo.shepard.messagehandler.Messages;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class JoinListener extends ListenerAdapter {
+
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         List<Invite> invites = event.getGuild().getInvites().complete();

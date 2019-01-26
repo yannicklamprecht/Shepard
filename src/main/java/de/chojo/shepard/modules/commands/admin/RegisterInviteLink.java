@@ -1,13 +1,14 @@
 package de.chojo.shepard.modules.commands.admin;
 
 import de.chojo.shepard.database.DatabaseQuery;
-import de.chojo.shepard.messageHandler.Messages;
+import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.modules.commands.CommandArg;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class RegisterInviteLink extends Command {
+
     public RegisterInviteLink() {
         commandName = "registerInviteLink";
         commandDesc = "Registers an invite link for the server";

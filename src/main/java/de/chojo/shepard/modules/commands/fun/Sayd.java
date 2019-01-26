@@ -1,6 +1,6 @@
-package de.chojo.shepard.modules.commands.Fun;
+package de.chojo.shepard.modules.commands.fun;
 
-import de.chojo.shepard.messageHandler.Messages;
+import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.modules.commands.CommandArg;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 public class Sayd extends Command {
+
     public Sayd() {
         commandName = "sayd";
         commandAliases = null;

@@ -1,7 +1,7 @@
 package de.chojo.shepard.modules.commands.exklusive;
 
 import de.chojo.shepard.calendar.CalendarEvent;
-import de.chojo.shepard.messageHandler.Messages;
+import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -22,7 +22,6 @@ public class IsHaddeWorking extends Command {
         commandDesc = "Gibt an, ob Hadde arbeiten ist";
         args = null;
     }
-
 
     @Override
     public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {

@@ -1,8 +1,8 @@
 package de.chojo.shepard.listener;
 
-import de.chojo.shepard.Collections.CommandCollection;
-import de.chojo.shepard.Collections.ServerCollection;
-import de.chojo.shepard.messageHandler.Messages;
+import de.chojo.shepard.collections.CommandCollection;
+import de.chojo.shepard.collections.ServerCollection;
+import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.Settings;
 import de.chojo.shepard.modules.commands.admin.CommandException;
@@ -14,16 +14,18 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 
 public class CommandListener extends ListenerAdapter {
+
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         Message message = event.getMessage();
         String receivedMessage = message.getContentRaw();
-        String args[] = receivedMessage.replace(Settings.getPrefix(event.getGuild()), "").split(" ");
+        String[] args = receivedMessage.replace(Settings.getPrefix(event.getGuild()), "").split(" ");
 
         if (checkPrefix(receivedMessage, event.getGuild())) {
             //BotCheck
             if (event.getAuthor().isBot()) {
-                Messages.sendMessage("I'm not allowed to talk to you " + event.getAuthor().getName() + ". Please leave me alone ._.", event.getChannel());
+                Messages.sendMessage("I'm not allowed to talk to you " + event.getAuthor().getName()
+                        + ". Please leave me alone ._.", event.getChannel());
                 return;
             }
 
@@ -43,7 +45,8 @@ public class CommandListener extends ListenerAdapter {
                 }
             }
 
-            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Command not found!", "Type " + Settings.getPrefix(event.getGuild()) + "help for a full list of available commands!", false)}, event.getChannel());
+            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Command not found!", "Type "
+                    + Settings.getPrefix(event.getGuild()) + "help for a full list of available commands!", false)}, event.getChannel());
         }
     }
 

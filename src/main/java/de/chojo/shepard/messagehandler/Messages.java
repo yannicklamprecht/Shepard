@@ -1,9 +1,8 @@
-package de.chojo.shepard.messageHandler;
+package de.chojo.shepard.messagehandler;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
@@ -14,6 +13,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 
 public class Messages {
+
     public static void sendMessage(String message, MessageChannel channel) {
         String[] messageParts = message.split(System.lineSeparator());
         String messagePart = "";

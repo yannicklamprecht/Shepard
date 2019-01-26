@@ -1,6 +1,6 @@
 package de.chojo.shepard.modules.commands.util;
 
-import de.chojo.shepard.messageHandler.Messages;
+import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 

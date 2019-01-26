@@ -7,12 +7,12 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class ContextSensitive extends ListenerAdapter {
 
     //Server sensitive
-    protected ListType serverListType = ListType.Blacklist;
+    protected ListType serverListType = ListType.BLACKLIST;
     protected String[] listedServer = new String[0];
     protected boolean serverCheckEnabled = false;
 
     //Character sensitive
-    protected ListType characterListType = ListType.Blacklist;
+    protected ListType characterListType = ListType.BLACKLIST;
     protected String[] characterList = new String[0];
     protected boolean characterCheckEnabled = false;
 
@@ -35,7 +35,7 @@ public class ContextSensitive extends ListenerAdapter {
         if (serverCheckEnabled) {
             for (String server : listedServer) {
                 if (server.equalsIgnoreCase(event.getGuild().getId())) {
-                    if (serverListType == ListType.Blacklist) {
+                    if (serverListType == ListType.BLACKLIST) {
                         return false;
                     } else {
                         value = true;
@@ -50,7 +50,7 @@ public class ContextSensitive extends ListenerAdapter {
         if (characterCheckEnabled) {
             for (String character : characterList) {
                 if (character.equalsIgnoreCase(event.getAuthor().getId())) {
-                    if (characterListType == ListType.Blacklist) {
+                    if (characterListType == ListType.BLACKLIST) {
                         return false;
                     } else {
                         return true;

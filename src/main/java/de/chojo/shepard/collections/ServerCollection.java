@@ -1,10 +1,9 @@
-package de.chojo.shepard.Collections;
+package de.chojo.shepard.collections;
 
 import de.chojo.shepard.ShepardBot;
 import net.dv8tion.jda.api.entities.Guild;
 
 public class ServerCollection {
-
     private static Guild normandy = null;
 
     public static Guild getNormandy(){

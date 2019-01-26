@@ -1,6 +1,6 @@
-package de.chojo.shepard.modules.commands.Fun;
+package de.chojo.shepard.modules.commands.fun;
 
-import de.chojo.shepard.messageHandler.Messages;
+import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -23,11 +23,9 @@ public class MagicConch extends Command {
 
     @Override
     public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
-        Integer type = 0;
         String word = "";
         Random rand = new Random();
-
-        type = rand.nextInt(3);
+        int type = rand.nextInt(3);
 
         if (type == 0)
             word = positive[rand.nextInt(positive.length)];

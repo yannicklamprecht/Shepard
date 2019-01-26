@@ -1,14 +1,15 @@
-package de.chojo.shepard.modules.commands.Fun;
+package de.chojo.shepard.modules.commands.fun;
 
-import de.chojo.shepard.messageHandler.Messages;
+import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-public class Uwud extends Command {
-    public Uwud() {
-        commandName = "uwud";
+public class Uwu extends Command {
+
+    public Uwu() {
+        commandName = "uwu";
         commandAliases = null;
-        commandDesc = "UWU and delete";
+        commandDesc = "UWU";
         args = null;
     }
 
@@ -16,7 +17,6 @@ public class Uwud extends Command {
     @Override
     public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
         Messages.sendMessage(":regional_indicator_u::regional_indicator_w::regional_indicator_u:", receivedEvent.getChannel());
-        Messages.deleteMessage(receivedEvent);
         return true;
     }
 }

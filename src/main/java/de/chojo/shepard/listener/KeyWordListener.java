@@ -1,6 +1,6 @@
 package de.chojo.shepard.listener;
 
-import de.chojo.shepard.Collections.KeyWordCollection;
+import de.chojo.shepard.collections.KeyWordCollection;
 import de.chojo.shepard.modules.keywords.KeyWordArgs;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

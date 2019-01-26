@@ -1,6 +1,5 @@
 package de.chojo.shepard.modules.commands.admin;
 
-import de.chojo.shepard.ShepardBot;
 import de.chojo.shepard.database.DatabaseQuery;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.modules.commands.CommandArg;
@@ -11,6 +10,7 @@ import java.util.regex.Pattern;
 
 public class SetGreetingChannel extends Command {
     private static final Pattern CHANNEL_MENTION_PATTERN = Pattern.compile("(?:<#)?(?<id>[0-9]{18})(?:>)?");
+
     public SetGreetingChannel(){
         commandName = "setGreetingChannel";
         commandDesc = "Set the greeting channel";

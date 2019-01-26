@@ -4,9 +4,9 @@ package de.chojo.shepard.database;
 import java.util.HashMap;
 
 public class DatabaseCache {
-
     private static DatabaseCache instance;
     private HashMap<String, Integer> databaseServers;
+
     public static DatabaseCache getInstance() {
         if (instance == null) {
             synchronized (DatabaseCache.class) {
