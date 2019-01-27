@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.awt.*;
 import java.time.Period;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -39,45 +40,63 @@ public class UserInfo extends Command {
             Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Too few arguments", "Usage: " + Settings.getPrefix(receivedEvent.getGuild()) + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
         }
 
-        InternUser internUser = new InternUser(args[1], receivedEvent).invoke();
-        User searchedUser = internUser.getSearchedUser();
-        String id = internUser.getId();
+        User searchedUser = findUser(args, receivedEvent);
 
         if (searchedUser == null) {
-            Messages.sendMessage("Can't find this user (" + id + ")", receivedEvent.getChannel());
+            Messages.sendMessage("Can't find this user ._.", receivedEvent.getChannel());
             return true;
+        }
+        String id = searchedUser.getId();
+
+        boolean userIsOnServer = isUserOnServer(receivedEvent, searchedUser);
+        String nickname;
+        String status;
+        if (!userIsOnServer) {
+            nickname = "";
+            status = "UNKNOWN";
+        } else {
+            nickname = receivedEvent.getGuild().getMemberById(searchedUser.getId()).getNickname();
+            status = receivedEvent.getGuild().getMemberById(searchedUser.getId()).getOnlineStatus().toString();
         }
 
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setThumbnail(searchedUser.getAvatarUrl());
-        builder.addField("ID", searchedUser.getId(), true);
-        builder.addField("Nickname", receivedEvent.getGuild().getMemberById(searchedUser.getId()).getNickname() + "", true);
-        builder.addField("Status", receivedEvent.getGuild().getMemberById(searchedUser.getId()).getOnlineStatus().toString() + "", true);
-        builder.addField("Minecraft Name", "Not implemented yet", true);
-        builder.addField("Mention", "<@" + searchedUser.getId() + ">", false);
-        builder.setAuthor(searchedUser.getAsTag(), searchedUser.getAvatarUrl(), searchedUser.getAvatarUrl());
-        OffsetDateTime time = receivedEvent.getGuild().getMemberById(searchedUser.getId()).getTimeJoined();
-        LocalDate date = time.toLocalDate();
-        Period period = date.until(LocalDate.now());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("DD.MM.yyyy");
-        String formatted = date.format(formatter);
-        int years = period.getYears();
-        period.minusYears(years);
-        int months = period.getMonths();
-        period.minusMonths(months);
-        int days = period.getDays();
-        String year = years != 1 ? " Years, " : " Year, ";
-        String day = days != 1 ? " Days" : " Day";
-        builder.addField("Joined", years + year + months + " Month " + days + day + "\n(" + formatted + ")", false);
-        builder.setColor(receivedEvent.getGuild().getMemberById(searchedUser.getId()).getColor());
-        List<Role> roles = receivedEvent.getGuild().getMemberById(searchedUser.getId()).getRoles();
-        String userRoles = "";
-        for (Role role : roles) {
-            userRoles = userRoles.concat(role.getName() + ", ");
-        }
-        userRoles = userRoles.substring(0, userRoles.length() - 2);
+        builder.setThumbnail(searchedUser.getAvatarUrl())
+                .addField("ID", searchedUser.getId(), true)
+                .addField("Nickname", nickname + "", true)
+                .addField("Status", status + "", true)
+                .addField("Minecraft Name", "Not implemented yet", true)
+                .addField("Mention", "<@" + searchedUser.getId() + ">", false)
+                .setAuthor(searchedUser.getAsTag(), searchedUser.getAvatarUrl(), searchedUser.getAvatarUrl());
+        if (userIsOnServer) {
+            OffsetDateTime time = receivedEvent.getGuild().getMemberById(searchedUser.getId()).getTimeJoined();
+            LocalDate date = time.toLocalDate();
+            Period period = date.until(LocalDate.now());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("DD.MM.yyyy");
+            String formatted = date.format(formatter);
+            int years = period.getYears();
+            period.minusYears(years);
+            int months = period.getMonths();
+            period.minusMonths(months);
+            int days = period.getDays();
+            String year = years != 1 ? " Years, " : " Year, ";
+            String day = days != 1 ? " Days" : " Day";
+            builder.addField("Joined", years + year + months + " Month " + days + day + "\n(" + formatted + ")", false)
+                    .setColor(receivedEvent.getGuild().getMemberById(searchedUser.getId()).getColor());
+            List<Role> roles = receivedEvent.getGuild().getMemberById(searchedUser.getId()).getRoles();
+            String userRoles = "";
+            for (Role role : roles) {
+                userRoles = userRoles.concat(role.getName() + ", ");
+            }
+            userRoles = userRoles.substring(0, userRoles.length() - 2);
+            builder.addField("Roles", userRoles, false);
+        } else {
+            builder.addField("Joined", "User is not on this Server", false)
+                    .addField("Roles", "User is not on this Server", false)
+                    .setColor(Color.gray);
 
-        builder.addField("Roles", userRoles, false);
+
+        }
+
 
         //builder.addField("Joined", time.)
         receivedEvent.getChannel().sendMessage(builder.build()).queue();
@@ -85,61 +104,51 @@ public class UserInfo extends Command {
         return true;
     }
 
-    private class InternUser {
-        private String arg;
-        private MessageReceivedEvent receivedEvent;
-        private User searchedUser;
-        private String id;
+    private User findUser(String[] args, MessageReceivedEvent event) {
+        User searchedUser = null;
 
-        public InternUser(String arg, MessageReceivedEvent receivedEvent) {
-            this.arg = arg;
-            this.receivedEvent = receivedEvent;
-            this.searchedUser = null;
-        }
+        args[0] = "";
 
-        public User getSearchedUser() {
-            return searchedUser;
-        }
+        String arg = String.join(" ", args);
+        String id = arg.replace("<", "").replace(">", "").replace("@", "").replace("!", "").replaceAll(" ", "");
+        System.out.println("\"" + id + "\"" + " " + arg.length());
 
-        public String getId() {
-            return id;
-        }
-
-        public InternUser invoke() {
-            id = arg.replace("<", "").replace(">", "").replace("@", "").replace("!", "");
-            try {
-                searchedUser = getJDA().getUserById(id);
-            } catch (NumberFormatException e) /*is not a id*/ {
-                if (arg.contains("#")) {
-                    //Name is Tag
-                    List<User> users = ShepardBot.getJDA().getUsersByName(id.substring(0, (arg.length() - 5)), true);
-                    for (User user : users) {
-                        if (user.getAsTag().equalsIgnoreCase(id)) {
-                            searchedUser = user;
-                            break;
-                        }
+        try {
+            searchedUser = getJDA().getUserById(id);
+        } catch (NumberFormatException e) /*is not a id*/ {
+            if (arg.contains("#")) {
+                //Name is Tag
+                List<User> users = getJDA().getUsersByName(id.substring(0, (arg.length() - 5)), true);
+                for (User user : users) {
+                    if (user.getAsTag().equalsIgnoreCase(id)) {
+                        searchedUser = user;
+                        break;
                     }
-                } else {
-                    List<User> users = ShepardBot.getJDA().getUsersByName(id, true);
-                    for (User user : users) {
-                        if (user.getName().equalsIgnoreCase(id)) {
-                            searchedUser = user;
-                            break;
-                        }
+                }
+            } else {
+                List<User> users = ShepardBot.getJDA().getUsersByName(id, true);
+                for (User user : users) {
+                    if (user.getName().equalsIgnoreCase(id)) {
+                        searchedUser = user;
+                        break;
                     }
-                    if(searchedUser == null){
-                        List<Member> members = receivedEvent.getGuild().getMembers();
-                        for (Member member : members) {
-                            if (member.getNickname().equalsIgnoreCase(id)) {
-                                searchedUser = member.getUser();
-                                break;
-                            }
+                }
+                if (searchedUser == null) {
+                    List<Member> members = event.getGuild().getMembers();
+                    for (Member member : members) {
+                        if (member.getNickname().equalsIgnoreCase(id)) {
+                            searchedUser = member.getUser();
+                            break;
                         }
                     }
                 }
-
             }
-            return this;
+
         }
+        return searchedUser;
+    }
+
+    private boolean isUserOnServer(MessageReceivedEvent event, User user) {
+        return event.getGuild().getMember(user) != null;
     }
 }
