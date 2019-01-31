@@ -6,6 +6,7 @@ import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.Settings;
 import de.chojo.shepard.modules.commands.admin.CommandException;
+import de.chojo.shepard.util.StringUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -19,7 +20,8 @@ public class CommandListener extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         Message message = event.getMessage();
         String receivedMessage = message.getContentRaw();
-        String[] args = receivedMessage.replace(Settings.getPrefix(event.getGuild()), "").split(" ");
+        receivedMessage = receivedMessage.replace(Settings.getPrefix(event.getGuild()), "");
+        String[] args = StringUtil.splitQuoted(receivedMessage);
 
         if (checkPrefix(receivedMessage, event.getGuild())) {
             //BotCheck
