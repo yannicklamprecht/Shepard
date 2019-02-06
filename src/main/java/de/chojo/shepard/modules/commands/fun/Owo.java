@@ -7,7 +7,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class Owo extends Command {
 
     public Owo() {
-        super("owo", "OWO");
+        commandName = "owo";
+        commandAliases = null;
+        commandDesc = "OWO";
+        args = null;
     }
 
 

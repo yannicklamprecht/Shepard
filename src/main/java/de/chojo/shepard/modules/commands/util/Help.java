@@ -5,8 +5,6 @@ import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.Settings;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.modules.commands.CommandArg;
-import de.chojo.shepard.util.ArrayUtil;
-import de.chojo.shepard.util.StringUtil;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -19,11 +17,12 @@ import java.util.ArrayList;
 public class Help extends Command {
 
     public Help() {
-        super("help", ArrayUtil.array("Hilfe", "sendhelp"), "Alles was du wissen musst.",
-                ArrayUtil.array(
-                    new CommandArg("Command", "Name or Alias of Command", false),
-                    new CommandArg("Argument", "One Argument of the Command", false)
-        ));
+        commandName = "help";
+        commandAliases = new String[]{"Hilfe", "sendhelp"};
+        commandDesc = "Alles was du wissen musst.";
+        args = new CommandArg[]
+                {new CommandArg("Command", "Name or Alias of Command", false),
+                        new CommandArg("Argument", "One Argument of the Command", false)};
     }
 
     @Override
@@ -65,10 +64,8 @@ public class Help extends Command {
         CommandArg[] helpArgs = command.getArgs();
 
 
-        if (helpArgs == null || helpArgs.length == 0) {
+        if (helpArgs == null || helpArgs.length == 0)
             Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("No Argument found!", "This command, doesn't have any arguments.", false)}, channel);
-            return false;
-        }
 
         for (CommandArg arg : helpArgs) {
             if (arg.getArgName().equalsIgnoreCase(arg1)) {

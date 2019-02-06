@@ -9,7 +9,10 @@ import java.util.Random;
 public class Oha extends Command {
 
     public Oha() {
-        super("oha", "Ohaaaaa");
+        commandName = "oha";
+        commandAliases = null;
+        commandDesc = "Ohaaaaaa";
+        args = null;
     }
 
     @Override

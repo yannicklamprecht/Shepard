@@ -3,7 +3,6 @@ package de.chojo.shepard.modules.commands.admin;
 import de.chojo.shepard.database.DatabaseQuery;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.modules.commands.CommandArg;
-import de.chojo.shepard.util.ArrayUtil;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.regex.Matcher;
@@ -13,8 +12,9 @@ public class SetGreetingChannel extends Command {
     private static final Pattern CHANNEL_MENTION_PATTERN = Pattern.compile("(?:<#)?(?<id>[0-9]{18})(?:>)?");
 
     public SetGreetingChannel(){
-        super("setGreetingChannel", "Set the greeting channel",
-                ArrayUtil.array(new CommandArg("ChannelName", "Name des Channels", true)));
+        commandName = "setGreetingChannel";
+        commandDesc = "Set the greeting channel";
+        args = new CommandArg[] {new CommandArg("ChannelName", "Name des Channels", true)};
     }
 
     @Override

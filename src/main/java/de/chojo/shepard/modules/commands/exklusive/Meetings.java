@@ -1,6 +1,5 @@
 package de.chojo.shepard.modules.commands.exklusive;
 
-import de.chojo.shepard.util.ArrayUtil;
 import de.chojo.shepard.util.ListType;
 import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.calendar.CalendarEvent;
@@ -19,7 +18,10 @@ import static de.chojo.shepard.calendar.CalendarQuickstart.getEldoriaMeetings;
 public class Meetings extends Command {
 
     public Meetings() {
-        super("meetings", ArrayUtil.array("besprechung", "meeting"), "Der nächste Besprechungstermin");
+        commandName = "meetings";
+        commandAliases = new String[]{"besprechung", "meeting"};
+        commandDesc = "Der nächste Besprechungstermin";
+        args = null;
         serverListType = ListType.WHITELIST;
         listedServer = new String[]{"214352508594814976"};
         serverCheckEnabled = true;

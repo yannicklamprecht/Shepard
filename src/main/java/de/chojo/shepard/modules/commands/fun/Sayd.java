@@ -3,7 +3,6 @@ package de.chojo.shepard.modules.commands.fun;
 import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.modules.commands.CommandArg;
-import de.chojo.shepard.util.ArrayUtil;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
@@ -11,7 +10,11 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 public class Sayd extends Command {
 
     public Sayd() {
-        super("sayd", "Say and delete", ArrayUtil.array(new CommandArg("Message", "Message Shepard should say.", true)));
+        commandName = "sayd";
+        commandAliases = null;
+        commandDesc = "Say and delete";
+        args = new CommandArg[]
+                {new CommandArg("Message", "Message Shepard should say.", true),};
     }
 
     @Override

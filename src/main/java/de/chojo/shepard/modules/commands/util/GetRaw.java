@@ -10,7 +10,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class GetRaw extends Command {
 
     public GetRaw(){
-        super("getRaw", "Get the message in raw format");
+        commandName = "getRaw";
+        commandDesc = "Get the message in raw format";
     }
 
     @Override

@@ -2,7 +2,6 @@ package de.chojo.shepard.modules.commands.util;
 
 import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
-import de.chojo.shepard.util.ArrayUtil;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -14,7 +13,10 @@ import java.util.ArrayList;
 public class HireMe extends Command {
 
     public HireMe() {
-        super("hireMe", ArrayUtil.array("Iwantyou", "lovemeshepard"), "Get a link to invite me!");
+        commandName = "hireMe";
+        commandAliases = new String[]{"Iwantyou", "lovemeshepard"};
+        commandDesc = "Get a link to invite me!";
+        args = null;
     }
 
     @Override

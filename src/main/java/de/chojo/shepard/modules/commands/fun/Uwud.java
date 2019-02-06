@@ -7,7 +7,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class Uwud extends Command {
 
     public Uwud() {
-        super("uwud", "UWU and delete");
+        commandName = "uwud";
+        commandAliases = null;
+        commandDesc = "UWU and delete";
+        args = null;
     }
 
 

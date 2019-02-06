@@ -3,7 +3,6 @@ package de.chojo.shepard.modules.commands.exklusive;
 import de.chojo.shepard.calendar.CalendarEvent;
 import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
-import de.chojo.shepard.util.ArrayUtil;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -18,7 +17,10 @@ import static de.chojo.shepard.calendar.CalendarQuickstart.getHaddeWorktimes;
 public class IsHaddeWorking extends Command {
 
     public IsHaddeWorking() {
-        super("isHaddeWorking", ArrayUtil.array("istHaddeArbeiten"), "Gibt an, ob Hadde arbeiten ist");
+        commandName = "isHaddeWorking";
+        commandAliases = new String[]{"istHaddeArbeiten"};
+        commandDesc = "Gibt an, ob Hadde arbeiten ist";
+        args = null;
     }
 
     @Override
