@@ -15,10 +15,7 @@ import java.net.URL;
 public class RandomJoke extends Command {
 
     public RandomJoke() {
-        commandName = "joke";
-        commandAliases = null;
-        commandDesc = "Hehe";
-        args = null;
+        super("joke", "Hehe");
     }
 
     @Override

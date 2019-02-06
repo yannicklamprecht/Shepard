@@ -2,6 +2,7 @@ package de.chojo.shepard.modules.commands.fun;
 
 import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
+import de.chojo.shepard.util.ArrayUtil;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.ArrayList;
@@ -9,17 +10,13 @@ import java.util.Random;
 
 
 public class MagicConch extends Command {
+    private static final String[] positive = new String[]{"Yes", "Of Course", "DO IT!", "Why not :)"};
+    private static final String[] negative = new String[]{"Are you dumb?", "Fly, you fool!", "nope", "No"};
+    private static final String[] neutral = new String[]{"How should I know?", "Maybe", "You should ask someone else instead."};
 
     public MagicConch() {
-        commandName = "MagicConch";
-        commandAliases = new String[]{"MagischeMiesmuschel"};
-        commandDesc = "Find your decision!";
-        args = null;
+        super("MagicConch", ArrayUtil.array("MagischeMiesmuschel"), "Find your decision!");
     }
-
-    String[] positive = new String[]{"Yes", "Of Course", "DO IT!", "Why not :)"};
-    String[] negative = new String[]{"Are you dumb?", "Fly, you fool!", "nope", "No"};
-    String[] neutral = new String[]{"How should I know?", "Maybe", "You should ask someone else instead."};
 
     @Override
     public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {

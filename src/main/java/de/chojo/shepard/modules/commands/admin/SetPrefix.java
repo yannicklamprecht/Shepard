@@ -4,14 +4,14 @@ import de.chojo.shepard.Settings;
 import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.modules.commands.CommandArg;
+import de.chojo.shepard.util.ArrayUtil;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class SetPrefix extends Command {
 
     public SetPrefix() {
-        commandName = "setPrefix";
-        commandDesc = "Changes the prefix for the Server";
-        args = new CommandArg[]{new CommandArg("Prefix", "The Prefix. Only one Char is allowed", true)};
+        super("setPrefix", "Changes the prefix for the Server",
+                ArrayUtil.array(new CommandArg("Prefix", "The Prefix. Only one Char is allowed", true)));
     }
 
     @Override

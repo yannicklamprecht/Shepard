@@ -7,10 +7,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class Uwu extends Command {
 
     public Uwu() {
-        commandName = "uwu";
-        commandAliases = null;
-        commandDesc = "UWU";
-        args = null;
+        super("uwu", "UWU");
     }
 
 

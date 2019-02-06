@@ -7,10 +7,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class Owod extends Command {
 
     public Owod() {
-        commandName = "owod";
-        commandAliases = null;
-        commandDesc = "OWO and delete";
-        args = null;
+        super("owod", "OWO and delete");
     }
 
 

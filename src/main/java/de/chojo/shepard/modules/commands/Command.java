@@ -15,11 +15,36 @@ public abstract class Command extends ContextSensitive {
 
     /**
      * Create a new command an register it to the {@link CommandCollection}.
+     * With this constructor, no aliases are set.
+     * @param commandName the command name.
+     * @param commandDescription the command description.
+     * @param args the command arguments.
      */
-    protected Command(){
+    protected Command(String commandName, String commandDescription, CommandArg... args) {
+        this(commandName, new String[0], commandDescription, args);
+    }
+
+    /**
+     * Create a new command an register it to the {@link CommandCollection}.
+     * @param commandName the command name.
+     * @param commandAliases the command aliases.
+     * @param commandDescription the command description.
+     * @param args the command arguments.
+     */
+    protected Command(String commandName, String[] commandAliases, String commandDescription, CommandArg... args){
+        this.commandName = commandName;
+        this.commandAliases = commandAliases;
+        this.commandDesc = commandDescription;
+        this.args = args;
         CommandCollection.getInstance().addCommand(this);
     }
 
+    /**
+     * Executes the command with given argument parameters for a specific {@link MessageReceivedEvent}.
+     * @param args the arguments provided by the command sender.
+     * @param receivedEvent the message event called with the sent command.
+     * @return {@code true} if the command was executed successfully, {@code false} otherwise.
+     */
     public abstract boolean execute(String[] args, MessageReceivedEvent receivedEvent);
 
     /**

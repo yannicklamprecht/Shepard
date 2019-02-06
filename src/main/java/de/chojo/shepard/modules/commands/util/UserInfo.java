@@ -5,6 +5,7 @@ import de.chojo.shepard.Settings;
 import de.chojo.shepard.ShepardBot;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.modules.commands.CommandArg;
+import de.chojo.shepard.util.ArrayUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -27,10 +28,8 @@ import static de.chojo.shepard.ShepardBot.getJDA;
 public class UserInfo extends Command {
 
     public UserInfo() {
-        commandName = "UserInfo";
-        commandAliases = new String[]{"aboutuser"};
-        commandDesc = "Information about a user";
-        args = new CommandArg[]{new CommandArg("user", "Tag, Name or ID of user", true)};
+        super("UserInfo", ArrayUtil.array("aboutuser"), "Information about a user",
+                ArrayUtil.array(new CommandArg("user", "Tag, Name or ID of user", true)));
     }
 
     @Override
