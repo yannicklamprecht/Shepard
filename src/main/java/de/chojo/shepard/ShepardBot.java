@@ -59,6 +59,10 @@ public class ShepardBot {
                 .addEventListeners(new Mlp())
                 .addEventListeners(new CommanderQuestion())
                 .addEventListeners(new Thing())
+                .addEventListeners(new DariNope())
+                .addEventListeners(new DariYes())
+                //ReactionMessages
+                .addEventListeners(new Test())
                 .build();
 
         // optionally block until JDA is ready
