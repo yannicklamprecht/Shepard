@@ -1,5 +1,6 @@
 package de.chojo.shepard.modules.commands.admin;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import de.chojo.shepard.database.DatabaseQuery;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.modules.commands.CommandArg;

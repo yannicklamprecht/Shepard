@@ -1,0 +1,8 @@
+prefix: "&"
+token: "NTEyNDEzMDQ5ODk0NzMxNzgw.DxjtCg.6nF2czGITfrX-HHR4cN7eCfil7I"
+database:
+  username: postgres
+  password: chojo
+  db: postgres
+  adress: localhost
+  port: 5432

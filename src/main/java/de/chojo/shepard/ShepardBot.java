@@ -1,5 +1,7 @@
 package de.chojo.shepard;
 
+import de.chojo.shepard.configuration.Config;
+import de.chojo.shepard.configuration.Loader;
 import de.chojo.shepard.listener.*;
 import de.chojo.shepard.modules.commands.fun.*;
 import de.chojo.shepard.modules.commands.admin.RegisterInviteLink;
@@ -16,11 +18,28 @@ import javax.security.auth.login.LoginException;
 public class ShepardBot {
     private static JDA jda;
 
-    public static void main(String[] args)
-            throws LoginException, InterruptedException {
+    private static Config config;
+
+    public static void main(String[] args) {
         org.apache.log4j.BasicConfigurator.configure();
         // Note: It is important to register your ReadyListener before building
-        jda = new JDABuilder("NTEyNDEzMDQ5ODk0NzMxNzgw.DxjtCg.6nF2czGITfrX-HHR4cN7eCfil7I")
+
+        config = Loader.getConfigLoader().getConfig();
+
+        try {
+            initiateJda();
+        } catch (LoginException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+
+    }
+
+    public static void initiateJda() throws LoginException, InterruptedException {
+        jda = new JDABuilder(config.getToken())
                 //JoinListener
                 .addEventListeners(new CommandListener())
                 .addEventListeners(new KeyWordListener())
@@ -70,10 +89,16 @@ public class ShepardBot {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-        } catch (Exception ignore) { }
+        } catch (Exception ignore) {
+        }
+
     }
 
     public static JDA getJDA() {
         return jda;
+    }
+
+    public static Config getConfig() {
+        return config;
     }
 }

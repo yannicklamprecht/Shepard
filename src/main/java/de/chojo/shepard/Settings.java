@@ -10,6 +10,7 @@ import java.util.Properties;
 /**
  * A class containing all settings for different discord servers.
  */
+@Deprecated
 public final class Settings {
     private static final String DEFAULT_PREFIX = "&";
     private static Map<Guild, Properties> settings = new HashMap<>();
