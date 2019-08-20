@@ -1,6 +1,13 @@
 package de.chojo.shepard.database;
 
+import de.chojo.shepard.ShepardBot;
+import de.chojo.shepard.configuration.Config;
+import de.chojo.shepard.configuration.Database;
+import org.yaml.snakeyaml.Yaml;
+
 import java.sql.*;
+
+import static de.chojo.shepard.database.DbUtil.handleException;
 
 
 public final class DatabaseConnector {
@@ -11,14 +18,20 @@ public final class DatabaseConnector {
         return conn;
     }
 
-    private DatabaseConnector() { }
+    private DatabaseConnector() {
+    }
 
     private static void createConnection() {
+        Database config = ShepardBot.getConfig().getDatabase();
         try {
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/shepard?" + "user=root&password=");
+            conn = DriverManager.getConnection(String.format("jdbc:postgresql://%s:%s/%s", config.getAdress(), config.getPort(), config.getDb()), config.getUsername(), config.getPassword());
+            System.out.println(
+                    String.format("SQL connection established on server %s:%s and database \"%s\" with username \"%s\" and password \"%s\"",
+                            config.getAdress(), config.getPort(), config.getDb(), config.getUsername(), config.getPassword()));
         } catch (SQLException ex) {
             handleException(ex);
         }
+
     }
 
     public static void close(Statement stmt, ResultSet rs) {
@@ -35,11 +48,6 @@ public final class DatabaseConnector {
         }
     }
 
-    public static void handleException(SQLException ex) {
-        System.out.println("SQLException: " + ex.getMessage());
-        System.out.println("SQLState: " + ex.getSQLState());
-        System.out.println("VendorError: " + ex.getErrorCode());
-    }
 
     private static void checkConnection() {
         try {

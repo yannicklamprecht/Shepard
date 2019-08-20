@@ -10,16 +10,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static de.chojo.shepard.database.DatabaseConnector.handleException;
+import static de.chojo.shepard.database.DbUtil.getIdRaw;
+import static de.chojo.shepard.database.DbUtil.handleException;
 
 /**
  * A class for querying and updating tha database.
  */
 public final class DatabaseQuery {
-    private static final Pattern ID_PATTERN = Pattern.compile("(?:<[@#!&]{1,2})?(?<id>[0-9]{18})(?:>)?");
 
     private DatabaseQuery() { }
 
@@ -179,19 +177,6 @@ public final class DatabaseQuery {
         return new Properties();
     }
 
-    /**
-     * Extracts an id from discord's formatting.
-     *
-     * @param id the formatted id.
-     * @return the extracted id.
-     */
-    private static String getIdRaw(String id){
-        Matcher matcher = ID_PATTERN.matcher(id);
-        if (!matcher.matches()) {
-            throw new IllegalArgumentException("lol dis is not a channel");
-        }
-        return matcher.group(1);
-    }
 
     /**
      * Create a database entry for a guild.
