@@ -1,5 +1,6 @@
 package de.chojo.shepard.modules.commands.admin;
 
+import de.chojo.shepard.ShepardBot;
 import de.chojo.shepard.database.DatabaseQuery;
 import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.modules.commands.Command;
@@ -22,7 +23,7 @@ public class RegisterInviteLink extends Command {
             Messages.sendSimpleError("Missing arguments", receivedEvent.getChannel());
             return false;
         }
-        Invite invite = receivedEvent.getGuild().getInvites().complete()
+        Invite invite = receivedEvent.getGuild().retrieveInvites().complete()
                 .stream()
                 .filter(inv -> inv.getCode().equals(args[1]))
                 .findAny()

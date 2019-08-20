@@ -1,6 +1,8 @@
 package de.chojo.shepard.modules.commands.util;
 
+import de.chojo.shepard.ShepardBot;
 import de.chojo.shepard.collections.CommandCollection;
+import de.chojo.shepard.database.queries.Prefix;
 import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.Settings;
 import de.chojo.shepard.modules.commands.Command;
@@ -18,7 +20,7 @@ public class Help extends Command {
 
     public Help() {
         commandName = "help";
-        commandAliases = new String[]{"Hilfe", "sendhelp"};
+        commandAliases = new String[] {"Hilfe", "sendhelp"};
         commandDesc = "Alles was du wissen musst.";
         args = new CommandArg[]
                 {new CommandArg("Command", "Name or Alias of Command", false),
@@ -27,7 +29,7 @@ public class Help extends Command {
 
     @Override
     public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
-        String prefix = Settings.getPrefix(receivedEvent.getGuild());
+        String prefix = Prefix.getPrefixes().getOrDefault(receivedEvent.getGuild().getId());
 
         //Command List
         if (args.length == 1) {
@@ -36,7 +38,7 @@ public class Help extends Command {
 
         Command command = CommandCollection.getInstance().getCommand(args[1]);
         if (command == null || !command.isCommandValid(receivedEvent)) {
-            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Command not found!", "Type " + prefix + "help for a full list of available commands!", false)}, receivedEvent.getChannel());
+            Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!", "Type " + prefix + "help for a full list of available commands!", false)}, receivedEvent.getChannel());
             return true;
         }
 
@@ -52,7 +54,7 @@ public class Help extends Command {
 
         }
 
-        Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Usage:", "Type:\n"
+        Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Usage:", "Type:\n"
                 + prefix + "help for a list of commands.\n"
                 + prefix + "help [command] for help for a specific command.\n"
                 + prefix + "help [command] [arg] for a description of the argument.", false)}, receivedEvent.getChannel());
@@ -64,8 +66,9 @@ public class Help extends Command {
         CommandArg[] helpArgs = command.getArgs();
 
 
-        if (helpArgs == null || helpArgs.length == 0)
-            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("No Argument found!", "This command, doesn't have any arguments.", false)}, channel);
+        if (helpArgs == null || helpArgs.length == 0) {
+            Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("No Argument found!", "This command, doesn't have any arguments.", false)}, channel);
+        }
 
         for (CommandArg arg : helpArgs) {
             if (arg.getArgName().equalsIgnoreCase(arg1)) {
@@ -80,7 +83,7 @@ public class Help extends Command {
         for (CommandArg arg : helpArgs) {
             argsAsString = argsAsString.concat(arg.getArgName() + " ");
         }
-        Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Argument not found!", "Try one of these: " + argsAsString, false)}, channel);
+        Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Argument not found!", "Try one of these: " + argsAsString, false)}, channel);
         return true;
     }
 
@@ -135,7 +138,7 @@ public class Help extends Command {
                 continue;
             }
 
-            aliases = aliases.concat(Settings.getPrefix(event.getGuild()));
+            aliases = aliases.concat(Prefix.getPrefixes().get(event.getGuild().getId()));
             aliases = aliases.concat(command.getCommandName() + " ");
 
             //Build aliases string

@@ -15,7 +15,7 @@ public class JoinListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        List<Invite> invites = event.getGuild().getInvites().complete();
+        List<Invite> invites = event.getGuild().retrieveInvites().complete();
         Set<DatabaseInvite> databaseInvites = DatabaseQuery.getInvites(event.getGuild().getId());
         //TODO: compare old and new join count for invites
 
