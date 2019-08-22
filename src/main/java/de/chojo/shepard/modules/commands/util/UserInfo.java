@@ -1,7 +1,7 @@
 package de.chojo.shepard.modules.commands.util;
 
+import de.chojo.shepard.database.queries.Prefix;
 import de.chojo.shepard.messagehandler.Messages;
-import de.chojo.shepard.Settings;
 import de.chojo.shepard.ShepardBot;
 import de.chojo.shepard.modules.commands.Command;
 import de.chojo.shepard.modules.commands.CommandArg;
@@ -36,7 +36,7 @@ public class UserInfo extends Command {
     public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
 
         if (args.length == 1) {
-            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Too few arguments", "Usage: " + Settings.getPrefix(receivedEvent.getGuild()) + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
+            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Too few arguments", "Usage: " + Prefix.getPrefix(receivedEvent.getGuild().getId()) + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
         }
 
         InternUser internUser = new InternUser(args[1], receivedEvent).invoke();
