@@ -17,6 +17,7 @@ import static de.chojo.shepard.database.DbUtil.handleException;
 /**
  * A class for querying and updating tha database.
  */
+@Deprecated
 public final class DatabaseQuery {
 
     private DatabaseQuery() { }
