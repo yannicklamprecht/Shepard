@@ -1,6 +1,6 @@
-package de.chojo.shepard.modules.reactionMessages.reactionMessage;
+package de.chojo.shepard.contexts.reactionMessages.reactionMessage;
 
-import de.chojo.shepard.modules.reactionMessages.ReactionMessage;
+import de.chojo.shepard.contexts.reactionMessages.ReactionMessage;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public class Test extends ReactionMessage {

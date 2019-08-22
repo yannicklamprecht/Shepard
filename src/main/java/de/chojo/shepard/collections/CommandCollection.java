@@ -1,6 +1,6 @@
 package de.chojo.shepard.collections;
 
-import de.chojo.shepard.modules.commands.Command;
+import de.chojo.shepard.contexts.commands.Command;
 
 import java.util.ArrayList;
 

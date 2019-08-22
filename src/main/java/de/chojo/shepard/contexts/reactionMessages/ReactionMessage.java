@@ -1,6 +1,5 @@
-package de.chojo.shepard.modules.reactionMessages;
+package de.chojo.shepard.contexts.reactionMessages;
 
-import de.chojo.shepard.ShepardBot;
 import de.chojo.shepard.collections.ReactionMessageCollection;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 

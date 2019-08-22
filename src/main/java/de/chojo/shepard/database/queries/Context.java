@@ -47,7 +47,7 @@ public final class Context {
     /**
      * Removes a user from the context list.
      * @param contextName context name to change
-     * @param guildId uder to remove
+     * @param userId user to remove
      */
     public static void removeContextUser(String contextName, String userId) {
         contextDataDirty.put(contextName, true);
@@ -143,14 +143,14 @@ public final class Context {
      * @param guildId guild id where the permission should be added
      * @param roleId role which should be added
      */
-    public static void addContextRolePermission(String contextName, String guildId, String userId) {
+    public static void addContextRolePermission(String contextName, String guildId, String roleId) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.add_context_role_permission(?,?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, getIdRaw(guildId));
-            statement.setString(3, getIdRaw(userId));
+            statement.setString(3, getIdRaw(roleId));
             statement.execute();
         } catch (SQLException e) {
             handleException(e);

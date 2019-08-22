@@ -1,6 +1,6 @@
 package de.chojo.shepard.collections;
 
-import de.chojo.shepard.modules.reactionMessages.ReactionMessage;
+import de.chojo.shepard.contexts.reactionMessages.ReactionMessage;
 
 import java.util.ArrayList;
 

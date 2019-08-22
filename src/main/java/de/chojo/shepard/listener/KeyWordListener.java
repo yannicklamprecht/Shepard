@@ -1,7 +1,7 @@
 package de.chojo.shepard.listener;
 
 import de.chojo.shepard.collections.KeyWordCollection;
-import de.chojo.shepard.modules.keywords.KeyWordArgs;
+import de.chojo.shepard.contexts.keywords.KeywordArgs;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -17,7 +17,7 @@ public class KeyWordListener extends ListenerAdapter {
             keyWordCollections = KeyWordCollection.getInstance();
         }
 
-        KeyWordArgs kwa = keyWordCollections.getKeyword(event);
+        KeywordArgs kwa = keyWordCollections.getKeyword(event);
 
         if (kwa != null) {
 

@@ -3,13 +3,16 @@ package de.chojo.shepard;
 import de.chojo.shepard.configuration.Config;
 import de.chojo.shepard.configuration.Loader;
 import de.chojo.shepard.listener.*;
-import de.chojo.shepard.modules.commands.fun.*;
-import de.chojo.shepard.modules.commands.admin.RegisterInviteLink;
-import de.chojo.shepard.modules.commands.admin.SetGreetingChannel;
-import de.chojo.shepard.modules.commands.admin.SetPrefix;
-import de.chojo.shepard.modules.commands.exklusive.*;
-import de.chojo.shepard.modules.commands.util.*;
-import de.chojo.shepard.modules.keywords.keyword.*;
+import de.chojo.shepard.contexts.commands.admin.ShowKeyword;
+import de.chojo.shepard.contexts.commands.botconfig.ManageContext;
+import de.chojo.shepard.contexts.commands.botconfig.ManageContextUsers;
+import de.chojo.shepard.contexts.commands.fun.*;
+import de.chojo.shepard.contexts.commands.admin.RegisterInviteLink;
+import de.chojo.shepard.contexts.commands.admin.SetGreetingChannel;
+import de.chojo.shepard.contexts.commands.admin.SetPrefix;
+import de.chojo.shepard.contexts.commands.exklusive.*;
+import de.chojo.shepard.contexts.commands.util.*;
+import de.chojo.shepard.contexts.keywords.keyword.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
@@ -47,10 +50,14 @@ public class ShepardBot {
                 .addEventListeners(new LogListener())
                 .addEventListeners(new JoinListener())
                 //Commands
+                //botSettings
+                .addEventListeners(new ManageContext())
+                .addEventListeners(new ManageContextUsers())
                 //admin
                 .addEventListeners(new SetGreetingChannel())
                 .addEventListeners(new RegisterInviteLink())
                 .addEventListeners(new SetPrefix())
+                .addEventListeners(new ShowKeyword())
                 //exklusive
                 .addEventListeners(new IsHaddeWorking())
                 .addEventListeners(new Meetings())
