@@ -2,12 +2,14 @@ package de.chojo.shepard.database.types;
 
 import de.chojo.shepard.database.ListType;
 
+import java.util.Arrays;
+
 public class ContextData {
     private boolean admin_only;
     private boolean nsfw;
-    private boolean characterCheckActive;
-    private ListType characterListType;
-    private String[] characterList;
+    private boolean userCheckActive;
+    private ListType userListType;
+    private String[] userList;
     private boolean guildCheckActive;
     private ListType guildListType;
     private String[] guildList;
@@ -28,28 +30,28 @@ public class ContextData {
         this.nsfw = nsfw;
     }
 
-    public boolean isCharacterCheckActive() {
-        return characterCheckActive;
+    public boolean isUserCheckActive() {
+        return userCheckActive;
     }
 
-    public void setCharacterCheckActive(boolean characterCheckActive) {
-        this.characterCheckActive = characterCheckActive;
+    public void setUserCheckActive(boolean userCheckActive) {
+        this.userCheckActive = userCheckActive;
     }
 
-    public ListType getCharacterListType() {
-        return characterListType;
+    public ListType getUserListType() {
+        return userListType;
     }
 
-    public void setCharacterListType(ListType characterListType) {
-        this.characterListType = characterListType;
+    public void setUserListType(ListType userListType) {
+        this.userListType = userListType;
     }
 
-    public String[] getCharacterList() {
-        return characterList;
+    public String[] getUserList() {
+        return userList;
     }
 
-    public void setCharacterList(String[] characterList) {
-        this.characterList = characterList;
+    public void setUserList(String[] userList) {
+        this.userList = userList;
     }
 
     public boolean isGuildCheckActive() {
@@ -74,5 +76,38 @@ public class ContextData {
 
     public void setGuildList(String[] guildList) {
         this.guildList = guildList;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("admin only: ")
+                .append(isAdmin_only())
+                .append(System.lineSeparator());
+        builder.append("nsfw: ")
+                .append(isNsfw())
+                .append(System.lineSeparator());
+        builder.append("user check active: ")
+                .append(isUserCheckActive())
+                .append(System.lineSeparator());
+        if (isUserCheckActive()) {
+            builder.append("    List Type: ")
+                    .append(getUserListType())
+                    .append(System.lineSeparator());
+            builder.append("    Users on List: ")
+                    .append(Arrays.asList(getUserList()))
+                    .append(System.lineSeparator());
+        }
+        builder.append("guild check active: ")
+                .append(isGuildCheckActive())
+                .append(System.lineSeparator());
+        if (isGuildCheckActive()) {
+            builder.append("    List Type: ")
+                    .append(getGuildListType())
+                    .append(System.lineSeparator());
+            builder.append("    Guilds on List: ")
+                    .append(Arrays.asList(getGuildList()));
+        }
+        return builder.toString();
     }
 }
