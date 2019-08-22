@@ -38,7 +38,7 @@ public class ShepardBot {
 
     }
 
-    public static void initiateJda() throws LoginException, InterruptedException {
+    private static void initiateJda() throws LoginException, InterruptedException {
         jda = new JDABuilder(config.getToken())
                 //JoinListener
                 .addEventListeners(new CommandListener())
