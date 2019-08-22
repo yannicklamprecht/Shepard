@@ -33,21 +33,13 @@ public class Prefix {
     }
 
     public static String getPrefix(String guildId) {
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.set_prefix(?)")) {
-            statement.setString(1, getIdRaw(guildId));
-            ResultSet result = statement.executeQuery();
-            String prefix = null;
-            if (result.next()) {
-                prefix = result.getString(1);
-            }
-
-            return prefix;
-
-        } catch (SQLException e) {
-            handleException(e);
+        if(!cache_dirty){
+            return prefixes.get(guildId);
         }
-        return null;
+
+        getPrefixes();
+
+        return getPrefix(guildId);
     }
 
     public static DefaultMap<String, String> getPrefixes() {

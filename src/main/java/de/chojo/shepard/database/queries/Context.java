@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,10 +16,22 @@ import java.util.Map;
 import static de.chojo.shepard.database.DbUtil.getIdRaw;
 import static de.chojo.shepard.database.DbUtil.handleException;
 
-public class Context {
-    public void addContextCharacter(String contextName, String userId) {
+@SuppressWarnings("SqlDialectInspection")
+public final class Context {
+    //Map with context
+    private static Map<String, Map<String, List<String>>> userPermissions = new HashMap<>();
+    private static Map<String, Map<String, List<String>>> rolePermissions = new HashMap<>();
+    private static Map<String, ContextData> contextData = new HashMap<>();
+
+    private static Map<String, Boolean> contextDataDirty = new HashMap<>();
+    private static Map<String, Boolean> userPermissionDirty = new HashMap<>();
+    private static Map<String, Boolean> rolePermissionDirty = new HashMap<>();
+
+    public static void addContextUser(String contextName, String userId) {
+        contextDataDirty.put(contextName, true);
+
         try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.add_context_character(?,?)")) {
+                prepareStatement("SELECT shepard_func.add_context_user(?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, getIdRaw(userId));
             statement.execute();
@@ -27,9 +40,11 @@ public class Context {
         }
     }
 
-    public void removeContextCharacter(String contextName, String userId) {
+    public static void removeContextUser(String contextName, String userId) {
+        contextDataDirty.put(contextName, true);
+
         try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.remove_context_character(?,?)")) {
+                prepareStatement("SELECT shepard_func.remove_context_user(?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, getIdRaw(userId));
             statement.execute();
@@ -38,7 +53,9 @@ public class Context {
         }
     }
 
-    public void addContextGuild(String contextName, String guildId) {
+    public static void addContextGuild(String contextName, String guildId) {
+        contextDataDirty.put(contextName, true);
+
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.add_context_guild(?,?)")) {
             statement.setString(1, contextName);
@@ -49,7 +66,9 @@ public class Context {
         }
     }
 
-    public void removeContextGuild(String contextName, String guildId) {
+    public static void removeContextGuild(String contextName, String guildId) {
+        contextDataDirty.put(contextName, true);
+
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.remove_context_guild(?,?)")) {
             statement.setString(1, contextName);
@@ -60,9 +79,11 @@ public class Context {
         }
     }
 
-    public void addContextPermission(String contextName, String guildId, String userId) {
+    public static void addContextUserPermission(String contextName, String guildId, String userId) {
+        contextDataDirty.put(contextName, true);
+
         try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.add_context_permission(?,?,?)")) {
+                prepareStatement("SELECT shepard_func.add_context_user_permission(?,?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, getIdRaw(guildId));
             statement.setString(3, getIdRaw(userId));
@@ -72,9 +93,11 @@ public class Context {
         }
     }
 
-    public void removeContextPermission(String contextName, String guildId, String userId) {
+    public static void removeContextUserPermission(String contextName, String guildId, String userId) {
+        contextDataDirty.put(contextName, true);
+
         try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.remove_context_permission(?,?,?)")) {
+                prepareStatement("SELECT shepard_func.remove_context_user_permission(?,?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, getIdRaw(guildId));
             statement.setString(3, getIdRaw(userId));
@@ -84,7 +107,38 @@ public class Context {
         }
     }
 
-    public void setContextAdmin(String contextName, boolean state) {
+    public static void addContextRolePermission(String contextName, String guildId, String userId) {
+        contextDataDirty.put(contextName, true);
+
+        try (PreparedStatement statement = DatabaseConnector.getConn().
+                prepareStatement("SELECT shepard_func.add_context_role_permission(?,?,?)")) {
+            statement.setString(1, contextName);
+            statement.setString(2, getIdRaw(guildId));
+            statement.setString(3, getIdRaw(userId));
+            statement.execute();
+        } catch (SQLException e) {
+            handleException(e);
+        }
+    }
+
+    public static void removeContextRolePermission(String contextName, String guildId, String userId) {
+        contextDataDirty.put(contextName, true);
+
+        try (PreparedStatement statement = DatabaseConnector.getConn().
+                prepareStatement("SELECT shepard_func.remove_context_role_permission(?,?,?)")) {
+            statement.setString(1, contextName);
+            statement.setString(2, getIdRaw(guildId));
+            statement.setString(3, getIdRaw(userId));
+            statement.execute();
+        } catch (SQLException e) {
+            handleException(e);
+        }
+    }
+
+
+    public static void setContextAdmin(String contextName, boolean state) {
+        contextDataDirty.put(contextName, true);
+
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.set_context_admin(?,?)")) {
             statement.setString(1, contextName);
@@ -95,7 +149,9 @@ public class Context {
         }
     }
 
-    public void setContextNsfw(String contextName, boolean state) {
+    public static void setContextNsfw(String contextName, boolean state) {
+        contextDataDirty.put(contextName, true);
+
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.set_context_nsfw(?,?)")) {
             statement.setString(1, contextName);
@@ -106,7 +162,9 @@ public class Context {
         }
     }
 
-    public void setContextCharacterCheckActive(String contextName, boolean state) {
+    public static void setContextCharacterCheckActive(String contextName, boolean state) {
+        contextDataDirty.put(contextName, true);
+
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.set_context_character_check_active(?,?)")) {
             statement.setString(1, contextName);
@@ -117,7 +175,9 @@ public class Context {
         }
     }
 
-    public void setContextGuildCheckActive(String contextName, boolean state) {
+    public static void setContextGuildCheckActive(String contextName, boolean state) {
+        contextDataDirty.put(contextName, true);
+
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.set_context_guild_check_active(?,?)")) {
             statement.setString(1, contextName);
@@ -128,7 +188,9 @@ public class Context {
         }
     }
 
-    public void setContextCharacterListType(String contextName, ListType listType) {
+    public static void setContextCharacterListType(String contextName, ListType listType) {
+        contextDataDirty.put(contextName, true);
+
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.set_context_character_list_type(?,?)")) {
             statement.setString(1, contextName);
@@ -139,7 +201,9 @@ public class Context {
         }
     }
 
-    public void setContextGuildListType(String contextName, ListType listType) {
+    public static void setContextGuildListType(String contextName, ListType listType) {
+        contextDataDirty.put(contextName, true);
+
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.set_context_guild_list_type(?,?)")) {
             statement.setString(1, contextName);
@@ -150,56 +214,114 @@ public class Context {
         }
     }
 
-    public ContextData getContextData(String contextName) {
+    public static ContextData getContextData(String contextName) {
+        if (contextDataDirty.containsKey(contextName)) {
+            if (!contextDataDirty.get(contextName)) {
+                return contextData.get(contextName);
+            }
+        }
+
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT * from shepard_func.get_context_data(?)")) {
             statement.setString(1, contextName);
             ResultSet result = statement.executeQuery();
 
-            ContextData data = new ContextData();
-            data.setAdmin_only(result.getBoolean("admin_only"));
-            data.setNsfw(result.getBoolean("nsfw"));
-            data.setCharacterCheckActive(result.getBoolean("character_check_active"));
-            data.setCharacterListType(ListType.getType(result.getString("character_list_type")));
-            data.setCharacterList((String[]) result.getArray("characters_list").getArray());
-            data.setGuildCheckActive(result.getBoolean("guild_check_active"));
-            data.setGuildListType(ListType.getType(result.getString("guild_list_type")));
-            data.setGuildList((String[]) result.getArray("guild_list").getArray());
+            if (result.next()) {
+                ContextData data = new ContextData();
 
-            return data;
+                data.setAdmin_only(result.getBoolean("admin_only"));
+                data.setNsfw(result.getBoolean("nsfw"));
+                data.setUserCheckActive(result.getBoolean("user_check_active"));
+                data.setUserListType(ListType.getType(result.getString("user_list_type")));
+                if (result.getArray("user_list") == null) {
+                    data.setUserList(new String[0]);
+                } else {
+                    data.setUserList((String[]) result.getArray("user_list").getArray());
+                }
+                data.setGuildCheckActive(result.getBoolean("guild_check_active"));
+                data.setGuildListType(ListType.getType(result.getString("guild_list_type")));
+                if (result.getArray("guild_list") == null) {
+                    data.setGuildList(new String[0]);
+                } else {
+                    data.setGuildList((String[]) result.getArray("guild_list").getArray());
+                }
+
+                contextData.put(contextName, data);
+                contextDataDirty.put(contextName, false);
+            }
 
         } catch (SQLException e) {
             handleException(e);
         }
 
-        return null;
+        return contextData.getOrDefault(contextName, null);
     }
 
-    public Map<String, List<String>> getContextPermissions(String contextName) {
+    public static Map<String, List<String>> getContextUserPermissions(String contextName) {
+        if (userPermissions.containsKey(contextName)) {
+            if (!userPermissionDirty.get(contextName)) {
+                return userPermissions.get(contextName);
+            }
+        }
+
         try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT * from shepard_func.get_context_permissions(?)")) {
+                prepareStatement("SELECT * from shepard_func.get_context_user_permissions(?)")) {
             statement.setString(1, contextName);
             ResultSet result = statement.executeQuery();
 
             HashMap<String, List<String>> data = new HashMap<>();
 
-            while (result.next()){
+            while (result.next()) {
                 String guild = result.getString("guild_id");
                 String user = result.getString("user_id");
 
-                if(data.containsKey(guild)){
+                if (data.containsKey(guild)) {
                     data.get(guild).add(user);
-                }else{
+                } else {
                     data.put(guild, new ArrayList<>(List.of(user)));
                 }
             }
 
-            return data;
+            userPermissions.put(contextName, data);
+            userPermissionDirty.put(contextName, false);
 
         } catch (SQLException e) {
             handleException(e);
         }
-        return null;
+        return userPermissions.getOrDefault(contextName, Collections.emptyMap());
     }
 
+    public static Map<String, List<String>> getContextRolePermissions(String contextName) {
+        if (rolePermissions.containsKey(contextName)) {
+            if (!rolePermissionDirty.get(contextName)) {
+                return rolePermissions.get(contextName);
+            }
+        }
+
+
+        try (PreparedStatement statement = DatabaseConnector.getConn().
+                prepareStatement("SELECT * from shepard_func.get_context_role_permissions(?)")) {
+            statement.setString(1, contextName);
+            ResultSet result = statement.executeQuery();
+
+            HashMap<String, List<String>> data = new HashMap<>();
+
+            while (result.next()) {
+                String guild = result.getString("guild_id");
+                String role = result.getString("role_id");
+
+                if (data.containsKey(guild)) {
+                    data.get(guild).add(role);
+                } else {
+                    data.put(guild, new ArrayList<>(List.of(role)));
+                }
+            }
+
+            rolePermissions.put(contextName, data);
+            rolePermissionDirty.put(contextName, false);
+        } catch (SQLException e) {
+            handleException(e);
+        }
+        return rolePermissions.getOrDefault(contextName, Collections.emptyMap());
+    }
 }
