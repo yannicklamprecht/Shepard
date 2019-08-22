@@ -3,7 +3,6 @@ package de.chojo.shepard.modules.commands.util;
 import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.ShepardBot;
 import de.chojo.shepard.modules.commands.Command;
-import de.chojo.shepard.util.ListType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.time.LocalDate;
@@ -20,9 +19,6 @@ public class ListServer extends Command {
         commandName = "listServer";
         commandAliases = new String[]{"serverList", "servers", "server"};
         commandDesc = "Lists all Server where Shepard is online";
-        serverListType = ListType.WHITELIST;
-        listedServer = new String[]{"538084337984208906"};
-        serverCheckEnabled = true;
     }
 
     @Override
