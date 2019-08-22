@@ -1,20 +1,16 @@
 package de.chojo.shepard.collections;
 
-import de.chojo.shepard.modules.keywords.KeyWordArgs;
-import de.chojo.shepard.modules.keywords.Keyword;
+import de.chojo.shepard.contexts.keywords.KeywordArgs;
+import de.chojo.shepard.contexts.keywords.Keyword;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class KeyWordCollection {
     private static KeyWordCollection instance;
 
-    private ArrayList<Keyword> keywordsArrayList = new ArrayList<>();
-    private int lastKeyWordArraySize = 0;
-
-    private Map<String, Keyword> keywords = new HashMap<>();
+    private List<Keyword> keywords = new ArrayList<>();
 
     public static KeyWordCollection getInstance() {
         if (instance == null) {
@@ -27,36 +23,32 @@ public class KeyWordCollection {
         return instance;
     }
 
-    private KeyWordCollection(){}
-
-    public void addKeyword(Keyword keyword) {
-        keywordsArrayList.add(keyword);
+    private KeyWordCollection() {
     }
 
-    public KeyWordArgs getKeyword(MessageReceivedEvent event) {
-        //if (keywords.size() == 0)
-        //    rebuildHasMap();
-        //if (lastKeyWordArraySize == 0 || lastKeyWordArraySize < keywordsArrayList.size()){
-        //    rebuildHasMap();
-        //}
-        //    return keywords.get(key.toLowerCase());
-        for (Keyword keyword : keywordsArrayList) {
-            String key = keyword.hasKeyword(event);
-            if (key != null) {
-                return new KeyWordArgs(key, keyword);
+    public void addKeyword(Keyword keyword) {
+        keywords.add(keyword);
+    }
+
+    public KeywordArgs getKeyword(MessageReceivedEvent event) {
+        for (Keyword keyword : keywords) {
+            if (keyword.hasKeyword(event)) {
+                return keyword.getKeyWordArgs(event);
             }
         }
         return null;
     }
 
-    private void rebuildHasMap() {
-        lastKeyWordArraySize = keywordsArrayList.size();
-        for (Keyword keyword : keywordsArrayList) {
-            for (String key : keyword.getKeywords()) {
-                keywords.put(key.toLowerCase(), keyword);
-            }
-        }
+    public List<Keyword> getKeywords() {
+        return keywords;
     }
 
-
+    public Keyword getKeywordWithContextName(String contextName, MessageReceivedEvent event) {
+        for (Keyword k : keywords) {
+            if (k.getClass().getSimpleName().equalsIgnoreCase(contextName) && k.isContextValid(event)) {
+                return k;
+            }
+        }
+        return null;
+    }
 }
