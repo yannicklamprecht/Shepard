@@ -81,13 +81,13 @@ public class ContextData {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("admin only: ")
+        builder.append("  admin only: ")
                 .append(isAdmin_only())
                 .append(System.lineSeparator());
-        builder.append("nsfw: ")
+        builder.append("  nsfw: ")
                 .append(isNsfw())
                 .append(System.lineSeparator());
-        builder.append("user check active: ")
+        builder.append("  user check active: ")
                 .append(isUserCheckActive())
                 .append(System.lineSeparator());
         if (isUserCheckActive()) {
@@ -98,7 +98,7 @@ public class ContextData {
                     .append(Arrays.asList(getUserList()))
                     .append(System.lineSeparator());
         }
-        builder.append("guild check active: ")
+        builder.append("  guild check active: ")
                 .append(isGuildCheckActive())
                 .append(System.lineSeparator());
         if (isGuildCheckActive()) {

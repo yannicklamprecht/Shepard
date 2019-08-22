@@ -1,11 +1,15 @@
 package de.chojo.shepard.contexts;
 
+import de.chojo.shepard.ShepardBot;
 import de.chojo.shepard.database.ListType;
 import de.chojo.shepard.database.queries.Context;
 import de.chojo.shepard.database.types.ContextData;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -99,28 +103,54 @@ public class ContextSensitive extends ListenerAdapter {
     }
 
     public String getDebugInfo() {
+        JDA jda = ShepardBot.getJDA();
         StringBuilder builder = new StringBuilder();
         builder.append("|+++++++++++++++++++++++++++++++|").append(System.lineSeparator());
         builder.append("Context \"")
-                .append(getClass().getSimpleName())
+                .append(getClass().getSimpleName().toUpperCase())
                 .append("\" initialised with settings:")
                 .append(System.lineSeparator());
         builder.append(getContextData().toString());
-        builder.append("Roles with access to this content:").append(System.lineSeparator());
+        builder.append("  Roles with access to this context:").append(System.lineSeparator());
+
         for (var a : getRolePermissions().entrySet()) {
-            builder.append("    Guild: ").append(a.getKey()).append(" -> ")
-                    .append(a.getValue()).append(System.lineSeparator());
+            String guild = jda.getGuildById(a.getKey()) + " (" + a.getKey() + "):";
+
+            StringBuilder names = new StringBuilder();
+            for (String s : a.getValue()) {
+                Guild cur_guild = jda.getGuildById(a.getKey());
+                if (cur_guild != null) {
+                    Role role = cur_guild.getRoleById(s);
+                    if (role != null) {
+                        names.append("      ").append(role.getName()).append(System.lineSeparator());
+                    }
+                }
+            }
+
+            builder.append("    Guild: ").append(guild).append(System.lineSeparator()).append(names.toString())
+                    .append(System.lineSeparator());
         }
 
-        builder.append("Users with access to this content:");
+
+        builder.append("  Users with access to this context:");
         for (var a : getUserPermissions().entrySet()) {
-            builder.append("    Guild: ").append(a.getKey()).append(" -> ").append(a.getValue())
+            String guild = jda.getGuildById(a.getKey()) + " (" + a.getKey() + "):";
+
+            StringBuilder names = new StringBuilder();
+            for (String s : a.getValue()) {
+                User user = jda.getUserById(s);
+                if (user != null) {
+                    names.append("      ").append(user.getAsTag()).append(System.lineSeparator());
+                }
+            }
+
+            builder.append("    Guild: ").append(guild).append(System.lineSeparator()).append(names.toString())
                     .append(System.lineSeparator());
         }
         return builder.toString();
     }
 
-    public void printDebugInfo(){
+    public void printDebugInfo() {
         System.out.println(getDebugInfo());
     }
 

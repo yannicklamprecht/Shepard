@@ -18,7 +18,8 @@ public class CommandCollection {
         return instance;
     }
 
-    private CommandCollection(){}
+    private CommandCollection() {
+    }
 
     private ArrayList<Command> commands = new ArrayList<Command>();
 
@@ -33,12 +34,19 @@ public class CommandCollection {
 
     public Command getCommand(String command) {
         for (Command currentCommand : commands) {
-            if (currentCommand.isCommand(command))
+            if (currentCommand.isCommand(command)) {
                 return currentCommand;
+            }
 
 
         }
         return null;
     }
 
+    public void debug() {
+        System.out.println("++++ DEBUG OF COMMANDS ++++");
+        for (Command c : commands) {
+            c.printDebugInfo();
+        }
+    }
 }

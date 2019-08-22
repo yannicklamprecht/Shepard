@@ -13,8 +13,8 @@ public class Verifier {
         if (string.equalsIgnoreCase("true") || string.equalsIgnoreCase("false")) {
             state = string.equalsIgnoreCase("true");
         } else {
-            return;
-        }
 
+        }
+        return state;
     }
 }

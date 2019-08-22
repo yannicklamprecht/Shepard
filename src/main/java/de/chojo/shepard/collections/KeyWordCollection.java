@@ -1,5 +1,6 @@
 package de.chojo.shepard.collections;
 
+import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.keywords.KeywordArgs;
 import de.chojo.shepard.contexts.keywords.Keyword;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -51,4 +52,12 @@ public class KeyWordCollection {
         }
         return null;
     }
+
+    public void debug() {
+        System.out.println("++++ DEBUG OF KEYWORDS ++++");
+        for (Keyword c : keywords) {
+            c.printDebugInfo();
+        }
+    }
+
 }

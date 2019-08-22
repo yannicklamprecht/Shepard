@@ -1,5 +1,7 @@
 package de.chojo.shepard;
 
+import de.chojo.shepard.collections.CommandCollection;
+import de.chojo.shepard.collections.KeyWordCollection;
 import de.chojo.shepard.configuration.Config;
 import de.chojo.shepard.configuration.Loader;
 import de.chojo.shepard.listener.*;
@@ -36,7 +38,6 @@ public class ShepardBot {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
 
 
     }
@@ -99,6 +100,8 @@ public class ShepardBot {
         } catch (Exception ignore) {
         }
 
+        CommandCollection.getInstance().debug();
+        KeyWordCollection.getInstance().debug();
     }
 
     public static JDA getJDA() {
