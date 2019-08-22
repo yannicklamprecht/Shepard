@@ -27,6 +27,11 @@ public final class Context {
     private static Map<String, Boolean> userPermissionDirty = new HashMap<>();
     private static Map<String, Boolean> rolePermissionDirty = new HashMap<>();
 
+    /**
+     * Adds a user to a context list
+     * @param contextName context zo change
+     * @param userId user to add
+     */
     public static void addContextUser(String contextName, String userId) {
         contextDataDirty.put(contextName, true);
 
@@ -39,7 +44,11 @@ public final class Context {
             handleException(e);
         }
     }
-
+    /**
+     * Removes a user from the context list.
+     * @param contextName context name to change
+     * @param guildId uder to remove
+     */
     public static void removeContextUser(String contextName, String userId) {
         contextDataDirty.put(contextName, true);
 
@@ -53,6 +62,11 @@ public final class Context {
         }
     }
 
+    /**
+     * Adds a guild to the context list.
+     * @param contextName context name to change
+     * @param guildId guild id to add
+     */
     public static void addContextGuild(String contextName, String guildId) {
         contextDataDirty.put(contextName, true);
 
@@ -66,6 +80,11 @@ public final class Context {
         }
     }
 
+    /**
+     * Removes a guild from the context list.
+     * @param contextName context name to change
+     * @param guildId guild id to remove
+     */
     public static void removeContextGuild(String contextName, String guildId) {
         contextDataDirty.put(contextName, true);
 
@@ -78,7 +97,12 @@ public final class Context {
             handleException(e);
         }
     }
-
+    /**
+     * Adds a context user permission on a guild
+     * @param contextName context name to change
+     * @param guildId guild id where the permission should be added
+     * @param userId user which should be added
+     */
     public static void addContextUserPermission(String contextName, String guildId, String userId) {
         contextDataDirty.put(contextName, true);
 
@@ -93,6 +117,12 @@ public final class Context {
         }
     }
 
+    /**
+     * Removes a context user permission on a guild
+     * @param contextName context name to change
+     * @param guildId guild id where the permission should be removed
+     * @param userId user which should be removed
+     */
     public static void removeContextUserPermission(String contextName, String guildId, String userId) {
         contextDataDirty.put(contextName, true);
 
@@ -107,6 +137,12 @@ public final class Context {
         }
     }
 
+    /**
+     * Adds a context role permission on a guild
+     * @param contextName context name to change
+     * @param guildId guild id where the permission should be added
+     * @param roleId role which should be added
+     */
     public static void addContextRolePermission(String contextName, String guildId, String userId) {
         contextDataDirty.put(contextName, true);
 
@@ -121,21 +157,31 @@ public final class Context {
         }
     }
 
-    public static void removeContextRolePermission(String contextName, String guildId, String userId) {
+    /**
+     * Removes a context role permission on a guild
+     * @param contextName context name to change
+     * @param guildId guild id where the permission should be removed
+     * @param roleId role which should be removed
+     */
+    public static void removeContextRolePermission(String contextName, String guildId, String roleId) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.remove_context_role_permission(?,?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, getIdRaw(guildId));
-            statement.setString(3, getIdRaw(userId));
+            statement.setString(3, getIdRaw(roleId));
             statement.execute();
         } catch (SQLException e) {
             handleException(e);
         }
     }
 
-
+    /**
+     * Changes the context admin only state
+     * @param contextName Name of the context to change
+     * @param state True if it is a admin only command.
+     */
     public static void setContextAdmin(String contextName, boolean state) {
         contextDataDirty.put(contextName, true);
 
@@ -149,6 +195,11 @@ public final class Context {
         }
     }
 
+    /**
+     * Changes the context nsfw state
+     * @param contextName Name of the context to change
+     * @param state True if it is a nsfw command.
+     */
     public static void setContextNsfw(String contextName, boolean state) {
         contextDataDirty.put(contextName, true);
 
@@ -162,11 +213,16 @@ public final class Context {
         }
     }
 
-    public static void setContextCharacterCheckActive(String contextName, boolean state) {
+    /**
+     * Activates or deactivates the user check for this context
+     * @param contextName Name of the context to change
+     * @param state true when user should be checked
+     */
+    public static void setContextUserCheckActive(String contextName, boolean state) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.set_context_character_check_active(?,?)")) {
+                prepareStatement("SELECT shepard_func.set_context_user_check_active(?,?)")) {
             statement.setString(1, contextName);
             statement.setBoolean(2, state);
             statement.execute();
@@ -175,6 +231,11 @@ public final class Context {
         }
     }
 
+    /**
+     * Activates or deactivates the guild check for this context
+     * @param contextName Name of the context to change
+     * @param state true when guild should be checked
+     */
     public static void setContextGuildCheckActive(String contextName, boolean state) {
         contextDataDirty.put(contextName, true);
 
@@ -188,11 +249,16 @@ public final class Context {
         }
     }
 
-    public static void setContextCharacterListType(String contextName, ListType listType) {
+    /**
+     * Changes the context user list type
+     * @param contextName Name of the context to change
+     * @param listType ListType enum.
+     */
+    public static void setContextUserListType(String contextName, ListType listType) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.set_context_character_list_type(?,?)")) {
+                prepareStatement("SELECT shepard_func.set_context_user_list_type(?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, listType.toString());
             statement.execute();
@@ -201,6 +267,11 @@ public final class Context {
         }
     }
 
+    /**
+     * Changes the context guild list type
+     * @param contextName Name of the context to change
+     * @param listType ListType enum.
+     */
     public static void setContextGuildListType(String contextName, ListType listType) {
         contextDataDirty.put(contextName, true);
 
@@ -214,6 +285,11 @@ public final class Context {
         }
     }
 
+    /**
+     * Returns the contextdata of the needed context
+     * @param contextName Name of the context for lookup
+     * @return Context data object.
+     */
     public static ContextData getContextData(String contextName) {
         if (contextDataDirty.containsKey(contextName)) {
             if (!contextDataDirty.get(contextName)) {
@@ -257,6 +333,11 @@ public final class Context {
         return contextData.getOrDefault(contextName, null);
     }
 
+    /**
+     * Returns a map which contains a list of all users per guild, which are allowed to use this context.
+     * @param contextName Name of the context for permission loockup.
+     * @return Map <guild_id, List<role_ids>>
+     */
     public static Map<String, List<String>> getContextUserPermissions(String contextName) {
         if (userPermissions.containsKey(contextName)) {
             if (!userPermissionDirty.get(contextName)) {
@@ -291,6 +372,11 @@ public final class Context {
         return userPermissions.getOrDefault(contextName, Collections.emptyMap());
     }
 
+    /**
+     * Returns a map which contains a list of all roles per guild, which are allowed to use this context.
+     * @param contextName Name of the context for permission loockup.
+     * @return Map <guild_id, List<role_ids>>
+     */
     public static Map<String, List<String>> getContextRolePermissions(String contextName) {
         if (rolePermissions.containsKey(contextName)) {
             if (!rolePermissionDirty.get(contextName)) {
