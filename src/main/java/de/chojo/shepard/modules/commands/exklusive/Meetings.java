@@ -1,6 +1,5 @@
 package de.chojo.shepard.modules.commands.exklusive;
 
-import de.chojo.shepard.util.ListType;
 import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.calendar.CalendarEvent;
 import de.chojo.shepard.modules.commands.Command;
@@ -22,9 +21,6 @@ public class Meetings extends Command {
         commandAliases = new String[]{"besprechung", "meeting"};
         commandDesc = "Der nächste Besprechungstermin";
         args = null;
-        serverListType = ListType.WHITELIST;
-        listedServer = new String[]{"214352508594814976"};
-        serverCheckEnabled = true;
     }
 
     @Override

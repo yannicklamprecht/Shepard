@@ -1,9 +1,7 @@
 package de.chojo.shepard.database;
 
 import de.chojo.shepard.ShepardBot;
-import de.chojo.shepard.configuration.Config;
 import de.chojo.shepard.configuration.Database;
-import org.yaml.snakeyaml.Yaml;
 
 import java.sql.*;
 
@@ -26,8 +24,8 @@ public final class DatabaseConnector {
         try {
             conn = DriverManager.getConnection(String.format("jdbc:postgresql://%s:%s/%s", config.getAdress(), config.getPort(), config.getDb()), config.getUsername(), config.getPassword());
             System.out.println(
-                    String.format("SQL connection established on server %s:%s and database \"%s\" with username \"%s\" and password \"%s\"",
-                            config.getAdress(), config.getPort(), config.getDb(), config.getUsername(), config.getPassword()));
+                    String.format("SQL connection established on %s:%s@%s:%s/%s",
+                            config.getUsername(), config.getPassword(), config.getAdress(), config.getPort(), config.getDb()));
         } catch (SQLException ex) {
             handleException(ex);
         }
