@@ -1,10 +1,10 @@
-package de.chojo.shepard.modules.commands.util;
+package de.chojo.shepard.contexts.commands.util;
 
 import de.chojo.shepard.database.queries.Prefix;
 import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.ShepardBot;
-import de.chojo.shepard.modules.commands.Command;
-import de.chojo.shepard.modules.commands.CommandArg;
+import de.chojo.shepard.contexts.commands.Command;
+import de.chojo.shepard.contexts.commands.CommandArg;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -29,17 +29,17 @@ public class UserInfo extends Command {
         commandName = "UserInfo";
         commandAliases = new String[]{"aboutuser"};
         commandDesc = "Information about a user";
-        args = new CommandArg[]{new CommandArg("user", "Tag, Name or ID of user", true)};
+        arguments = new CommandArg[]{new CommandArg("user", "Tag, Name or ID of user", true)};
     }
 
     @Override
-    public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
+    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
 
-        if (args.length == 1) {
+        if (args.length == 0) {
             Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Too few arguments", "Usage: " + Prefix.getPrefix(receivedEvent.getGuild().getId()) + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
         }
 
-        InternUser internUser = new InternUser(args[1], receivedEvent).invoke();
+        InternUser internUser = new InternUser(args[0], receivedEvent).invoke();
         User searchedUser = internUser.getSearchedUser();
         String id = internUser.getId();
 

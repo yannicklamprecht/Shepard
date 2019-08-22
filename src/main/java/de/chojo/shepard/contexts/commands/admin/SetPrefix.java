@@ -1,24 +1,22 @@
-package de.chojo.shepard.modules.commands.admin;
+package de.chojo.shepard.contexts.commands.admin;
 
 import de.chojo.shepard.database.queries.Prefix;
 import de.chojo.shepard.messagehandler.Messages;
-import de.chojo.shepard.modules.commands.Command;
-import de.chojo.shepard.modules.commands.CommandArg;
+import de.chojo.shepard.contexts.commands.Command;
+import de.chojo.shepard.contexts.commands.CommandArg;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-
-import javax.management.Query;
 
 public class SetPrefix extends Command {
 
     public SetPrefix() {
         commandName = "setPrefix";
         commandDesc = "Changes the prefix for the Server";
-        args = new CommandArg[] {new CommandArg("Prefix", "The Prefix. Only one Char is allowed", true)};
+        arguments = new CommandArg[] {new CommandArg("Prefix", "The Prefix. Only one Char is allowed", true)};
     }
 
     @Override
-    public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
-        if (args[1].length() > 2) {
+    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+        if (args[0].length() > 2) {
             Messages.sendSimpleError("Only one or two Chars are allowed as prefix.", receivedEvent.getChannel());
             return true;
         }

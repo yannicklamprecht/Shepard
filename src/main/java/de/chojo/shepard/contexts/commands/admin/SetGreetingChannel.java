@@ -1,9 +1,8 @@
-package de.chojo.shepard.modules.commands.admin;
+package de.chojo.shepard.contexts.commands.admin;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import de.chojo.shepard.database.DatabaseQuery;
-import de.chojo.shepard.modules.commands.Command;
-import de.chojo.shepard.modules.commands.CommandArg;
+import de.chojo.shepard.contexts.commands.Command;
+import de.chojo.shepard.contexts.commands.CommandArg;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.regex.Matcher;
@@ -15,12 +14,12 @@ public class SetGreetingChannel extends Command {
     public SetGreetingChannel(){
         commandName = "setGreetingChannel";
         commandDesc = "Set the greeting channel";
-        args = new CommandArg[] {new CommandArg("ChannelName", "Name des Channels", true)};
+        arguments = new CommandArg[] {new CommandArg("ChannelName", "Name des Channels", true)};
     }
 
     @Override
-    public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
-        Matcher matcher = CHANNEL_MENTION_PATTERN.matcher(args[1]);
+    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+        Matcher matcher = CHANNEL_MENTION_PATTERN.matcher(args[0]);
         if (!matcher.find()) {
             System.out.println(args[1]);
             receivedEvent.getChannel().sendMessage("NEEEE " + args[1]).queue();

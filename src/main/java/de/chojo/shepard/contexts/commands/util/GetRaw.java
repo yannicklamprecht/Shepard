@@ -1,7 +1,7 @@
-package de.chojo.shepard.modules.commands.util;
+package de.chojo.shepard.contexts.commands.util;
 
 import de.chojo.shepard.messagehandler.Messages;
-import de.chojo.shepard.modules.commands.Command;
+import de.chojo.shepard.contexts.commands.Command;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
@@ -15,7 +15,7 @@ public class GetRaw extends Command {
     }
 
     @Override
-    public boolean execute(String[] args, MessageReceivedEvent receivedEvent) {
+    public boolean execute(String Label, String[] args, MessageReceivedEvent receivedEvent) {
         Messages.sendMessage("`" + receivedEvent.getMessage().getContentRaw() + "`", receivedEvent.getChannel());
         return true;
     }
