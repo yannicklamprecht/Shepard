@@ -1,5 +1,8 @@
 package de.chojo.shepard.database;
 
+import de.chojo.shepard.messagehandler.Messages;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+
 import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,7 +16,7 @@ public final class DbUtil {
      * @param id the formatted id.
      * @return the extracted id.
      */
-    public static String getIdRaw(String id){
+    public static String getIdRaw(String id) {
         Matcher matcher = ID_PATTERN.matcher(id);
         if (!matcher.matches()) {
             throw new IllegalArgumentException("lol dis is not a channel");
@@ -21,10 +24,16 @@ public final class DbUtil {
         return matcher.group(1);
     }
 
-    public static void handleException(SQLException ex) {
+    public static void handleException(SQLException ex, MessageReceivedEvent event) {
         System.out.println("SQLException: " + ex.getMessage());
         System.out.println("SQLState: " + ex.getSQLState());
         System.out.println("VendorError: " + ex.getErrorCode());
+
+        if (event != null) {
+            Messages.sendSimpleError("Ups. Looks like my Database has a small hickup."
+                    + System.lineSeparator()
+                    + "Can you give me another try, pls?", event.getChannel());
+        }
     }
 
 

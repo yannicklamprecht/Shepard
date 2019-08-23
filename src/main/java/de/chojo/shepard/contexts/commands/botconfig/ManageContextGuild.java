@@ -74,7 +74,7 @@ public class ManageContextGuild extends Command {
             if (Verifier.isValidId(s)) {
                 Guild guild = ShepardBot.getJDA().getGuildById(DbUtil.getIdRaw(s));
                 if (guild != null) {
-                    Context.addContextGuild(contextName, s);
+                    Context.addContextGuild(contextName, s, receivedEvent);
                     mentions.add(guild.getName());
                 }
             }
@@ -97,7 +97,7 @@ public class ManageContextGuild extends Command {
             if (Verifier.isValidId(s)) {
                 Guild guild = ShepardBot.getJDA().getGuildById(DbUtil.getIdRaw(s));
                 if (guild != null) {
-                    Context.removeContextGuild(contextName, s);
+                    Context.removeContextGuild(contextName, s, receivedEvent);
                     mentions.add(guild.getName());
                 }
             }
@@ -123,7 +123,7 @@ public class ManageContextGuild extends Command {
             return;
         }
 
-        Context.setContextGuildListType(contextName, type);
+        Context.setContextGuildListType(contextName, type, receivedEvent);
 
         Messages.sendMessage("**Changed guild list type of context \""
                         + contextName.toUpperCase() + "\" to " + type.toString(),
@@ -139,7 +139,7 @@ public class ManageContextGuild extends Command {
             return;
         }
 
-        Context.setContextGuildCheckActive(contextName, state);
+        Context.setContextGuildCheckActive(contextName, state, receivedEvent);
 
         if (state) {
             Messages.sendMessage("**Activated guild check for context \"" + contextName.toUpperCase() + "\"**",

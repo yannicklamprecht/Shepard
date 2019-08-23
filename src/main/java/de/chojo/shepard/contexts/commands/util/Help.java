@@ -27,7 +27,7 @@ public class Help extends Command {
 
     @Override
     public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        String prefix = Prefix.getPrefixes().getOrDefault(receivedEvent.getGuild().getId());
+        String prefix = Prefix.getPrefixes(receivedEvent).getOrDefault(receivedEvent.getGuild().getId());
 
         //Command List
         if (args.length == 0) {
@@ -84,7 +84,7 @@ public class Help extends Command {
                 continue;
             }
 
-            aliases = aliases.concat(Prefix.getPrefixes().get(event.getGuild().getId()));
+            aliases = aliases.concat(Prefix.getPrefixes(event).get(event.getGuild().getId()));
             aliases = aliases.concat(command.getCommandName() + " ");
 
             //Build aliases string

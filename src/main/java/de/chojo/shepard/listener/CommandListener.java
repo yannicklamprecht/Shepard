@@ -23,10 +23,10 @@ public class CommandListener extends ListenerAdapter {
         Message message = event.getMessage();
         String receivedMessage = message.getContentRaw();
         String[] args = receivedMessage.replace(
-                Prefix.getPrefixes().getOrDefault(event.getGuild().getId())
+                Prefix.getPrefixes(event).getOrDefault(event.getGuild().getId())
                 , "").split(" ");
 
-        if (checkPrefix(receivedMessage, event.getGuild())) {
+        if (checkPrefix(receivedMessage, event.getGuild(), event)) {
             //BotCheck
             if (event.getAuthor().isBot()) {
                 Messages.sendMessage("I'm not allowed to talk to you " + event.getAuthor().getName()
@@ -59,13 +59,13 @@ public class CommandListener extends ListenerAdapter {
             }
 
             Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!", "Type "
-                    + Prefix.getPrefixes().getOrDefault(event.getGuild().getId())
+                    + Prefix.getPrefixes(event).getOrDefault(event.getGuild().getId())
                     + "help for a full list of available commands!", false)}, event.getChannel());
         }
     }
 
-    private boolean checkPrefix(String message, Guild guild) {
-        return message.startsWith(Prefix.getPrefixes().getOrDefault(guild.getId()));
+    private boolean checkPrefix(String message, Guild guild, MessageReceivedEvent event) {
+        return message.startsWith(Prefix.getPrefixes(event).getOrDefault(guild.getId()));
     }
 }
 

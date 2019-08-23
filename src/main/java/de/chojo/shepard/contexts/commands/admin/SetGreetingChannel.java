@@ -1,6 +1,5 @@
 package de.chojo.shepard.contexts.commands.admin;
 
-import de.chojo.shepard.database.DatabaseQuery;
 import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.commands.CommandArg;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -28,8 +27,8 @@ public class SetGreetingChannel extends Command {
         if (receivedEvent.getGuild().getTextChannelById(channelId) == null) {
             return false; // invalid channel
         }
-        DatabaseQuery.saveGreetingChannel(receivedEvent.getGuild().getId(), channelId);
-        receivedEvent.getChannel().sendMessage(String.format("Es wird nun in %s gegrüßt!", args[1])).queue();
+        //DatabaseQuery.saveGreetingChannel(receivedEvent.getGuild().getId(), channelId);
+        //receivedEvent.getChannel().sendMessage(String.format("Es wird nun in %s gegrüßt!", args[1])).queue();
         return true;
     }
 }

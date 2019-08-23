@@ -27,7 +27,7 @@ public final class DatabaseConnector {
                     String.format("SQL connection established on %s:%s@%s:%s/%s",
                             config.getUsername(), config.getPassword(), config.getAdress(), config.getPort(), config.getDb()));
         } catch (SQLException ex) {
-            handleException(ex);
+            handleException(ex, null);
         }
 
     }

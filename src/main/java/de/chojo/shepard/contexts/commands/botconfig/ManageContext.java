@@ -50,7 +50,7 @@ public class ManageContext extends Command {
             return;
         }
 
-        Context.setContextGuildCheckActive(contextName, state);
+        Context.setContextAdmin(contextName, state, receivedEvent);
 
         if (state) {
             Messages.sendMessage("**Activated admin and permission check for context \"" + contextName.toUpperCase() + "\"**",
@@ -71,7 +71,7 @@ public class ManageContext extends Command {
             return;
         }
 
-        Context.setContextGuildCheckActive(contextName, state);
+        Context.setContextNsfw(contextName, state,receivedEvent);
 
         if (state) {
             Messages.sendMessage("**Activated NSFW check for context \"" + contextName.toUpperCase() + "\"**",

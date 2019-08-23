@@ -36,7 +36,7 @@ public class UserInfo extends Command {
     public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
 
         if (args.length == 0) {
-            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Too few arguments", "Usage: " + Prefix.getPrefix(receivedEvent.getGuild().getId()) + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
+            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Too few arguments", "Usage: " + Prefix.getPrefix(receivedEvent.getGuild().getId(), receivedEvent) + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
         }
 
         InternUser internUser = new InternUser(args[0], receivedEvent).invoke();

@@ -21,7 +21,7 @@ public class SetPrefix extends Command {
             return true;
         }
 
-        Prefix.setPrefix(receivedEvent.getGuild().getId(), args[1].trim());
+        Prefix.setPrefix(receivedEvent.getGuild().getId(), args[1].trim(), receivedEvent);
         Messages.sendMessage("Changed prefix to '" + args[1] + "'", receivedEvent.getChannel());
         return true;
     }

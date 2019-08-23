@@ -39,7 +39,7 @@ public class ContextSensitive extends ListenerAdapter {
     public boolean isContextValid(MessageReceivedEvent event) {
         if (event.getChannel() instanceof TextChannel) {
             TextChannel textChannel = (TextChannel) event.getChannel();
-            if (getContextData().isNsfw() && !textChannel.isNSFW()) {
+            if (getContextData(event).isNsfw() && !textChannel.isNSFW()) {
                 return false;
             }
         }
@@ -51,28 +51,28 @@ public class ContextSensitive extends ListenerAdapter {
     }
 
     private boolean canExecutedOnGuild(MessageReceivedEvent event) {
-        if (getContextData().isGuildCheckActive()) {
-            if (Arrays.asList(getContextData().getGuildList()).contains(event.getGuild().getId())) {
-                return getContextData().getGuildListType() != ListType.BLACKLIST;
+        if (getContextData(event).isGuildCheckActive()) {
+            if (Arrays.asList(getContextData(event).getGuildList()).contains(event.getGuild().getId())) {
+                return getContextData(event).getGuildListType() != ListType.BLACKLIST;
             }
-            return getContextData().getGuildListType() == ListType.BLACKLIST;
+            return getContextData(event).getGuildListType() == ListType.BLACKLIST;
         }
         return true;
     }
 
     private boolean canExecutedByUser(MessageReceivedEvent event) {
-        if (getContextData().isUserCheckActive()) {
-            if (Arrays.asList(getContextData().getUserList()).contains(event.getAuthor().getId())) {
-                return getContextData().getUserListType() != ListType.BLACKLIST;
+        if (getContextData(event).isUserCheckActive()) {
+            if (Arrays.asList(getContextData(event).getUserList()).contains(event.getAuthor().getId())) {
+                return getContextData(event).getUserListType() != ListType.BLACKLIST;
             }
-            return getContextData().getUserListType() == ListType.BLACKLIST;
+            return getContextData(event).getUserListType() == ListType.BLACKLIST;
         }
         return true;
     }
 
 
     private boolean hasPermission(MessageReceivedEvent event) {
-        if (!getContextData().isAdmin_only()) {
+        if (!getContextData(event).isAdmin_only()) {
             return true;
         }
 
@@ -84,7 +84,7 @@ public class ContextSensitive extends ListenerAdapter {
             System.out.print(e.getStackTrace());
         }
 
-        List<String> allowedRoles = getRolePermissions().get(event.getGuild().getId());
+        List<String> allowedRoles = getRolePermissions(event).get(event.getGuild().getId());
 
         for (Role r : memberRoles) {
             if (allowedRoles.contains(r.getId())) {
@@ -92,14 +92,14 @@ public class ContextSensitive extends ListenerAdapter {
             }
         }
 
-        return getUserPermissions().get(event.getGuild().getId()).contains(event.getAuthor().getAvatarId())
+        return getUserPermissions(event).get(event.getGuild().getId()).contains(event.getAuthor().getAvatarId())
                 || event.getMember().hasPermission(Permission.ADMINISTRATOR);
     }
 
     private void loadCache() {
-        getContextData();
-        getRolePermissions();
-        getUserPermissions();
+        getContextData(null);
+        getRolePermissions(null);
+        getUserPermissions(null);
     }
 
     public String getDebugInfo() {
@@ -110,10 +110,10 @@ public class ContextSensitive extends ListenerAdapter {
                 .append(getClass().getSimpleName().toUpperCase())
                 .append("\" initialised with settings:")
                 .append(System.lineSeparator());
-        builder.append(getContextData().toString());
+        builder.append(getContextData(null).toString());
         builder.append("  Roles with access to this context:").append(System.lineSeparator());
 
-        for (var a : getRolePermissions().entrySet()) {
+        for (var a : getRolePermissions(null).entrySet()) {
             String guild = jda.getGuildById(a.getKey()) + " (" + a.getKey() + "):";
 
             StringBuilder names = new StringBuilder();
@@ -133,7 +133,7 @@ public class ContextSensitive extends ListenerAdapter {
 
 
         builder.append("  Users with access to this context:");
-        for (var a : getUserPermissions().entrySet()) {
+        for (var a : getUserPermissions(null).entrySet()) {
             String guild = jda.getGuildById(a.getKey()) + " (" + a.getKey() + "):";
 
             StringBuilder names = new StringBuilder();
@@ -154,15 +154,15 @@ public class ContextSensitive extends ListenerAdapter {
         System.out.println(getDebugInfo());
     }
 
-    protected ContextData getContextData() {
-        return Context.getContextData(getClass().getSimpleName());
+    protected ContextData getContextData(MessageReceivedEvent event) {
+        return Context.getContextData(getClass().getSimpleName(),event);
     }
 
-    private Map<String, List<String>> getRolePermissions() {
-        return Context.getContextRolePermissions(getClass().getSimpleName());
+    private Map<String, List<String>> getRolePermissions(MessageReceivedEvent event) {
+        return Context.getContextRolePermissions(getClass().getSimpleName(), event);
     }
 
-    private Map<String, List<String>> getUserPermissions() {
-        return Context.getContextUserPermissions(getClass().getSimpleName());
+    private Map<String, List<String>> getUserPermissions(MessageReceivedEvent event) {
+        return Context.getContextUserPermissions(getClass().getSimpleName(), event);
     }
 }

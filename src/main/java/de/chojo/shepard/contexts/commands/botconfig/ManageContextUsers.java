@@ -78,7 +78,7 @@ public class ManageContextUsers extends Command {
             if (Verifier.isValidId(s)) {
                 User user = ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(s));
                 if (user != null) {
-                    Context.addContextUser(contextName, s);
+                    Context.addContextUser(contextName, s, receivedEvent);
                     mentions.add(user.getAsMention());
                 }
             }
@@ -101,7 +101,7 @@ public class ManageContextUsers extends Command {
             if (Verifier.isValidId(s)) {
                 User user = ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(s));
                 if (user != null) {
-                    Context.removeContextUser(contextName, s);
+                    Context.removeContextUser(contextName, s, receivedEvent);
                     mentions.add(user.getAsMention());
                 }
             }
@@ -128,7 +128,7 @@ public class ManageContextUsers extends Command {
             return;
         }
 
-        Context.setContextUserListType(contextName, type);
+        Context.setContextUserListType(contextName, type, receivedEvent);
 
         Messages.sendMessage("**Changed user list type of context \""
                         + contextName.toUpperCase() + "\" to " + type.toString(),
@@ -144,7 +144,7 @@ public class ManageContextUsers extends Command {
             return;
         }
 
-        Context.setContextUserCheckActive(contextName, state);
+        Context.setContextUserCheckActive(contextName, state, receivedEvent);
 
         if(state){
             Messages.sendMessage("**Activated user check for context \"" + contextName.toUpperCase() + "\"**",
