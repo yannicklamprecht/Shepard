@@ -4,7 +4,6 @@ import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.commands.CommandArg;
 import de.chojo.shepard.database.queries.Greetings;
 import de.chojo.shepard.messagehandler.Messages;
-import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 

@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A command for retrieving a invite link for this bot.
@@ -21,7 +22,7 @@ public class HireMe extends Command {
 
     @Override
     public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        ArrayList<MessageEmbed.Field> fields = new ArrayList<>();
+        List<MessageEmbed.Field> fields = new ArrayList<>();
         if (label.equalsIgnoreCase(commandName)) {
             fields.add(new MessageEmbed.Field("You wanna hire me? Please give me 100k Credits or click on the link",
                     "http://bit.ly/shepardbot", false));

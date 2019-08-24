@@ -4,11 +4,11 @@ database:
   username: postgres
   password: chojo
   db: postgres
-  adress: localhost
+  address: localhost
   port: 5432
 #database:
 #  username: "eldoriapga"
 #  password: "aZaw54BDsu%7a"
 #  db: "Shepard"
-#  adress: "144.76.174.81"
+#  address: "144.76.174.81"
 #  port: "5432"

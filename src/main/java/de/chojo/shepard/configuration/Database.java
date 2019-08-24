@@ -31,7 +31,7 @@ public class Database {
         this.db = db;
     }
 
-    public String getAdress() {
+    public String getAddress() {
         return adress;
     }
 

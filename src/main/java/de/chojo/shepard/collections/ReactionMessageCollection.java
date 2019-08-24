@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class ReactionMessageCollection {
     private static ReactionMessageCollection instance;
 
-    private ArrayList<ReactionMessage> messages = new ArrayList<>();
+    private final ArrayList<ReactionMessage> messages = new ArrayList<>();
 
     public static ReactionMessageCollection getInstance() {
         if (instance == null) {

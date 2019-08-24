@@ -20,9 +20,7 @@ public class Oha extends Command {
         String oha = "oha";
         Random rand = new Random();
         int loops = rand.nextInt(30) + 10;
-        for (int i = 0; i < loops; i++){
-            oha = oha.concat("a");
-        }
+            oha = oha + "a".repeat(loops);
         Messages.sendMessage(oha, receivedEvent.getChannel());
         return true;
 

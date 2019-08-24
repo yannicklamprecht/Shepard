@@ -5,8 +5,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class Greeting {
-    String text;
-    TextChannel channel = null;
+    private final String text;
+    private TextChannel channel = null;
 
     public Greeting(String guildId, String channelId, String text){
         this.text = text;

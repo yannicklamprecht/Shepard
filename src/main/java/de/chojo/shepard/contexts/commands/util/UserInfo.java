@@ -2,7 +2,6 @@ package de.chojo.shepard.contexts.commands.util;
 
 import de.chojo.shepard.database.queries.Prefix;
 import de.chojo.shepard.messagehandler.Messages;
-import de.chojo.shepard.ShepardBot;
 import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.commands.CommandArg;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -85,34 +84,34 @@ public class UserInfo extends Command {
         return true;
     }
 
-    private class InternUser {
-        private String arg;
-        private MessageReceivedEvent receivedEvent;
+    private static class InternUser {
+        private final String arg;
+        private final MessageReceivedEvent receivedEvent;
         private User searchedUser;
         private String id;
 
-        public InternUser(String arg, MessageReceivedEvent receivedEvent) {
+        InternUser(String arg, MessageReceivedEvent receivedEvent) {
             this.arg = arg;
             this.receivedEvent = receivedEvent;
             this.searchedUser = null;
         }
 
-        public User getSearchedUser() {
+        User getSearchedUser() {
             return searchedUser;
         }
 
-        public String getId() {
+        String getId() {
             return id;
         }
 
-        public InternUser invoke() {
+        InternUser invoke() {
             id = arg.replace("<", "").replace(">", "").replace("@", "").replace("!", "");
             try {
                 searchedUser = getJDA().getUserById(id);
             } catch (NumberFormatException e) /*is not a id*/ {
                 if (arg.contains("#")) {
                     //Name is Tag
-                    List<User> users = ShepardBot.getJDA().getUsersByName(id.substring(0, (arg.length() - 5)), true);
+                    List<User> users = getJDA().getUsersByName(id.substring(0, (arg.length() - 5)), true);
                     for (User user : users) {
                         if (user.getAsTag().equalsIgnoreCase(id)) {
                             searchedUser = user;
@@ -120,7 +119,7 @@ public class UserInfo extends Command {
                         }
                     }
                 } else {
-                    List<User> users = ShepardBot.getJDA().getUsersByName(id, true);
+                    List<User> users = getJDA().getUsersByName(id, true);
                     for (User user : users) {
                         if (user.getName().equalsIgnoreCase(id)) {
                             searchedUser = user;

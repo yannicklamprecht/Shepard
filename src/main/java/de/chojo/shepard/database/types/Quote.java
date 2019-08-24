@@ -1,8 +1,8 @@
 package de.chojo.shepard.database.types;
 
 public class Quote {
-    String quote;
-    int quoteId;
+    private final String quote;
+    private final int quoteId;
 
     public Quote(String quote, int quoteId) {
         this.quote = quote;

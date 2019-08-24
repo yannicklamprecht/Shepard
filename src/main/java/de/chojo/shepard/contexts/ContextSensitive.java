@@ -7,6 +7,7 @@ import de.chojo.shepard.database.types.ContextData;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -23,7 +24,7 @@ import java.util.Map;
  */
 public class ContextSensitive extends ListenerAdapter {
 
-    public ContextSensitive() {
+    protected ContextSensitive() {
         loadCache();
         printDebugInfo();
     }
@@ -52,7 +53,7 @@ public class ContextSensitive extends ListenerAdapter {
 
     private boolean canExecutedOnGuild(MessageReceivedEvent event) {
         if (getContextData(event).isGuildCheckActive()) {
-            if (Arrays.asList(getContextData(event).getGuildList()).contains(event.getGuild().getId())) {
+            if (Collections.singletonList(getContextData(event).getGuildList()).contains(event.getGuild().getId())) {
                 return getContextData(event).getGuildListType() != ListType.BLACKLIST;
             }
             return getContextData(event).getGuildListType() == ListType.BLACKLIST;
@@ -62,7 +63,7 @@ public class ContextSensitive extends ListenerAdapter {
 
     private boolean canExecutedByUser(MessageReceivedEvent event) {
         if (getContextData(event).isUserCheckActive()) {
-            if (Arrays.asList(getContextData(event).getUserList()).contains(event.getAuthor().getId())) {
+            if (Collections.singletonList(getContextData(event).getUserList()).contains(event.getAuthor().getId())) {
                 return getContextData(event).getUserListType() != ListType.BLACKLIST;
             }
             return getContextData(event).getUserListType() == ListType.BLACKLIST;
@@ -72,16 +73,16 @@ public class ContextSensitive extends ListenerAdapter {
 
 
     private boolean hasPermission(MessageReceivedEvent event) {
-        if (!getContextData(event).isAdmin_only()) {
+        if (!getContextData(event).isAdminOnly()) {
             return true;
         }
 
         List<Role> memberRoles = Collections.emptyList();
 
-        try {
-            memberRoles = event.getMember().getRoles();
-        } catch (NullPointerException e) {
-            System.out.print(e.getStackTrace());
+        Member member = event.getMember();
+
+        if (member != null) {
+            memberRoles = member.getRoles();
         }
 
         List<String> allowedRoles = getRolePermissions(event).get(event.getGuild().getId());
@@ -102,7 +103,7 @@ public class ContextSensitive extends ListenerAdapter {
         getUserPermissions(null);
     }
 
-    public String getDebugInfo() {
+    private String getDebugInfo() {
         JDA jda = ShepardBot.getJDA();
         StringBuilder builder = new StringBuilder();
         builder.append("|+++++++++++++++++++++++++++++++|").append(System.lineSeparator());
@@ -113,32 +114,32 @@ public class ContextSensitive extends ListenerAdapter {
         builder.append(getContextData(null).toString());
         builder.append("  Roles with access to this context:").append(System.lineSeparator());
 
-        for (var a : getRolePermissions(null).entrySet()) {
-            String guild = jda.getGuildById(a.getKey()) + " (" + a.getKey() + "):";
-
+        for (Map.Entry<String, List<String>> roles : getRolePermissions(null).entrySet()) {
             StringBuilder names = new StringBuilder();
-            for (String s : a.getValue()) {
-                Guild cur_guild = jda.getGuildById(a.getKey());
-                if (cur_guild != null) {
-                    Role role = cur_guild.getRoleById(s);
+
+            for (String roleId : roles.getValue()) {
+                Guild currentGuild = jda.getGuildById(roles.getKey());
+                if (currentGuild != null) {
+                    Role role = currentGuild.getRoleById(roleId);
                     if (role != null) {
                         names.append("      ").append(role.getName()).append(System.lineSeparator());
                     }
                 }
             }
 
-            builder.append("    Guild: ").append(guild).append(System.lineSeparator()).append(names.toString())
+            builder.append("    Guild: ").append(jda.getGuildById(roles.getKey())).append(" (").append(roles.getKey()).append("):")
+                    .append(System.lineSeparator()).append(names.toString())
                     .append(System.lineSeparator());
         }
 
 
         builder.append("  Users with access to this context:");
-        for (var a : getUserPermissions(null).entrySet()) {
-            String guild = jda.getGuildById(a.getKey()) + " (" + a.getKey() + "):";
+        for (Map.Entry<String, List<String>> userPermission : getUserPermissions(null).entrySet()) {
+            String guild = jda.getGuildById(userPermission.getKey()) + " (" + userPermission.getKey() + "):";
 
             StringBuilder names = new StringBuilder();
-            for (String s : a.getValue()) {
-                User user = jda.getUserById(s);
+            for (String userId : userPermission.getValue()) {
+                User user = jda.getUserById(userId);
                 if (user != null) {
                     names.append("      ").append(user.getAsTag()).append(System.lineSeparator());
                 }
@@ -154,8 +155,8 @@ public class ContextSensitive extends ListenerAdapter {
         System.out.println(getDebugInfo());
     }
 
-    protected ContextData getContextData(MessageReceivedEvent event) {
-        return Context.getContextData(getClass().getSimpleName(),event);
+    private ContextData getContextData(MessageReceivedEvent event) {
+        return Context.getContextData(getClass().getSimpleName(), event);
     }
 
     private Map<String, List<String>> getRolePermissions(MessageReceivedEvent event) {

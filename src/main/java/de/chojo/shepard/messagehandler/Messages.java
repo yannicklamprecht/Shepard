@@ -10,26 +10,27 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import java.awt.*;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Messages {
 
     public static void sendMessage(String message, MessageChannel channel) {
         String[] messageParts = message.split(System.lineSeparator());
-        String messagePart = "";
+        StringBuilder messagePart = new StringBuilder();
         for (int i = 0; i < messageParts.length; i++) {
             if (messagePart.length() + messageParts[i].length() < 1024) {
-                messagePart = messagePart + messageParts[i] + System.lineSeparator();
+                messagePart.append(messageParts[i]).append(System.lineSeparator());
             } else {
-                channel.sendMessage(messagePart).queue();
-                messagePart = "";
+                channel.sendMessage(messagePart.toString()).queue();
+                messagePart = new StringBuilder();
                 i--;
             }
         }
-        channel.sendMessage(messagePart).queue();
+        channel.sendMessage(messagePart.toString()).queue();
     }
 
-    public static void sendTextBox(String title, ArrayList<MessageEmbed.Field> fields, MessageChannel channel) {
+
+    public static void sendTextBox(String title, List<MessageEmbed.Field> fields, MessageChannel channel) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle(title);
         for (MessageEmbed.Field field : fields) {

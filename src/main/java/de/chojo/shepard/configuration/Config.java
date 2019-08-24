@@ -5,7 +5,6 @@ public class Config {
     private Database database;
     private String prefix;
 
-
     public Database getDatabase() {
         return database;
     }

@@ -4,9 +4,9 @@ package de.chojo.shepard.contexts.commands;
  * An argument of a command.
  */
 public class CommandArg {
-    private String argName;
-    private String argDesc;
-    private boolean required;
+    private final String argName;
+    private final String argDesc;
+    private final boolean required;
 
     /**
      * Create a new argument with a name, description and whether it is required or not.
@@ -43,7 +43,7 @@ public class CommandArg {
      *
      * @return {@code true} if the argument is required, {@code false} otherwise.
      */
-    public Boolean isRequired() {
+    public boolean isRequired() {
         return required;
     }
 }

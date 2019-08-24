@@ -3,23 +3,25 @@ package de.chojo.shepard.database.types;
 import de.chojo.shepard.database.ListType;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class ContextData {
-    private boolean admin_only;
+    private boolean adminOnly;
     private boolean nsfw;
     private boolean userCheckActive;
     private ListType userListType;
-    private String[] userList;
+    private List<String> userList;
     private boolean guildCheckActive;
     private ListType guildListType;
-    private String[] guildList;
+    private List<String> guildList;
 
-    public boolean isAdmin_only() {
-        return admin_only;
+    public boolean isAdminOnly() {
+        return adminOnly;
     }
 
-    public void setAdmin_only(boolean admin_only) {
-        this.admin_only = admin_only;
+    public void setAdminOnly(boolean admin_only) {
+        this.adminOnly = admin_only;
     }
 
     public boolean isNsfw() {
@@ -46,12 +48,12 @@ public class ContextData {
         this.userListType = userListType;
     }
 
-    public String[] getUserList() {
+    public List<String> getUserList() {
         return userList;
     }
 
     public void setUserList(String[] userList) {
-        this.userList = userList;
+        this.userList = Arrays.asList(userList);
     }
 
     public boolean isGuildCheckActive() {
@@ -70,32 +72,32 @@ public class ContextData {
         this.guildListType = guildListType;
     }
 
-    public String[] getGuildList() {
+    public List<String> getGuildList() {
         return guildList;
     }
 
     public void setGuildList(String[] guildList) {
-        this.guildList = guildList;
+        this.guildList = Arrays.asList(guildList);
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("  admin only: ")
-                .append(isAdmin_only())
-                .append(System.lineSeparator());
-        builder.append("  nsfw: ")
+                .append(isAdminOnly())
+                .append(System.lineSeparator())
+                .append("  nsfw: ")
                 .append(isNsfw())
-                .append(System.lineSeparator());
-        builder.append("  user check active: ")
+                .append(System.lineSeparator())
+                .append("  user check active: ")
                 .append(isUserCheckActive())
                 .append(System.lineSeparator());
         if (isUserCheckActive()) {
             builder.append("    List Type: ")
                     .append(getUserListType())
-                    .append(System.lineSeparator());
-            builder.append("    Users on List: ")
-                    .append(Arrays.asList(getUserList()))
+                    .append(System.lineSeparator())
+                    .append("    Users on List: ")
+                    .append(Collections.singletonList(getUserList()))
                     .append(System.lineSeparator());
         }
         builder.append("  guild check active: ")
@@ -104,9 +106,9 @@ public class ContextData {
         if (isGuildCheckActive()) {
             builder.append("    List Type: ")
                     .append(getGuildListType())
-                    .append(System.lineSeparator());
-            builder.append("    Guilds on List: ")
-                    .append(Arrays.asList(getGuildList()));
+                    .append(System.lineSeparator())
+                    .append("    Guilds on List: ")
+                    .append(Collections.singletonList(getGuildList()));
         }
         return builder.toString();
     }

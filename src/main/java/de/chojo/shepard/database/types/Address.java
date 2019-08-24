@@ -1,9 +1,9 @@
 package de.chojo.shepard.database.types;
 
 public class Address {
-    private int id;
-    private String name;
-    private String address;
+    private final int id;
+    private final String name;
+    private final String address;
 
     public Address(int id, String name, String address) {
         this.id = id;

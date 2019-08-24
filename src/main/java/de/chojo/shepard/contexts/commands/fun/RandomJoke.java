@@ -42,7 +42,7 @@ public class RandomJoke extends Command {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
         while ((inputLine = reader.readLine()) != null) {
             response.append(inputLine);
         }

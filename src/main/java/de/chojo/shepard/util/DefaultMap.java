@@ -1,14 +1,12 @@
 package de.chojo.shepard.util;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class DefaultMap<K, V> extends HashMap<K,V>{
 
-    private V defaultValue;
+    private final V defaultValue;
 
     public DefaultMap(V defaultValue){
-
         this.defaultValue = defaultValue;
     }
 

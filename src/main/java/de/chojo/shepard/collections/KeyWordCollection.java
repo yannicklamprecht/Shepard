@@ -1,17 +1,17 @@
 package de.chojo.shepard.collections;
 
-import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.keywords.KeywordArgs;
 import de.chojo.shepard.contexts.keywords.Keyword;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class KeyWordCollection {
     private static KeyWordCollection instance;
 
-    private List<Keyword> keywords = new ArrayList<>();
+    private final List<Keyword> keywords = new ArrayList<>();
 
     public static KeyWordCollection getInstance() {
         if (instance == null) {
@@ -41,7 +41,7 @@ public class KeyWordCollection {
     }
 
     public List<Keyword> getKeywords() {
-        return keywords;
+        return Collections.unmodifiableList(keywords);
     }
 
     public Keyword getKeywordWithContextName(String contextName, MessageReceivedEvent event) {

@@ -1,16 +1,13 @@
 package de.chojo.shepard.contexts.commands.botconfig;
 
 import de.chojo.shepard.ShepardBot;
-import de.chojo.shepard.collections.CommandCollection;
-import de.chojo.shepard.collections.KeyWordCollection;
-import de.chojo.shepard.contexts.ContextHelper;
 import de.chojo.shepard.database.DbUtil;
 import de.chojo.shepard.database.ListType;
 import de.chojo.shepard.database.queries.Context;
 import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.commands.CommandArg;
-import de.chojo.shepard.contexts.keywords.Keyword;
+import de.chojo.shepard.util.BooleanState;
 import de.chojo.shepard.util.Verifier;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -60,7 +57,7 @@ public class ManageContextUsers extends Command {
             return true;
         }
 
-        if(args[1].equalsIgnoreCase("removeUser")){
+        if (args[1].equalsIgnoreCase("removeUser")) {
             removeUser(args, contextName, receivedEvent);
             return true;
         }
@@ -71,52 +68,42 @@ public class ManageContextUsers extends Command {
         return true;
     }
 
-    private void addUser(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
+    private void manageUser(String[] args, String contextName, ModifyType modifyType, MessageReceivedEvent receivedEvent) {
         List<String> mentions = new ArrayList<>();
 
         for (String s : Arrays.copyOfRange(args, 2, args.length)) {
             if (Verifier.isValidId(s)) {
                 User user = ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(s));
                 if (user != null) {
-                    Context.addContextUser(contextName, s, receivedEvent);
+                    if (modifyType == ModifyType.ADD) {
+                        Context.addContextUser(contextName, s, receivedEvent);
+                    } else {
+                        Context.removeContextUser(contextName, s, receivedEvent);
+                    }
                     mentions.add(user.getAsMention());
                 }
             }
         }
 
-        StringBuilder names = new StringBuilder();
+        String names = String.join(System.lineSeparator(), mentions);
 
-        for (String s : mentions) {
-            names.append(s).append(System.lineSeparator());
+        if (modifyType == ModifyType.ADD) {
+            Messages.sendSimpleTextBox("Added following users to context \"" + contextName.toUpperCase() + "\"", names,
+                    receivedEvent.getChannel());
+        } else {
+            Messages.sendSimpleTextBox("Removed following users from context \"" + contextName.toUpperCase() + "\"", names,
+                    receivedEvent.getChannel());
         }
 
-        Messages.sendSimpleTextBox("Added following users to context \"" + contextName.toUpperCase() + "\"", names.toString(),
-                receivedEvent.getChannel());
+    }
+
+    private void addUser(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
+        manageUser(args,contextName,ModifyType.ADD, receivedEvent);
     }
 
     private void removeUser(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
-        List<String> mentions = new ArrayList<>();
-
-        for (String s : Arrays.copyOfRange(args, 2, args.length)) {
-            if (Verifier.isValidId(s)) {
-                User user = ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(s));
-                if (user != null) {
-                    Context.removeContextUser(contextName, s, receivedEvent);
-                    mentions.add(user.getAsMention());
-                }
-            }
-        }
-
-        StringBuilder names = new StringBuilder();
-
-        for (String s : mentions) {
-            names.append(s).append(System.lineSeparator());
-        }
-
-        Messages.sendSimpleTextBox("Removed following users from context \"" + contextName.toUpperCase() + "\"", names.toString(),
-                receivedEvent.getChannel());
+        manageUser(args,contextName,ModifyType.REMOVE, receivedEvent);
     }
-
 
 
     private void setListType(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
@@ -136,21 +123,23 @@ public class ManageContextUsers extends Command {
     }
 
     private void setActive(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
-        Boolean state = Verifier.checkAndGetBoolean(args[2]);
+        BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
-        if(state == null){
+        if(bState == BooleanState.UNDEFINED){
             Messages.sendSimpleError("Invalid input. Only 'true' and 'false' are valid inputs.",
                     receivedEvent.getChannel());
             return;
         }
 
+        boolean state = bState == BooleanState.TRUE;
+
         Context.setContextUserCheckActive(contextName, state, receivedEvent);
 
-        if(state){
+        if (state) {
             Messages.sendMessage("**Activated user check for context \"" + contextName.toUpperCase() + "\"**",
                     receivedEvent.getChannel());
 
-        }else{
+        } else {
             Messages.sendMessage("**Deactivated user check for context \"" + contextName.toUpperCase() + "\"**",
                     receivedEvent.getChannel());
 

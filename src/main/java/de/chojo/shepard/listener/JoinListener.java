@@ -30,7 +30,7 @@ public class JoinListener extends ListenerAdapter {
         for (Invite invite : invites) {
             var dInvite = databaseInvites.stream()
                     .filter(inv -> inv.getCode().equals(invite.getCode())).findAny();
-            if (!dInvite.isPresent()) continue;
+            if (dInvite.isEmpty()) continue;
             if (invite.getUses() != dInvite.get().getUsedCount()) {
                 //TODO: Add greetings channel
                 MessageChannel channel = event.getGuild().getTextChannelById("");

@@ -3,11 +3,8 @@ package de.chojo.shepard.database.queries;
 import de.chojo.shepard.database.DatabaseConnector;
 import de.chojo.shepard.database.types.TicketType;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Invite;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import org.w3c.dom.Text;
 
 import java.sql.Array;
 import java.sql.PreparedStatement;

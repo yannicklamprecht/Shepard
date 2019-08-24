@@ -7,6 +7,7 @@ import de.chojo.shepard.database.queries.Context;
 import de.chojo.shepard.messagehandler.Messages;
 import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.commands.CommandArg;
+import de.chojo.shepard.util.BooleanState;
 import de.chojo.shepard.util.Verifier;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -68,49 +69,41 @@ public class ManageContextGuild extends Command {
     }
 
     private void addGuild(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
-        List<String> mentions = new ArrayList<>();
-
-        for (String s : Arrays.copyOfRange(args, 2, args.length)) {
-            if (Verifier.isValidId(s)) {
-                Guild guild = ShepardBot.getJDA().getGuildById(DbUtil.getIdRaw(s));
-                if (guild != null) {
-                    Context.addContextGuild(contextName, s, receivedEvent);
-                    mentions.add(guild.getName());
-                }
-            }
-        }
-
-        StringBuilder names = new StringBuilder();
-
-        for (String s : mentions) {
-            names.append(s).append(System.lineSeparator());
-        }
-
-        Messages.sendSimpleTextBox("Added following guilds to context \"" + contextName.toUpperCase() + "\"", names.toString(),
-                receivedEvent.getChannel());
+        modifyGuild(args,contextName, ModifyType.ADD, receivedEvent);
     }
 
     private void removeGuild(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
+        modifyGuild(args,contextName,ModifyType.REMOVE,receivedEvent);
+    }
+
+    private void modifyGuild(String[] args, String contextName, ModifyType modifyType, MessageReceivedEvent receivedEvent) {
         List<String> mentions = new ArrayList<>();
 
         for (String s : Arrays.copyOfRange(args, 2, args.length)) {
             if (Verifier.isValidId(s)) {
                 Guild guild = ShepardBot.getJDA().getGuildById(DbUtil.getIdRaw(s));
                 if (guild != null) {
-                    Context.removeContextGuild(contextName, s, receivedEvent);
+                    if (modifyType == ModifyType.ADD) {
+                        Context.addContextGuild(contextName, s, receivedEvent);
+                    } else {
+                        Context.removeContextGuild(contextName, s, receivedEvent);
+                    }
                     mentions.add(guild.getName());
                 }
             }
         }
 
-        StringBuilder names = new StringBuilder();
+        String names = String.join(System.lineSeparator(), mentions);
 
-        for (String s : mentions) {
-            names.append(s).append(System.lineSeparator());
+        if (modifyType == ModifyType.ADD) {
+            Messages.sendSimpleTextBox("Added following guilds to context \"" + contextName.toUpperCase() + "\"", names,
+                    receivedEvent.getChannel());
+
+        } else {
+            Messages.sendSimpleTextBox("Removed following guilds from context \"" + contextName.toUpperCase() + "\"", names,
+                    receivedEvent.getChannel());
         }
 
-        Messages.sendSimpleTextBox("Removed following guilds from context \"" + contextName.toUpperCase() + "\"", names.toString(),
-                receivedEvent.getChannel());
     }
 
 
@@ -131,13 +124,15 @@ public class ManageContextGuild extends Command {
     }
 
     private void setActive(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
-        Boolean state = Verifier.checkAndGetBoolean(args[2]);
+        BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
-        if(state == null){
+        if(bState == BooleanState.UNDEFINED){
             Messages.sendSimpleError("Invalid input. Only 'true' and 'false' are valid inputs.",
                     receivedEvent.getChannel());
             return;
         }
+
+        boolean state = bState == BooleanState.TRUE;
 
         Context.setContextGuildCheckActive(contextName, state, receivedEvent);
 

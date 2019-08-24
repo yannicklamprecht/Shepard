@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An abstract class for commands.
@@ -59,7 +60,7 @@ public abstract class Command extends ContextSensitive {
      *
      * @return an array of command arguments.
      */
-    public CommandArg[] getArguments() {
+    private CommandArg[] getArguments() {
         if (arguments == null) {
             arguments = new CommandArg[0];
         }
@@ -96,7 +97,7 @@ public abstract class Command extends ContextSensitive {
 
     public boolean checkArguments(String[] args) {
         int requiredArguments = 0;
-        for (var a : arguments) {
+        for (CommandArg a : arguments) {
             if (a.isRequired()) {
                 requiredArguments++;
             }
@@ -105,7 +106,7 @@ public abstract class Command extends ContextSensitive {
     }
 
     public void sendCommandUsage(MessageChannel channel) {
-        ArrayList<MessageEmbed.Field> fields = new ArrayList<>();
+        List<MessageEmbed.Field> fields = new ArrayList<>();
 
         fields.add(new MessageEmbed.Field("Description:", getCommandDesc(), false));
 
@@ -149,7 +150,7 @@ public abstract class Command extends ContextSensitive {
 
         for (CommandArg arg : arguments) {
             if (arg.getArgName().equalsIgnoreCase(argument)) {
-                ArrayList<MessageEmbed.Field> fields = new ArrayList<>();
+                List<MessageEmbed.Field> fields = new ArrayList<>();
                 fields.add(new MessageEmbed.Field("Description:", arg.getArgDesc(), false));
                 fields.add(new MessageEmbed.Field("Required", arg.isRequired().toString(), false));
                 Messages.sendTextBox("Help for Argument: \"" + arg.getArgName() + "\" of command \"" + getCommandName() + "\"", fields, channel);

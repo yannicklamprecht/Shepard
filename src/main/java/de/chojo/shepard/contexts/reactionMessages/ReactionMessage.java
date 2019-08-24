@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 public class ReactionMessage {
     protected String[] messageIds = new String[0];
 
-    public ReactionMessage() {
+    protected ReactionMessage() {
         ReactionMessageCollection.getInstance().addReactionMessage(this);
     }
 

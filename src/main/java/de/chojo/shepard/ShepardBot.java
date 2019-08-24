@@ -33,9 +33,7 @@ public class ShepardBot {
 
         try {
             initiateJda();
-        } catch (LoginException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (LoginException | InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -97,7 +95,8 @@ public class ShepardBot {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
 
         CommandCollection.getInstance().debug();

@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A command for listing all possible commands.
@@ -73,11 +73,10 @@ public class Help extends Command {
 
     /* Sends a list of all commands with description */
     private boolean listCommands(MessageReceivedEvent event) {
-        ArrayList<Command> commands = CommandCollection.getInstance().getCommands();
-        ArrayList<MessageEmbed.Field> fields = new ArrayList<>();
+        List<Command> commands = CommandCollection.getInstance().getCommands();
 
         String aliases = "";
-        String output = "";
+        StringBuilder output = new StringBuilder();
 
         for (Command command : commands) {
             if (!command.isContextValid(event)) {
@@ -96,7 +95,7 @@ public class Help extends Command {
 
             aliases = "**" + aliases + "**";
 
-            output = output + aliases + System.lineSeparator() + "`" + command.getCommandDesc() + "`" + System.lineSeparator();
+            output.append(aliases).append(System.lineSeparator()).append("`").append(command.getCommandDesc()).append("`").append(System.lineSeparator());
             aliases = "";
         }
 

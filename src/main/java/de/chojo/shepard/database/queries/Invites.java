@@ -1,6 +1,5 @@
 package de.chojo.shepard.database.queries;
 
-import de.chojo.shepard.database.DatabaseConnector;
 import de.chojo.shepard.database.types.DatabaseInvite;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.chojo.shepard.database.DatabaseConnector.getConn;
-import static de.chojo.shepard.database.DbUtil.getIdRaw;
 import static de.chojo.shepard.database.DbUtil.handleException;
 
 public final class Invites {

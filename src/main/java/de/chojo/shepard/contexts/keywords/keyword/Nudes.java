@@ -38,6 +38,7 @@ public class Nudes extends Keyword {
                                     || tag.equalsIgnoreCase("shemale")
                                     || tag.equalsIgnoreCase("zoophilia")) {
                                 found = true;
+                                break;
                             }
                         }
                         //TODO: Handle if every picture has one of these tags

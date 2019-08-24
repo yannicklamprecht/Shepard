@@ -11,11 +11,7 @@ public final class Loader {
     private Config config;
 
     private Loader(){
-        Yaml yaml = new Yaml(new Constructor(Config.class));
-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("config.yml");
-        Config config = yaml.load(inputStream);
-        this.config = config;
-        Database d = config.getDatabase();
+        reloadConfig();
     }
 
     public static Loader getConfigLoader(){
@@ -27,5 +23,11 @@ public final class Loader {
 
     public Config getConfig() {
         return config;
+    }
+
+    private void reloadConfig(){
+        Yaml yaml = new Yaml(new Constructor(Config.class));
+        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("config.yml");
+        this.config = yaml.load(inputStream);
     }
 }

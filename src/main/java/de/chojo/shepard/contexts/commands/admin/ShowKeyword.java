@@ -19,23 +19,23 @@ public class ShowKeyword extends Command {
     public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         List<Keyword> keywords = KeyWordCollection.getInstance().getKeywords();
 
-        int maxContextLengt = "Context Name".length() + 1;
+        int maxContextLength = "Context Name".length() + 1;
 
         for (Keyword k : keywords) {
             if(k.isContextValid(receivedEvent)){
-                if(k.getClass().getSimpleName().length() + 1 > maxContextLengt){
-                    maxContextLengt = k.getClass().getSimpleName().length() + 1;
+                if(k.getClass().getSimpleName().length() + 1 > maxContextLength){
+                    maxContextLength = k.getClass().getSimpleName().length() + 1;
                 }
             }
         }
 
         StringBuilder builder = new StringBuilder();
         builder.append("```md").append(System.lineSeparator())
-                .append(StringUtils.rightPad("Context Name", maxContextLengt)).append(" -> Keywords").append(System.lineSeparator());
+                .append(StringUtils.rightPad("Context Name", maxContextLength)).append(" -> Keywords").append(System.lineSeparator());
 
         for (Keyword k : keywords) {
             if (k.isContextValid(receivedEvent)) {
-                builder.append(StringUtils.rightPad(k.getClass().getSimpleName(), maxContextLengt)).append(" -> ")
+                builder.append(StringUtils.rightPad(k.getClass().getSimpleName(), maxContextLength)).append(" -> ")
                         .append(k.toString()).append(System.lineSeparator());
             }
         }

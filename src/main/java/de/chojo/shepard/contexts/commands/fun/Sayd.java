@@ -21,7 +21,10 @@ public class Sayd extends Command {
     public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         try {
             if (args.length == 0) {
-                Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Too few arguments", "Use \"&help sayd\" for more information", false)}, receivedEvent.getChannel());
+                Messages.sendError(new MessageEmbed.Field[] {
+                                new MessageEmbed.Field("Too few arguments",
+                                        "Use \"&help sayd\" for more information", false)},
+                        receivedEvent.getChannel());
                 return true;
             } else {
                 String message = "";
@@ -33,8 +36,11 @@ public class Sayd extends Command {
                 return true;
             }
 
-        }catch (InsufficientPermissionException e){
-            Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Lack of Permission","Missing permission: MESSAGE_MANAGE",false)},receivedEvent.getChannel());
+        } catch (InsufficientPermissionException e) {
+            Messages.sendError(new MessageEmbed.Field[] {
+                    new MessageEmbed.Field("Lack of Permission",
+                            "Missing permission: MESSAGE_MANAGE", false)},
+                    receivedEvent.getChannel());
         }
         return true;
     }

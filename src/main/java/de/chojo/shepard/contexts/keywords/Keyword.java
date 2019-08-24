@@ -12,7 +12,7 @@ public class Keyword extends ContextSensitive {
     /**
      * Create a new Keyword object and add it to the {@link KeyWordCollection}.
      */
-    public Keyword() {
+    protected Keyword() {
         KeyWordCollection.getInstance().addKeyword(this);
     }
 
@@ -51,7 +51,7 @@ public class Keyword extends ContextSensitive {
         return Arrays.toString(keywords);
     }
 
-    public String getKey(MessageReceivedEvent event) {
+    private String getKey(MessageReceivedEvent event) {
         for (String key : keywords) {
             if (event.getMessage().getContentRaw().toLowerCase().contains(key)) {
                 return key;

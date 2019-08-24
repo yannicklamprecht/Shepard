@@ -75,6 +75,7 @@ public class CalendarQuickstart {
     }
 
     public static void sendCalendarEvent(MessageChannel channel) {
+        // TODO
     }
 
     /**

@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -18,9 +19,9 @@ public class MagicConch extends Command {
         arguments = null;
     }
 
-    String[] positive = new String[] {"Yes", "Of Course", "DO IT!", "Why not :)"};
-    String[] negative = new String[] {"Are you dumb?", "Fly, you fool!", "nope", "No"};
-    String[] neutral = new String[] {"How should I know?", "Maybe", "You should ask someone else instead."};
+    private final String[] positive = new String[] {"Yes", "Of Course", "DO IT!", "Why not :)"};
+    private final String[] negative = new String[] {"Are you dumb?", "Fly, you fool!", "nope", "No"};
+    private final String[] neutral = new String[] {"How should I know?", "Maybe", "You should ask someone else instead."};
 
     @Override
     public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
@@ -28,16 +29,20 @@ public class MagicConch extends Command {
         Random rand = new Random();
         int type = rand.nextInt(3);
 
-        if (type == 0) {
-            word = positive[rand.nextInt(positive.length)];
-        } else if (type == 1) {
-            word = negative[rand.nextInt(negative.length)];
-        } else if (type == 2) {
-            word = neutral[rand.nextInt(neutral.length)];
+        switch (type) {
+            case 0:
+                word = positive[rand.nextInt(positive.length)];
+                break;
+            case 1:
+                word = negative[rand.nextInt(negative.length)];
+                break;
+            case 2:
+                word = neutral[rand.nextInt(neutral.length)];
+                break;
         }
 
 
-        ArrayList<MessageEmbed.Field> fields = new ArrayList<>();
+        List<MessageEmbed.Field> fields = new ArrayList<>();
 
         fields.add(new MessageEmbed.Field("The magic conch says:", word, false));
 

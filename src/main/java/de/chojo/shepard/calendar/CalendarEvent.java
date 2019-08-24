@@ -6,9 +6,9 @@ import com.google.api.services.calendar.model.Event;
 import java.util.Date;
 
 public class CalendarEvent {
-    private Date start;
-    private Date end;
-    private String summary;
+    private final Date start;
+    private final Date end;
+    private final String summary;
 
     CalendarEvent(Event event) {
         start = getDate(event.getStart().getDateTime());

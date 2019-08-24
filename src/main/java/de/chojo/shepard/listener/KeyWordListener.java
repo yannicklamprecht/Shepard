@@ -22,7 +22,6 @@ public class KeyWordListener extends ListenerAdapter {
         if (kwa != null) {
 
             kwa.getKeyword().execute(event, kwa.getKey());
-            return;
         }
 
     }

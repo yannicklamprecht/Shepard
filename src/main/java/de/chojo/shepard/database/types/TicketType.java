@@ -1,10 +1,10 @@
 package de.chojo.shepard.database.types;
 
 public class TicketType {
-    private int id;
-    private String categoryId;
-    private String creationMessage;
-    private String keyword;
+    private final int id;
+    private final String categoryId;
+    private final String creationMessage;
+    private final String keyword;
 
     public TicketType(int id, String categoryId, String creationMessage, String keyword) {
         this.id = id;

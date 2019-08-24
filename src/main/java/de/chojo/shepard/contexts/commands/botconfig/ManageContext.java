@@ -4,6 +4,7 @@ import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.commands.CommandArg;
 import de.chojo.shepard.database.queries.Context;
 import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.util.BooleanState;
 import de.chojo.shepard.util.Verifier;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -42,13 +43,15 @@ public class ManageContext extends Command {
     }
 
     private void setAdminOnly(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
-        Boolean state = Verifier.checkAndGetBoolean(args[2]);
+        BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
-        if(state == null){
+        if(bState == BooleanState.UNDEFINED){
             Messages.sendSimpleError("Invalid input. Only 'true' and 'false' are valid inputs.",
                     receivedEvent.getChannel());
             return;
         }
+
+        boolean state = bState == BooleanState.TRUE;
 
         Context.setContextAdmin(contextName, state, receivedEvent);
 
@@ -63,13 +66,15 @@ public class ManageContext extends Command {
     }
 
     private void setNsfw(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
-        Boolean state = Verifier.checkAndGetBoolean(args[2]);
+        BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
-        if(state == null){
+        if(bState == BooleanState.UNDEFINED){
             Messages.sendSimpleError("Invalid input. Only 'true' and 'false' are valid inputs.",
                     receivedEvent.getChannel());
             return;
         }
+
+        boolean state = bState == BooleanState.TRUE;
 
         Context.setContextNsfw(contextName, state,receivedEvent);
 

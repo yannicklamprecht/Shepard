@@ -1,9 +1,9 @@
 package de.chojo.shepard.database.types;
 
 public class DatabaseInvite {
-    String code;
-    int usedCount;
-    String source;
+    private final String code;
+    private final int usedCount;
+    private final String source;
 
     public DatabaseInvite(String code, int usedCount, String source) {
         this.code = code;

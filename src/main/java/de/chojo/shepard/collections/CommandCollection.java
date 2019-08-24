@@ -21,7 +21,7 @@ public class CommandCollection {
     private CommandCollection() {
     }
 
-    private ArrayList<Command> commands = new ArrayList<Command>();
+    private final ArrayList<Command> commands = new ArrayList<>();
 
     public void addCommand(Command command) {
         commands.add(command);

@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static de.chojo.shepard.calendar.CalendarQuickstart.getHaddeWorktimes;
 
@@ -25,11 +27,11 @@ public class IsHaddeWorking extends Command {
     @Override
     public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         try {
-            java.util.Calendar cal = java.util.Calendar.getInstance();
+            Calendar cal = Calendar.getInstance();
             Date currentDate = cal.getTime();
 
             CalendarEvent event = getHaddeWorktimes();
-            ArrayList<MessageEmbed.Field> fields = new ArrayList<>();
+            List<MessageEmbed.Field> fields = new ArrayList<>();
             if (event != null) {
 
                 SimpleDateFormat getTime = new SimpleDateFormat("HH:mm");
