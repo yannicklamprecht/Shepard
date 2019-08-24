@@ -13,7 +13,11 @@ import java.util.regex.Pattern;
 public class SetGreetingChannel extends Command {
     private static final Pattern CHANNEL_MENTION_PATTERN = Pattern.compile("(?:<#)?(?<id>[0-9]{18})(?:>)?");
 
-    public SetGreetingChannel(){
+    /**
+     * Creates a new set greeting channel object.
+     */
+    @Deprecated
+    public SetGreetingChannel() {
         commandName = "setGreetingChannel";
         commandDesc = "Set the greeting channel";
         arguments = new CommandArg[] {new CommandArg("ChannelName", "Name des Channels", true)};
@@ -32,7 +36,7 @@ public class SetGreetingChannel extends Command {
             Messages.sendSimpleError("Invalid Channel", receivedEvent.getChannel());
             return false; // invalid channel
         }
-        Greetings.setGreetingChannel(receivedEvent.getGuild().getId(), channelId, receivedEvent);
+        Greetings.setGreetingChannel(receivedEvent.getGuild(), channelId, receivedEvent);
         Messages.sendMessage("I will greet every newcomer in " + channel.getAsMention(), receivedEvent.getChannel());
         return true;
     }

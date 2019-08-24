@@ -18,9 +18,12 @@ import static de.chojo.shepard.calendar.CalendarQuickstart.getHaddeWorktimes;
 
 public class IsHaddeWorking extends Command {
 
+    /**
+     * Creates new hadde working command object.
+     */
     public IsHaddeWorking() {
         commandName = "isHaddeWorking";
-        commandAliases = new String[]{"istHaddeArbeiten"};
+        commandAliases = new String[] {"istHaddeArbeiten"};
         commandDesc = "Gibt an, ob Hadde arbeiten ist";
     }
 
@@ -48,14 +51,18 @@ public class IsHaddeWorking extends Command {
                 }
 
                 if (currentDate.after(event.getStart()) && currentDate.before(event.getEnd())) {
-                    fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?", "Ja, bis " + getTime.format(event.getEnd()) + " Uhr " + endDate, false));
+                    fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?", "Ja, bis "
+                            + getTime.format(event.getEnd()) + " Uhr " + endDate, false));
                     Messages.sendTextBox(null, fields, receivedEvent.getChannel());
                 } else {
-                    fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?", "Nein, er arbeitet " + startDate + " von " + getTime.format(event.getStart()) + " Uhr bis " + getTime.format(event.getEnd()) + " Uhr.", false));
+                    fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?", "Nein, er arbeitet "
+                            + startDate + " von " + getTime.format(event.getStart()) + " Uhr bis "
+                            + getTime.format(event.getEnd()) + " Uhr.", false));
                     Messages.sendTextBox(null, fields, receivedEvent.getChannel());
                 }
             } else {
-                fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?","Ich hab derzeit leider keine Arbeitszeiten", false));
+                fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?",
+                        "Ich hab derzeit leider keine Arbeitszeiten", false));
                 Messages.sendTextBox(null, fields, receivedEvent.getChannel());
 
             }

@@ -9,9 +9,16 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public final class ContextHelper {
     private ContextHelper(){}
 
-    public static String getContextName(String name, MessageReceivedEvent receivedEvent) {
-        Command command = CommandCollection.getInstance().getCommand(name);
-        Keyword keyword = KeyWordCollection.getInstance().getKeywordWithContextName(name, receivedEvent);
+    /**
+     * Get the name of the context from a string.
+     *
+     * @param indicator for lookup
+     * @param event  event from command sending for error handling. Can be null.
+     * @return Name of the context or null if no context was found
+     */
+    public static String getContextName(String indicator, MessageReceivedEvent event) {
+        Command command = CommandCollection.getInstance().getCommand(indicator);
+        Keyword keyword = KeyWordCollection.getInstance().getKeywordWithContextName(indicator, event);
 
         String contextName = null;
         if (keyword != null) {
@@ -22,5 +29,4 @@ public final class ContextHelper {
 
         return contextName;
     }
-
 }

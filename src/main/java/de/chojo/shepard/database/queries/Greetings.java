@@ -9,54 +9,87 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static de.chojo.shepard.database.DatabaseConnector.close;
 import static de.chojo.shepard.database.DbUtil.handleException;
 
-public class Greetings {
+public final class Greetings {
 
-    private Greetings(){}
+    private Greetings() {
+    }
 
+    /**
+     * Sets a greeting channel for a guild.
+     *
+     * @param guild     Guild object for which the channel should be added
+     * @param channelId channel which should be used for greetings
+     * @param event     event from command sending for error handling. Can be null.
+     */
     public static void setGreetingChannel(Guild guild, String channelId, MessageReceivedEvent event) {
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.set_greeting_channel(?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.set_greeting_channel(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, channelId);
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
     }
 
+    /**
+     * Remove a greeting channel from a guild.
+     *
+     * @param guild Guild object for lookup
+     * @param event event from command sending for error handling. Can be null.
+     */
     public static void removeGreetingChannel(Guild guild, MessageReceivedEvent event) {
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.remove_greeting_channel(?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.remove_greeting_channel(?)")) {
             statement.setString(1, guild.getId());
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
     }
 
+    /**
+     * Sets the greeting text for a guild.
+     *
+     * @param guild Guild object for lookup
+     * @param text text for greeting
+     * @param event event from command sending for error handling. Can be null.
+     */
     public static void setGreetingText(Guild guild, String text, MessageReceivedEvent event) {
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.set_greeting_text(?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.set_greeting_text(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, text);
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
     }
 
+    /**
+     * Get a greeting object for a guild.
+     *
+     * @param guild Guild object for lookup.
+     * @return Greeting object
+     */
     public static Greeting getGreeting(Guild guild) {
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.set_greeting_data(?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.set_greeting_data(?)")) {
             statement.setString(1, guild.getId());
-            ResultSet result= statement.executeQuery();
-            if(result.next()){
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
                 return new Greeting(guild.getId(),
                         result.getString("channel_id"),
                         result.getString("message"));
             }
+
+            close(statement);
         } catch (SQLException e) {
             handleException(e, null);
         }

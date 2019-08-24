@@ -15,16 +15,13 @@ import java.util.Arrays;
 
 
 public class CommandListener extends ListenerAdapter {
-    public CommandListener() {
-    }
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         Message message = event.getMessage();
         String receivedMessage = message.getContentRaw();
-        String[] args = receivedMessage.replace(
-                Prefix.getPrefixes(event).getOrDefault(event.getGuild().getId())
-                , "").split(" ");
+        String[] args = receivedMessage.split(" ");
+        args[0] = args[0].replace(Prefix.getPrefix(event.getGuild(), event), "");
 
         if (checkPrefix(receivedMessage, event.getGuild(), event)) {
             //BotCheck
@@ -59,13 +56,13 @@ public class CommandListener extends ListenerAdapter {
             }
 
             Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!", "Type "
-                    + Prefix.getPrefixes(event).getOrDefault(event.getGuild().getId())
+                    + Prefix.getPrefix(event.getGuild(), event)
                     + "help for a full list of available commands!", false)}, event.getChannel());
         }
     }
 
     private boolean checkPrefix(String message, Guild guild, MessageReceivedEvent event) {
-        return message.startsWith(Prefix.getPrefixes(event).getOrDefault(guild.getId()));
+        return message.startsWith(Prefix.getPrefix(event.getGuild(), event));
     }
 }
 

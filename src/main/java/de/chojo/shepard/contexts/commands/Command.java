@@ -14,9 +14,21 @@ import java.util.List;
  * An abstract class for commands.
  */
 public abstract class Command extends ContextSensitive {
+    /**
+     * Name of the command.
+     */
     protected String commandName = "";
+    /**
+     * Command aliase as string array.
+     */
     protected String[] commandAliases = new String[0];
+    /**
+     * Description of command.
+     */
     protected String commandDesc = "";
+    /**
+     * Command args as command arg array.
+     */
     protected CommandArg[] arguments = new CommandArg[0];
 
     /**
@@ -95,6 +107,12 @@ public abstract class Command extends ContextSensitive {
         return false;
     }
 
+    /**
+     * Checks if enough arguments are present for the comment.
+     *
+     * @param args string arg array
+     * @return true if enough arguments are present
+     */
     public boolean checkArguments(String[] args) {
         int requiredArguments = 0;
         for (CommandArg a : arguments) {
@@ -105,6 +123,11 @@ public abstract class Command extends ContextSensitive {
         return args.length >= requiredArguments;
     }
 
+    /**
+     * Send the usage of the command to a channel.
+     *
+     * @param channel Channel where the usage should be send in.
+     */
     public void sendCommandUsage(MessageChannel channel) {
         List<MessageEmbed.Field> fields = new ArrayList<>();
 
@@ -141,10 +164,17 @@ public abstract class Command extends ContextSensitive {
         Messages.sendTextBox("Help for command " + getCommandName(), fields, channel);
     }
 
+    /**
+     * Sends help for a specified command argument.
+     *
+     * @param argument Argument for which should be send some detailed informations
+     * @param channel  Channel where the usage should be send in.
+     */
     public void sendCommandArgHelp(String argument, MessageChannel channel) {
 
         if (arguments == null || arguments.length == 0) {
-            Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("No Argument found!", "This command, doesn't have any arguments.", false)}, channel);
+            Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("No Argument found!",
+                    "This command, doesn't have any arguments.", false)}, channel);
             return;
         }
 
@@ -152,8 +182,9 @@ public abstract class Command extends ContextSensitive {
             if (arg.getArgName().equalsIgnoreCase(argument)) {
                 List<MessageEmbed.Field> fields = new ArrayList<>();
                 fields.add(new MessageEmbed.Field("Description:", arg.getArgDesc(), false));
-                fields.add(new MessageEmbed.Field("Required", arg.isRequired().toString(), false));
-                Messages.sendTextBox("Help for Argument: \"" + arg.getArgName() + "\" of command \"" + getCommandName() + "\"", fields, channel);
+                fields.add(new MessageEmbed.Field("Required", arg.isRequired() ? "true" : "false", false));
+                Messages.sendTextBox("Help for Argument: \"" + arg.getArgName() + "\" of command \""
+                        + getCommandName() + "\"", fields, channel);
                 return;
             }
         }
@@ -162,6 +193,7 @@ public abstract class Command extends ContextSensitive {
         for (CommandArg arg : arguments) {
             argsAsString = argsAsString.concat(arg.getArgName() + " ");
         }
-        Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Argument not found!", "Try one of these: " + argsAsString, false)}, channel);
+        Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Argument not found!",
+                "Try one of these: " + argsAsString, false)}, channel);
     }
 }

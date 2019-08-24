@@ -12,16 +12,24 @@ import java.sql.SQLException;
 
 import static de.chojo.shepard.database.DbUtil.handleException;
 
-public class Prefix {
+public final class Prefix {
     private static final DefaultMap<String, String> prefixes = new DefaultMap<>(ShepardBot.getConfig().getPrefix());
     private static boolean cacheDirty = true;
 
-    private Prefix(){}
+    private Prefix() {
+    }
 
+    /**
+     * Sets the prefix for a guild.
+     *
+     * @param guild  Guild for which the prefix should be set
+     * @param prefix prefix to set.
+     * @param event  event from command sending for error handling. Can be null.
+     */
     public static void setPrefix(Guild guild, String prefix, MessageReceivedEvent event) {
         cacheDirty = true;
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.set_prefix(?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.set_prefix(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, prefix);
             statement.execute();
@@ -32,22 +40,29 @@ public class Prefix {
         System.out.println("Changed prefix of server " + guild.getName() + " to " + prefix);
     }
 
+    /**
+     * Get the prefix for a guild.
+     *
+     * @param guild Guild object for lookup
+     * @param event event from command sending for error handling. Can be null.
+     * @return Prefix as string
+     */
     public static String getPrefix(Guild guild, MessageReceivedEvent event) {
-        if(!cacheDirty){
+        if (!cacheDirty) {
             return prefixes.get(guild.getId());
         }
 
-        getPrefixes(event);
+        refreshPrefixes(event);
 
-        return getPrefix(guild,event);
+        return getPrefix(guild, event);
     }
 
-    public static DefaultMap<String, String> getPrefixes(MessageReceivedEvent event) {
-        if(!cacheDirty){
+    private static DefaultMap<String, String> refreshPrefixes(MessageReceivedEvent event) {
+        if (!cacheDirty) {
             return prefixes;
         }
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT * from shepard_func.get_prefixes()")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_prefixes()")) {
             ResultSet result = statement.executeQuery();
             prefixes.clear();
             while (result.next()) {
@@ -61,11 +76,10 @@ public class Prefix {
             return prefixes;
 
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
         return prefixes;
     }
-
 
 
 }

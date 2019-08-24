@@ -9,13 +9,16 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
  */
 public class GetRaw extends Command {
 
-    public GetRaw(){
+    /**
+     * Creates a new get raw command object.
+     */
+    public GetRaw() {
         commandName = "getRaw";
         commandDesc = "Get the message in raw format";
     }
 
     @Override
-    public boolean execute(String Label, String[] args, MessageReceivedEvent receivedEvent) {
+    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         Messages.sendMessage("`" + receivedEvent.getMessage().getContentRaw() + "`", receivedEvent.getChannel());
         return true;
     }

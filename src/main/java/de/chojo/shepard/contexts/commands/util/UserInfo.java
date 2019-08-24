@@ -24,18 +24,21 @@ import static de.chojo.shepard.ShepardBot.getJDA;
  */
 public class UserInfo extends Command {
 
+    /**
+     * Creates new User info command object.
+     */
     public UserInfo() {
         commandName = "UserInfo";
-        commandAliases = new String[]{"aboutuser"};
+        commandAliases = new String[] {"aboutuser"};
         commandDesc = "Information about a user";
-        arguments = new CommandArg[]{new CommandArg("user", "Tag, Name or ID of user", true)};
+        arguments = new CommandArg[] {new CommandArg("user", "Tag, Name or ID of user", true)};
     }
 
     @Override
     public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
 
         if (args.length == 0) {
-            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Too few arguments", "Usage: " + Prefix.getPrefix(receivedEvent.getGuild().getId(), receivedEvent) + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
+            Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Too few arguments", "Usage: " + Prefix.getPrefix(receivedEvent.getGuild(), receivedEvent) + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
         }
 
         InternUser internUser = new InternUser(args[0], receivedEvent).invoke();
@@ -126,7 +129,7 @@ public class UserInfo extends Command {
                             break;
                         }
                     }
-                    if(searchedUser == null){
+                    if (searchedUser == null) {
                         List<Member> members = receivedEvent.getGuild().getMembers();
                         for (Member member : members) {
                             if (member.getNickname().equalsIgnoreCase(id)) {

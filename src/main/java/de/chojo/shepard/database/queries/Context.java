@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static de.chojo.shepard.database.DatabaseConnector.close;
 import static de.chojo.shepard.database.DbUtil.getIdRaw;
 import static de.chojo.shepard.database.DbUtil.handleException;
 
@@ -28,271 +29,320 @@ public final class Context {
     private static final Map<String, Boolean> userPermissionDirty = new HashMap<>();
     private static final Map<String, Boolean> rolePermissionDirty = new HashMap<>();
 
-    private Context(){}
+    private Context() {
+    }
 
     /**
      * Adds a user to a context list.
+     *
      * @param contextName context zo change
-     * @param userId user to add
+     * @param userId      user to add
+     * @param event       event from command sending for error handling. Can be null.
      */
     public static void addContextUser(String contextName, String userId, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.add_context_user(?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.add_context_user(?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, getIdRaw(userId));
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
     /**
      * Removes a user from the context list.
+     *
      * @param contextName context name to change
-     * @param userId user to remove
+     * @param userId      user to remove
+     * @param event       event from command sending for error handling. Can be null.
      */
     public static void removeContextUser(String contextName, String userId, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.remove_context_user(?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.remove_context_user(?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, getIdRaw(userId));
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
     /**
      * Adds a guild to the context list.
+     *
      * @param contextName context name to change
-     * @param guildId guild id to add
+     * @param guildId     guild id to add
+     * @param event       event from command sending for error handling. Can be null.
      */
     public static void addContextGuild(String contextName, String guildId, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.add_context_guild(?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.add_context_guild(?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, getIdRaw(guildId));
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
     /**
      * Removes a guild from the context list.
+     *
      * @param contextName context name to change
-     * @param guildId guild id to remove
+     * @param guildId     guild id to remove
+     * @param event       event from command sending for error handling. Can be null.
      */
     public static void removeContextGuild(String contextName, String guildId, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.remove_context_guild(?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.remove_context_guild(?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, getIdRaw(guildId));
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
     /**
-     * Adds a context user permission on a guild
+     * Adds a context user permission on a guild.
+     *
      * @param contextName context name to change
-     * @param guild guild id where the permission should be added
-     * @param userId user which should be added
+     * @param guild       guild id where the permission should be added
+     * @param userId      user which should be added
+     * @param event       event from command sending for error handling. Can be null.
      */
-    public static void addContextUserPermission(String contextName, Guild guild, String userId, MessageReceivedEvent event) {
+    public static void addContextUserPermission(String contextName, Guild guild,
+                                                String userId, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.add_context_user_permission(?,?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.add_context_user_permission(?,?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, getIdRaw(guild.getId()));
             statement.setString(3, getIdRaw(userId));
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
     /**
-     * Removes a context user permission on a guild
+     * Removes a context user permission on a guild.
+     *
      * @param contextName context name to change
-     * @param guild guild id where the permission should be removed
-     * @param userId user which should be removed
+     * @param guild       guild id where the permission should be removed
+     * @param userId      user which should be removed
+     * @param event       event from command sending for error handling. Can be null.
      */
-    public static void removeContextUserPermission(String contextName, Guild guild, String userId, MessageReceivedEvent event) {
+    public static void removeContextUserPermission(String contextName, Guild guild,
+                                                   String userId, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.remove_context_user_permission(?,?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.remove_context_user_permission(?,?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, getIdRaw(guild.getId()));
             statement.setString(3, getIdRaw(userId));
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
     /**
-     * Adds a context role permission on a guild
+     * Adds a context role permission on a guild.
+     *
      * @param contextName context name to change
-     * @param guild guild id where the permission should be added
-     * @param roleId role which should be added
+     * @param guild       guild id where the permission should be added
+     * @param roleId      role which should be added
+     * @param event       event from command sending for error handling. Can be null.
      */
-    public static void addContextRolePermission(String contextName, Guild guild, String roleId, MessageReceivedEvent event) {
+    public static void addContextRolePermission(String contextName, Guild guild,
+                                                String roleId, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.add_context_role_permission(?,?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.add_context_role_permission(?,?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, getIdRaw(guild.getId()));
             statement.setString(3, getIdRaw(roleId));
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
     /**
-     * Removes a context role permission on a guild
+     * Removes a context role permission on a guild.
+     *
      * @param contextName context name to change
-     * @param guild guild id where the permission should be removed
-     * @param roleId role which should be removed
+     * @param guild       guild id where the permission should be removed
+     * @param roleId      role which should be removed
+     * @param event       event from command sending for error handling. Can be null.
      */
-    public static void removeContextRolePermission(String contextName, Guild guild, String roleId, MessageReceivedEvent event) {
+    public static void removeContextRolePermission(String contextName, Guild guild,
+                                                   String roleId, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.remove_context_role_permission(?,?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.remove_context_role_permission(?,?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, getIdRaw(guild.getId()));
             statement.setString(3, getIdRaw(roleId));
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
     /**
-     * Changes the context admin only state
+     * Changes the context admin only state.
+     *
      * @param contextName Name of the context to change
-     * @param state True if it is a admin only command.
+     * @param state       True if it is a admin only command.
+     * @param event       event from command sending for error handling. Can be null.
      */
     public static void setContextAdmin(String contextName, boolean state, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.set_context_admin(?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.set_context_admin(?,?)")) {
             statement.setString(1, contextName);
             statement.setBoolean(2, state);
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
     /**
-     * Changes the context nsfw state
+     * Changes the context nsfw state.
+     *
      * @param contextName Name of the context to change
-     * @param state True if it is a nsfw command.
+     * @param state       True if it is a nsfw command.
+     * @param event       event from command sending for error handling. Can be null.
      */
     public static void setContextNsfw(String contextName, boolean state, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.set_context_nsfw(?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.set_context_nsfw(?,?)")) {
             statement.setString(1, contextName);
             statement.setBoolean(2, state);
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
     /**
-     * Activates or deactivates the user check for this context
+     * Activates or deactivates the user check for this context.
+     *
      * @param contextName Name of the context to change
-     * @param state true when user should be checked
+     * @param state       true when user should be checked
+     * @param event       event from command sending for error handling. Can be null.
      */
     public static void setContextUserCheckActive(String contextName, boolean state, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.set_context_user_check_active(?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.set_context_user_check_active(?,?)")) {
             statement.setString(1, contextName);
             statement.setBoolean(2, state);
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
     /**
-     * Activates or deactivates the guild check for this context
+     * Activates or deactivates the guild check for this context.
+     *
      * @param contextName Name of the context to change
-     * @param state true when guild should be checked
+     * @param state       true when guild should be checked
+     * @param event       event from command sending for error handling. Can be null.
      */
     public static void setContextGuildCheckActive(String contextName, boolean state, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.set_context_guild_check_active(?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.set_context_guild_check_active(?,?)")) {
             statement.setString(1, contextName);
             statement.setBoolean(2, state);
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
     /**
-     * Changes the context user list type
+     * Changes the context user list type.
+     *
      * @param contextName Name of the context to change
-     * @param listType ListType enum.
+     * @param listType    ListType enum.
+     * @param event       event from command sending for error handling. Can be null.
      */
     public static void setContextUserListType(String contextName, ListType listType, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.set_context_user_list_type(?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.set_context_user_list_type(?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, listType.toString());
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
     /**
-     * Changes the context guild list type
+     * Changes the context guild list type.
+     *
      * @param contextName Name of the context to change
-     * @param listType ListType enum.
+     * @param listType    ListType enum.
+     * @param event       event from command sending for error handling. Can be null.
      */
     public static void setContextGuildListType(String contextName, ListType listType, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.set_context_guild_list_type(?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.set_context_guild_list_type(?,?)")) {
             statement.setString(1, contextName);
             statement.setString(2, listType.toString());
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
     /**
-     * Returns the contextdata of the needed context
+     * Returns the context data of the needed context.
+     *
      * @param contextName Name of the context for lookup
+     * @param event       event from command sending for error handling. Can be null.
      * @return Context data object.
      */
     public static ContextData getContextData(String contextName, MessageReceivedEvent event) {
@@ -302,8 +352,8 @@ public final class Context {
             }
         }
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT * from shepard_func.get_context_data(?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_context_data(?)")) {
             statement.setString(1, contextName);
             ResultSet result = statement.executeQuery();
 
@@ -329,10 +379,11 @@ public final class Context {
 
                 contextData.put(contextName, data);
                 contextDataDirty.put(contextName, false);
+                close(statement, result);
             }
 
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
 
         return contextData.getOrDefault(contextName, null);
@@ -340,8 +391,10 @@ public final class Context {
 
     /**
      * Returns a map which contains a list of all users per guild, which are allowed to use this context.
-     * @param contextName Name of the context for permission loockup.
-     * @return Map <guild_id, List<role_ids>>
+     *
+     * @param contextName Name of the context for permission lookup.
+     * @param event       event from command sending for error handling. Can be null.
+     * @return Map <guild_id, List<role_ids>> Map which contains the user as list for each guild
      */
     public static Map<String, List<String>> getContextUserPermissions(String contextName, MessageReceivedEvent event) {
         if (userPermissions.containsKey(contextName)) {
@@ -350,8 +403,8 @@ public final class Context {
             }
         }
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT * from shepard_func.get_context_user_permissions(?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_context_user_permissions(?)")) {
             statement.setString(1, contextName);
             ResultSet result = statement.executeQuery();
 
@@ -371,16 +424,20 @@ public final class Context {
             userPermissions.put(contextName, data);
             userPermissionDirty.put(contextName, false);
 
+            close(statement, result);
+
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
         return userPermissions.getOrDefault(contextName, Collections.emptyMap());
     }
 
     /**
      * Returns a map which contains a list of all roles per guild, which are allowed to use this context.
-     * @param contextName Name of the context for permission loockup.
-     * @return Map <guild_id, List<role_ids>>
+     *
+     * @param contextName Name of the context for permission lookup.
+     * @param event       event from command sending for error handling. Can be null.
+     * @return Map <guild_id, List<role_ids>> Map which contains the user as list for each guild
      */
     public static Map<String, List<String>> getContextRolePermissions(String contextName, MessageReceivedEvent event) {
         if (rolePermissions.containsKey(contextName)) {
@@ -390,8 +447,8 @@ public final class Context {
         }
 
 
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT * from shepard_func.get_context_role_permissions(?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_context_role_permissions(?)")) {
             statement.setString(1, contextName);
             ResultSet result = statement.executeQuery();
 
@@ -410,8 +467,10 @@ public final class Context {
 
             rolePermissions.put(contextName, data);
             rolePermissionDirty.put(contextName, false);
+
+            close(statement, result);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
         return rolePermissions.getOrDefault(contextName, Collections.emptyMap());
     }

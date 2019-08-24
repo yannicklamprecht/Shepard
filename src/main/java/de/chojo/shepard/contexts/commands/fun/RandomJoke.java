@@ -14,11 +14,12 @@ import java.net.URL;
 
 public class RandomJoke extends Command {
 
+    /**
+     * Creates a new random joke command object.
+     */
     public RandomJoke() {
         commandName = "joke";
-        commandAliases = null;
         commandDesc = "Hehe";
-        arguments = null;
     }
 
     @Override
@@ -26,7 +27,8 @@ public class RandomJoke extends Command {
         try {
             Messages.sendSimpleTextBox("Random Joke", getRandomJoke(), receivedEvent.getChannel());
         } catch (IOException e) {
-            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Error", e.getMessage(), false)}, receivedEvent.getChannel());
+            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Error", e.getMessage(),
+                    false)}, receivedEvent.getChannel());
         }
         return true;
     }

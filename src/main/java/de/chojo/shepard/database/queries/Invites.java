@@ -12,30 +12,49 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.chojo.shepard.database.DatabaseConnector.close;
 import static de.chojo.shepard.database.DatabaseConnector.getConn;
 import static de.chojo.shepard.database.DbUtil.handleException;
 
 public final class Invites {
 
-    private Invites(){}
+    private Invites() {
+    }
 
-    public static void addInvite(Guild guildId, String code, String name, int count, MessageReceivedEvent event) {
-        try (PreparedStatement statement = getConn().
-                prepareStatement("SELECT shepard_func.add_invite(?,?,?,?)")) {
-            statement.setString(1, guildId.getId());
+    /**
+     * Adds a invite to a guild.
+     *
+     * @param guild Guild object for which the invite should be added
+     * @param code  Code of the Invite
+     * @param name  Name of the invite
+     * @param count How often the invite was used
+     * @param event event from command sending for error handling. Can be null.
+     */
+    public static void addInvite(Guild guild, String code, String name, int count, MessageReceivedEvent event) {
+        try (PreparedStatement statement = getConn()
+                .prepareStatement("SELECT shepard_func.add_invite(?,?,?,?)")) {
+            statement.setString(1, guild.getId());
             statement.setString(2, code);
             statement.setString(3, name);
             statement.setInt(4, count);
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
+    /**
+     * Gets the invites of a guild.
+     *
+     * @param guild Guild object for lookup
+     * @param event event from command sending for error handling. Can be null.
+     * @return list of invite objects
+     */
     public static List<DatabaseInvite> getInvites(Guild guild, MessageReceivedEvent event) {
         List<DatabaseInvite> invites = new ArrayList<>();
-        try (PreparedStatement statement = getConn().
-                prepareStatement("SELECT * from shepard_func.get_invites(?)")) {
+        try (PreparedStatement statement = getConn()
+                .prepareStatement("SELECT * from shepard_func.get_invites(?)")) {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
 
@@ -46,42 +65,65 @@ public final class Invites {
 
                 invites.add(new DatabaseInvite(code, used, name));
             }
-
+            close(statement, result);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
         return invites;
     }
 
+    /**
+     * Removes a invite of a guild.
+     *
+     * @param guild Guild object for lookup
+     * @param code  Code of the invite to remove
+     * @param event event from command sending for error handling. Can be null.
+     */
     public static void removeInvite(Guild guild, String code, MessageReceivedEvent event) {
-        try (PreparedStatement statement = getConn().
-                prepareStatement("SELECT shepard_func.remove_invite(?,?)")) {
+        try (PreparedStatement statement = getConn()
+                .prepareStatement("SELECT shepard_func.remove_invite(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, code);
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
-    public static void upcountInvite(Guild guild, String code, MessageReceivedEvent event){
-        try (PreparedStatement statement = getConn().
-                prepareStatement("SELECT shepard_func.upcount_invite(?,?)")) {
+    /**
+     * Sets the counter of a invite +1.
+     *
+     * @param guild Guild object for lookup
+     * @param code  Code of the invite for upcount
+     * @param event event from command sending for error handling. Can be null.
+     */
+    public static void upcountInvite(Guild guild, String code, MessageReceivedEvent event) {
+        try (PreparedStatement statement = getConn()
+                .prepareStatement("SELECT shepard_func.upcount_invite(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, code);
             statement.execute();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 
-    public static void updateInvite(Guild guild, List<Invite> invites, MessageReceivedEvent event){
-        try (PreparedStatement statement = getConn().
-                prepareStatement("SELECT shepard_func.update_invites(?,?)")) {
+    /**
+     * Deletes all invites which are not present anymore.
+     *
+     * @param guild   Guild object for lookup
+     * @param invites List of invites of a guild
+     * @param event   event from command sending for error handling. Can be null.
+     */
+    public static void updateInvite(Guild guild, List<Invite> invites, MessageReceivedEvent event) {
+        try (PreparedStatement statement = getConn()
+                .prepareStatement("SELECT shepard_func.update_invites(?,?)")) {
             statement.setString(1, guild.getId());
 
             String[] codeStrings = new String[invites.size()];
-            for(int i = 0; i < invites.size(); i++){
+            for (int i = 0; i < invites.size(); i++) {
                 codeStrings[i] = invites.get(i).getCode();
             }
             Array codes = getConn().createArrayOf("varchar", codeStrings);
@@ -90,8 +132,9 @@ public final class Invites {
             statement.execute();
 
             codes.free();
+            close(statement);
         } catch (SQLException e) {
-            handleException(e,event);
+            handleException(e, event);
         }
     }
 }

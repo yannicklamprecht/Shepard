@@ -15,7 +15,7 @@ public class JoinListener extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         List<Invite> invites = event.getGuild().retrieveInvites().complete();
-        List<DatabaseInvite> databaseInvites = Invites.getInvites(event.getGuild().getId(), null);
+        List<DatabaseInvite> databaseInvites = Invites.getInvites(event.getGuild(), null);
         //TODO: compare old and new join count for invites
 
         //Get Invites from Server DONE
@@ -35,7 +35,7 @@ public class JoinListener extends ListenerAdapter {
                 //TODO: Add greetings channel
                 MessageChannel channel = event.getGuild().getTextChannelById("");
                 Messages.sendGreeting(event, dInvite.get().getSource(), channel);
-                Invites.upcountInvite(event.getGuild().getId(), invite.getCode(), null);
+                Invites.upcountInvite(event.getGuild(), invite.getCode(), null);
             }
         }
     }

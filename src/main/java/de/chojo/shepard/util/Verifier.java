@@ -3,6 +3,11 @@ package de.chojo.shepard.util;
 import de.chojo.shepard.database.DbUtil;
 
 public class Verifier {
+    /**
+     * Returns true if the id is a valid id.
+     * @param id id to test.
+     * @return true if id is valid
+     */
     public static boolean isValidId(String id) {
         return DbUtil.getIdRaw(id).length() == 18;
     }

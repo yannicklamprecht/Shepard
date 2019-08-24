@@ -1,8 +1,9 @@
-package de.chojo.shepard.contexts.reactionMessages;
+package de.chojo.shepard.contexts.reactionmessages;
 
 import de.chojo.shepard.collections.ReactionMessageCollection;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
+@Deprecated
 public class ReactionMessage {
     protected String[] messageIds = new String[0];
 

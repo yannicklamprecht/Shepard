@@ -16,6 +16,9 @@ import java.util.List;
  */
 public class Help extends Command {
 
+    /**
+     * Creates new help command object.
+     */
     public Help() {
         commandName = "help";
         commandAliases = new String[] {"Hilfe", "sendhelp"};
@@ -27,7 +30,7 @@ public class Help extends Command {
 
     @Override
     public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        String prefix = Prefix.getPrefixes(receivedEvent).getOrDefault(receivedEvent.getGuild().getId());
+        String prefix = Prefix.getPrefix(receivedEvent.getGuild(), receivedEvent);
 
         //Command List
         if (args.length == 0) {
@@ -36,7 +39,9 @@ public class Help extends Command {
 
         Command command = CommandCollection.getInstance().getCommand(args[0]);
         if (command == null || !command.isContextValid(receivedEvent)) {
-            Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!", "Type " + prefix + "help for a full list of available commands!", false)}, receivedEvent.getChannel());
+            Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!",
+                    "Type " + prefix + "help for a full list of available commands!", false)},
+                    receivedEvent.getChannel());
             return true;
         }
 
@@ -55,7 +60,8 @@ public class Help extends Command {
         Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Usage:", "Type:\n"
                 + prefix + "help for a list of commands.\n"
                 + prefix + "help [command] for help for a specific command.\n"
-                + prefix + "help [command] [arg] for a description of the argument.", false)}, receivedEvent.getChannel());
+                + prefix + "help [command] [arg] for a description of the argument.", false)},
+                receivedEvent.getChannel());
         return true;
     }
 
@@ -83,7 +89,7 @@ public class Help extends Command {
                 continue;
             }
 
-            aliases = aliases.concat(Prefix.getPrefixes(event).get(event.getGuild().getId()));
+            aliases = aliases.concat(Prefix.getPrefix(event.getGuild(), event));
             aliases = aliases.concat(command.getCommandName() + " ");
 
             //Build aliases string
@@ -95,7 +101,8 @@ public class Help extends Command {
 
             aliases = "**" + aliases + "**";
 
-            output.append(aliases).append(System.lineSeparator()).append("`").append(command.getCommandDesc()).append("`").append(System.lineSeparator());
+            output.append(aliases).append(System.lineSeparator()).append("`")
+                    .append(command.getCommandDesc()).append("`").append(System.lineSeparator());
             aliases = "";
         }
 

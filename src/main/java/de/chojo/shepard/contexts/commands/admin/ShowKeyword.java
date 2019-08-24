@@ -10,6 +10,9 @@ import org.apache.commons.lang.StringUtils;
 import java.util.List;
 
 public class ShowKeyword extends Command {
+    /**
+     * Creates a new show keyword command object.
+     */
     public ShowKeyword() {
         commandName = "showKeywords";
         commandDesc = "Displays or valid Keywords";
@@ -22,8 +25,8 @@ public class ShowKeyword extends Command {
         int maxContextLength = "Context Name".length() + 1;
 
         for (Keyword k : keywords) {
-            if(k.isContextValid(receivedEvent)){
-                if(k.getClass().getSimpleName().length() + 1 > maxContextLength){
+            if (k.isContextValid(receivedEvent)) {
+                if (k.getClass().getSimpleName().length() + 1 > maxContextLength) {
                     maxContextLength = k.getClass().getSimpleName().length() + 1;
                 }
             }
@@ -31,7 +34,8 @@ public class ShowKeyword extends Command {
 
         StringBuilder builder = new StringBuilder();
         builder.append("```md").append(System.lineSeparator())
-                .append(StringUtils.rightPad("Context Name", maxContextLength)).append(" -> Keywords").append(System.lineSeparator());
+                .append(StringUtils.rightPad("Context Name", maxContextLength)).append(" -> Keywords")
+                .append(System.lineSeparator());
 
         for (Keyword k : keywords) {
             if (k.isContextValid(receivedEvent)) {

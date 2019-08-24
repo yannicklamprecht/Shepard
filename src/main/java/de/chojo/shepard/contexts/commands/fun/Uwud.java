@@ -6,17 +6,19 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Uwud extends Command {
 
+    /**
+     * Creates new uwud command object.
+     */
     public Uwud() {
         commandName = "uwud";
-        commandAliases = null;
         commandDesc = "UWU and delete";
-        arguments = null;
     }
 
 
     @Override
     public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        Messages.sendMessage(":regional_indicator_u::regional_indicator_w::regional_indicator_u:", receivedEvent.getChannel());
+        Messages.sendMessage(":regional_indicator_u::regional_indicator_w::regional_indicator_u:",
+                receivedEvent.getChannel());
         Messages.deleteMessage(receivedEvent);
         return true;
     }

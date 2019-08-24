@@ -1,5 +1,12 @@
 package de.chojo.shepard.contexts.commands.botconfig;
 
 public enum ModifyType {
-    ADD, REMOVE
+    /**
+     * Type to add.
+     */
+    ADD,
+    /**
+     * Type to remove.
+     */
+    REMOVE
 }

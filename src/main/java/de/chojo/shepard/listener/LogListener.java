@@ -14,14 +14,17 @@ public class LogListener extends ListenerAdapter {
 
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
-        Messages.sendMessage("Shepard ist nun auf " + event.getGuild().getName() + " verfügbar!", ServerCollection.getNormandy().getTextChannelById("538094461381640192"));
+        Messages.sendMessage("Shepard ist nun auf " + event.getGuild().getName() + " verfügbar!",
+                ServerCollection.getNormandy().getTextChannelById("538094461381640192"));
     }
 
     @Override
     public void onReady(ReadyEvent event) {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         Date date = new Date(System.currentTimeMillis());
-        Messages.sendMessage("`[" + formatter.format(date) + "]` Shepard meldet sich zum Dienst! Erwarte ihre Befehle! Derzeit stehe ich auf " + ShepardBot.getJDA().getGuilds().size() + " Servern zur Verfügung!",
+        Messages.sendMessage("`[" + formatter.format(date)
+                        + "]` Shepard meldet sich zum Dienst! Erwarte ihre Befehle! Derzeit stehe ich auf "
+                        + ShepardBot.getJDA().getGuilds().size() + " Servern zur Verfügung!",
                 ServerCollection.getNormandy().getTextChannelById("538094461381640192"));
     }
 }

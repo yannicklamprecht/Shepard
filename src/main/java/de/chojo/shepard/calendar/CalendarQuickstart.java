@@ -15,7 +15,6 @@ import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
-import net.dv8tion.jda.api.entities.MessageChannel;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +36,13 @@ public class CalendarQuickstart {
     private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR_READONLY);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
 
+    /**
+     * Get the working time of Hadde.
+     *
+     * @return Calendar Event
+     * @throws IOException              if connection failed
+     * @throws GeneralSecurityException if verification failed
+     */
     public static CalendarEvent getHaddeWorktimes() throws IOException, GeneralSecurityException {
         Calendar service = getService();
 
@@ -55,7 +61,14 @@ public class CalendarQuickstart {
         return null;
     }
 
-    public static ArrayList<CalendarEvent> getEldoriaMeetings() throws IOException, GeneralSecurityException {
+    /**
+     * Get the next two events on eldoria.
+     *
+     * @return array list of eldoria meetings with size 2
+     * @throws IOException              if connection failed
+     * @throws GeneralSecurityException if verification failed
+     */
+    public static List<CalendarEvent> getEldoriaMeetings() throws IOException, GeneralSecurityException {
         Calendar service = getService();
 
         DateTime now = new DateTime(System.currentTimeMillis());
@@ -74,25 +87,22 @@ public class CalendarQuickstart {
         return nextEvent;
     }
 
-    public static void sendCalendarEvent(MessageChannel channel) {
-        // TODO
-    }
 
     /**
      * Creates an authorized Credential object.
      *
-     * @param HTTP_TRANSPORT The network HTTP Transport.
+     * @param httpTransport The network HTTP Transport.
      * @return An authorized Credential object.
      * @throws IOException If the credentials.json file cannot be found.
      */
-    private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
+    private static Credential getCredentials(final NetHttpTransport httpTransport) throws IOException {
         // Load client secrets.
         InputStream in = CalendarQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
-                HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+                httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
                 .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                 .setAccessType("offline")
                 .build();
@@ -101,8 +111,8 @@ public class CalendarQuickstart {
     }
 
     private static Calendar getService() throws GeneralSecurityException, IOException {
-        NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-        return new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+        NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+        return new Calendar.Builder(httpTransport, JSON_FACTORY, getCredentials(httpTransport))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
     }

@@ -13,6 +13,9 @@ import java.util.Random;
 
 public class Nudes extends Keyword {
 
+    /**
+     * creates a new nudes keyword object.
+     */
     public Nudes() {
         keywords = new String[]{"nudes", "pr0n", "porn", "p0rn", "noot"};
     }

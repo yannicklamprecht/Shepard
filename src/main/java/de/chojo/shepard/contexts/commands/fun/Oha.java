@@ -8,11 +8,12 @@ import java.util.Random;
 
 public class Oha extends Command {
 
+    /**
+     * creates a new oha keyword object.
+     */
     public Oha() {
         commandName = "oha";
-        commandAliases = null;
         commandDesc = "Ohaaaaaa";
-        arguments = null;
     }
 
     @Override
@@ -20,9 +21,8 @@ public class Oha extends Command {
         String oha = "oha";
         Random rand = new Random();
         int loops = rand.nextInt(30) + 10;
-            oha = oha + "a".repeat(loops);
+        oha = oha + "a".repeat(loops);
         Messages.sendMessage(oha, receivedEvent.getChannel());
         return true;
-
     }
 }

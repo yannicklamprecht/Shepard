@@ -7,6 +7,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.util.Arrays;
 
 public class Keyword extends ContextSensitive {
+    /**
+     * Array of keywords.
+     */
     protected String[] keywords = new String[0];
 
     /**
@@ -60,6 +63,11 @@ public class Keyword extends ContextSensitive {
         return null;
     }
 
+    /**
+     * Get Keywordargs from a event if the message contains a keyword.
+     * @param event to search on.
+     * @return Keywordargs containing keyword and the key which matched.
+     */
     public KeywordArgs getKeyWordArgs(MessageReceivedEvent event) {
         String key = getKey(event);
         if (key != null) {

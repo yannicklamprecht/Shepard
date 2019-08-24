@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +21,11 @@ import java.util.Map;
 /**
  * A {@link ListenerAdapter} filtering events for different contexts.
  */
-public class ContextSensitive extends ListenerAdapter {
+public abstract class ContextSensitive extends ListenerAdapter {
 
+    /**
+     * Creates a new context Sensitive event.
+     */
     protected ContextSensitive() {
         loadCache();
         printDebugInfo();
@@ -127,7 +129,8 @@ public class ContextSensitive extends ListenerAdapter {
                 }
             }
 
-            builder.append("    Guild: ").append(jda.getGuildById(roles.getKey())).append(" (").append(roles.getKey()).append("):")
+            builder.append("    Guild: ").append(jda.getGuildById(roles.getKey()))
+                    .append(" (").append(roles.getKey()).append("):")
                     .append(System.lineSeparator()).append(names.toString())
                     .append(System.lineSeparator());
         }
@@ -151,6 +154,9 @@ public class ContextSensitive extends ListenerAdapter {
         return builder.toString();
     }
 
+    /**
+     * Prints debug info of the context.
+     */
     public void printDebugInfo() {
         System.out.println(getDebugInfo());
     }

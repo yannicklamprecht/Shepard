@@ -6,6 +6,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class DariNope extends Keyword {
 
+    /**
+     * Creates a new dari nope keyword object.
+     */
     public DariNope() {
         keywords = new String[]{"richtig?", "oder?", "ja", "doch"};
     }

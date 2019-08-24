@@ -6,6 +6,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class AmIRight extends Keyword {
 
+    /**
+     * Creates new AmIRight object.
+     */
     public AmIRight() {
         keywords = new String[]{"stimmts shep", "stimmt's shep", "hab ich recht shep"};
     }

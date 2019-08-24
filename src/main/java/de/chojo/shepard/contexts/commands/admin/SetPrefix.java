@@ -8,6 +8,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class SetPrefix extends Command {
 
+    /**
+     * Creates a new setprefix command.
+     */
     public SetPrefix() {
         commandName = "setPrefix";
         commandDesc = "Changes the prefix for the Server";
@@ -21,7 +24,7 @@ public class SetPrefix extends Command {
             return true;
         }
 
-        Prefix.setPrefix(receivedEvent.getGuild().getId(), args[1].trim(), receivedEvent);
+        Prefix.setPrefix(receivedEvent.getGuild(), args[1].trim(), receivedEvent);
         Messages.sendMessage("Changed prefix to '" + args[1] + "'", receivedEvent.getChannel());
         return true;
     }

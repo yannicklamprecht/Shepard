@@ -24,6 +24,12 @@ public final class DbUtil {
         return matcher.group(1);
     }
 
+    /**
+     * Handles SQL Exceptions.
+     *
+     * @param ex    SQL Exception
+     * @param event Event for error sending to channel to inform user.
+     */
     public static void handleException(SQLException ex, MessageReceivedEvent event) {
         System.out.println("SQLException: " + ex.getMessage());
         System.out.println("SQLState: " + ex.getSQLState());

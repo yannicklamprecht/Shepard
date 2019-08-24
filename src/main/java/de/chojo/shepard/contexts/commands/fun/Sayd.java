@@ -9,9 +9,11 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 public class Sayd extends Command {
 
+    /**
+     * Creates a new Sayd command object.
+     */
     public Sayd() {
         commandName = "sayd";
-        commandAliases = null;
         commandDesc = "Say and delete";
         arguments = new CommandArg[]
                 {new CommandArg("Message", "Message Shepard should say.", true),};
@@ -38,8 +40,8 @@ public class Sayd extends Command {
 
         } catch (InsufficientPermissionException e) {
             Messages.sendError(new MessageEmbed.Field[] {
-                    new MessageEmbed.Field("Lack of Permission",
-                            "Missing permission: MESSAGE_MANAGE", false)},
+                            new MessageEmbed.Field("Lack of Permission",
+                                    "Missing permission: MESSAGE_MANAGE", false)},
                     receivedEvent.getChannel());
         }
         return true;

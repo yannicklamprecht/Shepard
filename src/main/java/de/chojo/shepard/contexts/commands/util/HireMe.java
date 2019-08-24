@@ -13,6 +13,9 @@ import java.util.List;
  */
 public class HireMe extends Command {
 
+    /**
+     * Creates new Hire me object.
+     */
     public HireMe() {
         commandName = "hireMe";
         commandAliases = new String[]{"Iwantyou", "lovemeshepard"};

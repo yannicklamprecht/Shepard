@@ -16,17 +16,26 @@ import java.util.Map;
 
 import static de.chojo.shepard.database.DbUtil.handleException;
 
-class Mutes {
+public final class Mutes {
 
     private static Map<String, List<String>> mutedUsers = new HashMap<>();
     private static final Map<String, Boolean> mutedUsersDirty = new HashMap<>();
     private static LocalDateTime lastRefresh;
 
-    private Mutes(){}
+    private Mutes() {
+    }
 
+    /**
+     * Sets a user as muted.
+     *
+     * @param guild    Guild on which the user should be muted
+     * @param userId   user id
+     * @param duration duration of the mute
+     * @param event    event from command sending for error handling. Can be null.
+     */
     public static void setMuted(Guild guild, String userId, String duration, MessageReceivedEvent event) {
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.set_muted(?,?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.set_muted(?,?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, userId);
             statement.setString(3, duration);
@@ -39,8 +48,8 @@ class Mutes {
     }
 
     private static List<String> refreshGuildData(Guild guild, MessageReceivedEvent event) {
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.get_muted_users(?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.get_muted_users(?)")) {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
             if (result.getArray(1) != null) {
@@ -53,9 +62,16 @@ class Mutes {
         return Collections.emptyList();
     }
 
+    /**
+     * Remove a mute from a user.
+     *
+     * @param guild  Guild object for lookup
+     * @param userId id of the user
+     * @param event  event from command sending for error handling. Can be null.
+     */
     public static void removeMute(Guild guild, String userId, MessageReceivedEvent event) {
-        try (PreparedStatement statement = DatabaseConnector.getConn().
-                prepareStatement("SELECT shepard_func.remove_mute(?,?)")) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.remove_mute(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, userId);
             statement.execute();
@@ -65,12 +81,19 @@ class Mutes {
         mutedUsersDirty.put(guild.getId(), true);
     }
 
+    /**
+     * Get the muted users on a guild.
+     *
+     * @param guild Guild object for lookup
+     * @param event event from command sending for error handling. Can be null.
+     * @return List of muted users on a server.
+     */
     public static List<String> getMutedUsers(Guild guild, MessageReceivedEvent event) {
         if (lastRefresh.isBefore(LocalDateTime.now().minusMinutes(1))) {
 
 
-            try (PreparedStatement statement = DatabaseConnector.getConn().
-                    prepareStatement("SELECT * from shepard_func.get_muted_users()")) {
+            try (PreparedStatement statement = DatabaseConnector.getConn()
+                    .prepareStatement("SELECT * from shepard_func.get_muted_users()")) {
                 ResultSet result = statement.executeQuery();
 
                 Map<String, List<String>> data = new HashMap<>();
@@ -102,8 +125,6 @@ class Mutes {
             }
 
         }
-
-
         return mutedUsers.getOrDefault(guild.getId(), Collections.emptyList());
     }
 }

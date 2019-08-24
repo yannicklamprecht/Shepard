@@ -1,6 +1,6 @@
 package de.chojo.shepard.collections;
 
-import de.chojo.shepard.contexts.reactionMessages.ReactionMessage;
+import de.chojo.shepard.contexts.reactionmessages.ReactionMessage;
 
 import java.util.ArrayList;
 
@@ -20,9 +20,12 @@ public class ReactionMessageCollection {
         return instance;
     }
 
-    private ReactionMessageCollection(){}
+    private ReactionMessageCollection() {
+    }
 
-    public void addReactionMessage(ReactionMessage message) { messages.add(message); }
+    public void addReactionMessage(ReactionMessage message) {
+        messages.add(message);
+    }
 
     public ReactionMessage get(String messageId) {
         for (ReactionMessage message : messages) {

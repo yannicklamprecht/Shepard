@@ -12,6 +12,9 @@ import static de.chojo.shepard.contexts.ContextHelper.getContextName;
 
 public class ManageContext extends Command {
 
+    /**
+     * Creates a new manage context command object.
+     */
     public ManageContext() {
         commandName = "manageContext";
         commandAliases = new String[] {"mc"};
@@ -19,7 +22,7 @@ public class ManageContext extends Command {
         arguments = new CommandArg[] {
                 new CommandArg("context name", "Name of the context to change", true),
                 new CommandArg("action", "setNSFW | setAdminOnly", true),
-                new CommandArg("value" ,  "True or False", true)};
+                new CommandArg("value", "True or False", true)};
     }
 
     @Override
@@ -32,11 +35,11 @@ public class ManageContext extends Command {
             return true;
         }
 
-        if(args[1].equalsIgnoreCase("setNSFW")){
+        if (args[1].equalsIgnoreCase("setNSFW")) {
             setNsfw(args, contextName, receivedEvent);
         }
 
-        if(args[1].equalsIgnoreCase("setadminonly")){
+        if (args[1].equalsIgnoreCase("setadminonly")) {
             setAdminOnly(args, contextName, receivedEvent);
         }
         return false;
@@ -45,7 +48,7 @@ public class ManageContext extends Command {
     private void setAdminOnly(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
-        if(bState == BooleanState.UNDEFINED){
+        if (bState == BooleanState.UNDEFINED) {
             Messages.sendSimpleError("Invalid input. Only 'true' and 'false' are valid inputs.",
                     receivedEvent.getChannel());
             return;
@@ -56,11 +59,13 @@ public class ManageContext extends Command {
         Context.setContextAdmin(contextName, state, receivedEvent);
 
         if (state) {
-            Messages.sendMessage("**Activated admin and permission check for context \"" + contextName.toUpperCase() + "\"**",
+            Messages.sendMessage("**Activated admin and permission check for context \""
+                            + contextName.toUpperCase() + "\"**",
                     receivedEvent.getChannel());
 
         } else {
-            Messages.sendMessage("**Deactivated admin and permission check for context \"" + contextName.toUpperCase() + "\"**",
+            Messages.sendMessage("**Deactivated admin and permission check for context \""
+                            + contextName.toUpperCase() + "\"**",
                     receivedEvent.getChannel());
         }
     }
@@ -68,7 +73,7 @@ public class ManageContext extends Command {
     private void setNsfw(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
-        if(bState == BooleanState.UNDEFINED){
+        if (bState == BooleanState.UNDEFINED) {
             Messages.sendSimpleError("Invalid input. Only 'true' and 'false' are valid inputs.",
                     receivedEvent.getChannel());
             return;
@@ -76,7 +81,7 @@ public class ManageContext extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
-        Context.setContextNsfw(contextName, state,receivedEvent);
+        Context.setContextNsfw(contextName, state, receivedEvent);
 
         if (state) {
             Messages.sendMessage("**Activated NSFW check for context \"" + contextName.toUpperCase() + "\"**",

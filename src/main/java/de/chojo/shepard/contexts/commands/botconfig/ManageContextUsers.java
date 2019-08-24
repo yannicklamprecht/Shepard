@@ -19,6 +19,9 @@ import java.util.List;
 import static de.chojo.shepard.contexts.ContextHelper.getContextName;
 
 public class ManageContextUsers extends Command {
+    /**
+     * Creates a new Manage context user command object.
+     */
     public ManageContextUsers() {
         commandName = "manageContextUser";
         commandAliases = new String[] {"mcu"};
@@ -27,7 +30,8 @@ public class ManageContextUsers extends Command {
                 new CommandArg("context name", "Name of the context to change", true),
                 new CommandArg("action", "setActive|setListType|addUser|removeUser", true),
                 new CommandArg("value", "setActive -> 'true' or 'false'" + System.lineSeparator()
-                        + "setListType -> 'BLACKLIST' or 'WHITELIST'. Defines as which Type the user list should be used" + System.lineSeparator()
+                        + "setListType -> 'BLACKLIST' or 'WHITELIST'."
+                        + "Defines as which Type the user list should be used" + System.lineSeparator()
                         + "addUser -> Add a user to the list (Multiple user possible)" + System.lineSeparator()
                         + "removeUser -> Removes a user from the list (Multiple user possible", true)};
     }
@@ -68,7 +72,8 @@ public class ManageContextUsers extends Command {
         return true;
     }
 
-    private void manageUser(String[] args, String contextName, ModifyType modifyType, MessageReceivedEvent receivedEvent) {
+    private void manageUser(String[] args, String contextName,
+                            ModifyType modifyType, MessageReceivedEvent receivedEvent) {
         List<String> mentions = new ArrayList<>();
 
         for (String s : Arrays.copyOfRange(args, 2, args.length)) {
@@ -88,21 +93,23 @@ public class ManageContextUsers extends Command {
         String names = String.join(System.lineSeparator(), mentions);
 
         if (modifyType == ModifyType.ADD) {
-            Messages.sendSimpleTextBox("Added following users to context \"" + contextName.toUpperCase() + "\"", names,
+            Messages.sendSimpleTextBox("Added following users to context \""
+                            + contextName.toUpperCase() + "\"", names,
                     receivedEvent.getChannel());
         } else {
-            Messages.sendSimpleTextBox("Removed following users from context \"" + contextName.toUpperCase() + "\"", names,
+            Messages.sendSimpleTextBox("Removed following users from context \""
+                            + contextName.toUpperCase() + "\"", names,
                     receivedEvent.getChannel());
         }
 
     }
 
     private void addUser(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
-        manageUser(args,contextName,ModifyType.ADD, receivedEvent);
+        manageUser(args, contextName, ModifyType.ADD, receivedEvent);
     }
 
     private void removeUser(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
-        manageUser(args,contextName,ModifyType.REMOVE, receivedEvent);
+        manageUser(args, contextName, ModifyType.REMOVE, receivedEvent);
     }
 
 
@@ -125,7 +132,7 @@ public class ManageContextUsers extends Command {
     private void setActive(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
-        if(bState == BooleanState.UNDEFINED){
+        if (bState == BooleanState.UNDEFINED) {
             Messages.sendSimpleError("Invalid input. Only 'true' and 'false' are valid inputs.",
                     receivedEvent.getChannel());
             return;

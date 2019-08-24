@@ -9,9 +9,11 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Arrays;
 
+@Deprecated
 public class RegisterInviteLink extends Command {
-// TODO: Implement new Database functions
-
+    /**
+     * Creates a new Register Incite Link object.
+     */
     public RegisterInviteLink() {
         commandName = "registerInviteLink";
         commandDesc = "Registers an invite link for the server";
@@ -27,7 +29,7 @@ public class RegisterInviteLink extends Command {
                 .findAny()
                 .orElseThrow(() -> new CommandException("No invite found"));
         String name = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-        Invites.addInvite(receivedEvent.getGuild().getId(), invite.getCode(), name, invite.getUses(), receivedEvent);
+        Invites.addInvite(receivedEvent.getGuild(), invite.getCode(), name, invite.getUses(), receivedEvent);
         return true;
     }
 }

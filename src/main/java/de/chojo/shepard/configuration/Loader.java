@@ -10,22 +10,30 @@ public final class Loader {
 
     private Config config;
 
-    private Loader(){
+    private Loader() {
         reloadConfig();
     }
 
-    public static Loader getConfigLoader(){
-        if(loader == null){
+    /**
+     * Get config loader instance.
+     * @return return Loader instance
+     */
+    public static Loader getConfigLoader() {
+        if (loader == null) {
             loader = new Loader();
         }
         return loader;
     }
 
+    /**
+     * Get config.
+     * @return config object
+     */
     public Config getConfig() {
         return config;
     }
 
-    private void reloadConfig(){
+    private void reloadConfig() {
         Yaml yaml = new Yaml(new Constructor(Config.class));
         InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("config.yml");
         this.config = yaml.load(inputStream);

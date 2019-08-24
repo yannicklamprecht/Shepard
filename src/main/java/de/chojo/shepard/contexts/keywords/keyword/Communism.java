@@ -6,7 +6,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Communism extends Keyword {
 
-    public Communism(){
+    /**
+     * Creates a new communism keyword object.
+     */
+    public Communism() {
         keywords = new String[] {"communism", "kommunismus", "stalin"};
     }
 

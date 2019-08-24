@@ -4,17 +4,41 @@ import de.chojo.shepard.collections.CommandCollection;
 import de.chojo.shepard.collections.KeyWordCollection;
 import de.chojo.shepard.configuration.Config;
 import de.chojo.shepard.configuration.Loader;
-import de.chojo.shepard.listener.*;
 import de.chojo.shepard.contexts.commands.admin.ShowKeyword;
 import de.chojo.shepard.contexts.commands.botconfig.ManageContext;
 import de.chojo.shepard.contexts.commands.botconfig.ManageContextUsers;
-import de.chojo.shepard.contexts.commands.fun.*;
 import de.chojo.shepard.contexts.commands.admin.RegisterInviteLink;
 import de.chojo.shepard.contexts.commands.admin.SetGreetingChannel;
 import de.chojo.shepard.contexts.commands.admin.SetPrefix;
 import de.chojo.shepard.contexts.commands.exklusive.*;
-import de.chojo.shepard.contexts.commands.util.*;
-import de.chojo.shepard.contexts.keywords.keyword.*;
+import de.chojo.shepard.contexts.commands.fun.MagicConch;
+import de.chojo.shepard.contexts.commands.fun.Oha;
+import de.chojo.shepard.contexts.commands.fun.Owo;
+import de.chojo.shepard.contexts.commands.fun.Owod;
+import de.chojo.shepard.contexts.commands.fun.RandomJoke;
+import de.chojo.shepard.contexts.commands.fun.Sayd;
+import de.chojo.shepard.contexts.commands.fun.Uwu;
+import de.chojo.shepard.contexts.commands.fun.Uwud;
+import de.chojo.shepard.contexts.commands.util.GetRaw;
+import de.chojo.shepard.contexts.commands.util.Help;
+import de.chojo.shepard.contexts.commands.util.HireMe;
+import de.chojo.shepard.contexts.commands.util.ListServer;
+import de.chojo.shepard.contexts.commands.util.Test;
+import de.chojo.shepard.contexts.commands.util.UserInfo;
+import de.chojo.shepard.contexts.keywords.keyword.AmIRight;
+import de.chojo.shepard.contexts.keywords.keyword.CommanderQuestion;
+import de.chojo.shepard.contexts.keywords.keyword.Communism;
+import de.chojo.shepard.contexts.keywords.keyword.DariNope;
+import de.chojo.shepard.contexts.keywords.keyword.DariYes;
+import de.chojo.shepard.contexts.keywords.keyword.Mlp;
+import de.chojo.shepard.contexts.keywords.keyword.Normandy;
+import de.chojo.shepard.contexts.keywords.keyword.Nudes;
+import de.chojo.shepard.contexts.keywords.keyword.Thing;
+import de.chojo.shepard.listener.CommandListener;
+import de.chojo.shepard.listener.JoinListener;
+import de.chojo.shepard.listener.KeyWordListener;
+import de.chojo.shepard.listener.LogListener;
+import de.chojo.shepard.listener.MessageSniffer;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
@@ -103,10 +127,18 @@ public class ShepardBot {
         KeyWordCollection.getInstance().debug();
     }
 
+    /**
+     * Gets the jda.
+     * @return JDA object
+     */
     public static JDA getJDA() {
         return jda;
     }
 
+    /**
+     * Get the config.
+     * @return Config object
+     */
     public static Config getConfig() {
         return config;
     }

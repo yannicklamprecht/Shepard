@@ -6,6 +6,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class DariYes extends Keyword {
 
+    /**
+     * Creates a new dari yes keyword.
+     */
     public DariYes() {
         keywords = new String[]{"nein", "no", "oder?", "nope"};
     }

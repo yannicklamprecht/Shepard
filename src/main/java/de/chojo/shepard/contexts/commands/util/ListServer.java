@@ -5,6 +5,7 @@ import de.chojo.shepard.ShepardBot;
 import de.chojo.shepard.contexts.commands.Command;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,16 +16,18 @@ import java.util.List;
  */
 public class ListServer extends Command {
 
+    /**
+     * Creates a new list server command object.
+     */
     public ListServer() {
         commandName = "listServer";
-        commandAliases = new String[]{"serverList", "servers", "server"};
+        commandAliases = new String[] {"serverList", "servers", "server"};
         commandDesc = "Lists all Server where Shepard is online";
     }
 
     @Override
     public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         List<Guild> guilds = ShepardBot.getJDA().getGuilds();
-        String message = "I am currently serving " + guilds.size() + " server:\n";
         String[][] text = new String[guilds.size()][3];
         int sizeName = 0;
         int sizeOwner = 0;
@@ -50,19 +53,22 @@ public class ListServer extends Command {
         //Build Message
         String messagepart = "```json\n";
         for (int i = 0; i < guilds.size(); i++) {
-            messagepart = messagepart.concat("\"" + fillString(text[i][0] + "\"", sizeName + 1) + " by " + fillString(text[i][1], sizeOwner) + " since: " + fillString(text[i][2], sizeSince) + "\n");
+            messagepart = messagepart.concat("\"" + fillString(text[i][0] + "\"", sizeName + 1)
+                    + " by " + fillString(text[i][1], sizeOwner) + " since: "
+                    + fillString(text[i][2], sizeSince) + "\n");
         }
         messagepart = messagepart.concat("```");
 
+        String message = "I am currently serving " + guilds.size() + " server:\n";
         Messages.sendMessage(message.concat(messagepart), receivedEvent.getChannel());
         return true;
     }
 
     private String fillString(String string, int fill) {
         int charsToFill = fill - string.length();
-        for (int i = 0; i < charsToFill; i++) {
-            string = string.concat(" ");
-        }
+        StringBuilder result = new StringBuilder();
+        result.append(string)
+                .append(" ".repeat(charsToFill));
         return string;
     }
 }
