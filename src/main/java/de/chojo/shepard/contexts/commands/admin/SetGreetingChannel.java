@@ -2,6 +2,10 @@ package de.chojo.shepard.contexts.commands.admin;
 
 import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.commands.CommandArg;
+import de.chojo.shepard.database.queries.Greetings;
+import de.chojo.shepard.messagehandler.Messages;
+import net.dv8tion.jda.api.entities.Invite;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.regex.Matcher;
@@ -24,11 +28,13 @@ public class SetGreetingChannel extends Command {
             receivedEvent.getChannel().sendMessage("NEEEE " + args[1]).queue();
         }
         String channelId = matcher.group(1);
-        if (receivedEvent.getGuild().getTextChannelById(channelId) == null) {
+        TextChannel channel = receivedEvent.getGuild().getTextChannelById(channelId);
+        if (channel == null) {
+            Messages.sendSimpleError("Invalid Channel", receivedEvent.getChannel());
             return false; // invalid channel
         }
-        //DatabaseQuery.saveGreetingChannel(receivedEvent.getGuild().getId(), channelId);
-        //receivedEvent.getChannel().sendMessage(String.format("Es wird nun in %s gegrüßt!", args[1])).queue();
+        Greetings.setGreetingChannel(receivedEvent.getGuild().getId(), channelId, receivedEvent);
+        Messages.sendMessage("I will greet every newcomer in " + channel.getAsMention(), receivedEvent.getChannel());
         return true;
     }
 }
