@@ -2,6 +2,7 @@ package de.chojo.shepard.database.queries;
 
 import de.chojo.shepard.database.DatabaseConnector;
 import de.chojo.shepard.database.types.MinecraftLink;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.PreparedStatement;
@@ -11,7 +12,9 @@ import java.sql.SQLException;
 import static de.chojo.shepard.database.DbUtil.getIdRaw;
 import static de.chojo.shepard.database.DbUtil.handleException;
 
-public class MinecraftLinks {
+class MinecraftLinks {
+    private MinecraftLinks(){}
+
     public static void setMinecraftLink(String userId, String uuid, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.set_minecraft_link(?,?)")) {
@@ -23,13 +26,13 @@ public class MinecraftLinks {
         }
     }
 
-    public static MinecraftLink getLinkByUserId(String userId, MessageReceivedEvent event) {
+    public static MinecraftLink getLinkByUserId(User user, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT * from shepard_func.get_minecraft_link_user_id(?)")) {
-            statement.setString(1, getIdRaw(userId));
+            statement.setString(1, getIdRaw(user.getId()));
             ResultSet result = statement.executeQuery();
             if (result.next()) {
-                return new MinecraftLink(userId, result.getString("uuid"));
+                return new MinecraftLink(user, result.getString("uuid"));
             }
         } catch (SQLException e) {
             handleException(e, event);
@@ -62,7 +65,7 @@ public class MinecraftLinks {
         }
     }
 
-    public static String getUuidByCode(String code, MessageReceivedEvent event) {
+    public static String getUUIDByCode(String code, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT * from shepard_func.add_minecraft_link_code(?)")) {
             statement.setString(1, code);

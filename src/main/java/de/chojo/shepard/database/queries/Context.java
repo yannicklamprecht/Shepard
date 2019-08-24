@@ -3,6 +3,7 @@ package de.chojo.shepard.database.queries;
 import de.chojo.shepard.database.DatabaseConnector;
 import de.chojo.shepard.database.ListType;
 import de.chojo.shepard.database.types.ContextData;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.PreparedStatement;
@@ -17,19 +18,20 @@ import java.util.Map;
 import static de.chojo.shepard.database.DbUtil.getIdRaw;
 import static de.chojo.shepard.database.DbUtil.handleException;
 
-@SuppressWarnings("SqlDialectInspection")
 public final class Context {
     //Map with context
-    private static Map<String, Map<String, List<String>>> userPermissions = new HashMap<>();
-    private static Map<String, Map<String, List<String>>> rolePermissions = new HashMap<>();
-    private static Map<String, ContextData> contextData = new HashMap<>();
+    private static final Map<String, Map<String, List<String>>> userPermissions = new HashMap<>();
+    private static final Map<String, Map<String, List<String>>> rolePermissions = new HashMap<>();
+    private static final Map<String, ContextData> contextData = new HashMap<>();
 
-    private static Map<String, Boolean> contextDataDirty = new HashMap<>();
-    private static Map<String, Boolean> userPermissionDirty = new HashMap<>();
-    private static Map<String, Boolean> rolePermissionDirty = new HashMap<>();
+    private static final Map<String, Boolean> contextDataDirty = new HashMap<>();
+    private static final Map<String, Boolean> userPermissionDirty = new HashMap<>();
+    private static final Map<String, Boolean> rolePermissionDirty = new HashMap<>();
+
+    private Context(){}
 
     /**
-     * Adds a user to a context list
+     * Adds a user to a context list.
      * @param contextName context zo change
      * @param userId user to add
      */
@@ -103,16 +105,16 @@ public final class Context {
     /**
      * Adds a context user permission on a guild
      * @param contextName context name to change
-     * @param guildId guild id where the permission should be added
+     * @param guild guild id where the permission should be added
      * @param userId user which should be added
      */
-    public static void addContextUserPermission(String contextName, String guildId, String userId, MessageReceivedEvent event) {
+    public static void addContextUserPermission(String contextName, Guild guild, String userId, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.add_context_user_permission(?,?,?)")) {
             statement.setString(1, contextName);
-            statement.setString(2, getIdRaw(guildId));
+            statement.setString(2, getIdRaw(guild.getId()));
             statement.setString(3, getIdRaw(userId));
             statement.execute();
         } catch (SQLException e) {
@@ -123,16 +125,16 @@ public final class Context {
     /**
      * Removes a context user permission on a guild
      * @param contextName context name to change
-     * @param guildId guild id where the permission should be removed
+     * @param guild guild id where the permission should be removed
      * @param userId user which should be removed
      */
-    public static void removeContextUserPermission(String contextName, String guildId, String userId, MessageReceivedEvent event) {
+    public static void removeContextUserPermission(String contextName, Guild guild, String userId, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.remove_context_user_permission(?,?,?)")) {
             statement.setString(1, contextName);
-            statement.setString(2, getIdRaw(guildId));
+            statement.setString(2, getIdRaw(guild.getId()));
             statement.setString(3, getIdRaw(userId));
             statement.execute();
         } catch (SQLException e) {
@@ -143,16 +145,16 @@ public final class Context {
     /**
      * Adds a context role permission on a guild
      * @param contextName context name to change
-     * @param guildId guild id where the permission should be added
+     * @param guild guild id where the permission should be added
      * @param roleId role which should be added
      */
-    public static void addContextRolePermission(String contextName, String guildId, String roleId, MessageReceivedEvent event) {
+    public static void addContextRolePermission(String contextName, Guild guild, String roleId, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.add_context_role_permission(?,?,?)")) {
             statement.setString(1, contextName);
-            statement.setString(2, getIdRaw(guildId));
+            statement.setString(2, getIdRaw(guild.getId()));
             statement.setString(3, getIdRaw(roleId));
             statement.execute();
         } catch (SQLException e) {
@@ -163,16 +165,16 @@ public final class Context {
     /**
      * Removes a context role permission on a guild
      * @param contextName context name to change
-     * @param guildId guild id where the permission should be removed
+     * @param guild guild id where the permission should be removed
      * @param roleId role which should be removed
      */
-    public static void removeContextRolePermission(String contextName, String guildId, String roleId, MessageReceivedEvent event) {
+    public static void removeContextRolePermission(String contextName, Guild guild, String roleId, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.remove_context_role_permission(?,?,?)")) {
             statement.setString(1, contextName);
-            statement.setString(2, getIdRaw(guildId));
+            statement.setString(2, getIdRaw(guild.getId()));
             statement.setString(3, getIdRaw(roleId));
             statement.execute();
         } catch (SQLException e) {
@@ -308,7 +310,7 @@ public final class Context {
             if (result.next()) {
                 ContextData data = new ContextData();
 
-                data.setAdmin_only(result.getBoolean("admin_only"));
+                data.setAdminOnly(result.getBoolean("admin_only"));
                 data.setNsfw(result.getBoolean("nsfw"));
                 data.setUserCheckActive(result.getBoolean("user_check_active"));
                 data.setUserListType(ListType.getType(result.getString("user_list_type")));

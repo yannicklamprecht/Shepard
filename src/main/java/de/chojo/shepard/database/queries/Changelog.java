@@ -1,6 +1,7 @@
 package de.chojo.shepard.database.queries;
 
 import de.chojo.shepard.database.DatabaseConnector;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.PreparedStatement;
@@ -10,53 +11,56 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static de.chojo.shepard.database.DbUtil.getIdRaw;
 import static de.chojo.shepard.database.DbUtil.handleException;
 
-public class Changelog {
-    public static void addRole(String guildId, String roleId, MessageReceivedEvent event){
+final class Changelog {
+
+    private Changelog(){}
+    public static void addRole(Guild guild, String roleId, MessageReceivedEvent event){
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.add_changelog_role(?,?)")) {
-            statement.setString(1, guildId);
+            statement.setString(1, guild.getId());
             statement.setString(2, roleId);
             statement.execute();
         } catch (SQLException e) {
             handleException(e,event);
         }
     }
-    public static void removeRole(String guildId, String roleId, MessageReceivedEvent event){
+    public static void removeRole(Guild guild, String roleId, MessageReceivedEvent event){
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.remove_changelog_role(?,?)")) {
-            statement.setString(1, guildId);
+            statement.setString(1, guild.getId());
             statement.setString(2, roleId);
             statement.execute();
         } catch (SQLException e) {
             handleException(e,event);
         }
     }
-    public static void setChannel(String guildId, String channelId, MessageReceivedEvent event){
+    public static void setChannel(Guild guild, String channelId, MessageReceivedEvent event){
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.set_changelog_channel(?,?)")) {
-            statement.setString(1, guildId);
-            statement.setString(2, channelId);
+            statement.setString(1, guild.getId());
+            statement.setString(2, getIdRaw(channelId));
             statement.execute();
         } catch (SQLException e) {
             handleException(e,event);
         }
     }
-    public static void removeChannel(String guildId, MessageReceivedEvent event){
+    public static void removeChannel(Guild guild, MessageReceivedEvent event){
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.remove_changelog_channel(?)")) {
-            statement.setString(1, guildId);
+            statement.setString(1, guild.getId());
             statement.execute();
         } catch (SQLException e) {
             handleException(e,event);
         }
     }
 
-    public static List<String> getRoles(String guildId, MessageReceivedEvent event) {
+    public static List<String> getRoles(Guild guild, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.get_changelog_roles(?)")) {
-            statement.setString(1, guildId);
+            statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
             if (result.getArray(1) != null) {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
@@ -66,10 +70,10 @@ public class Changelog {
         }
         return Collections.emptyList();
     }
-    public static String getChannel(String guildId, MessageReceivedEvent event) {
+    public static String getChannel(Guild guild, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn().
                 prepareStatement("SELECT shepard_func.get_changelog_channel(?)")) {
-            statement.setString(1, guildId);
+            statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
             if (result.next()) {
                 return result.getString(1);
