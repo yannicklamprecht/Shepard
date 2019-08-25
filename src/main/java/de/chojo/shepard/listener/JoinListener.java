@@ -18,18 +18,20 @@ public class JoinListener extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         List<Invite> invites = event.getGuild().retrieveInvites().complete();
         List<DatabaseInvite> databaseInvites = Invites.getInvites(event.getGuild(), null);
-        
+
+        Greeting greeting = Greetings.getGreeting(event.getGuild());
+        if (greeting == null) return;
+        MessageChannel channel = greeting.getChannel();
+        if (channel == null) return;
         for (Invite invite : invites) {
             var dInvite = databaseInvites.stream()
                     .filter(inv -> inv.getCode().equals(invite.getCode())).findAny();
             if (dInvite.isEmpty()) continue;
             if (invite.getUses() != dInvite.get().getUsedCount()) {
-                Greeting greeting = Greetings.getGreeting(event.getGuild());
                 Invites.upcountInvite(event.getGuild(), invite.getCode(), null);
-                if (greeting == null) return;
-                MessageChannel channel = greeting.getChannel();
                 MessageSender.sendGreeting(event, greeting, dInvite.get().getSource(), channel);
             }
         }
+        MessageSender.sendGreeting(event, greeting, null, channel);
     }
 }

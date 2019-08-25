@@ -162,16 +162,19 @@ public class MessageSender {
     /**
      * sends a greeting text.
      *
-     * @param event   event to log
-     * @param channel channel to log
-     * @param source  invite source
+     * @param event    event to log
+     * @param channel  channel to log
+     * @param source   invite source
      * @param greeting Greeting object
      */
     public static void sendGreeting(GuildMemberJoinEvent event, Greeting greeting,
                                     String source, MessageChannel channel) {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setThumbnail(event.getUser().getAvatarUrl())
-                .setFooter("Joined via " + source);
+        builder.setThumbnail(event.getUser().getAvatarUrl());
+        if (source != null) {
+            builder.setFooter("Joined via " + source);
+
+        }
         User user = event.getUser();
         String message = greeting.getText().replace("{user_name}", user.getName())
                 .replace("{user_tag}", user.getAsTag())
