@@ -2,6 +2,8 @@ package de.chojo.shepard.database.queries;
 
 import de.chojo.shepard.database.DatabaseConnector;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.PreparedStatement;
@@ -11,7 +13,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static de.chojo.shepard.database.DatabaseConnector.close;
 import static de.chojo.shepard.database.DbUtil.getIdRaw;
 import static de.chojo.shepard.database.DbUtil.handleException;
 
@@ -24,16 +25,15 @@ public final class Changelog {
      * Adds a role to changelog observation.
      *
      * @param guild  guild on which the role should be added
-     * @param roleId id of the role id of the role
+     * @param role id of the role id of the role
      * @param event  event from command sending for error handling. Can be null.
      */
-    public static void addRole(Guild guild, String roleId, MessageReceivedEvent event) {
+    public static void addRole(Guild guild, Role role, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_changelog_role(?,?)")) {
             statement.setString(1, guild.getId());
-            statement.setString(2, roleId);
+            statement.setString(2, role.getId());
             statement.execute();
-            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -44,16 +44,15 @@ public final class Changelog {
      * Remove a role from changelog observation.
      *
      * @param guild  Guild object for lookup
-     * @param roleId id of the role
+     * @param role id of the role
      * @param event  event from command sending for error handling. Can be null.
      */
-    public static void removeRole(Guild guild, String roleId, MessageReceivedEvent event) {
+    public static void removeRole(Guild guild, Role role, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_changelog_role(?,?)")) {
             statement.setString(1, guild.getId());
-            statement.setString(2, roleId);
+            statement.setString(2, role.getId());
             statement.execute();
-            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -63,16 +62,15 @@ public final class Changelog {
      * Sets the changelog channel.
      *
      * @param guild     Guild object for lookup
-     * @param channelId Id of the channel
+     * @param channel Id of the channel
      * @param event     event from command sending for error handling. Can be null.
      */
-    public static void setChannel(Guild guild, String channelId, MessageReceivedEvent event) {
+    public static void setChannel(Guild guild, TextChannel channel, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_changelog_channel(?,?)")) {
             statement.setString(1, guild.getId());
-            statement.setString(2, getIdRaw(channelId));
+            statement.setString(2, channel.getId());
             statement.execute();
-            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -89,7 +87,6 @@ public final class Changelog {
                 .prepareStatement("SELECT shepard_func.remove_changelog_channel(?)")) {
             statement.setString(1, guild.getId());
             statement.execute();
-            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -110,7 +107,6 @@ public final class Changelog {
             if (result.getArray(1) != null) {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
-            close(statement, result);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -132,7 +128,6 @@ public final class Changelog {
             if (result.next()) {
                 return result.getString(1);
             }
-            close(statement, result);
         } catch (SQLException e) {
             handleException(e, event);
         }

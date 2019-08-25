@@ -83,14 +83,16 @@ public class ManageContextUsers extends Command {
                             ModifyType modifyType, MessageReceivedEvent receivedEvent) {
         List<String> mentions = new ArrayList<>();
 
-        for (String s : Arrays.copyOfRange(args, 2, args.length)) {
-            if (Verifier.isValidId(s)) {
-                User user = ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(s));
+        for (String userId : Arrays.copyOfRange(args, 2, args.length)) {
+            if (Verifier.isValidId(userId)) {
+                User user = ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(userId));
                 if (user != null) {
                     if (modifyType == ModifyType.ADD) {
-                        Context.addContextUser(contextName, s, receivedEvent);
+
+
+                        Context.addContextUser(contextName, user, receivedEvent);
                     } else {
-                        Context.removeContextUser(contextName, s, receivedEvent);
+                        Context.removeContextUser(contextName, user, receivedEvent);
                     }
                     mentions.add(user.getAsMention());
                 }

@@ -3,7 +3,9 @@ package de.chojo.shepard.database.queries;
 import de.chojo.shepard.database.DatabaseConnector;
 import de.chojo.shepard.database.types.Address;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.w3c.dom.Text;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +13,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.chojo.shepard.database.DatabaseConnector.close;
 import static de.chojo.shepard.database.DbUtil.handleException;
 
 public final class Monitoring {
@@ -34,7 +35,6 @@ public final class Monitoring {
             statement.setString(2, address);
             statement.setString(3, name);
             statement.execute();
-            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -62,14 +62,14 @@ public final class Monitoring {
      * Sets the monitoring channel of the guild.
      *
      * @param guild     Guild object for which the channel should be set
-     * @param channelId iod of the channel
+     * @param channel iod of the channel
      * @param event     event from command sending for error handling. Can be null.
      */
-    public static void setMonitoringChannel(Guild guild, String channelId, MessageReceivedEvent event) {
+    public static void setMonitoringChannel(Guild guild, TextChannel channel, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_monitoring_channel(?,?)")) {
             statement.setString(1, guild.getId());
-            statement.setString(2, channelId);
+            statement.setString(2, channel.getId());
             statement.execute();
         } catch (SQLException e) {
             handleException(e, event);

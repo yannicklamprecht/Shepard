@@ -3,13 +3,14 @@ package de.chojo.shepard.database.queries;
 import de.chojo.shepard.database.DatabaseConnector;
 import de.chojo.shepard.database.types.Greeting;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.w3c.dom.Text;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static de.chojo.shepard.database.DatabaseConnector.close;
 import static de.chojo.shepard.database.DbUtil.handleException;
 
 public final class Greetings {
@@ -21,16 +22,15 @@ public final class Greetings {
      * Sets a greeting channel for a guild.
      *
      * @param guild     Guild object for which the channel should be added
-     * @param channelId channel which should be used for greetings
+     * @param channel channel which should be used for greetings
      * @param event     event from command sending for error handling. Can be null.
      */
-    public static void setGreetingChannel(Guild guild, String channelId, MessageReceivedEvent event) {
+    public static void setGreetingChannel(Guild guild, TextChannel channel, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_greeting_channel(?,?)")) {
             statement.setString(1, guild.getId());
-            statement.setString(2, channelId);
+            statement.setString(2, channel.getId());
             statement.execute();
-            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -47,7 +47,6 @@ public final class Greetings {
                 .prepareStatement("SELECT shepard_func.remove_greeting_channel(?)")) {
             statement.setString(1, guild.getId());
             statement.execute();
-            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -66,7 +65,6 @@ public final class Greetings {
             statement.setString(1, guild.getId());
             statement.setString(2, text);
             statement.execute();
-            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -89,7 +87,6 @@ public final class Greetings {
                         result.getString("message"));
             }
 
-            close(statement);
         } catch (SQLException e) {
             handleException(e, null);
         }

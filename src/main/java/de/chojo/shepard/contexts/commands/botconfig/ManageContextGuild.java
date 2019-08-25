@@ -91,14 +91,14 @@ public class ManageContextGuild extends Command {
                              ModifyType modifyType, MessageReceivedEvent receivedEvent) {
         List<String> mentions = new ArrayList<>();
 
-        for (String s : Arrays.copyOfRange(args, 2, args.length)) {
-            if (Verifier.isValidId(s)) {
-                Guild guild = ShepardBot.getJDA().getGuildById(DbUtil.getIdRaw(s));
+        for (String guildId : Arrays.copyOfRange(args, 2, args.length)) {
+            if (Verifier.isValidId(guildId)) {
+                Guild guild = ShepardBot.getJDA().getGuildById(DbUtil.getIdRaw(guildId));
                 if (guild != null) {
                     if (modifyType == ModifyType.ADD) {
-                        Context.addContextGuild(contextName, s, receivedEvent);
+                        Context.addContextGuild(contextName, guild, receivedEvent);
                     } else {
-                        Context.removeContextGuild(contextName, s, receivedEvent);
+                        Context.removeContextGuild(contextName, guild, receivedEvent);
                     }
                     mentions.add(guild.getName());
                 }

@@ -2,6 +2,7 @@ package de.chojo.shepard.database.queries;
 
 import de.chojo.shepard.database.DatabaseConnector;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.PreparedStatement;
@@ -29,15 +30,15 @@ public final class Mutes {
      * Sets a user as muted.
      *
      * @param guild    Guild on which the user should be muted
-     * @param userId   user id
+     * @param user   user id
      * @param duration duration of the mute
      * @param event    event from command sending for error handling. Can be null.
      */
-    public static void setMuted(Guild guild, String userId, String duration, MessageReceivedEvent event) {
+    public static void setMuted(Guild guild, User user, String duration, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_muted(?,?,?)")) {
             statement.setString(1, guild.getId());
-            statement.setString(2, userId);
+            statement.setString(2, user.getId());
             statement.setString(3, duration);
             statement.execute();
         } catch (SQLException e) {
@@ -66,14 +67,14 @@ public final class Mutes {
      * Remove a mute from a user.
      *
      * @param guild  Guild object for lookup
-     * @param userId id of the user
+     * @param user id of the user
      * @param event  event from command sending for error handling. Can be null.
      */
-    public static void removeMute(Guild guild, String userId, MessageReceivedEvent event) {
+    public static void removeMute(Guild guild, User user, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_mute(?,?)")) {
             statement.setString(1, guild.getId());
-            statement.setString(2, userId);
+            statement.setString(2, user.getId());
             statement.execute();
         } catch (SQLException e) {
             handleException(e, event);

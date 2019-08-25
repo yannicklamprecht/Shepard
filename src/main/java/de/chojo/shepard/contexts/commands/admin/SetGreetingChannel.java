@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 @Deprecated
 public class SetGreetingChannel extends Command {
     private static final Pattern CHANNEL_MENTION_PATTERN = Pattern.compile("(?:<#)?(?<id>[0-9]{18})(?:>)?");
@@ -36,8 +37,11 @@ public class SetGreetingChannel extends Command {
             MessageSender.sendSimpleError("Invalid Channel", receivedEvent.getChannel());
             return false; // invalid channel
         }
-        Greetings.setGreetingChannel(receivedEvent.getGuild(), channelId, receivedEvent);
-        MessageSender.sendMessage("I will greet every newcomer in " + channel.getAsMention(), receivedEvent.getChannel());
+
+        Greetings.setGreetingChannel(receivedEvent.getGuild(), channel, receivedEvent);
+        MessageSender.sendMessage("I will greet every newcomer in " + channel.getAsMention(),
+                receivedEvent.getChannel());
+
         return true;
     }
 }

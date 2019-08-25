@@ -9,11 +9,12 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 
 import static de.chojo.shepard.database.DbUtil.handleException;
 
 public final class Prefix {
-    private static final DefaultMap<String, String> prefixes = new DefaultMap<>(ShepardBot.getConfig().getPrefix());
+    private static final Map<String, String> prefixes = new DefaultMap<>(ShepardBot.getConfig().getPrefix());
     private static boolean cacheDirty = true;
 
     private Prefix() {
@@ -57,7 +58,7 @@ public final class Prefix {
         return getPrefix(guild, event);
     }
 
-    private static DefaultMap<String, String> refreshPrefixes(MessageReceivedEvent event) {
+    private static Map<String, String> refreshPrefixes(MessageReceivedEvent event) {
         if (!cacheDirty) {
             return prefixes;
         }

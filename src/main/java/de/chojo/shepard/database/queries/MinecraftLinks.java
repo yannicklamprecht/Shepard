@@ -9,31 +9,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static de.chojo.shepard.database.DatabaseConnector.close;
 import static de.chojo.shepard.database.DbUtil.getIdRaw;
 import static de.chojo.shepard.database.DbUtil.handleException;
 
 public final class MinecraftLinks {
     private MinecraftLinks() {
-    }
-
-    /**
-     * Adds or updates a new minecraft link between a user id and uuid.
-     *
-     * @param userId UserId of user
-     * @param uuid   minecraft uuid
-     * @param event  event from command sending for error handling. Can be null.
-     */
-    public static void setMinecraftLink(String userId, String uuid, MessageReceivedEvent event) {
-        try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT shepard_func.set_minecraft_link(?,?)")) {
-            statement.setString(1, userId);
-            statement.setString(2, uuid);
-            statement.execute();
-            close(statement);
-        } catch (SQLException e) {
-            handleException(e, event);
-        }
     }
 
     /**
@@ -51,7 +31,6 @@ public final class MinecraftLinks {
             if (result.next()) {
                 return new MinecraftLink(user, result.getString("uuid"));
             }
-            close(statement, result);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -73,7 +52,6 @@ public final class MinecraftLinks {
             if (result.next()) {
                 return new MinecraftLink(result.getString("user_id"), uuid.replace("-", ""));
             }
-            close(statement, result);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -93,7 +71,6 @@ public final class MinecraftLinks {
             statement.setString(1, code);
             statement.setString(2, uuid);
             statement.execute();
-            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -115,7 +92,6 @@ public final class MinecraftLinks {
             if (result.next()) {
                 return result.getString(1);
             }
-            close(statement, result);
         } catch (SQLException e) {
             handleException(e, event);
         }

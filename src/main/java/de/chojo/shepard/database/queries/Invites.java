@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.chojo.shepard.database.DatabaseConnector.close;
 import static de.chojo.shepard.database.DatabaseConnector.getConn;
 import static de.chojo.shepard.database.DbUtil.handleException;
 
@@ -38,7 +37,6 @@ public final class Invites {
             statement.setString(3, name);
             statement.setInt(4, count);
             statement.execute();
-            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -65,7 +63,6 @@ public final class Invites {
 
                 invites.add(new DatabaseInvite(code, used, name));
             }
-            close(statement, result);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -85,7 +82,6 @@ public final class Invites {
             statement.setString(1, guild.getId());
             statement.setString(2, code);
             statement.execute();
-            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -104,7 +100,6 @@ public final class Invites {
             statement.setString(1, guild.getId());
             statement.setString(2, code);
             statement.execute();
-            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -132,7 +127,6 @@ public final class Invites {
             statement.execute();
 
             codes.free();
-            close(statement);
         } catch (SQLException e) {
             handleException(e, event);
         }
