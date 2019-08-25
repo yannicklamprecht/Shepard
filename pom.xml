@@ -24,7 +24,7 @@
                     <configuration>
                         <archive>
                             <manifest>
-                                <mainClass>de.chojo.shepard.ShepardBot</mainClass>
+                                <mainClass>de.eldoria.shepard.ShepardBot</mainClass>
                             </manifest>
                         </archive>
                         <descriptorRefs>
