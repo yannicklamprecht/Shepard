@@ -4,13 +4,21 @@ import de.chojo.shepard.collections.CommandCollection;
 import de.chojo.shepard.collections.KeyWordCollection;
 import de.chojo.shepard.configuration.Config;
 import de.chojo.shepard.configuration.Loader;
+<<<<<<< src/main/java/de/chojo/shepard/ShepardBot.java
 import de.chojo.shepard.contexts.commands.admin.Invite;
+=======
+import de.chojo.shepard.contexts.commands.admin.Greeting;
+>>>>>>> src/main/java/de/chojo/shepard/ShepardBot.java
 import de.chojo.shepard.contexts.commands.admin.ShowKeyword;
 import de.chojo.shepard.contexts.commands.botconfig.ContextInfo;
 import de.chojo.shepard.contexts.commands.botconfig.ManageContext;
 import de.chojo.shepard.contexts.commands.botconfig.ManageContextGuild;
 import de.chojo.shepard.contexts.commands.botconfig.ManageContextUsers;
+<<<<<<< src/main/java/de/chojo/shepard/ShepardBot.java
 import de.chojo.shepard.contexts.commands.admin.SetGreetingChannel;
+=======
+import de.chojo.shepard.contexts.commands.admin.RegisterInviteLink;
+>>>>>>> src/main/java/de/chojo/shepard/ShepardBot.java
 import de.chojo.shepard.contexts.commands.admin.SetPrefix;
 import de.chojo.shepard.contexts.commands.exklusive.IsHaddeWorking;
 import de.chojo.shepard.contexts.commands.exklusive.Meetings;
@@ -82,8 +90,13 @@ public class ShepardBot {
                 .addEventListeners(new ManageContextUsers())
                 .addEventListeners(new ManageContextGuild())
                 //admin
+<<<<<<< src/main/java/de/chojo/shepard/ShepardBot.java
                 .addEventListeners(new SetGreetingChannel())
                 .addEventListeners(new Invite())
+=======
+                .addEventListeners(new Greeting())
+                .addEventListeners(new RegisterInviteLink())
+>>>>>>> src/main/java/de/chojo/shepard/ShepardBot.java
                 .addEventListeners(new SetPrefix())
                 .addEventListeners(new ShowKeyword())
                 //exklusive

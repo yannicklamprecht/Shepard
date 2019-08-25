@@ -1,7 +1,9 @@
 package de.chojo.shepard.listener;
 
+import de.chojo.shepard.database.queries.Greetings;
 import de.chojo.shepard.database.queries.Invites;
 import de.chojo.shepard.database.types.DatabaseInvite;
+import de.chojo.shepard.database.types.Greeting;
 import de.chojo.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -16,27 +18,20 @@ public class JoinListener extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         List<Invite> invites = event.getGuild().retrieveInvites().complete();
         List<DatabaseInvite> databaseInvites = Invites.getInvites(event.getGuild(), null);
-        //TODO: compare old and new join count for invites
 
-        //Get Invites from Server DONE
-        //Get Invites from Database DONE
-        //Compare Server & Database invitecount DONE
-        //Write Invite where Counted Up or unknown link DONE
-        //Compare Invites on Server and Database HALBDONE
-        //Remove unvalid links on Database
-        //Save current Invites on database
-
-
+        Greeting greeting = Greetings.getGreeting(event.getGuild());
+        if (greeting == null) return;
+        MessageChannel channel = greeting.getChannel();
+        if (channel == null) return;
         for (Invite invite : invites) {
             var dInvite = databaseInvites.stream()
                     .filter(inv -> inv.getCode().equals(invite.getCode())).findAny();
             if (dInvite.isEmpty()) continue;
             if (invite.getUses() != dInvite.get().getUsedCount()) {
-                //TODO: Add greetings channel
-                MessageChannel channel = event.getGuild().getTextChannelById("");
-                MessageSender.sendGreeting(event, dInvite.get().getSource(), channel);
                 Invites.upcountInvite(event.getGuild(), invite.getCode(), null);
+                MessageSender.sendGreeting(event, greeting, dInvite.get().getSource(), channel);
             }
         }
+        MessageSender.sendGreeting(event, greeting, null, channel);
     }
 }
