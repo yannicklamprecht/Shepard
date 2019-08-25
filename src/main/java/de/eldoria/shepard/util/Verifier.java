@@ -1,6 +1,6 @@
-package de.chojo.shepard.util;
+package de.eldoria.shepard.util;
 
-import de.chojo.shepard.database.DbUtil;
+import de.eldoria.shepard.database.DbUtil;
 
 public class Verifier {
     /**

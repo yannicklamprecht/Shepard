@@ -1,4 +1,4 @@
-package de.chojo.shepard.util;
+package de.eldoria.shepard.util;
 
 import java.util.HashMap;
 
