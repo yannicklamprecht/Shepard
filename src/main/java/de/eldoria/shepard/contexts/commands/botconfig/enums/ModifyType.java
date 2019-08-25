@@ -1,4 +1,4 @@
-package de.eldoria.shepard.contexts.commands.botconfig;
+package de.eldoria.shepard.contexts.commands.botconfig.enums;
 
 public enum ModifyType {
     /**

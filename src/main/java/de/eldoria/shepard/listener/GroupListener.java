@@ -3,7 +3,7 @@ package de.eldoria.shepard.listener;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberRoleAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-class GroupListener extends ListenerAdapter {
+public class GroupListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRoleAdd(GuildMemberRoleAddEvent event) {

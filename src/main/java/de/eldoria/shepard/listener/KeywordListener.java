@@ -5,7 +5,7 @@ import de.eldoria.shepard.contexts.keywords.KeywordArgs;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class KeyWordListener extends ListenerAdapter {
+public class KeywordListener extends ListenerAdapter {
 
     private KeyWordCollection keyWordCollections;
 

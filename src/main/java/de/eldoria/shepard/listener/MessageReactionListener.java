@@ -4,7 +4,7 @@ import de.eldoria.shepard.collections.ReactionMessageCollection;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-class MessageReactionListener extends ListenerAdapter {
+public class MessageReactionListener extends ListenerAdapter {
 
     private ReactionMessageCollection reactionMessageCollection;
 
