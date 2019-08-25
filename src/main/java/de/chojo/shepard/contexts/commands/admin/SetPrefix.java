@@ -1,11 +1,12 @@
 package de.chojo.shepard.contexts.commands.admin;
 
 import de.chojo.shepard.database.queries.Prefix;
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.commands.CommandArg;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+@Deprecated
 public class SetPrefix extends Command {
 
     /**
@@ -20,12 +21,12 @@ public class SetPrefix extends Command {
     @Override
     public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         if (args[0].length() > 2) {
-            Messages.sendSimpleError("Only one or two Chars are allowed as prefix.", receivedEvent.getChannel());
+            MessageSender.sendSimpleError("Only one or two Chars are allowed as prefix.", receivedEvent.getChannel());
             return true;
         }
 
         Prefix.setPrefix(receivedEvent.getGuild(), args[1].trim(), receivedEvent);
-        Messages.sendMessage("Changed prefix to '" + args[1] + "'", receivedEvent.getChannel());
+        MessageSender.sendMessage("Changed prefix to '" + args[1] + "'", receivedEvent.getChannel());
         return true;
     }
 }
