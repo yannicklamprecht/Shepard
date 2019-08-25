@@ -54,7 +54,7 @@ public final class ShepardBot {
 
         instance = new ShepardBot();
 
-        ShepardBot.getInstance().setup();
+        instance.setup();
 
     }
 

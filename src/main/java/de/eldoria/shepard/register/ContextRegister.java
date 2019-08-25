@@ -5,6 +5,8 @@ import de.eldoria.shepard.contexts.commands.admin.Greeting;
 import de.eldoria.shepard.contexts.commands.admin.Invite;
 import de.eldoria.shepard.contexts.commands.admin.Prefix;
 import de.eldoria.shepard.contexts.commands.admin.ShowKeyword;
+import de.eldoria.shepard.contexts.commands.admin.Ticket;
+import de.eldoria.shepard.contexts.commands.admin.TicketSettings;
 import de.eldoria.shepard.contexts.commands.botconfig.ContextInfo;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContext;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContextGuild;
@@ -102,6 +104,8 @@ public final class ContextRegister {
         contextSensitives.add(new Invite());
         contextSensitives.add(new Prefix());
         contextSensitives.add(new ShowKeyword());
+        contextSensitives.add(new TicketSettings());
+        contextSensitives.add(new Ticket());
     }
 
     private static ContextRegister getInstance() {
