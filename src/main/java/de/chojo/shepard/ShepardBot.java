@@ -4,6 +4,7 @@ import de.chojo.shepard.collections.CommandCollection;
 import de.chojo.shepard.collections.KeyWordCollection;
 import de.chojo.shepard.configuration.Config;
 import de.chojo.shepard.configuration.Loader;
+import de.chojo.shepard.contexts.commands.admin.Prefix;
 import de.chojo.shepard.contexts.commands.admin.ShowKeyword;
 import de.chojo.shepard.contexts.commands.botconfig.ContextInfo;
 import de.chojo.shepard.contexts.commands.botconfig.ManageContext;
@@ -11,7 +12,6 @@ import de.chojo.shepard.contexts.commands.botconfig.ManageContextGuild;
 import de.chojo.shepard.contexts.commands.botconfig.ManageContextUsers;
 import de.chojo.shepard.contexts.commands.admin.RegisterInviteLink;
 import de.chojo.shepard.contexts.commands.admin.SetGreetingChannel;
-import de.chojo.shepard.contexts.commands.admin.SetPrefix;
 import de.chojo.shepard.contexts.commands.exklusive.IsHaddeWorking;
 import de.chojo.shepard.contexts.commands.exklusive.Meetings;
 import de.chojo.shepard.contexts.commands.fun.MagicConch;
@@ -84,7 +84,7 @@ public class ShepardBot {
                 //admin
                 .addEventListeners(new SetGreetingChannel())
                 .addEventListeners(new RegisterInviteLink())
-                .addEventListeners(new SetPrefix())
+                .addEventListeners(new Prefix())
                 .addEventListeners(new ShowKeyword())
                 //exklusive
                 .addEventListeners(new IsHaddeWorking())
