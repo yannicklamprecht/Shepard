@@ -43,41 +43,6 @@ public final class DatabaseConnector {
         }
     }
 
-
-    /**
-     * close statement.
-     *
-     * @param stmt statement
-     */
-    public static void close(Statement stmt) {
-        close(stmt, null);
-    }
-
-    /**
-     * close statement.
-     *
-     * @param stmt statement
-     * @param rs   result set
-     */
-    public static void close(Statement stmt, ResultSet rs) {
-        if (rs != null) {
-            try {
-                rs.close();
-            } catch (SQLException e) {
-                handleException(e, null);
-            } // ignore
-        }
-
-        if (stmt != null) {
-            try {
-                stmt.close();
-            } catch (SQLException e) {
-                handleException(e, null);
-            } // ignore
-        }
-    }
-
-
     private static void checkConnection() {
         try {
             if (conn == null || conn.isClosed()) {

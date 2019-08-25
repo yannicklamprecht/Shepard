@@ -66,9 +66,6 @@ public class ListServer extends Command {
 
     private String fillString(String string, int fill) {
         int charsToFill = fill - string.length();
-        StringBuilder result = new StringBuilder();
-        result.append(string)
-                .append(" ".repeat(charsToFill));
-        return string;
+        return  string + " ".repeat(charsToFill);
     }
 }

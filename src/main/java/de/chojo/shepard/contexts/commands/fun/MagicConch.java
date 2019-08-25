@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -46,12 +47,9 @@ public class MagicConch extends Command {
                 throw new IllegalStateException("Unexpected value: " + type);
         }
 
-
-        List<MessageEmbed.Field> fields = new ArrayList<>();
-
-        fields.add(new MessageEmbed.Field("The magic conch says:", word, false));
-
-        MessageSender.sendTextBox(null, fields, receivedEvent.getChannel());
+        MessageSender.sendTextBox(null,
+                Collections.singletonList(new MessageEmbed.Field("The magic conch says:", word, false)),
+                receivedEvent.getChannel());
 
         return true;
     }

@@ -81,11 +81,7 @@ public abstract class ContextSensitive extends ListenerAdapter {
         }
 
 
-        List<Role> memberRoles = Collections.emptyList();
-
-        if (member != null) {
-            memberRoles = member.getRoles();
-        }
+        List<Role> memberRoles = member != null ? member.getRoles() : Collections.emptyList();
 
         List<String> allowedRoles = getRolePermissions(event).get(event.getGuild().getId());
 

@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 public final class DbUtil {
     private static final Pattern ID_PATTERN = Pattern.compile("(?:<[@#!&]{1,2})?(?<id>[0-9]{18})(?:>)?");
 
+    private DbUtil(){}
+
     /**
      * Extracts an id from discord's formatting.
      *

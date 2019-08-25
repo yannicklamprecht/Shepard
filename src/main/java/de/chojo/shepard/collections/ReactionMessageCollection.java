@@ -3,11 +3,12 @@ package de.chojo.shepard.collections;
 import de.chojo.shepard.contexts.reactionmessages.ReactionMessage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ReactionMessageCollection {
     private static ReactionMessageCollection instance;
 
-    private final ArrayList<ReactionMessage> messages = new ArrayList<>();
+    private final List<ReactionMessage> messages = new ArrayList<>();
 
     public static ReactionMessageCollection getInstance() {
         if (instance == null) {

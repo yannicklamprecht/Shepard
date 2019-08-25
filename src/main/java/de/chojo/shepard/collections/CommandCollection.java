@@ -8,7 +8,7 @@ import java.util.List;
 
 public final class CommandCollection {
     private static CommandCollection instance;
-    private final ArrayList<Command> commands = new ArrayList<>();
+    private final List<Command> commands = new ArrayList<>();
 
 
     private CommandCollection() {

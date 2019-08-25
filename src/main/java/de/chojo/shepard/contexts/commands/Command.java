@@ -9,7 +9,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * An abstract class for commands.
@@ -198,10 +200,8 @@ public abstract class Command extends ContextSensitive {
             }
         }
 
-        String argsAsString = "";
-        for (CommandArg arg : arguments) {
-            argsAsString = argsAsString.concat(arg.getArgName() + " ");
-        }
+        String argsAsString =  Arrays.stream(arguments).map(arg -> arg.getArgName()).collect(Collectors.joining(" "));
+
         MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Argument not found!",
                 "Try one of these: " + argsAsString, false)}, channel);
     }
