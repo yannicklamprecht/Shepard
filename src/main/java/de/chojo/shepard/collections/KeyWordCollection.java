@@ -1,21 +1,26 @@
 package de.chojo.shepard.collections;
 
-import de.chojo.shepard.modules.keywords.KeyWordArgs;
-import de.chojo.shepard.modules.keywords.Keyword;
+import de.chojo.shepard.contexts.keywords.KeywordArgs;
+import de.chojo.shepard.contexts.keywords.Keyword;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 
-public class KeyWordCollection {
+public final class KeyWordCollection {
     private static KeyWordCollection instance;
 
-    private ArrayList<Keyword> keywordsArrayList = new ArrayList<>();
-    private int lastKeyWordArraySize = 0;
+    private final List<Keyword> keywords = new ArrayList<>();
 
-    private Map<String, Keyword> keywords = new HashMap<>();
+    private KeyWordCollection() {
+    }
 
+    /**
+     * Get the keyword collection instance.
+     *
+     * @return KeywordCollection Instance
+     */
     public static KeyWordCollection getInstance() {
         if (instance == null) {
             synchronized (KeyWordCollection.class) {
@@ -27,36 +32,59 @@ public class KeyWordCollection {
         return instance;
     }
 
-    private KeyWordCollection(){}
-
+    /**
+     * Adds a new Keyword to collection.
+     * @param keyword keyword to add
+     */
     public void addKeyword(Keyword keyword) {
-        keywordsArrayList.add(keyword);
+        keywords.add(keyword);
     }
 
-    public KeyWordArgs getKeyword(MessageReceivedEvent event) {
-        //if (keywords.size() == 0)
-        //    rebuildHasMap();
-        //if (lastKeyWordArraySize == 0 || lastKeyWordArraySize < keywordsArrayList.size()){
-        //    rebuildHasMap();
-        //}
-        //    return keywords.get(key.toLowerCase());
-        for (Keyword keyword : keywordsArrayList) {
-            String key = keyword.hasKeyword(event);
-            if (key != null) {
-                return new KeyWordArgs(key, keyword);
+    /**
+     * get the first found keyword in a message.
+     * @param event message received event.
+     * @return KeyWordArgs object or null if no keyword was found.
+     */
+    public KeywordArgs getKeyword(MessageReceivedEvent event) {
+        for (Keyword keyword : keywords) {
+            if (keyword.hasKeyword(event)) {
+                return keyword.getKeyWordArgs(event);
             }
         }
         return null;
     }
 
-    private void rebuildHasMap() {
-        lastKeyWordArraySize = keywordsArrayList.size();
-        for (Keyword keyword : keywordsArrayList) {
-            for (String key : keyword.getKeywords()) {
-                keywords.put(key.toLowerCase(), keyword);
-            }
-        }
+    /**
+     * Get all registered keywords.
+     * @return Keyword list
+     */
+    public List<Keyword> getKeywords() {
+        return Collections.unmodifiableList(keywords);
     }
 
+    /**
+     * Get a Keyword from context name.
+     * @param contextName name of the context
+     * @param event event for permission check
+     * @return Keyword object
+     */
+    public Keyword getKeywordWithContextName(String contextName, MessageReceivedEvent event) {
+        for (Keyword k : keywords) {
+            if (k.getClass().getSimpleName().equalsIgnoreCase(contextName) && k.isContextValid(event)) {
+                return k;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Prints a debug for all keywords to console.
+     */
+    public void debug() {
+        System.out.println("++++ DEBUG OF KEYWORDS ++++");
+        for (Keyword c : keywords) {
+            c.printDebugInfo();
+        }
+    }
 
 }

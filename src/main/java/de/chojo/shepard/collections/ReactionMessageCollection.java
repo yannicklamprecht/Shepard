@@ -1,13 +1,14 @@
 package de.chojo.shepard.collections;
 
-import de.chojo.shepard.modules.reactionMessages.ReactionMessage;
+import de.chojo.shepard.contexts.reactionmessages.ReactionMessage;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ReactionMessageCollection {
     private static ReactionMessageCollection instance;
 
-    private ArrayList<ReactionMessage> messages = new ArrayList<>();
+    private final List<ReactionMessage> messages = new ArrayList<>();
 
     public static ReactionMessageCollection getInstance() {
         if (instance == null) {
@@ -20,9 +21,12 @@ public class ReactionMessageCollection {
         return instance;
     }
 
-    private ReactionMessageCollection(){}
+    private ReactionMessageCollection() {
+    }
 
-    public void addReactionMessage(ReactionMessage message) { messages.add(message); }
+    public void addReactionMessage(ReactionMessage message) {
+        messages.add(message);
+    }
 
     public ReactionMessage get(String messageId) {
         for (ReactionMessage message : messages) {
