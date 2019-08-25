@@ -1,7 +1,7 @@
 package de.chojo.shepard.listener;
 
 import de.chojo.shepard.collections.ServerCollection;
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import de.chojo.shepard.ShepardBot;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -14,7 +14,7 @@ public class LogListener extends ListenerAdapter {
 
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
-        Messages.sendMessage("Shepard ist nun auf " + event.getGuild().getName() + " verfügbar!",
+        MessageSender.sendMessage("Shepard ist nun auf " + event.getGuild().getName() + " verfügbar!",
                 ServerCollection.getNormandy().getTextChannelById("538094461381640192"));
     }
 
@@ -22,7 +22,7 @@ public class LogListener extends ListenerAdapter {
     public void onReady(ReadyEvent event) {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         Date date = new Date(System.currentTimeMillis());
-        Messages.sendMessage("`[" + formatter.format(date)
+        MessageSender.sendMessage("`[" + formatter.format(date)
                         + "]` Shepard meldet sich zum Dienst! Erwarte ihre Befehle! Derzeit stehe ich auf "
                         + ShepardBot.getJDA().getGuilds().size() + " Servern zur Verfügung!",
                 ServerCollection.getNormandy().getTextChannelById("538094461381640192"));

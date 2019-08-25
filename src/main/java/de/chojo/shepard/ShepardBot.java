@@ -5,12 +5,15 @@ import de.chojo.shepard.collections.KeyWordCollection;
 import de.chojo.shepard.configuration.Config;
 import de.chojo.shepard.configuration.Loader;
 import de.chojo.shepard.contexts.commands.admin.ShowKeyword;
+import de.chojo.shepard.contexts.commands.botconfig.ContextInfo;
 import de.chojo.shepard.contexts.commands.botconfig.ManageContext;
+import de.chojo.shepard.contexts.commands.botconfig.ManageContextGuild;
 import de.chojo.shepard.contexts.commands.botconfig.ManageContextUsers;
 import de.chojo.shepard.contexts.commands.admin.RegisterInviteLink;
 import de.chojo.shepard.contexts.commands.admin.SetGreetingChannel;
 import de.chojo.shepard.contexts.commands.admin.SetPrefix;
-import de.chojo.shepard.contexts.commands.exklusive.*;
+import de.chojo.shepard.contexts.commands.exklusive.IsHaddeWorking;
+import de.chojo.shepard.contexts.commands.exklusive.Meetings;
 import de.chojo.shepard.contexts.commands.fun.MagicConch;
 import de.chojo.shepard.contexts.commands.fun.Oha;
 import de.chojo.shepard.contexts.commands.fun.Owo;
@@ -74,8 +77,10 @@ public class ShepardBot {
                 .addEventListeners(new JoinListener())
                 //Commands
                 //botSettings
+                .addEventListeners(new ContextInfo())
                 .addEventListeners(new ManageContext())
                 .addEventListeners(new ManageContextUsers())
+                .addEventListeners(new ManageContextGuild())
                 //admin
                 .addEventListeners(new SetGreetingChannel())
                 .addEventListeners(new RegisterInviteLink())
@@ -113,6 +118,8 @@ public class ShepardBot {
                 //ReactionMessages
                 .addEventListeners(new Test())
                 .build();
+
+        ;
 
         // optionally block until JDA is ready
         jda.awaitReady();

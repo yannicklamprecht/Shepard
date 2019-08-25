@@ -1,6 +1,6 @@
 package de.chojo.shepard.contexts.commands.util;
 
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import de.chojo.shepard.ShepardBot;
 import de.chojo.shepard.contexts.commands.Command;
 import net.dv8tion.jda.api.entities.Guild;
@@ -60,7 +60,7 @@ public class ListServer extends Command {
         messagepart = messagepart.concat("```");
 
         String message = "I am currently serving " + guilds.size() + " server:\n";
-        Messages.sendMessage(message.concat(messagepart), receivedEvent.getChannel());
+        MessageSender.sendMessage(message.concat(messagepart), receivedEvent.getChannel());
         return true;
     }
 

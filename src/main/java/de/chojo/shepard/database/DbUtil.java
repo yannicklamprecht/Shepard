@@ -1,6 +1,6 @@
 package de.chojo.shepard.database;
 
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.SQLException;
@@ -36,7 +36,7 @@ public final class DbUtil {
         System.out.println("VendorError: " + ex.getErrorCode());
 
         if (event != null) {
-            Messages.sendSimpleError("Ups. Looks like my Database has a small hickup."
+            MessageSender.sendSimpleError("Ups. Looks like my Database has a small hickup."
                     + System.lineSeparator()
                     + "Can you give me another try, pls?", event.getChannel());
         }

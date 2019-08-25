@@ -2,7 +2,7 @@ package de.chojo.shepard.listener;
 
 import de.chojo.shepard.collections.CommandCollection;
 import de.chojo.shepard.database.queries.Prefix;
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.commands.exceptions.CommandException;
 import net.dv8tion.jda.api.entities.Guild;
@@ -26,7 +26,7 @@ public class CommandListener extends ListenerAdapter {
         if (checkPrefix(receivedMessage, event.getGuild(), event)) {
             //BotCheck
             if (event.getAuthor().isBot()) {
-                Messages.sendMessage("I'm not allowed to talk to you " + event.getAuthor().getName()
+                MessageSender.sendMessage("I'm not allowed to talk to you " + event.getAuthor().getName()
                         + ". Please leave me alone ._.", event.getChannel());
                 return;
             }
@@ -46,16 +46,16 @@ public class CommandListener extends ListenerAdapter {
                     try {
                         command.execute(label, args, event);
                     } catch (CommandException e) {
-                        Messages.sendSimpleError(e.getMessage(), event.getChannel());
+                        MessageSender.sendSimpleError(e.getMessage(), event.getChannel());
                     }
                 } else {
-                    Messages.sendSimpleError("Too few Arguments", event.getChannel());
+                    MessageSender.sendSimpleError("Too few Arguments", event.getChannel());
                     command.sendCommandUsage(event.getChannel());
                 }
                 return;
             }
 
-            Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!", "Type "
+            MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!", "Type "
                     + Prefix.getPrefix(event.getGuild(), event)
                     + "help for a full list of available commands!", false)}, event.getChannel());
         }

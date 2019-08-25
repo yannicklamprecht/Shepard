@@ -1,6 +1,6 @@
 package de.chojo.shepard.contexts.commands.fun;
 
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import de.chojo.shepard.contexts.commands.Command;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -25,9 +25,9 @@ public class RandomJoke extends Command {
     @Override
     public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         try {
-            Messages.sendSimpleTextBox("Random Joke", getRandomJoke(), receivedEvent.getChannel());
+            MessageSender.sendSimpleTextBox("Random Joke", getRandomJoke(), receivedEvent.getChannel());
         } catch (IOException e) {
-            Messages.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Error", e.getMessage(),
+            MessageSender.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Error", e.getMessage(),
                     false)}, receivedEvent.getChannel());
         }
         return true;

@@ -3,13 +3,13 @@ package de.chojo.shepard.contexts.commands.admin;
 import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.commands.CommandArg;
 import de.chojo.shepard.database.queries.Greetings;
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+@Deprecated
 public class SetGreetingChannel extends Command {
     private static final Pattern CHANNEL_MENTION_PATTERN = Pattern.compile("(?:<#)?(?<id>[0-9]{18})(?:>)?");
 
@@ -33,11 +33,11 @@ public class SetGreetingChannel extends Command {
         String channelId = matcher.group(1);
         TextChannel channel = receivedEvent.getGuild().getTextChannelById(channelId);
         if (channel == null) {
-            Messages.sendSimpleError("Invalid Channel", receivedEvent.getChannel());
+            MessageSender.sendSimpleError("Invalid Channel", receivedEvent.getChannel());
             return false; // invalid channel
         }
         Greetings.setGreetingChannel(receivedEvent.getGuild(), channelId, receivedEvent);
-        Messages.sendMessage("I will greet every newcomer in " + channel.getAsMention(), receivedEvent.getChannel());
+        MessageSender.sendMessage("I will greet every newcomer in " + channel.getAsMention(), receivedEvent.getChannel());
         return true;
     }
 }

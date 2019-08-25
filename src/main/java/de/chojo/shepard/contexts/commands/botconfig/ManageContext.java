@@ -3,7 +3,7 @@ package de.chojo.shepard.contexts.commands.botconfig;
 import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.commands.CommandArg;
 import de.chojo.shepard.database.queries.Context;
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import de.chojo.shepard.util.BooleanState;
 import de.chojo.shepard.util.Verifier;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -30,7 +30,7 @@ public class ManageContext extends Command {
         String contextName = getContextName(args[0], receivedEvent);
 
         if (contextName == null) {
-            Messages.sendSimpleError("Context not found. Please use the context name or an alias.",
+            MessageSender.sendSimpleError("Context not found. Please use the context name or an alias.",
                     receivedEvent.getChannel());
             return true;
         }
@@ -49,7 +49,7 @@ public class ManageContext extends Command {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            Messages.sendSimpleError("Invalid input. Only 'true' and 'false' are valid inputs.",
+            MessageSender.sendSimpleError("Invalid input. Only 'true' and 'false' are valid inputs.",
                     receivedEvent.getChannel());
             return;
         }
@@ -59,12 +59,12 @@ public class ManageContext extends Command {
         Context.setContextAdmin(contextName, state, receivedEvent);
 
         if (state) {
-            Messages.sendMessage("**Activated admin and permission check for context \""
+            MessageSender.sendMessage("**Activated admin and permission check for context \""
                             + contextName.toUpperCase() + "\"**",
                     receivedEvent.getChannel());
 
         } else {
-            Messages.sendMessage("**Deactivated admin and permission check for context \""
+            MessageSender.sendMessage("**Deactivated admin and permission check for context \""
                             + contextName.toUpperCase() + "\"**",
                     receivedEvent.getChannel());
         }
@@ -74,7 +74,7 @@ public class ManageContext extends Command {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            Messages.sendSimpleError("Invalid input. Only 'true' and 'false' are valid inputs.",
+            MessageSender.sendSimpleError("Invalid input. Only 'true' and 'false' are valid inputs.",
                     receivedEvent.getChannel());
             return;
         }
@@ -84,11 +84,11 @@ public class ManageContext extends Command {
         Context.setContextNsfw(contextName, state, receivedEvent);
 
         if (state) {
-            Messages.sendMessage("**Activated NSFW check for context \"" + contextName.toUpperCase() + "\"**",
+            MessageSender.sendMessage("**Activated NSFW check for context \"" + contextName.toUpperCase() + "\"**",
                     receivedEvent.getChannel());
 
         } else {
-            Messages.sendMessage("**Deactivated NSFW check for context \"" + contextName.toUpperCase() + "\"**",
+            MessageSender.sendMessage("**Deactivated NSFW check for context \"" + contextName.toUpperCase() + "\"**",
                     receivedEvent.getChannel());
         }
     }

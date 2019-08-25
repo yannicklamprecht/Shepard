@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 
-public class Messages {
+public class MessageSender {
 
     /**
      * send a simple Message to a channel.
@@ -35,7 +35,6 @@ public class Messages {
         channel.sendMessage(messagePart.toString()).queue();
     }
 
-
     /**
      * Sends a textbox to a channel.
      *
@@ -44,12 +43,25 @@ public class Messages {
      * @param channel channel to send.
      */
     public static void sendTextBox(String title, List<MessageEmbed.Field> fields, MessageChannel channel) {
+        sendTextBox(title, fields, channel, Color.gray);
+    }
+
+    /**
+     * Sends a textbox to a channel.
+     *
+     * @param title   Title of the chatbox.
+     * @param fields  List of fields for the chatbox.
+     * @param channel channel to send.
+     * @param color   Color of the text box
+     */
+    public static void sendTextBox(String title, List<MessageEmbed.Field> fields, MessageChannel channel, Color color) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle(title);
+        builder.setColor(color);
         for (MessageEmbed.Field field : fields) {
             builder.addField(field);
         }
-        builder.setFooter("by Shepard", "https://cdn.discordapp.com/avatars/512413049894731780/e7262c349f015c5f6f25e6bca8a689d0.png?size=1024");
+        builder.setFooter("by Shepard", "https://cdn.discordapp.com/attachments/336844498124668938/614942868053819392/nekoSheps2.png");
         channel.sendMessage(builder.build()).queue();
     }
 
@@ -109,7 +121,7 @@ public class Messages {
         try {
             receivedEvent.getMessage().delete().submit();
         } catch (InsufficientPermissionException e) {
-            Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Lack of Permission",
+            MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Lack of Permission",
                     "Missing permission: MESSAGE_MANAGE", false)}, receivedEvent.getChannel());
         }
     }

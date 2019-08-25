@@ -2,7 +2,7 @@ package de.chojo.shepard.contexts.commands.util;
 
 import de.chojo.shepard.collections.CommandCollection;
 import de.chojo.shepard.database.queries.Prefix;
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.commands.CommandArg;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -39,7 +39,7 @@ public class Help extends Command {
 
         Command command = CommandCollection.getInstance().getCommand(args[0]);
         if (command == null || !command.isContextValid(receivedEvent)) {
-            Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!",
+            MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!",
                     "Type " + prefix + "help for a full list of available commands!", false)},
                     receivedEvent.getChannel());
             return true;
@@ -57,7 +57,7 @@ public class Help extends Command {
 
         }
 
-        Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Usage:", "Type:\n"
+        MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Usage:", "Type:\n"
                 + prefix + "help for a list of commands.\n"
                 + prefix + "help [command] for help for a specific command.\n"
                 + prefix + "help [command] [arg] for a description of the argument.", false)},
@@ -107,7 +107,7 @@ public class Help extends Command {
         }
 
         //fields.add(new MessageEmbed.Field("help", output, false));
-        Messages.sendMessage("**__HELP__**" + System.lineSeparator() + output, event.getChannel());
+        MessageSender.sendMessage("**__HELP__**" + System.lineSeparator() + output, event.getChannel());
 
 
         return true;

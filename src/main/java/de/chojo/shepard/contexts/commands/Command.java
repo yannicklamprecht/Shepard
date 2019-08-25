@@ -1,12 +1,13 @@
 package de.chojo.shepard.contexts.commands;
 
 import de.chojo.shepard.collections.CommandCollection;
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import de.chojo.shepard.contexts.ContextSensitive;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,37 +132,45 @@ public abstract class Command extends ContextSensitive {
     public void sendCommandUsage(MessageChannel channel) {
         List<MessageEmbed.Field> fields = new ArrayList<>();
 
-        fields.add(new MessageEmbed.Field("Description:", getCommandDesc(), false));
-
-        String field = "";
-        String desc = "";
+        fields.add(new MessageEmbed.Field(getCommandDesc(), "", false));
 
         if (getCommandAliases() != null && getCommandAliases().length != 0) {
-            field = field.concat("Aliases");
-            for (String alias : getCommandAliases()) {
-                desc = desc.concat(alias + " ");
-            }
-            fields.add(new MessageEmbed.Field(field, desc, false));
+            fields.add(new MessageEmbed.Field("__**Aliases:**__", String.join(", ", getCommandAliases()), false));
         }
 
 
-        field = "Usage:";
-        desc = "";
+        StringBuilder desc = new StringBuilder();
 
-        desc = desc.concat(getCommandName() + " ");
+        desc.append(getCommandName() + " ");
         if (getArguments() != null) {
             for (CommandArg arg : getArguments()) {
                 if (arg.isRequired()) {
-                    desc = desc.concat("[" + arg.getArgName() + "] ");
+                    desc.append("[" + arg.getArgName().toUpperCase() + "] ");
                 } else {
-                    desc = desc.concat("<" + arg.getArgName() + "> ");
+                    desc.append("<" + arg.getArgName().toUpperCase() + "> ");
                 }
             }
         }
 
-        fields.add(new MessageEmbed.Field(field, desc, false));
+        fields.add(new MessageEmbed.Field("__**Usage:**__", desc.toString(), false));
 
-        Messages.sendTextBox("Help for command " + getCommandName(), fields, channel);
+        desc.setLength(0);
+        if (arguments.length != 0) {
+
+            for (CommandArg arg : arguments) {
+                desc.append("**").append(arg.getArgName().toUpperCase()).append("**")
+                        .append(arg.isRequired() ? " REQUIRED" : " OPTIONAL")
+                        .append(System.lineSeparator())
+                        .append("> ").append(arg.getArgDesc()
+                        .replace(System.lineSeparator(), System.lineSeparator() + "> "))
+                        .append(System.lineSeparator())
+                        .append(System.lineSeparator());
+            }
+            fields.add(new MessageEmbed.Field("__**Arguments:**__", desc.toString(), false));
+        }
+
+
+        MessageSender.sendTextBox("__**Help for command " + getCommandName() + "**__", fields, channel, Color.green);
     }
 
     /**
@@ -173,7 +182,7 @@ public abstract class Command extends ContextSensitive {
     public void sendCommandArgHelp(String argument, MessageChannel channel) {
 
         if (arguments == null || arguments.length == 0) {
-            Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("No Argument found!",
+            MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("No Argument found!",
                     "This command, doesn't have any arguments.", false)}, channel);
             return;
         }
@@ -183,7 +192,7 @@ public abstract class Command extends ContextSensitive {
                 List<MessageEmbed.Field> fields = new ArrayList<>();
                 fields.add(new MessageEmbed.Field("Description:", arg.getArgDesc(), false));
                 fields.add(new MessageEmbed.Field("Required", arg.isRequired() ? "true" : "false", false));
-                Messages.sendTextBox("Help for Argument: \"" + arg.getArgName() + "\" of command \""
+                MessageSender.sendTextBox("Help for Argument: \"" + arg.getArgName() + "\" of command \""
                         + getCommandName() + "\"", fields, channel);
                 return;
             }
@@ -193,7 +202,7 @@ public abstract class Command extends ContextSensitive {
         for (CommandArg arg : arguments) {
             argsAsString = argsAsString.concat(arg.getArgName() + " ");
         }
-        Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Argument not found!",
+        MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Argument not found!",
                 "Try one of these: " + argsAsString, false)}, channel);
     }
 }

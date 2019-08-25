@@ -1,7 +1,7 @@
 package de.chojo.shepard.contexts.commands.util;
 
 import de.chojo.shepard.database.queries.Prefix;
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.commands.CommandArg;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -38,7 +38,7 @@ public class UserInfo extends Command {
     public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
 
         if (args.length == 0) {
-            Messages.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Too few arguments", "Usage: " + Prefix.getPrefix(receivedEvent.getGuild(), receivedEvent) + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
+            MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Too few arguments", "Usage: " + Prefix.getPrefix(receivedEvent.getGuild(), receivedEvent) + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
         }
 
         InternUser internUser = new InternUser(args[0], receivedEvent).invoke();
@@ -46,7 +46,7 @@ public class UserInfo extends Command {
         String id = internUser.getId();
 
         if (searchedUser == null) {
-            Messages.sendMessage("Can't find this user (" + id + ")", receivedEvent.getChannel());
+            MessageSender.sendMessage("Can't find this user (" + id + ")", receivedEvent.getChannel());
             return true;
         }
 

@@ -2,7 +2,7 @@ package de.chojo.shepard.listener;
 
 import de.chojo.shepard.database.queries.Invites;
 import de.chojo.shepard.database.types.DatabaseInvite;
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -34,7 +34,7 @@ public class JoinListener extends ListenerAdapter {
             if (invite.getUses() != dInvite.get().getUsedCount()) {
                 //TODO: Add greetings channel
                 MessageChannel channel = event.getGuild().getTextChannelById("");
-                Messages.sendGreeting(event, dInvite.get().getSource(), channel);
+                MessageSender.sendGreeting(event, dInvite.get().getSource(), channel);
                 Invites.upcountInvite(event.getGuild(), invite.getCode(), null);
             }
         }

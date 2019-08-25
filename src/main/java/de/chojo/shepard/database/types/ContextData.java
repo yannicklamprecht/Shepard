@@ -1,7 +1,13 @@
 package de.chojo.shepard.database.types;
 
+import de.chojo.shepard.ShepardBot;
 import de.chojo.shepard.database.ListType;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.User;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -162,33 +168,52 @@ public class ContextData {
 
     @Override
     public String toString() {
+        JDA jda = ShepardBot.getJDA();
         StringBuilder builder = new StringBuilder();
-        builder.append("  admin only: ")
+        builder.append("  admin_only: ")
                 .append(isAdminOnly())
                 .append(System.lineSeparator())
                 .append("  nsfw: ")
                 .append(isNsfw())
                 .append(System.lineSeparator())
-                .append("  user check active: ")
+                .append("  user_check_active: ")
                 .append(isUserCheckActive())
                 .append(System.lineSeparator());
         if (isUserCheckActive()) {
-            builder.append("    List Type: ")
+            builder.append("    List_Type: ")
                     .append(getUserListType())
                     .append(System.lineSeparator())
-                    .append("    Users on List: ")
-                    .append(Collections.singletonList(getUserList()))
+                    .append("    Users_on_List: ");
+            List<String> names = new ArrayList<>();
+            getUserList().stream().forEach(u -> {
+                User user = jda.getUserById(u);
+                if (user != null) {
+                    names.add(user.getAsTag());
+                }
+            });
+            builder.append(String.join(", ", names))
                     .append(System.lineSeparator());
         }
-        builder.append("  guild check active: ")
+        builder.append("  guild_check_active: ")
                 .append(isGuildCheckActive())
                 .append(System.lineSeparator());
         if (isGuildCheckActive()) {
-            builder.append("    List Type: ")
+            builder.append("    List_Type: ")
                     .append(getGuildListType())
-                    .append(System.lineSeparator())
-                    .append("    Guilds on List: ")
-                    .append(Collections.singletonList(getGuildList()));
+                    .append(System.lineSeparator());
+            List<String> names = new ArrayList<>();
+            getGuildList().stream().forEach(g -> {
+                Guild guild = jda.getGuildById(g);
+                if (guild != null) {
+                    Member member = guild.getOwner();
+                    if (member != null) {
+                        names.add(guild.getName() + " by " + member.getUser().getAsTag());
+                    }
+                }
+            });
+
+            builder.append("    Guilds_on_List: ")
+                    .append(String.join(", ", names));
         }
         return builder.toString();
     }

@@ -1,6 +1,6 @@
 package de.chojo.shepard.contexts.commands.exklusive;
 
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import de.chojo.shepard.calendar.CalendarEvent;
 import de.chojo.shepard.contexts.commands.Command;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -45,7 +45,7 @@ public class Meetings extends Command {
                     + calendarEvent.get(1).getSummary() + " am " + getDate.format(calendarEvent.get(1).getStart())
                     + " von " + getTime.format(calendarEvent.get(1).getStart()) + " bis "
                             + getTime.format(calendarEvent.get(1).getEnd()), false));
-            Messages.sendTextBox(null, fields, receivedEvent.getChannel());
+            MessageSender.sendTextBox(null, fields, receivedEvent.getChannel());
         } catch (IOException | GeneralSecurityException e) {
             receivedEvent.getChannel().sendMessage("**Exception** occurred :confused:").queue();
         }

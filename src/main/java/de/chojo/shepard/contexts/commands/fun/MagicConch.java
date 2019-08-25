@@ -1,6 +1,6 @@
 package de.chojo.shepard.contexts.commands.fun;
 
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import de.chojo.shepard.contexts.commands.Command;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -51,7 +51,7 @@ public class MagicConch extends Command {
 
         fields.add(new MessageEmbed.Field("The magic conch says:", word, false));
 
-        Messages.sendTextBox(null, fields, receivedEvent.getChannel());
+        MessageSender.sendTextBox(null, fields, receivedEvent.getChannel());
 
         return true;
     }

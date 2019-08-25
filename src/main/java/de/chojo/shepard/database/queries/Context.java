@@ -362,14 +362,14 @@ public final class Context {
 
                 data.setAdminOnly(result.getBoolean("admin_only"));
                 data.setNsfw(result.getBoolean("nsfw"));
-                data.setUserCheckActive(result.getBoolean("user_check_active"));
+                data.setUserCheckActive(result.getBoolean("user_check_state"));
                 data.setUserListType(ListType.getType(result.getString("user_list_type")));
                 if (result.getArray("user_list") == null) {
                     data.setUserList(new String[0]);
                 } else {
                     data.setUserList((String[]) result.getArray("user_list").getArray());
                 }
-                data.setGuildCheckActive(result.getBoolean("guild_check_active"));
+                data.setGuildCheckActive(result.getBoolean("guild_check_state"));
                 data.setGuildListType(ListType.getType(result.getString("guild_list_type")));
                 if (result.getArray("guild_list") == null) {
                     data.setGuildList(new String[0]);

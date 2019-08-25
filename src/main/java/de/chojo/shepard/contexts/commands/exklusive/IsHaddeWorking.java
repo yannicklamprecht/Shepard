@@ -1,7 +1,7 @@
 package de.chojo.shepard.contexts.commands.exklusive;
 
 import de.chojo.shepard.calendar.CalendarEvent;
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import de.chojo.shepard.contexts.commands.Command;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -53,17 +53,17 @@ public class IsHaddeWorking extends Command {
                 if (currentDate.after(event.getStart()) && currentDate.before(event.getEnd())) {
                     fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?", "Ja, bis "
                             + getTime.format(event.getEnd()) + " Uhr " + endDate, false));
-                    Messages.sendTextBox(null, fields, receivedEvent.getChannel());
+                    MessageSender.sendTextBox(null, fields, receivedEvent.getChannel());
                 } else {
                     fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?", "Nein, er arbeitet "
                             + startDate + " von " + getTime.format(event.getStart()) + " Uhr bis "
                             + getTime.format(event.getEnd()) + " Uhr.", false));
-                    Messages.sendTextBox(null, fields, receivedEvent.getChannel());
+                    MessageSender.sendTextBox(null, fields, receivedEvent.getChannel());
                 }
             } else {
                 fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?",
                         "Ich hab derzeit leider keine Arbeitszeiten", false));
-                Messages.sendTextBox(null, fields, receivedEvent.getChannel());
+                MessageSender.sendTextBox(null, fields, receivedEvent.getChannel());
 
             }
         } catch (IOException | GeneralSecurityException e) {

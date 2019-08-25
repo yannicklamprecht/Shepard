@@ -1,7 +1,7 @@
 package de.chojo.shepard.contexts.commands.admin;
 
 import de.chojo.shepard.collections.KeyWordCollection;
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import de.chojo.shepard.contexts.commands.Command;
 import de.chojo.shepard.contexts.keywords.Keyword;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -45,7 +45,7 @@ public class ShowKeyword extends Command {
         }
         builder.append("```");
 
-        Messages.sendSimpleTextBox("Keywords", builder.toString(), receivedEvent.getChannel());
+        MessageSender.sendSimpleTextBox("Keywords", builder.toString(), receivedEvent.getChannel());
         return true;
     }
 }

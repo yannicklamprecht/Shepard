@@ -1,6 +1,6 @@
 package de.chojo.shepard.contexts.keywords.keyword;
 
-import de.chojo.shepard.messagehandler.Messages;
+import de.chojo.shepard.messagehandler.MessageSender;
 import de.chojo.shepard.contexts.keywords.Keyword;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -46,11 +46,11 @@ public class Nudes extends Keyword {
                         }
                         //TODO: Handle if every picture has one of these tags
                     } while (found);
-                    Messages.sendMessage(image.getURL(), event.getChannel());
+                    MessageSender.sendMessage(image.getURL(), event.getChannel());
                 });
             }
         }
-        Messages.sendMessage("Someone said " + key + "?", event.getChannel());
+        MessageSender.sendMessage("Someone said " + key + "?", event.getChannel());
 
 
         return false;
