@@ -1,8 +1,11 @@
 package de.chojo.shepard.messagehandler;
 
+import de.chojo.shepard.database.types.Greeting;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
@@ -159,28 +162,25 @@ public class MessageSender {
     /**
      * sends a greeting text.
      *
-     * @param event   event to log
-     * @param channel channel to log
-     * @param source  invite source
+     * @param event    event to log
+     * @param channel  channel to log
+     * @param source   invite source
+     * @param greeting Greeting object
      */
-    @Deprecated
-    public static void sendGreeting(GuildMemberJoinEvent event, String source, MessageChannel channel) {
+    public static void sendGreeting(GuildMemberJoinEvent event, Greeting greeting,
+                                    String source, MessageChannel channel) {
         EmbedBuilder builder = new EmbedBuilder();
-        if (event.getGuild().getId().equalsIgnoreCase("214352508594814976")) {
-            builder.setThumbnail(event.getMember().getUser().getAvatarUrl())
-                    .setFooter("Beigetreten über " + source, null)
-                    .addField("Willkommen auf Eldoria **" + event.getMember().getUser().getAsTag() + "**!",
-                            "Im Namen des <@&538426334330880021> und allen anderen begrüße ich dich herzlich!", true)
-                    .setColor(Color.GREEN);
-            channel.sendMessage(builder.build()).queue();
+        builder.setThumbnail(event.getUser().getAvatarUrl());
+        if (source != null) {
+            builder.setFooter("Joined via " + source);
+
         }
-        if (event.getGuild().getId().equalsIgnoreCase("538084337984208906")) {
-            builder.setThumbnail(event.getMember().getUser().getAvatarUrl())
-                    .setFooter("Beigetreten über " + source, null)
-                    .addField("Willkommen auf der Normandy SR2 **" + event.getMember().getUser().getAsTag() + "**!",
-                            "Im Namen der <@&538139135416860672> und allen anderen begrüße ich dich herzlich!", true)
-                    .setColor(Color.GREEN);
-            event.getGuild().getTextChannelById("538429241935527946").sendMessage(builder.build()).queue();
-        }
+        User user = event.getUser();
+        String message = greeting.getText().replace("{user_name}", user.getName())
+                .replace("{user_tag}", user.getAsTag())
+                .replace("{user_mention}", user.getAsMention());
+        builder.addField(event.getMember().getUser().getAsTag(),
+                message, true);
+        channel.sendMessage((builder.build())).queue();
     }
 }

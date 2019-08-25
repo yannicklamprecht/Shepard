@@ -2,7 +2,9 @@ package de.chojo.shepard.database.queries;
 
 import de.chojo.shepard.database.DatabaseConnector;
 import de.chojo.shepard.database.types.Greeting;
+import de.chojo.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.w3c.dom.Text;
@@ -25,7 +27,7 @@ public final class Greetings {
      * @param channel channel which should be used for greetings
      * @param event     event from command sending for error handling. Can be null.
      */
-    public static void setGreetingChannel(Guild guild, TextChannel channel, MessageReceivedEvent event) {
+    public static void setGreetingChannel(Guild guild, MessageChannel channel, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_greeting_channel(?,?)")) {
             statement.setString(1, guild.getId());
