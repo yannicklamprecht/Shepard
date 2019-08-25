@@ -29,12 +29,13 @@ public class Help extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String prefix = Prefix.getPrefix(receivedEvent.getGuild(), receivedEvent);
 
         //Command List
         if (args.length == 0) {
-            return listCommands(receivedEvent);
+            listCommands(receivedEvent);
+            return;
         }
 
         Command command = CommandCollection.getInstance().getCommand(args[0]);
@@ -42,18 +43,20 @@ public class Help extends Command {
             MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!",
                     "Type " + prefix + "help for a full list of available commands!", false)},
                     receivedEvent.getChannel());
-            return true;
+            return;
         }
 
         //Command Help
         if (args.length == 1) {
-            return commandHelp(receivedEvent.getChannel(), command);
+            commandHelp(receivedEvent.getChannel(), command);
+            return;
         }
 
 
         //Arg help
         if (args.length == 2) {
-            return argumentHelp(args[1], receivedEvent.getChannel(), command);
+            argumentHelp(args[1], receivedEvent.getChannel(), command);
+            return;
 
         }
 
@@ -62,23 +65,20 @@ public class Help extends Command {
                 + prefix + "help [command] for help for a specific command.\n"
                 + prefix + "help [command] [arg] for a description of the argument.", false)},
                 receivedEvent.getChannel());
-        return true;
     }
 
     /* Sends help for a specific argument of a command.*/
-    private boolean argumentHelp(String argument, MessageChannel channel, Command command) {
+    private void argumentHelp(String argument, MessageChannel channel, Command command) {
         command.sendCommandArgHelp(argument, channel);
-        return true;
     }
 
     /* Sends help for a specific command with description, alias and usage.*/
-    private boolean commandHelp(MessageChannel channel, Command command) {
+    private void commandHelp(MessageChannel channel, Command command) {
         command.sendCommandUsage(channel);
-        return true;
     }
 
     /* Sends a list of all commands with description */
-    private boolean listCommands(MessageReceivedEvent event) {
+    private void listCommands(MessageReceivedEvent event) {
         List<Command> commands = CommandCollection.getInstance().getCommands();
 
         String aliases = "";
@@ -110,6 +110,5 @@ public class Help extends Command {
         MessageSender.sendMessage("**__HELP__**" + System.lineSeparator() + output, event.getChannel());
 
 
-        return true;
     }
 }

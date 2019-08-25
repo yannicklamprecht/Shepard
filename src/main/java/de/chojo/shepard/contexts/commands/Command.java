@@ -47,9 +47,8 @@ public abstract class Command extends ContextSensitive {
      * @param label         Label/Alias which was used for command execution
      * @param args          Arguments of the command.
      * @param receivedEvent Message Received Event of the command execution
-     * @return True if the command was executed successful
      */
-    public abstract boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent);
+    public abstract void execute(String label, String[] args, MessageReceivedEvent receivedEvent);
 
     /**
      * Get the name of the command.

@@ -23,7 +23,7 @@ public class ContextInfo extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String contextName = ContextHelper.getContextName(args[0], receivedEvent);
         if (contextName != null) {
             ContextData data = Context.getContextData(contextName, receivedEvent);
@@ -33,6 +33,5 @@ public class ContextInfo extends Command {
         } else {
             MessageSender.sendSimpleError("Unkown Context", receivedEvent.getChannel());
         }
-        return true;
     }
 }

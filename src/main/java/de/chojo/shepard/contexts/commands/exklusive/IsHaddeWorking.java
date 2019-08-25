@@ -28,7 +28,7 @@ public class IsHaddeWorking extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         try {
             Calendar cal = Calendar.getInstance();
             Date currentDate = cal.getTime();
@@ -70,6 +70,5 @@ public class IsHaddeWorking extends Command {
             receivedEvent.getChannel().sendMessage("**Exception** occurred :confused:").queue();
         }
 
-        return true;
     }
 }

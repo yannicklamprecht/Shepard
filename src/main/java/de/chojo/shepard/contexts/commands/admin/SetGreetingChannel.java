@@ -25,7 +25,7 @@ public class SetGreetingChannel extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         Matcher matcher = CHANNEL_MENTION_PATTERN.matcher(args[0]);
         if (!matcher.find()) {
             System.out.println(args[1]);
@@ -35,13 +35,12 @@ public class SetGreetingChannel extends Command {
         TextChannel channel = receivedEvent.getGuild().getTextChannelById(channelId);
         if (channel == null) {
             MessageSender.sendSimpleError("Invalid Channel", receivedEvent.getChannel());
-            return false; // invalid channel
+            return;
         }
 
         Greetings.setGreetingChannel(receivedEvent.getGuild(), channel, receivedEvent);
         MessageSender.sendMessage("I will greet every newcomer in " + channel.getAsMention(),
                 receivedEvent.getChannel());
 
-        return true;
     }
 }

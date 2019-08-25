@@ -35,7 +35,7 @@ public class UserInfo extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
 
         if (args.length == 0) {
             MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Too few arguments", "Usage: " + Prefix.getPrefix(receivedEvent.getGuild(), receivedEvent) + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
@@ -47,7 +47,7 @@ public class UserInfo extends Command {
 
         if (searchedUser == null) {
             MessageSender.sendMessage("Can't find this user (" + id + ")", receivedEvent.getChannel());
-            return true;
+            return;
         }
 
         EmbedBuilder builder = new EmbedBuilder();
@@ -84,7 +84,6 @@ public class UserInfo extends Command {
         //builder.addField("Joined", time.)
         receivedEvent.getChannel().sendMessage(builder.build()).queue();
 
-        return true;
     }
 
     private static class InternUser {

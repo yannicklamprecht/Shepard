@@ -26,7 +26,7 @@ public class ListServer extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         List<Guild> guilds = ShepardBot.getJDA().getGuilds();
         String[][] text = new String[guilds.size()][3];
         int sizeName = 0;
@@ -61,7 +61,6 @@ public class ListServer extends Command {
 
         String message = "I am currently serving " + guilds.size() + " server:\n";
         MessageSender.sendMessage(message.concat(messagepart), receivedEvent.getChannel());
-        return true;
     }
 
     private String fillString(String string, int fill) {

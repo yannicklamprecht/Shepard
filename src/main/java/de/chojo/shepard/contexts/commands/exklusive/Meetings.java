@@ -28,7 +28,7 @@ public class Meetings extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         try {
             java.util.Calendar cal = java.util.Calendar.getInstance();
             Date currentDate = cal.getTime();
@@ -49,7 +49,6 @@ public class Meetings extends Command {
         } catch (IOException | GeneralSecurityException e) {
             receivedEvent.getChannel().sendMessage("**Exception** occurred :confused:").queue();
         }
-        return true;
     }
 }
 
