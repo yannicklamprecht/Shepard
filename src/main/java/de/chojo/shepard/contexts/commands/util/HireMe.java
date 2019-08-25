@@ -25,7 +25,7 @@ public class HireMe extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         List<MessageEmbed.Field> fields;
         if (label.equalsIgnoreCase(commandName)) {
             fields = Collections.singletonList(
@@ -42,8 +42,6 @@ public class HireMe extends Command {
         }
 
         MessageSender.sendTextBox(null, fields, receivedEvent.getChannel());
-
-        return true;
 
     }
 }

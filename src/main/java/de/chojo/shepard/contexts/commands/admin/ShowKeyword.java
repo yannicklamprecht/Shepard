@@ -19,7 +19,7 @@ public class ShowKeyword extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         List<Keyword> keywords = KeyWordCollection.getInstance().getKeywords();
 
         int maxContextLength = "Context Name".length() + 1;
@@ -46,6 +46,5 @@ public class ShowKeyword extends Command {
         builder.append("```");
 
         MessageSender.sendSimpleTextBox("Keywords", builder.toString(), receivedEvent.getChannel());
-        return true;
     }
 }

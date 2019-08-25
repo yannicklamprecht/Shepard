@@ -19,14 +19,13 @@ public class SetPrefix extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         if (args[0].length() > 2) {
             MessageSender.sendSimpleError("Only one or two Chars are allowed as prefix.", receivedEvent.getChannel());
-            return true;
+            return;
         }
 
         Prefix.setPrefix(receivedEvent.getGuild(), args[1].trim(), receivedEvent);
         MessageSender.sendMessage("Changed prefix to '" + args[1] + "'", receivedEvent.getChannel());
-        return true;
     }
 }

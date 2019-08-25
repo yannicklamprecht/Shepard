@@ -22,7 +22,7 @@ public class RegisterInviteLink extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         Invite invite = receivedEvent.getGuild().retrieveInvites().complete()
                 .stream()
                 .filter(inv -> inv.getCode().equals(args[1]))
@@ -30,6 +30,5 @@ public class RegisterInviteLink extends Command {
                 .orElseThrow(() -> new CommandException("No invite found"));
         String name = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
         Invites.addInvite(receivedEvent.getGuild(), invite.getCode(), name, invite.getUses(), receivedEvent);
-        return true;
     }
 }

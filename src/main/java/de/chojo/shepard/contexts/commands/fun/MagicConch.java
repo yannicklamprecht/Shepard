@@ -28,7 +28,7 @@ public class MagicConch extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String word = "";
         Random rand = new Random();
         int type = rand.nextInt(3);
@@ -51,6 +51,5 @@ public class MagicConch extends Command {
                 Collections.singletonList(new MessageEmbed.Field("The magic conch says:", word, false)),
                 receivedEvent.getChannel());
 
-        return true;
     }
 }

@@ -23,14 +23,13 @@ public class RandomJoke extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         try {
             MessageSender.sendSimpleTextBox("Random Joke", getRandomJoke(), receivedEvent.getChannel());
         } catch (IOException e) {
             MessageSender.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Error", e.getMessage(),
                     false)}, receivedEvent.getChannel());
         }
-        return true;
     }
 
     private String getRandomJoke() throws IOException {

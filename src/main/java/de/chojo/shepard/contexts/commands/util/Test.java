@@ -16,7 +16,6 @@ public class Test extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        return true;
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
     }
 }

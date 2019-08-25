@@ -44,39 +44,38 @@ public class ManageContextGuild extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String contextName = getContextName(args[0], receivedEvent);
 
         if (contextName == null) {
             MessageSender.sendSimpleError("Context not found. Please use the context name or an alias.",
                     receivedEvent.getChannel());
-            return true;
+            return;
         }
 
         if (args[1].equalsIgnoreCase("setActive")) {
             setActive(args, contextName, receivedEvent);
-            return true;
+            return;
         }
 
         if (args[1].equalsIgnoreCase("setListType")) {
             setListType(args, contextName, receivedEvent);
-            return true;
+            return;
         }
 
         if (args[1].equalsIgnoreCase("addGuild")) {
             addGuild(args, contextName, receivedEvent);
-            return true;
+            return;
         }
 
         if (args[1].equalsIgnoreCase("removeGuild")) {
             removeGuild(args, contextName, receivedEvent);
-            return true;
+            return;
         }
 
         MessageSender.sendSimpleError("Invalid Argument for action.", receivedEvent.getChannel());
         sendCommandArgHelp("action", receivedEvent.getChannel());
 
-        return true;
     }
 
     private void addGuild(String[] args, String contextName, MessageReceivedEvent receivedEvent) {

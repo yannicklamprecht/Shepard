@@ -26,13 +26,13 @@ public class ManageContext extends Command {
     }
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String contextName = getContextName(args[0], receivedEvent);
 
         if (contextName == null) {
             MessageSender.sendSimpleError("Context not found. Please use the context name or an alias.",
                     receivedEvent.getChannel());
-            return true;
+            return;
         }
 
         if (args[1].equalsIgnoreCase("setNSFW")) {
@@ -42,7 +42,6 @@ public class ManageContext extends Command {
         if (args[1].equalsIgnoreCase("setadminonly")) {
             setAdminOnly(args, contextName, receivedEvent);
         }
-        return false;
     }
 
     private void setAdminOnly(String[] args, String contextName, MessageReceivedEvent receivedEvent) {

@@ -16,9 +16,8 @@ public class Uwu extends Command {
 
 
     @Override
-    public boolean execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         MessageSender.sendMessage(":regional_indicator_u::regional_indicator_w::regional_indicator_u:",
                 receivedEvent.getChannel());
-        return true;
     }
 }
