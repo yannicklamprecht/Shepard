@@ -29,7 +29,7 @@ public final class Tickets {
      * Creates a new ticket type.
      *
      * @param guild           Guild on which the type should be added
-     * @param category      channel category id
+     * @param category        channel category id
      * @param creationMessage creation message
      * @param keyword         type keyword
      * @param event           event from command sending for error handling. Can be null.
@@ -105,7 +105,8 @@ public final class Tickets {
             statement.setString(2, keyword);
             ResultSet result = statement.executeQuery();
             if (result.next()) {
-                return new TicketType(result.getString("category_id"),
+                return new TicketType(guild,
+                        result.getString("category_id"),
                         result.getString("creation_message"),
                         result.getString("keyword"));
             }
@@ -129,10 +130,11 @@ public final class Tickets {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
             if (result.next()) {
-                types.add(new TicketType(result.getInt("id")
-                        , result.getString("category_id")
-                        , result.getString("creation_message")
-                        , result.getString("keyword")));
+                types.add(new TicketType(guild,
+                        result.getInt("id"),
+                        result.getString("category_id"),
+                        result.getString("creation_message"),
+                        result.getString("keyword")));
             }
 
         } catch (SQLException e) {
@@ -164,11 +166,11 @@ public final class Tickets {
     /**
      * Creates a channel.
      *
-     * @param guild         Guild object for lookup
-     * @param channel       chanel object
+     * @param guild       Guild object for lookup
+     * @param channel     chanel object
      * @param ticketOwner user object of the ticket owner
-     * @param keyword       keyword of the ticket type.
-     * @param event         event from command sending for error handling. Can be null.
+     * @param keyword     keyword of the ticket type.
+     * @param event       event from command sending for error handling. Can be null.
      */
     public static void createChannel(Guild guild, TextChannel channel,
                                      User ticketOwner, String keyword, MessageReceivedEvent event) {
@@ -187,9 +189,9 @@ public final class Tickets {
     /**
      * Get all channel ids by owner on a guild.
      *
-     * @param guild  Guild object for lookup
+     * @param guild        Guild object for lookup
      * @param channelOwner owner of the channel.
-     * @param event  event from command sending for error handling. Can be null.
+     * @param event        event from command sending for error handling. Can be null.
      * @return list of channel ids
      */
     public static List<String> getChannelIdsByOwner(Guild guild, User channelOwner, MessageReceivedEvent event) {
@@ -274,9 +276,9 @@ public final class Tickets {
     /**
      * Remove all channels where user is ticket owner.
      *
-     * @param guild  Guild object for lookup
+     * @param guild       Guild object for lookup
      * @param ticketOwner ticketOwner as user.
-     * @param event  event from command sending for error handling. Can be null.
+     * @param event       event from command sending for error handling. Can be null.
      */
     public static void removeChannelByUser(Guild guild, User ticketOwner, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -294,7 +296,7 @@ public final class Tickets {
      *
      * @param guild   Guild object for lookup
      * @param keyword keyword of the type
-     * @param roles one or more role ids.
+     * @param roles   one or more role ids.
      * @param event   event from command sending for error handling. Can be null.
      */
     public static void setTypeOwnerRoles(Guild guild, String keyword, Role[] roles, MessageReceivedEvent event) {
@@ -316,7 +318,7 @@ public final class Tickets {
      *
      * @param guild   Guild object for lookup
      * @param keyword keyword of ticket type
-     * @param roles one or more role ids
+     * @param roles   one or more role ids
      * @param event   event from command sending for error handling. Can be null.
      */
     public static void setTypeSupportRoles(Guild guild, String keyword, Role[] roles, MessageReceivedEvent event) {
