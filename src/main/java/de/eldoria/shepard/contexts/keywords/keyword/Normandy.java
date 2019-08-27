@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class Normandy extends Keyword {
 
     /**
-     * Creates a new normandy keyword object
+     * Creates a new normandy keyword object.
      */
     public Normandy() {
         keywords = new String[] {"normandy"};

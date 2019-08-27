@@ -1,6 +1,7 @@
 package de.eldoria.shepard.messagehandler;
 
 import de.eldoria.shepard.database.types.Greeting;
+import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -175,9 +176,7 @@ public class MessageSender {
 
         }
         User user = event.getUser();
-        String message = greeting.getText().replace("{user_name}", user.getName())
-                .replace("{user_tag}", user.getAsTag())
-                .replace("{user_mention}", user.getAsMention());
+        String message = Replacer.applyUserPlaceholder(user, greeting.getText());
         builder.addField(event.getMember().getUser().getAsTag(),
                 message, true);
         channel.sendMessage((builder.build())).queue();
