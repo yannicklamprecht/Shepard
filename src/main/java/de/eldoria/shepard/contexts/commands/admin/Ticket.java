@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Set;
 
 import static de.eldoria.shepard.database.queries.Tickets.getChannelOwnerRoles;
+import static de.eldoria.shepard.database.queries.Tickets.getTypeOwnerRoles;
+import static de.eldoria.shepard.database.queries.Tickets.getTypeSupportRoles;
 import static de.eldoria.shepard.database.queries.Tickets.removeChannel;
 import static de.eldoria.shepard.util.Verifier.getValidRoles;
 import static java.lang.System.lineSeparator;
@@ -46,7 +48,7 @@ public class Ticket extends Command {
                         "**open** -> [ticket_type] [user_name]" + lineSeparator()
                                 + "**close** -> Leave empty. Execute in channel which you want to close."
                                 + lineSeparator()
-                                + "**showTypes** -> Leave empty or type keyword for type",
+                                + "**typeinfo** -> Leave empty for a overview or type keyword for further type infos",
                         false)};
     }
 
@@ -59,80 +61,99 @@ public class Ticket extends Command {
         }
 
         if (cmd.equalsIgnoreCase("close")) {
-            if (args.length != 1) {
-                MessageSender.sendSimpleError("Invalid Argument", receivedEvent.getChannel());
-                return;
-            }
-
-
-            TextChannel channel = receivedEvent.getGuild().getTextChannelById(receivedEvent.getChannel().getIdLong());
-            if (channel == null) {
-                MessageSender.sendSimpleError("This is not a guild text channel!", receivedEvent.getChannel());
-                return;
-            }
-
-            String channelOwnerId = Tickets.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
-
-            if (channelOwnerId == null) {
-                MessageSender.sendSimpleError("This is not a ticket channel!", receivedEvent.getChannel());
-                return;
-            }
-
-            removeChannel(receivedEvent.getGuild(), channel, receivedEvent);
-
-            List<String> ownerRolesAsString = getChannelOwnerRoles(receivedEvent.getGuild(), channel, receivedEvent);
-            List<Role> ownerRoles = new ArrayList<>();
-
-            for (String s : ownerRolesAsString) {
-                Role roleById = receivedEvent.getGuild().getRoleById(s);
-                if (roleById != null) {
-                    ownerRoles.add(roleById);
-                }
-            }
-
-            Member member = receivedEvent.getGuild().getMemberById(channelOwnerId);
-
-            //If Member is present remove roles for this ticket.
-            if (member != null) {
-                List<String> channelIdsByOwner = Tickets.getChannelIdsByOwner(receivedEvent.getGuild(), member.getUser(), receivedEvent);
-
-                List<TextChannel> channels = new ArrayList<>();
-
-                for (String s : channelIdsByOwner) {
-                    TextChannel textChannel = receivedEvent.getGuild().getTextChannelById(s);
-                    if (textChannel != null) {
-                        channels.add(textChannel);
-                    }
-                }
-
-                Set<Role> roles = new HashSet<>();
-                for (TextChannel c : channels) {
-                    for (String s : getChannelOwnerRoles(receivedEvent.getGuild(), c, receivedEvent)) {
-                        Role role = receivedEvent.getGuild().getRoleById(s);
-                        if (role != null) {
-                            roles.add(role);
-                        }
-                    }
-                }
-
-                for (Role r : ownerRoles) {
-                    receivedEvent.getGuild().removeRoleFromMember(member, r).queue();
-                }
-                for (Role r : roles) {
-                    receivedEvent.getGuild().addRoleToMember(member, r).queue();
-                }
-            }
-
-            channel.delete().queue();
+            close(args, receivedEvent);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("showTypes")) {
+        if (cmd.equalsIgnoreCase("typeinfo")) {
             typeInfo(args, receivedEvent);
             return;
         }
         MessageSender.sendSimpleError("Invalid Argument", receivedEvent.getChannel());
         sendCommandUsage(receivedEvent.getChannel());
+    }
+
+    private void close(String[] args, MessageReceivedEvent receivedEvent) {
+        if (args.length != 1) {
+            MessageSender.sendSimpleError("Invalid Argument", receivedEvent.getChannel());
+            return;
+        }
+
+
+        TextChannel channel = receivedEvent.getGuild().getTextChannelById(receivedEvent.getChannel().getIdLong());
+        if (channel == null) {
+            MessageSender.sendSimpleError("This is not a guild text channel!", receivedEvent.getChannel());
+            return;
+        }
+
+        String channelOwnerId = Tickets.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
+
+        if (channelOwnerId == null) {
+            MessageSender.sendSimpleError("This is not a ticket channel!", receivedEvent.getChannel());
+            return;
+        }
+
+        //Get the ticket type for caching.
+        TicketType type = Tickets.getTypeByChannel(receivedEvent.getGuild(), channel, receivedEvent);
+
+        //Removes channel from database. needed for further role checking.
+        removeChannel(receivedEvent.getGuild(), channel, receivedEvent);
+
+        //Get the ticket owner member object
+        Member member = receivedEvent.getGuild().getMemberById(channelOwnerId);
+
+        //If Member is present remove roles for this ticket.
+        if (member != null) {
+            //Get the owner roles of the current ticket. They should be removed.
+            List<String> ownerRolesAsString = getTypeOwnerRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent);
+            List<Role> removeRoles = new ArrayList<>();
+
+            //Get the role objects if the role exists.
+            for (String s : ownerRolesAsString) {
+                Role roleById = receivedEvent.getGuild().getRoleById(s);
+                if (roleById != null) {
+                    removeRoles.add(roleById);
+                }
+            }
+
+            //Get all other ticket channels of the owner
+            List<String> channelIdsByOwner = Tickets.getChannelIdsByOwner(receivedEvent.getGuild(), member.getUser(), receivedEvent);
+
+            List<TextChannel> channels = new ArrayList<>();
+
+            //Get the channel objects
+            for (String s : channelIdsByOwner) {
+                TextChannel textChannel = receivedEvent.getGuild().getTextChannelById(s);
+                if (textChannel != null) {
+                    channels.add(textChannel);
+                }
+            }
+
+            //Create a set of all roles the player should keep.
+            Set<Role> newRoleSet = new HashSet<>();
+            for (TextChannel c : channels) {
+                for (String s : getChannelOwnerRoles(receivedEvent.getGuild(), channel, receivedEvent)) {
+                    Role role = receivedEvent.getGuild().getRoleById(s);
+                    if (role != null) {
+                        newRoleSet.add(role);
+                    }
+                }
+            }
+
+            //Removes all roles for the current ticket
+            for (Role r : removeRoles) {
+                receivedEvent.getGuild().removeRoleFromMember(member, r).queue();
+            }
+
+            //Adds all roles for the other tickets. needed if two ticket types use the same role or
+            // if there are more than one ticket channel with this type.
+            for (Role r : newRoleSet) {
+                receivedEvent.getGuild().addRoleToMember(member, r).queue();
+            }
+        }
+
+        //Finally delete the channel.
+        channel.delete().queue();
     }
 
     private void typeInfo(String[] args, MessageReceivedEvent receivedEvent) {
@@ -141,6 +162,7 @@ public class Ticket extends Command {
             MessageSender.sendMessage("No ticket types defined", receivedEvent.getChannel());
             return;
         }
+        //Return list fo available ticket types
         if (args.length == 1) {
 
 
@@ -176,6 +198,7 @@ public class Ticket extends Command {
 
             MessageSender.sendMessage(builder.toString(), receivedEvent.getChannel());
         } else if (args.length == 2) {
+            //Return info for one ticket type.
             List<MessageEmbed.Field> fields = new ArrayList<>();
             TicketType type = Tickets.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
 
@@ -188,11 +211,11 @@ public class Ticket extends Command {
             List<String> supporterMentions = new ArrayList<>();
 
             getValidRoles(receivedEvent.getGuild(),
-                    Tickets.getTypeOwnerRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent)
+                    getTypeOwnerRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent)
                             .toArray(String[]::new)).forEach(role -> ownerMentions.add(role.getAsMention()));
 
             getValidRoles(receivedEvent.getGuild(),
-                    Tickets.getTypeSupportRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent)
+                    getTypeSupportRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent)
                             .toArray(String[]::new)).forEach(role -> supporterMentions.add(role.getAsMention()));
 
             fields.add(new MessageEmbed.Field("Channel Category:", type.getCategory().getName(), false));
@@ -216,7 +239,7 @@ public class Ticket extends Command {
             MessageSender.sendSimpleError("User not found!", receivedEvent.getChannel());
             return;
         }
-        if (member.getId() == receivedEvent.getAuthor().getId()) {
+        if (member.getIdLong() == receivedEvent.getAuthor().getIdLong()) {
             MessageSender.sendSimpleError("You can't open a ticket for yourself!", receivedEvent.getChannel());
             return;
         }
@@ -227,30 +250,37 @@ public class Ticket extends Command {
             return;
         }
 
-        String channelName = "#" + Tickets.getNextTicketCount(receivedEvent.getGuild(), receivedEvent)
+        //Set Channel Name
+        String channelName = Tickets.getNextTicketCount(receivedEvent.getGuild(), receivedEvent)
                 + " " + member.getUser().getName();
 
+        //Create channel and wait for creation
         TextChannel channel = receivedEvent.getGuild()
                 .createTextChannel(channelName)
                 .setParent(ticket.getCategory()).complete();
 
+        //Manage permissions for @everyone and deny read permission
         Role everyone = receivedEvent.getGuild().getPublicRole();
         ChannelManager manager = channel.getManager().getChannel().getManager();
 
         PermissionOverrideAction everyoneOverride = manager.getChannel().createPermissionOverride(everyone);
         everyoneOverride.setDeny(Permission.MESSAGE_READ).queue();
 
+        //Gives ticket owner read permission in channel
         PermissionOverrideAction memberOverride = manager.getChannel().createPermissionOverride(member);
         memberOverride.setAllow(Permission.MESSAGE_READ).queue();
 
+        //Saves channel in database
         Tickets.createChannel(receivedEvent.getGuild(), channel,
                 member.getUser(), ticket.getKeyword(), receivedEvent);
 
+        //Get ticket support and owner roles
         List<Role> supportRoles = getValidRoles(receivedEvent.getGuild(),
-                Tickets.getTypeSupportRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
+                getTypeSupportRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
         List<Role> ownerRoles = getValidRoles(receivedEvent.getGuild(),
                 Tickets.getTypeOwnerRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
 
+        //Assign ticket support and owner roles
         for (Role role : ownerRoles) {
             receivedEvent.getGuild().addRoleToMember(member, role).queue();
         }
@@ -260,9 +290,8 @@ public class Ticket extends Command {
             override.setAllow(Permission.MESSAGE_READ).queue();
         }
 
+        //Greet ticket owner in ticket channel
         MessageSender.sendMessage(Replacer.applyUserPlaceholder(member.getUser(), ticket.getCreationMessage()),
                 channel);
-
-        return;
     }
 }
