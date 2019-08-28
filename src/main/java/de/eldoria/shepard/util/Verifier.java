@@ -2,7 +2,10 @@ package de.eldoria.shepard.util;
 
 import de.eldoria.shepard.database.DbUtil;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +51,7 @@ public class Verifier {
      * Returns from a list of role ids all valid roles.
      *
      * @param guild guild for role lookup
-     * @param args  array of role id
+     * @param args  array of role ids
      * @return list of valid roles
      */
     public static List<Role> getValidRoles(Guild guild, String[] args) {
@@ -61,5 +64,24 @@ public class Verifier {
         }
         return roles;
     }
+
+    /**
+     * Returns from a list of text channel ids all valid channels.
+     *
+     * @param guild guild for channel lookup
+     * @param args  array of channel ids
+     * @return list of valid channels
+     */
+    public static List<TextChannel> getValidTextChannels(Guild guild, List<String> args) {
+        List<TextChannel> channels = new ArrayList<>();
+        for (String s : args) {
+            TextChannel channel = guild.getTextChannelById(DbUtil.getIdRaw(s));
+            if (channel != null) {
+                channels.add(channel);
+            }
+        }
+        return channels;
+    }
+
 
 }

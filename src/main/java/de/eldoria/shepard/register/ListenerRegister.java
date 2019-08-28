@@ -7,6 +7,7 @@ import de.eldoria.shepard.listener.JoinListener;
 import de.eldoria.shepard.listener.KeywordListener;
 import de.eldoria.shepard.listener.LogListener;
 import de.eldoria.shepard.listener.MessageSniffer;
+import de.eldoria.shepard.listener.TicketCleanupListener;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class ListenerRegister {
         listener.add(new KeywordListener());
         listener.add(new LogListener());
         listener.add(new MessageSniffer());
+        listener.add(new TicketCleanupListener());
     }
 
     private static ListenerRegister getInstance() {

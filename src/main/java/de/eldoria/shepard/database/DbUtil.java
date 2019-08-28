@@ -26,7 +26,7 @@ public final class DbUtil {
     public static String getIdRaw(String id) {
         Matcher matcher = ID_PATTERN.matcher(id);
         if (!matcher.matches()) {
-            throw new IllegalArgumentException("lol dis is not a id");
+            return "";
         }
         return matcher.group(1);
     }

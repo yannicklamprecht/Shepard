@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ContextException;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.Color;
@@ -112,7 +114,11 @@ public class MessageSender {
                 .setDescription(error)
                 .setColor(Color.red)
                 .setFooter("by Shepard", "https://cdn.discordapp.com/avatars/512413049894731780/e7262c349f015c5f6f25e6bca8a689d0.png?size=1024");
-        channel.sendMessage(builder.build()).queue();
+        try {
+            channel.sendMessage(builder.build()).queue();
+        } catch (ErrorResponseException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
