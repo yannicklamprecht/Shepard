@@ -2,22 +2,18 @@ package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
-import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.Tickets;
 import de.eldoria.shepard.database.types.TicketType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.Category;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import static de.eldoria.shepard.database.DbUtil.getValidRoles;
+import static de.eldoria.shepard.util.Verifier.getValidRoles;
 import static java.lang.System.lineSeparator;
 
 public class TicketSettings extends Command {

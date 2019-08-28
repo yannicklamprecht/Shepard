@@ -49,23 +49,6 @@ public final class DbUtil {
         }
     }
 
-    /**
-     * Returns from a list of role ids all valid roles.
-     *
-     * @param guild guild for role lookup
-     * @param args  array of role id
-     * @return list of valid roles
-     */
-    public static List<Role> getValidRoles(Guild guild, String[] args) {
-        List<Role> roles = new ArrayList<>();
-        for (String s : args) {
-            Role role = guild.getRoleById(DbUtil.getIdRaw(s));
-            if (role != null) {
-                roles.add(role);
-            }
-        }
-        return roles;
-    }
 
 
 }
