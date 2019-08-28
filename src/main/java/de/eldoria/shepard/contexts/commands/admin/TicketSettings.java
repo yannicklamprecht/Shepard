@@ -30,8 +30,10 @@ public class TicketSettings extends Command {
                                 + "**removeType** -> Removes a ticket type by type name or id" + lineSeparator()
                                 + "**setOwnerRoles** -> Sets ticket owner roles for ticket type" + lineSeparator()
                                 + "**setSupportRoles** -> Sets ticket support roles for ticket type" + lineSeparator()
-                                + "**setChannelCategory** -> Sets Channel Category for support channel." + lineSeparator()
-                                + "**setCreationMessage** -> Sets the creation Message of the ticket type" + lineSeparator()
+                                + "**setChannelCategory** -> Sets Channel Category for support channel."
+                                + lineSeparator()
+                                + "**setCreationMessage** -> Sets the creation Message of the ticket type"
+                                + lineSeparator()
                                 + "Message will be send when a ticket is created.",
                         true),
                 new CommandArg("value",

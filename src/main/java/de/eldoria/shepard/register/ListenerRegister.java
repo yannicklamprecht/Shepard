@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListenerRegister {
+public final class ListenerRegister {
     private static ListenerRegister instance;
     private static boolean registered;
     private List<ListenerAdapter> listener = new ArrayList<>();

@@ -40,18 +40,38 @@ public class TicketType {
         this.keyword = keyword;
     }
 
+    /**
+     * Get the id of the ticket type.
+     *
+     * @return ticket type id
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Get the channel category for channel creation.
+     *
+     * @return channel category
+     */
     public Category getCategory() {
         return categoryId;
     }
 
+    /**
+     * Returns creation message, which is send when a ticket of type is created.
+     *
+     * @return creation message with possible placeholder
+     */
     public String getCreationMessage() {
         return creationMessage;
     }
 
+    /**
+     * get the keyword and primal identifier of type.
+     *
+     * @return keyword as string.
+     */
     public String getKeyword() {
         return keyword;
     }

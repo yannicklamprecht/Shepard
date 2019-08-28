@@ -38,7 +38,11 @@ public class UserInfo extends Command {
     public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
 
         if (args.length == 0) {
-            MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Too few arguments", "Usage: " + Prefix.getPrefix(receivedEvent.getGuild(), receivedEvent) + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
+            MessageSender.sendError(new MessageEmbed.Field[] {
+                            new MessageEmbed.Field("Too few arguments",
+                                    "Usage: " + Prefix.getPrefix(receivedEvent.getGuild(),
+                                            receivedEvent) + "userInfo <id, name, tag>", false)}
+                    , receivedEvent.getChannel());
         }
 
         InternUser internUser = new InternUser(args[0], receivedEvent).invoke();
@@ -53,8 +57,10 @@ public class UserInfo extends Command {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setThumbnail(searchedUser.getAvatarUrl());
         builder.addField("ID", searchedUser.getId(), true);
-        builder.addField("Nickname", receivedEvent.getGuild().getMemberById(searchedUser.getId()).getNickname() + "", true);
-        builder.addField("Status", receivedEvent.getGuild().getMemberById(searchedUser.getId()).getOnlineStatus().toString() + "", true);
+        builder.addField("Nickname", receivedEvent.getGuild()
+                .getMemberById(searchedUser.getId()).getNickname() + "", true);
+        builder.addField("Status", receivedEvent.getGuild()
+                .getMemberById(searchedUser.getId()).getOnlineStatus().toString() + "", true);
         builder.addField("Minecraft Name", "Not implemented yet", true);
         builder.addField("Mention", "<@" + searchedUser.getId() + ">", false);
         builder.setAuthor(searchedUser.getAsTag(), searchedUser.getAvatarUrl(), searchedUser.getAvatarUrl());

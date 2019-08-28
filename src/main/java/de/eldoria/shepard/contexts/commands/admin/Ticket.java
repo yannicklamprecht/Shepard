@@ -105,7 +105,8 @@ public class Ticket extends Command {
         //If Member is present remove roles for this ticket.
         if (member != null) {
             //Get the owner roles of the current ticket. They should be removed.
-            List<String> ownerRolesAsString = getTypeOwnerRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent);
+            List<String> ownerRolesAsString = getTypeOwnerRoles(receivedEvent.getGuild(),
+                    type.getKeyword(), receivedEvent);
             List<Role> removeRoles = new ArrayList<>();
 
             //Get the role objects if the role exists.
@@ -117,7 +118,8 @@ public class Ticket extends Command {
             }
 
             //Get all other ticket channels of the owner
-            List<String> channelIdsByOwner = Tickets.getChannelIdsByOwner(receivedEvent.getGuild(), member.getUser(), receivedEvent);
+            List<String> channelIdsByOwner = Tickets.getChannelIdsByOwner(receivedEvent.getGuild(),
+                    member.getUser(), receivedEvent);
 
             List<TextChannel> channels = new ArrayList<>();
 
@@ -199,7 +201,6 @@ public class Ticket extends Command {
             MessageSender.sendMessage(builder.toString(), receivedEvent.getChannel());
         } else if (args.length == 2) {
             //Return info for one ticket type.
-            List<MessageEmbed.Field> fields = new ArrayList<>();
             TicketType type = Tickets.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
 
             if (type == null) {
@@ -218,6 +219,7 @@ public class Ticket extends Command {
                     getTypeSupportRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent)
                             .toArray(String[]::new)).forEach(role -> supporterMentions.add(role.getAsMention()));
 
+            List<MessageEmbed.Field> fields = new ArrayList<>();
             fields.add(new MessageEmbed.Field("Channel Category:", type.getCategory().getName(), false));
             fields.add(new MessageEmbed.Field("Creation Message:", type.getCreationMessage(), false));
             fields.add(new MessageEmbed.Field("Ticket Owner Groups:",

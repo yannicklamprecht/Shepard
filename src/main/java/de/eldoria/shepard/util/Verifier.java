@@ -2,10 +2,8 @@ package de.eldoria.shepard.util;
 
 import de.eldoria.shepard.database.DbUtil;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;

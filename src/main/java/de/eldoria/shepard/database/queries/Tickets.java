@@ -89,7 +89,7 @@ public final class Tickets {
     }
 
     /**
-     * Gets a type by Keyword.
+     * Gets a type by keyword.
      *
      * @param guild   Guild object for lookup
      * @param keyword keyword
@@ -115,7 +115,7 @@ public final class Tickets {
     }
 
     /**
-     * Gets a type by Keyword.
+     * Gets a type by channel.
      *
      * @param guild   Guild object for lookup
      * @param channel channel for lookup
@@ -410,6 +410,14 @@ public final class Tickets {
         return Collections.emptyList();
     }
 
+    /**
+     * Get the auto increment. Increment is per guild and goes from 1 to 999. After that starts at 1 again.
+     * After usage of the method the number is used.
+     *
+     * @param guild guild object
+     * @param event   event from command sending for error handling. Can be null.
+     * @return integer auto increment.
+     */
     public static int getNextTicketCount(Guild guild, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_next_ticket_count(?)")) {
