@@ -115,6 +115,33 @@ public final class Tickets {
     }
 
     /**
+     * Gets a type by Keyword.
+     *
+     * @param guild   Guild object for lookup
+     * @param channel channel for lookup
+     * @param event   event from command sending for error handling. Can be null.
+     * @return Ticket type object or null if no type was found for channel.
+     */
+    public static TicketType getTypeByChannel(Guild guild, TextChannel channel, MessageReceivedEvent event) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_ticket_type_by_channel(?,?)")) {
+            statement.setString(1, guild.getId());
+            statement.setString(2, channel.getId());
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return new TicketType(guild,
+                        result.getString("category_id"),
+                        result.getString("creation_message"),
+                        result.getString("keyword"));
+            }
+        } catch (SQLException e) {
+            handleException(e, event);
+        }
+        return null;
+    }
+
+
+    /**
      * Get all types of one guild.
      *
      * @param guild Guild object for lookup
@@ -198,7 +225,7 @@ public final class Tickets {
             statement.setString(1, guild.getId());
             statement.setString(2, channelOwner.getId());
             ResultSet result = statement.executeQuery();
-            if (result.getArray(1) != null) {
+            if (result.next() && result.getArray(1) != null) {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
         } catch (SQLException e) {
@@ -230,6 +257,7 @@ public final class Tickets {
         return null;
     }
 
+
     /**
      * Get the roles for the channel owner of a channel.
      *
@@ -244,7 +272,7 @@ public final class Tickets {
             statement.setString(1, guild.getId());
             statement.setString(2, channel.getId());
             ResultSet result = statement.executeQuery();
-            if (result.getArray(1) != null) {
+            if (result.next() && result.getArray(1) != null) {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
         } catch (SQLException e) {
@@ -347,10 +375,7 @@ public final class Tickets {
             statement.setString(1, guild.getId());
             statement.setString(2, keyword);
             ResultSet result = statement.executeQuery();
-            if (!result.next()) {
-                return Collections.emptyList();
-            }
-            if (result.getArray(1) != null) {
+            if (result.next() && result.getArray(1) != null) {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
         } catch (SQLException e) {
@@ -385,7 +410,7 @@ public final class Tickets {
         return Collections.emptyList();
     }
 
-    public static int getNextTicketCount(Guild guild, MessageReceivedEvent event){
+    public static int getNextTicketCount(Guild guild, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_next_ticket_count(?)")) {
             statement.setString(1, guild.getId());
