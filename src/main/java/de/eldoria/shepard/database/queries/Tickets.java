@@ -154,14 +154,13 @@ public final class Tickets {
                 .prepareStatement("SELECT * from shepard_func.get_ticket_types(?)")) {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
-            if (result.next()) {
+            while (result.next()) {
                 types.add(new TicketType(guild,
                         result.getInt("id"),
                         result.getString("category_id"),
                         result.getString("creation_message"),
                         result.getString("keyword")));
             }
-
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -235,6 +234,29 @@ public final class Tickets {
     }
 
     /**
+     * Get all channel ids by type on a guild.
+     *
+     * @param guild        Guild object for lookup
+     * @param type owner of the channel.
+     * @param event        event from command sending for error handling. Can be null.
+     * @return list of channel ids
+     */
+    public static List<String> getChannelIdsByType(Guild guild, String type, MessageReceivedEvent event) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.get_ticket_channel_by_keyword(?,?)")) {
+            statement.setString(1, guild.getId());
+            statement.setString(2, type);
+            ResultSet result = statement.executeQuery();
+            if (result.next() && result.getArray(1) != null) {
+                return Arrays.asList((String[]) result.getArray(1).getArray());
+            }
+        } catch (SQLException e) {
+            handleException(e, event);
+        }
+        return Collections.emptyList();
+    }
+
+    /**
      * get user id of the channel owner of a channel.
      *
      * @param guild   Guild object for lookup
@@ -276,7 +298,7 @@ public final class Tickets {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
         } catch (SQLException e) {
-            handleException(e, event);
+            handleException(e, null);
         }
         return Collections.emptyList();
     }
@@ -398,10 +420,7 @@ public final class Tickets {
             statement.setString(1, guild.getId());
             statement.setString(2, keyword);
             ResultSet result = statement.executeQuery();
-            if (!result.next()) {
-                return Collections.emptyList();
-            }
-            if (result.getArray(1) != null) {
+            if (result.next() && result.getArray(1) != null) {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
         } catch (SQLException e) {

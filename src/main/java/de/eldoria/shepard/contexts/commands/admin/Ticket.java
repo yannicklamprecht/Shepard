@@ -107,56 +107,13 @@ public class Ticket extends Command {
             //Get the owner roles of the current ticket. They should be removed.
             List<String> ownerRolesAsString = getTypeOwnerRoles(receivedEvent.getGuild(),
                     type.getKeyword(), receivedEvent);
-            List<Role> removeRoles = new ArrayList<>();
-
-            //Get the role objects if the role exists.
-            for (String s : ownerRolesAsString) {
-                Role roleById = receivedEvent.getGuild().getRoleById(s);
-                if (roleById != null) {
-                    removeRoles.add(roleById);
-                }
-            }
-
-            //Get all other ticket channels of the owner
-            List<String> channelIdsByOwner = Tickets.getChannelIdsByOwner(receivedEvent.getGuild(),
-                    member.getUser(), receivedEvent);
-
-            List<TextChannel> channels = new ArrayList<>();
-
-            //Get the channel objects
-            for (String s : channelIdsByOwner) {
-                TextChannel textChannel = receivedEvent.getGuild().getTextChannelById(s);
-                if (textChannel != null) {
-                    channels.add(textChannel);
-                }
-            }
-
-            //Create a set of all roles the player should keep.
-            Set<Role> newRoleSet = new HashSet<>();
-            for (TextChannel c : channels) {
-                for (String s : getChannelOwnerRoles(receivedEvent.getGuild(), channel, receivedEvent)) {
-                    Role role = receivedEvent.getGuild().getRoleById(s);
-                    if (role != null) {
-                        newRoleSet.add(role);
-                    }
-                }
-            }
-
-            //Removes all roles for the current ticket
-            for (Role r : removeRoles) {
-                receivedEvent.getGuild().removeRoleFromMember(member, r).queue();
-            }
-
-            //Adds all roles for the other tickets. needed if two ticket types use the same role or
-            // if there are more than one ticket channel with this type.
-            for (Role r : newRoleSet) {
-                receivedEvent.getGuild().addRoleToMember(member, r).queue();
-            }
+            TicketHelper.removeAndUpdateTicketRoles(receivedEvent, member, ownerRolesAsString);
         }
 
         //Finally delete the channel.
         channel.delete().queue();
     }
+
 
     private void typeInfo(String[] args, MessageReceivedEvent receivedEvent) {
         List<TicketType> tickets = Tickets.getTypes(receivedEvent.getGuild(), receivedEvent);
@@ -280,7 +237,7 @@ public class Ticket extends Command {
         List<Role> supportRoles = getValidRoles(receivedEvent.getGuild(),
                 getTypeSupportRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
         List<Role> ownerRoles = getValidRoles(receivedEvent.getGuild(),
-                Tickets.getTypeOwnerRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
+                getTypeOwnerRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
 
         //Assign ticket support and owner roles
         for (Role role : ownerRoles) {

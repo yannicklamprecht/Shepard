@@ -25,6 +25,8 @@ public class MessageSender {
      * @param channel channel to send
      */
     public static void sendMessage(String message, MessageChannel channel) {
+        if (message.isEmpty()) return;
+
         String[] messageParts = message.split(System.lineSeparator());
         StringBuilder messagePart = new StringBuilder();
         for (int i = 0; i < messageParts.length; i++) {
@@ -36,6 +38,7 @@ public class MessageSender {
                 i--;
             }
         }
+
         channel.sendMessage(messagePart.toString()).queue();
     }
 

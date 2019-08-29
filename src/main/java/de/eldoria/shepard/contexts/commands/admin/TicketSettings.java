@@ -5,13 +5,18 @@ import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.Tickets;
 import de.eldoria.shepard.database.types.TicketType;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.entities.Category;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static de.eldoria.shepard.util.Verifier.getValidRoles;
 import static java.lang.System.lineSeparator;
@@ -166,9 +171,36 @@ public class TicketSettings extends Command {
             return;
         }
 
+        List<String> channelIdsByType = Tickets.getChannelIdsByType(receivedEvent.getGuild(),
+                scopeTicket.getKeyword(), receivedEvent);
+
+        List<TextChannel> validTextChannels = Verifier.getValidTextChannels(receivedEvent.getGuild(),
+                channelIdsByType);
+
+        List<String> typeOwnerRoles = Tickets.getTypeOwnerRoles(receivedEvent.getGuild(),
+                scopeTicket.getKeyword(), receivedEvent);
+
+        Set<Member> members = new HashSet<>();
+
+        for (TextChannel channel : validTextChannels) {
+            String channelOwnerId = Tickets.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
+            if (channelOwnerId == null) continue;
+            Member memberById = receivedEvent.getGuild().getMemberById(channelOwnerId);
+            if (memberById == null) continue;
+            members.add(memberById);
+        }
+        for (Member member : members) {
+            TicketHelper.removeAndUpdateTicketRoles(receivedEvent, member, typeOwnerRoles);
+        }
+
         Tickets.removeTypeByKeyword(receivedEvent.getGuild(), scopeTicket.getKeyword(), receivedEvent);
 
-        MessageSender.sendMessage("Remove ticket type **" + scopeTicket.getKeyword() + "**!",
+        for (TextChannel channel : validTextChannels) {
+            channel.delete().queue();
+        }
+
+        MessageSender.sendMessage("Removed ticket type **" + scopeTicket.getKeyword()
+                        + "** and all channels of this type!",
                 receivedEvent.getChannel());
     }
 
@@ -194,9 +226,5 @@ public class TicketSettings extends Command {
         Tickets.addType(receivedEvent.getGuild(), category, "", type, receivedEvent);
 
         MessageSender.sendMessage("Created ticket type: **" + type.toLowerCase() + "**", receivedEvent.getChannel());
-
-        return;
     }
-
-
 }

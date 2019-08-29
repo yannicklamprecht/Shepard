@@ -22,7 +22,7 @@ public final class DbUtil {
     public static String getIdRaw(String id) {
         Matcher matcher = ID_PATTERN.matcher(id);
         if (!matcher.matches()) {
-            return "";
+            return "0";
         }
         return matcher.group(1);
     }
