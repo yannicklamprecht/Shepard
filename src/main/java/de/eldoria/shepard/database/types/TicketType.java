@@ -1,26 +1,24 @@
 package de.eldoria.shepard.database.types;
 
 import net.dv8tion.jda.api.entities.Category;
-import net.dv8tion.jda.api.entities.Guild;
 
 public class TicketType {
     private final int id;
-    private final Category categoryId;
+    private final Category category;
     private final String creationMessage;
     private final String keyword;
 
     /**
      * Creates a new Ticket type object.
      *
-     * @param guild           Guild for which this ticket type was created
      * @param id              id.
-     * @param categoryId      channel category
+     * @param category      channel category
      * @param creationMessage creation message
      * @param keyword         creation keyword
      */
-    public TicketType(Guild guild, int id, String categoryId, String creationMessage, String keyword) {
+    public TicketType(int id, Category category, String creationMessage, String keyword) {
         this.id = id;
-        this.categoryId = guild.getCategoryById(categoryId);
+        this.category = category;
         this.creationMessage = creationMessage;
         this.keyword = keyword;
     }
@@ -28,14 +26,13 @@ public class TicketType {
     /**
      * Creates a new Ticket type object.
      *
-     * @param guild           Guild for which this ticket type was created
-     * @param categoryId      channel category
+     * @param category      channel category
      * @param creationMessage creation message
      * @param keyword         creation keyword
      */
-    public TicketType(Guild guild, String categoryId, String creationMessage, String keyword) {
+    public TicketType(Category category, String creationMessage, String keyword) {
         this.id = -1;
-        this.categoryId = guild.getCategoryById(categoryId);
+        this.category = category;
         this.creationMessage = creationMessage;
         this.keyword = keyword;
     }
@@ -55,7 +52,7 @@ public class TicketType {
      * @return channel category
      */
     public Category getCategory() {
-        return categoryId;
+        return category;
     }
 
     /**

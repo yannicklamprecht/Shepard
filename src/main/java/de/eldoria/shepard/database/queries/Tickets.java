@@ -103,8 +103,8 @@ public final class Tickets {
             statement.setString(2, keyword);
             ResultSet result = statement.executeQuery();
             if (result.next()) {
-                return new TicketType(guild,
-                        result.getString("category_id"),
+                return new TicketType(
+                        guild.getCategoryById(result.getString("category_id")),
                         result.getString("creation_message"),
                         result.getString("keyword"));
             }
@@ -129,8 +129,8 @@ public final class Tickets {
             statement.setString(2, channel.getId());
             ResultSet result = statement.executeQuery();
             if (result.next()) {
-                return new TicketType(guild,
-                        result.getString("category_id"),
+                return new TicketType(
+                        guild.getCategoryById(result.getString("category_id")),
                         result.getString("creation_message"),
                         result.getString("keyword"));
             }
@@ -155,9 +155,9 @@ public final class Tickets {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                types.add(new TicketType(guild,
+                types.add(new TicketType(
                         result.getInt("id"),
-                        result.getString("category_id"),
+                        guild.getCategoryById(result.getString("category_id")),
                         result.getString("creation_message"),
                         result.getString("keyword")));
             }
@@ -236,9 +236,9 @@ public final class Tickets {
     /**
      * Get all channel ids by type on a guild.
      *
-     * @param guild        Guild object for lookup
-     * @param type owner of the channel.
-     * @param event        event from command sending for error handling. Can be null.
+     * @param guild Guild object for lookup
+     * @param type  owner of the channel.
+     * @param event event from command sending for error handling. Can be null.
      * @return list of channel ids
      */
     public static List<String> getChannelIdsByType(Guild guild, String type, MessageReceivedEvent event) {
@@ -434,7 +434,7 @@ public final class Tickets {
      * After usage of the method the number is used.
      *
      * @param guild guild object
-     * @param event   event from command sending for error handling. Can be null.
+     * @param event event from command sending for error handling. Can be null.
      * @return integer auto increment.
      */
     public static int getNextTicketCount(Guild guild, MessageReceivedEvent event) {

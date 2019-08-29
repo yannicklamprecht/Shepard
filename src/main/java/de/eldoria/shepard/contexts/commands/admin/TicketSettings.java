@@ -66,8 +66,14 @@ public class TicketSettings extends Command {
             }
         }
 
-        if (cmd.equalsIgnoreCase("createType")) {
+        //All validation operations are inside the method except when they are needed for more than one method.
+
+
+        if (cmd.equalsIgnoreCase("createType") && scopeTicket != null) {
             createType(args, receivedEvent, type, scopeTicket);
+            return;
+        } else if (cmd.equalsIgnoreCase("createType") && scopeTicket == null) {
+            MessageSender.sendSimpleError("This type is already defined.", receivedEvent.getChannel());
             return;
         }
 
@@ -211,10 +217,6 @@ public class TicketSettings extends Command {
             return;
         }
 
-        if (scopeTicket != null) {
-            MessageSender.sendSimpleError("This type is already defined.", receivedEvent.getChannel());
-            return;
-        }
 
         Category category = receivedEvent.getGuild().getCategoryById(args[2]);
 

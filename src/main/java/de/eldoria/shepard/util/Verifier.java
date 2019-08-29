@@ -6,7 +6,10 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Verifier {
     /**
@@ -53,14 +56,20 @@ public class Verifier {
      * @return list of valid roles
      */
     public static List<Role> getValidRoles(Guild guild, String[] args) {
-        List<Role> roles = new ArrayList<>();
-        for (String s : args) {
-            Role role = guild.getRoleById(DbUtil.getIdRaw(s));
-            if (role != null) {
-                roles.add(role);
-            }
-        }
-        return roles;
+        return Arrays.stream(args).map(roleId -> guild.getRoleById(DbUtil.getIdRaw(roleId)))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Returns from a list of text channels ids all valid channels.
+     *
+     * @param guild guild for role lookup
+     * @param args  array of role id
+     * @return list of valid roles
+     */
+    public static List<Role> getValidTextChannels(Guild guild, List<String> args) {
+        return getValidRoles(guild, args.toArray(String[]::new));
     }
 
     /**
@@ -70,15 +79,10 @@ public class Verifier {
      * @param args  array of channel ids
      * @return list of valid channels
      */
-    public static List<TextChannel> getValidTextChannels(Guild guild, List<String> args) {
-        List<TextChannel> channels = new ArrayList<>();
-        for (String s : args) {
-            TextChannel channel = guild.getTextChannelById(DbUtil.getIdRaw(s));
-            if (channel != null) {
-                channels.add(channel);
-            }
-        }
-        return channels;
+    public static List<TextChannel> getValidTextChannels(Guild guild, String[] args) {
+        return Arrays.stream(args).map(channelId -> guild.getTextChannelById(DbUtil.getIdRaw(channelId)))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
 

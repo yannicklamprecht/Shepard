@@ -3,6 +3,8 @@ package de.eldoria.shepard.util;
 import net.dv8tion.jda.api.entities.User;
 
 public final class Replacer {
+    private Replacer(){}
+
     /**
      * Applies the common placeholder for users to a message.
      *

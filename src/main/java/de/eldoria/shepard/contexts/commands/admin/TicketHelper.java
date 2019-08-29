@@ -13,8 +13,17 @@ import java.util.Set;
 
 import static de.eldoria.shepard.database.queries.Tickets.getChannelOwnerRoles;
 
-public class TicketHelper {
-    public static void removeAndUpdateTicketRoles(MessageReceivedEvent receivedEvent, Member member, List<String> rolesToRemove) {
+final class TicketHelper {
+    private TicketHelper() {
+    }
+
+    /**
+     * Removes the roles from a user, but secures, that he keeps all necessary roles for other tickets.
+     * @param receivedEvent Received event of the message.
+     * @param member member to change roles
+     * @param rolesToRemove roles as string list
+     */
+    static void removeAndUpdateTicketRoles(MessageReceivedEvent receivedEvent, Member member, List<String> rolesToRemove) {
         List<Role> removeRoles = new ArrayList<>();
 
         //Get the role objects if the role exists.
