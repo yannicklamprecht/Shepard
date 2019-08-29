@@ -13,6 +13,9 @@ import java.util.Arrays;
 import static java.lang.System.lineSeparator;
 
 public class Greeting extends Command {
+    /**
+     * Creates a new greeting command object.
+     */
     public Greeting() {
         commandName = "greeting";
         commandDesc = "Manage greeting settings.";

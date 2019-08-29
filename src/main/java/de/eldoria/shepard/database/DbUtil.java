@@ -10,7 +10,8 @@ import java.util.regex.Pattern;
 public final class DbUtil {
     private static final Pattern ID_PATTERN = Pattern.compile("(?:<[@#!&]{1,2})?(?<id>[0-9]{18})(?:>)?");
 
-    private DbUtil(){}
+    private DbUtil() {
+    }
 
     /**
      * Extracts an id from discord's formatting.
@@ -21,7 +22,7 @@ public final class DbUtil {
     public static String getIdRaw(String id) {
         Matcher matcher = ID_PATTERN.matcher(id);
         if (!matcher.matches()) {
-            throw new IllegalArgumentException("lol dis is not a channel");
+            return "0";
         }
         return matcher.group(1);
     }
@@ -43,6 +44,7 @@ public final class DbUtil {
                     + "Can you give me another try, pls?", event.getChannel());
         }
     }
+
 
 
 }

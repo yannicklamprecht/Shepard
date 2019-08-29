@@ -29,29 +29,27 @@ public final class Tickets {
      * Creates a new ticket type.
      *
      * @param guild           Guild on which the type should be added
-     * @param category      channel category id
+     * @param category        channel category id
      * @param creationMessage creation message
      * @param keyword         type keyword
      * @param event           event from command sending for error handling. Can be null.
-     * @return true if successful created
      */
-    public static boolean addType(Guild guild, Category category, String creationMessage,
-                                  String keyword, MessageReceivedEvent event) {
+    public static void addType(Guild guild, Category category, String creationMessage,
+                               String keyword, MessageReceivedEvent event) {
+        String categoryId = null;
+        if (category != null) {
+            categoryId = category.getId();
+        }
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_ticket_type(?,?,?,?)")) {
             statement.setString(1, guild.getId());
-            statement.setString(1, category.getId());
-            statement.setString(1, creationMessage);
-            statement.setString(1, keyword);
-            ResultSet result = statement.executeQuery();
-
-            if (result.next()) {
-                return result.getBoolean(1);
-            }
+            statement.setString(2, categoryId);
+            statement.setString(3, creationMessage);
+            statement.setString(4, keyword);
+            statement.execute();
         } catch (SQLException e) {
             handleException(e, event);
         }
-        return false;
     }
 
     /**
@@ -91,7 +89,7 @@ public final class Tickets {
     }
 
     /**
-     * Gets a type by Keyword.
+     * Gets a type by keyword.
      *
      * @param guild   Guild object for lookup
      * @param keyword keyword
@@ -100,12 +98,13 @@ public final class Tickets {
      */
     public static TicketType getTypeByKeyword(Guild guild, String keyword, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT shepard_func.get_ticket_type_by_keyword(?,?,?)")) {
+                .prepareStatement("SELECT * from shepard_func.get_ticket_type_by_keyword(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, keyword);
             ResultSet result = statement.executeQuery();
             if (result.next()) {
-                return new TicketType(result.getString("category_id"),
+                return new TicketType(
+                        guild.getCategoryById(result.getString("category_id")),
                         result.getString("creation_message"),
                         result.getString("keyword"));
             }
@@ -114,6 +113,33 @@ public final class Tickets {
         }
         return null;
     }
+
+    /**
+     * Gets a type by channel.
+     *
+     * @param guild   Guild object for lookup
+     * @param channel channel for lookup
+     * @param event   event from command sending for error handling. Can be null.
+     * @return Ticket type object or null if no type was found for channel.
+     */
+    public static TicketType getTypeByChannel(Guild guild, TextChannel channel, MessageReceivedEvent event) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_ticket_type_by_channel(?,?)")) {
+            statement.setString(1, guild.getId());
+            statement.setString(2, channel.getId());
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return new TicketType(
+                        guild.getCategoryById(result.getString("category_id")),
+                        result.getString("creation_message"),
+                        result.getString("keyword"));
+            }
+        } catch (SQLException e) {
+            handleException(e, event);
+        }
+        return null;
+    }
+
 
     /**
      * Get all types of one guild.
@@ -125,16 +151,16 @@ public final class Tickets {
     public static List<TicketType> getTypes(Guild guild, MessageReceivedEvent event) {
         List<TicketType> types = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT shepard_func.get_ticket_types(?)")) {
+                .prepareStatement("SELECT * from shepard_func.get_ticket_types(?)")) {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
-            if (result.next()) {
-                types.add(new TicketType(result.getInt("id")
-                        , result.getString("category_id")
-                        , result.getString("creation_message")
-                        , result.getString("keyword")));
+            while (result.next()) {
+                types.add(new TicketType(
+                        result.getInt("id"),
+                        guild.getCategoryById(result.getString("category_id")),
+                        result.getString("creation_message"),
+                        result.getString("keyword")));
             }
-
         } catch (SQLException e) {
             handleException(e, event);
         }
@@ -164,11 +190,11 @@ public final class Tickets {
     /**
      * Creates a channel.
      *
-     * @param guild         Guild object for lookup
-     * @param channel       chanel object
+     * @param guild       Guild object for lookup
+     * @param channel     chanel object
      * @param ticketOwner user object of the ticket owner
-     * @param keyword       keyword of the ticket type.
-     * @param event         event from command sending for error handling. Can be null.
+     * @param keyword     keyword of the ticket type.
+     * @param event       event from command sending for error handling. Can be null.
      */
     public static void createChannel(Guild guild, TextChannel channel,
                                      User ticketOwner, String keyword, MessageReceivedEvent event) {
@@ -187,9 +213,9 @@ public final class Tickets {
     /**
      * Get all channel ids by owner on a guild.
      *
-     * @param guild  Guild object for lookup
+     * @param guild        Guild object for lookup
      * @param channelOwner owner of the channel.
-     * @param event  event from command sending for error handling. Can be null.
+     * @param event        event from command sending for error handling. Can be null.
      * @return list of channel ids
      */
     public static List<String> getChannelIdsByOwner(Guild guild, User channelOwner, MessageReceivedEvent event) {
@@ -198,7 +224,30 @@ public final class Tickets {
             statement.setString(1, guild.getId());
             statement.setString(2, channelOwner.getId());
             ResultSet result = statement.executeQuery();
-            if (result.getArray(1) != null) {
+            if (result.next() && result.getArray(1) != null) {
+                return Arrays.asList((String[]) result.getArray(1).getArray());
+            }
+        } catch (SQLException e) {
+            handleException(e, event);
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * Get all channel ids by type on a guild.
+     *
+     * @param guild Guild object for lookup
+     * @param type  owner of the channel.
+     * @param event event from command sending for error handling. Can be null.
+     * @return list of channel ids
+     */
+    public static List<String> getChannelIdsByType(Guild guild, String type, MessageReceivedEvent event) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.get_ticket_channel_by_keyword(?,?)")) {
+            statement.setString(1, guild.getId());
+            statement.setString(2, type);
+            ResultSet result = statement.executeQuery();
+            if (result.next() && result.getArray(1) != null) {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
         } catch (SQLException e) {
@@ -230,6 +279,7 @@ public final class Tickets {
         return null;
     }
 
+
     /**
      * Get the roles for the channel owner of a channel.
      *
@@ -244,11 +294,11 @@ public final class Tickets {
             statement.setString(1, guild.getId());
             statement.setString(2, channel.getId());
             ResultSet result = statement.executeQuery();
-            if (result.getArray(1) != null) {
+            if (result.next() && result.getArray(1) != null) {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
         } catch (SQLException e) {
-            handleException(e, event);
+            handleException(e, null);
         }
         return Collections.emptyList();
     }
@@ -274,9 +324,9 @@ public final class Tickets {
     /**
      * Remove all channels where user is ticket owner.
      *
-     * @param guild  Guild object for lookup
+     * @param guild       Guild object for lookup
      * @param ticketOwner ticketOwner as user.
-     * @param event  event from command sending for error handling. Can be null.
+     * @param event       event from command sending for error handling. Can be null.
      */
     public static void removeChannelByUser(Guild guild, User ticketOwner, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -294,16 +344,16 @@ public final class Tickets {
      *
      * @param guild   Guild object for lookup
      * @param keyword keyword of the type
-     * @param roles one or more role ids.
+     * @param roles   one or more role ids.
      * @param event   event from command sending for error handling. Can be null.
      */
-    public static void setTypeOwnerRoles(Guild guild, String keyword, Role[] roles, MessageReceivedEvent event) {
+    public static void setTypeOwnerRoles(Guild guild, String keyword, List<Role> roles, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT shepard_func.set_ticket_owner_role(?,?,?)")) {
+                .prepareStatement("SELECT shepard_func.set_ticket_owner_roles(?,?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, keyword);
             Array ids = DatabaseConnector.getConn().createArrayOf("varchar",
-                    Arrays.stream(roles).map(role -> role.getId()).toArray());
+                    roles.stream().map(role -> role.getId()).toArray());
             statement.setArray(3, ids);
             statement.execute();
         } catch (SQLException e) {
@@ -316,16 +366,16 @@ public final class Tickets {
      *
      * @param guild   Guild object for lookup
      * @param keyword keyword of ticket type
-     * @param roles one or more role ids
+     * @param roles   one or more role ids
      * @param event   event from command sending for error handling. Can be null.
      */
-    public static void setTypeSupportRoles(Guild guild, String keyword, Role[] roles, MessageReceivedEvent event) {
+    public static void setTypeSupportRoles(Guild guild, String keyword, List<Role> roles, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT shepard_func.set_ticket_support_role(?,?,?)")) {
+                .prepareStatement("SELECT shepard_func.set_ticket_support_roles(?,?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, keyword);
             Array ids = DatabaseConnector.getConn().createArrayOf("varchar",
-                    Arrays.stream(roles).map(role -> role.getId()).toArray());
+                    roles.stream().map(role -> role.getId()).toArray());
             statement.setArray(3, ids);
             statement.execute();
         } catch (SQLException e) {
@@ -347,7 +397,7 @@ public final class Tickets {
             statement.setString(1, guild.getId());
             statement.setString(2, keyword);
             ResultSet result = statement.executeQuery();
-            if (result.getArray(1) != null) {
+            if (result.next() && result.getArray(1) != null) {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
         } catch (SQLException e) {
@@ -370,7 +420,7 @@ public final class Tickets {
             statement.setString(1, guild.getId());
             statement.setString(2, keyword);
             ResultSet result = statement.executeQuery();
-            if (result.getArray(1) != null) {
+            if (result.next() && result.getArray(1) != null) {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
         } catch (SQLException e) {
@@ -378,4 +428,27 @@ public final class Tickets {
         }
         return Collections.emptyList();
     }
+
+    /**
+     * Get the auto increment. Increment is per guild and goes from 1 to 999. After that starts at 1 again.
+     * After usage of the method the number is used.
+     *
+     * @param guild guild object
+     * @param event event from command sending for error handling. Can be null.
+     * @return integer auto increment.
+     */
+    public static int getNextTicketCount(Guild guild, MessageReceivedEvent event) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.get_next_ticket_count(?)")) {
+            statement.setString(1, guild.getId());
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return result.getInt(1);
+            }
+        } catch (SQLException e) {
+            handleException(e, event);
+        }
+        return 1;
+    }
+
 }

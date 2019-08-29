@@ -38,7 +38,11 @@ public class UserInfo extends Command {
     public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
 
         if (args.length == 0) {
-            MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Too few arguments", "Usage: " + Prefix.getPrefix(receivedEvent.getGuild(), receivedEvent) + "userInfo <id, name, tag>", false)}, receivedEvent.getChannel());
+            MessageSender.sendError(new MessageEmbed.Field[] {
+                            new MessageEmbed.Field("Too few arguments",
+                                    "Usage: " + Prefix.getPrefix(receivedEvent.getGuild(),
+                                            receivedEvent) + "userInfo <id, name, tag>", false)}
+                    , receivedEvent.getChannel());
         }
 
         InternUser internUser = new InternUser(args[0], receivedEvent).invoke();
@@ -50,14 +54,16 @@ public class UserInfo extends Command {
             return;
         }
 
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setThumbnail(searchedUser.getAvatarUrl());
-        builder.addField("ID", searchedUser.getId(), true);
-        builder.addField("Nickname", receivedEvent.getGuild().getMemberById(searchedUser.getId()).getNickname() + "", true);
-        builder.addField("Status", receivedEvent.getGuild().getMemberById(searchedUser.getId()).getOnlineStatus().toString() + "", true);
-        builder.addField("Minecraft Name", "Not implemented yet", true);
-        builder.addField("Mention", "<@" + searchedUser.getId() + ">", false);
-        builder.setAuthor(searchedUser.getAsTag(), searchedUser.getAvatarUrl(), searchedUser.getAvatarUrl());
+        EmbedBuilder builder = new EmbedBuilder()
+                .setThumbnail(searchedUser.getAvatarUrl())
+                .addField("ID", searchedUser.getId(), true)
+                .addField("Nickname", receivedEvent.getGuild()
+                        .getMemberById(searchedUser.getId()).getNickname() + "", true)
+                .addField("Status", receivedEvent.getGuild()
+                        .getMemberById(searchedUser.getId()).getOnlineStatus().toString() + "", true)
+                .addField("Minecraft Name", "Not implemented yet", true)
+                .addField("Mention", "<@" + searchedUser.getId() + ">", false)
+                .setAuthor(searchedUser.getAsTag(), searchedUser.getAvatarUrl(), searchedUser.getAvatarUrl());
         OffsetDateTime time = receivedEvent.getGuild().getMemberById(searchedUser.getId()).getTimeJoined();
         LocalDate date = time.toLocalDate();
         Period period = date.until(LocalDate.now());
@@ -70,8 +76,8 @@ public class UserInfo extends Command {
         int days = period.getDays();
         String year = years != 1 ? " Years, " : " Year, ";
         String day = days != 1 ? " Days" : " Day";
-        builder.addField("Joined", years + year + months + " Month " + days + day + "\n(" + formatted + ")", false);
-        builder.setColor(receivedEvent.getGuild().getMemberById(searchedUser.getId()).getColor());
+        builder.addField("Joined", years + year + months + " Month " + days + day + "\n(" + formatted + ")", false)
+                .setColor(receivedEvent.getGuild().getMemberById(searchedUser.getId()).getColor());
         List<Role> roles = receivedEvent.getGuild().getMemberById(searchedUser.getId()).getRoles();
         String userRoles = "";
         for (Role role : roles) {

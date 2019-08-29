@@ -4,8 +4,8 @@ import de.eldoria.shepard.contexts.reactionmessages.ReactionMessage;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 public class Test extends ReactionMessage {
-    public Test () {
-        messageIds = new String[]{"539525087053873162"};
+    public Test() {
+        messageIds = new String[] {"539525087053873162"};
     }
 
     public boolean execute(MessageReactionAddEvent e) {

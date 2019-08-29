@@ -1,12 +1,14 @@
 package de.eldoria.shepard.messagehandler;
 
 import de.eldoria.shepard.database.types.Greeting;
+import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.Color;
@@ -23,6 +25,8 @@ public class MessageSender {
      * @param channel channel to send
      */
     public static void sendMessage(String message, MessageChannel channel) {
+        if (message.isEmpty()) return;
+
         String[] messageParts = message.split(System.lineSeparator());
         StringBuilder messagePart = new StringBuilder();
         for (int i = 0; i < messageParts.length; i++) {
@@ -34,6 +38,7 @@ public class MessageSender {
                 i--;
             }
         }
+
         channel.sendMessage(messagePart.toString()).queue();
     }
 
@@ -111,7 +116,11 @@ public class MessageSender {
                 .setDescription(error)
                 .setColor(Color.red)
                 .setFooter("by Shepard", "https://cdn.discordapp.com/avatars/512413049894731780/e7262c349f015c5f6f25e6bca8a689d0.png?size=1024");
-        channel.sendMessage(builder.build()).queue();
+        try {
+            channel.sendMessage(builder.build()).queue();
+        } catch (ErrorResponseException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -175,9 +184,7 @@ public class MessageSender {
 
         }
         User user = event.getUser();
-        String message = greeting.getText().replace("{user_name}", user.getName())
-                .replace("{user_tag}", user.getAsTag())
-                .replace("{user_mention}", user.getAsMention());
+        String message = Replacer.applyUserPlaceholder(user, greeting.getText());
         builder.addField(event.getMember().getUser().getAsTag(),
                 message, true);
         channel.sendMessage((builder.build())).queue();

@@ -27,7 +27,7 @@ public class ContextInfo extends Command {
         String contextName = ContextHelper.getContextName(args[0], receivedEvent);
         if (contextName != null) {
             ContextData data = Context.getContextData(contextName, receivedEvent);
-            MessageSender.sendMessage( "Information about context " + contextName.toUpperCase() + lineSeparator()
+            MessageSender.sendMessage("Information about context " + contextName.toUpperCase() + lineSeparator()
                     + "```yaml" + lineSeparator()
                     + data.toString() + lineSeparator() + "```", receivedEvent.getChannel());
         } else {
