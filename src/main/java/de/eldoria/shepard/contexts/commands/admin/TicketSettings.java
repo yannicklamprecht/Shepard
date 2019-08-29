@@ -70,7 +70,7 @@ public class TicketSettings extends Command {
 
 
         if (cmd.equalsIgnoreCase("createType") && scopeTicket != null) {
-            createType(args, receivedEvent, type, scopeTicket);
+            createType(args, receivedEvent, type);
             return;
         } else if (cmd.equalsIgnoreCase("createType") && scopeTicket == null) {
             MessageSender.sendSimpleError("This type is already defined.", receivedEvent.getChannel());
@@ -210,7 +210,7 @@ public class TicketSettings extends Command {
                 receivedEvent.getChannel());
     }
 
-    private void createType(String[] args, MessageReceivedEvent receivedEvent, String type, TicketType scopeTicket) {
+    private void createType(String[] args, MessageReceivedEvent receivedEvent, String type) {
         if (args.length != 3) {
             MessageSender.sendSimpleError("Invalid arguments", receivedEvent.getChannel());
             sendCommandUsage(receivedEvent.getChannel());
