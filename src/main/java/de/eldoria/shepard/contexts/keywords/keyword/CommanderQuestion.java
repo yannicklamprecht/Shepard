@@ -14,13 +14,12 @@ public class CommanderQuestion extends Keyword {
     }
 
     @Override
-    public boolean execute(MessageReceivedEvent event, String key) {
+    public void execute(MessageReceivedEvent event, String key) {
         if (key.equalsIgnoreCase(keywords[0])) {
             MessageSender.sendMessage("Commander Shepard meldet sich zum Dienst!", event.getChannel());
         }
         if (key.equalsIgnoreCase(keywords[1])) {
             MessageSender.sendMessage("Hier bin ich o/", event.getChannel());
         }
-        return true;
     }
 }

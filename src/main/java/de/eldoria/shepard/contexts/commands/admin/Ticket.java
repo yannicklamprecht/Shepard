@@ -102,6 +102,7 @@ public class Ticket extends Command {
         //If Member is present remove roles for this ticket.
         if (member != null) {
             //Get the owner roles of the current ticket. They should be removed.
+            assert type != null;
             List<String> ownerRolesAsString = getTypeOwnerRoles(receivedEvent.getGuild(),
                     type.getKeyword(), receivedEvent);
             TicketHelper.removeAndUpdateTicketRoles(receivedEvent, member, ownerRolesAsString);

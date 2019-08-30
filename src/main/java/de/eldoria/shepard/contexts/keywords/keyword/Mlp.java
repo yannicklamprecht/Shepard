@@ -14,13 +14,12 @@ public class Mlp extends Keyword {
     }
 
     @Override
-    public boolean execute(MessageReceivedEvent event, String key) {
+    public void execute(MessageReceivedEvent event, String key) {
         if (key.equalsIgnoreCase(keywords[0])) {
             MessageSender.sendMessage("Friendship is Magic!", event.getChannel());
         }
         if (key.equalsIgnoreCase(keywords[1])) {
             MessageSender.sendMessage("Someone said Pony?", event.getChannel());
         }
-        return true;
     }
 }

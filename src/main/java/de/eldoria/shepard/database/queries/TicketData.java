@@ -4,6 +4,7 @@ import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.database.types.TicketType;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -353,7 +354,7 @@ public final class TicketData {
             statement.setString(1, guild.getId());
             statement.setString(2, keyword);
             Array ids = DatabaseConnector.getConn().createArrayOf("varchar",
-                    roles.stream().map(role -> role.getId()).toArray());
+                    roles.stream().map(ISnowflake::getId).toArray());
             statement.setArray(3, ids);
             statement.execute();
         } catch (SQLException e) {
@@ -375,7 +376,7 @@ public final class TicketData {
             statement.setString(1, guild.getId());
             statement.setString(2, keyword);
             Array ids = DatabaseConnector.getConn().createArrayOf("varchar",
-                    roles.stream().map(role -> role.getId()).toArray());
+                    roles.stream().map(ISnowflake::getId).toArray());
             statement.setArray(3, ids);
             statement.execute();
         } catch (SQLException e) {

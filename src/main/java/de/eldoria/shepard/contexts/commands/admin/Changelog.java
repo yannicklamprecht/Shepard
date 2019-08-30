@@ -2,17 +2,13 @@ package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
-import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.ChangelogData;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -74,8 +70,6 @@ public class Changelog extends Command {
 
     private void showRoles(MessageReceivedEvent receivedEvent) {
         List<String> roleIds = ChangelogData.getRoles(receivedEvent.getGuild(), receivedEvent);
-
-        List<Role> validRoles = Verifier.getValidRoles(receivedEvent.getGuild(), roleIds);
 
         List<String> roleMentions = roleIds.stream()
                 .map(roleId -> receivedEvent.getGuild().getRoleById(getIdRaw(roleId)))

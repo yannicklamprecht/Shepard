@@ -14,12 +14,11 @@ public class DariYes extends Keyword {
     }
 
     @Override
-    public boolean execute(MessageReceivedEvent event, String key) {
+    public void execute(MessageReceivedEvent event, String key) {
         if (event.getAuthor().getId().equalsIgnoreCase("223192558468202496")) {
             MessageSender.sendMessage("Doch " + event.getAuthor().getAsMention(), event.getChannel());
 
         }
-        return true;
     }
 
 }

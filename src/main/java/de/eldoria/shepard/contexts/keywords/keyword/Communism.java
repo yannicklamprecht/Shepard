@@ -14,8 +14,7 @@ public class Communism extends Keyword {
     }
 
     @Override
-    public boolean execute(MessageReceivedEvent event, String key) {
+    public void execute(MessageReceivedEvent event, String key) {
         MessageSender.sendMessage("Everything is better with a side of communism: https://www.youtube.com/watch?v=U06jlgpMtQs", event.getChannel());
-        return true;
     }
 }

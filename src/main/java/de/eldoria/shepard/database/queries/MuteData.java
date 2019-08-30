@@ -48,7 +48,7 @@ public final class MuteData {
         mutedUsersDirty.put(guild.getId(), true);
     }
 
-    private static List<String> refreshGuildData(Guild guild, MessageReceivedEvent event) {
+    private static void refreshGuildData(Guild guild, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_muted_users(?)")) {
             statement.setString(1, guild.getId());
@@ -60,7 +60,6 @@ public final class MuteData {
         } catch (SQLException e) {
             handleException(e, event);
         }
-        return Collections.emptyList();
     }
 
     /**

@@ -58,9 +58,9 @@ public final class PrefixData {
         return getPrefix(guild, event);
     }
 
-    private static Map<String, String> refreshPrefixes(MessageReceivedEvent event) {
+    private static void refreshPrefixes(MessageReceivedEvent event) {
         if (!cacheDirty) {
-            return prefixes;
+            return;
         }
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_prefixes()")) {
@@ -74,12 +74,10 @@ public final class PrefixData {
             }
 
             cacheDirty = false;
-            return prefixes;
 
         } catch (SQLException e) {
             handleException(e, event);
         }
-        return prefixes;
     }
 
 

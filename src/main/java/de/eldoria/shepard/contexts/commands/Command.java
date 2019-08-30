@@ -142,13 +142,13 @@ public abstract class Command extends ContextSensitive {
 
         StringBuilder desc = new StringBuilder();
 
-        desc.append(getCommandName() + " ");
+        desc.append(getCommandName()).append(" ");
         if (getArguments() != null) {
             for (CommandArg arg : getArguments()) {
                 if (arg.isRequired()) {
-                    desc.append("[" + arg.getArgName().toUpperCase() + "] ");
+                    desc.append("[").append(arg.getArgName().toUpperCase()).append("] ");
                 } else {
-                    desc.append("<" + arg.getArgName().toUpperCase() + "> ");
+                    desc.append("<").append(arg.getArgName().toUpperCase()).append("> ");
                 }
             }
         }
@@ -199,7 +199,7 @@ public abstract class Command extends ContextSensitive {
             }
         }
 
-        String argsAsString =  Arrays.stream(arguments).map(arg -> arg.getArgName()).collect(Collectors.joining(" "));
+        String argsAsString =  Arrays.stream(arguments).map(CommandArg::getArgName).collect(Collectors.joining(" "));
 
         MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Argument not found!",
                 "Try one of these: " + argsAsString, false)}, channel);

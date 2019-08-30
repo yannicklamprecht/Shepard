@@ -21,7 +21,7 @@ public class Nudes extends Keyword {
     }
 
     @Override
-    public boolean execute(MessageReceivedEvent event, String key) {
+    public void execute(MessageReceivedEvent event, String key) {
         if (event.getChannel().getType() == ChannelType.TEXT) {
             TextChannel channel = (TextChannel) event.getChannel();
             if (channel.isNSFW()) {
@@ -53,7 +53,6 @@ public class Nudes extends Keyword {
         MessageSender.sendMessage("Someone said " + key + "?", event.getChannel());
 
 
-        return false;
     }
 
 }

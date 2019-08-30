@@ -14,12 +14,11 @@ public class AmIRight extends Keyword {
     }
 
     @Override
-    public boolean execute(MessageReceivedEvent event, String key) {
+    public void execute(MessageReceivedEvent event, String key) {
         if (event.getAuthor().getId().equals("214347948316819456")) {
             MessageSender.sendMessage("Natürlich :3", event.getChannel());
-            return true;
+            return;
         }
         MessageSender.sendMessage("Nein <@!214347948316819456> hat immer recht :3", event.getChannel());
-        return true;
     }
 }

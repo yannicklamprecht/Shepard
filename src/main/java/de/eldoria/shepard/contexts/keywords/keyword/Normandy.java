@@ -15,8 +15,7 @@ public class Normandy extends Keyword {
     }
 
     @Override
-    public boolean execute(MessageReceivedEvent event, String key) {
+    public void execute(MessageReceivedEvent event, String key) {
         MessageSender.sendMessage("Where is my ship o.o", event.getChannel());
-        return true;
     }
 }

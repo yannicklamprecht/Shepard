@@ -16,7 +16,7 @@ import java.util.List;
 public final class ListenerRegister {
     private static ListenerRegister instance;
     private static boolean registered;
-    private List<ListenerAdapter> listener = new ArrayList<>();
+    private final List<ListenerAdapter> listener = new ArrayList<>();
 
     private ListenerRegister() {
         listener.add(new CommandListener());
@@ -44,8 +44,5 @@ public final class ListenerRegister {
         ShepardBot.getInstance().registerListener(getInstance().listener);
     }
 
-
-    private void register() {
-    }
 
 }

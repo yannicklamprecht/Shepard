@@ -15,9 +15,8 @@ public class Thing extends Keyword {
     }
 
     @Override
-    public boolean execute(MessageReceivedEvent event, String key) {
+    public void execute(MessageReceivedEvent event, String key) {
         MessageSender.sendMessage(event.getMessage().getContentRaw() + " by <@" + event.getAuthor().getId() + ">",
                 ShepardBot.getJDA().getGuildById("336473392863510538").getTextChannelById("538103926126280706"));
-        return true;
     }
 }

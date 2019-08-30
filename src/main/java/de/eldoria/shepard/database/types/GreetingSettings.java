@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class GreetingSettings {
-    private final Guild guild;
     private final String text;
     private final TextChannel channel;
 
@@ -19,7 +18,7 @@ public class GreetingSettings {
     public GreetingSettings(String guildId, String channelId, String text) {
         this.text = text;
 
-        guild = ShepardBot.getJDA().getGuildById(guildId);
+        Guild guild = ShepardBot.getJDA().getGuildById(guildId);
         channel = guild != null ? guild.getTextChannelById(channelId) : null;
     }
 

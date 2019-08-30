@@ -27,7 +27,7 @@ public class MagicConch extends Command {
 
     @Override
     public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        String word = "";
+        String word;
         Random rand = new Random();
         int type = rand.nextInt(3);
 
