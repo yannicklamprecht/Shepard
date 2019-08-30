@@ -33,10 +33,8 @@ public class Keyword extends ContextSensitive {
      *
      * @param event the event in which the keyword was found.
      * @param key   the key found in the event.
-     * @return {@code true} if it was executed successfully, {@code false} otherwise.
      */
-    public boolean execute(MessageReceivedEvent event, String key) {
-        return false;
+    public void execute(MessageReceivedEvent event, String key) {
     }
 
     /**

@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A command to list all servers the bot is a member of.
@@ -37,10 +38,10 @@ public class ListServer extends Command {
             text[i][0] = guilds.get(i).getName();
             if (text[i][0].length() > sizeName) sizeName = text[i][0].length();
 
-            text[i][1] = guilds.get(i).getOwner().getUser().getAsTag();
+            text[i][1] = Objects.requireNonNull(guilds.get(i).getOwner()).getUser().getAsTag();
             if (text[i][1].length() > sizeOwner) sizeOwner = text[i][1].length();
 
-            OffsetDateTime time = guilds.get(i).getMemberById("512413049894731780").getTimeJoined();
+            OffsetDateTime time = Objects.requireNonNull(guilds.get(i).getMemberById("512413049894731780")).getTimeJoined();
 
             LocalDate date = time.toLocalDate();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");

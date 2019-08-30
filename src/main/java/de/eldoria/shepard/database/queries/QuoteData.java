@@ -1,7 +1,7 @@
 package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.DatabaseConnector;
-import de.eldoria.shepard.database.types.Quote;
+import de.eldoria.shepard.database.types.QuoteElement;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -81,14 +81,14 @@ public final class QuoteData {
      * @param event event from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static List<Quote> getQuotes(Guild guild, MessageReceivedEvent event) {
-        List<Quote> quotes = new ArrayList<>();
+    public static List<QuoteElement> getQuotes(Guild guild, MessageReceivedEvent event) {
+        List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_quote(?,?)")) {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                quotes.add(new Quote(result.getString("quote"), result.getInt("quote_id")));
+                quotes.add(new QuoteElement(result.getString("quote"), result.getInt("quote_id")));
             }
 
 

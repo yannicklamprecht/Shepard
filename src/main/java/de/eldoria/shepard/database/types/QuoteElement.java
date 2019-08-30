@@ -1,6 +1,6 @@
 package de.eldoria.shepard.database.types;
 
-public class Quote {
+public class QuoteElement {
     private final String quote;
     private final int quoteId;
 
@@ -10,7 +10,7 @@ public class Quote {
      * @param quote   quote
      * @param quoteId id of quote
      */
-    public Quote(String quote, int quoteId) {
+    public QuoteElement(String quote, int quoteId) {
         this.quote = quote;
         this.quoteId = quoteId;
     }
@@ -20,7 +20,7 @@ public class Quote {
      *
      * @param quote   quote
      */
-    public Quote(String quote) {
+    public QuoteElement(String quote) {
         this.quote = quote;
         this.quoteId = -1;
     }

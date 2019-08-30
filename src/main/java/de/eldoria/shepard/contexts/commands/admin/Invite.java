@@ -72,7 +72,6 @@ public class Invite extends Command {
         }
         message.append("```");
         MessageSender.sendMessage(message.toString(), receivedEvent.getChannel());
-        return;
     }
 
     private void refreshInvites(MessageReceivedEvent receivedEvent) {

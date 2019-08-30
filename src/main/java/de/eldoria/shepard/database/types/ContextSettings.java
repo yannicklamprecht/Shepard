@@ -184,7 +184,7 @@ public class ContextSettings {
                     .append(System.lineSeparator())
                     .append("    Users_on_List: ");
             List<String> names = new ArrayList<>();
-            getUserList().stream().forEach(u -> {
+            getUserList().forEach(u -> {
                 User user = jda.getUserById(u);
                 if (user != null) {
                     names.add(user.getAsTag());
@@ -201,7 +201,7 @@ public class ContextSettings {
                     .append(getGuildListType())
                     .append(System.lineSeparator());
             List<String> names = new ArrayList<>();
-            getGuildList().stream().forEach(g -> {
+            getGuildList().forEach(g -> {
                 Guild guild = jda.getGuildById(g);
                 if (guild != null) {
                     Member member = guild.getOwner();

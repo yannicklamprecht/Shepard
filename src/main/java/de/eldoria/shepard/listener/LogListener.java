@@ -6,6 +6,7 @@ import de.eldoria.shepard.ShepardBot;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,7 +20,7 @@ public class LogListener extends ListenerAdapter {
     }
 
     @Override
-    public void onReady(ReadyEvent event) {
+    public void onReady(@NotNull ReadyEvent event) {
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         Date date = new Date(System.currentTimeMillis());
         MessageSender.sendMessage("`[" + formatter.format(date)

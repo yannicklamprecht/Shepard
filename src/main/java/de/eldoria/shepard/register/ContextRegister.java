@@ -44,7 +44,7 @@ import java.util.List;
 public final class ContextRegister {
     private static ContextRegister instance;
 
-    private List<ContextSensitive> contextSensitives = new ArrayList<>();
+    private final List<ContextSensitive> contextSensitives = new ArrayList<>();
 
     private ContextRegister() {
         registerAdminCommands();
@@ -110,11 +110,10 @@ public final class ContextRegister {
         contextSensitives.add(new Changelog());
     }
 
-    private static ContextRegister getInstance() {
+    private static void getInstance() {
         if (instance == null) {
             instance = new ContextRegister();
         }
-        return instance;
     }
 
     /**
