@@ -5,6 +5,7 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.database.types.ContextSettings;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -31,7 +32,7 @@ public class ContextInfo extends Command {
                     + "```yaml" + lineSeparator()
                     + data.toString() + lineSeparator() + "```", receivedEvent.getChannel());
         } else {
-            MessageSender.sendSimpleError("Unkown Context", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_CONTEXT, receivedEvent.getChannel());
         }
     }
 }

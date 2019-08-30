@@ -4,6 +4,7 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.QuoteData;
 import de.eldoria.shepard.database.types.QuoteElement;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -56,7 +57,7 @@ public class ManageQuote extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError("Invalid Arguments", receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
     }
 
     private void showQuotes(String[] args, MessageReceivedEvent receivedEvent) {
@@ -94,7 +95,7 @@ public class ManageQuote extends Command {
 
     private void removeQuote(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError("Invalid Argument", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
         }
 
         int quotesCount = QuoteData.getQuotesCount(receivedEvent.getGuild(), receivedEvent);
@@ -102,12 +103,12 @@ public class ManageQuote extends Command {
         try {
             quoteId = Integer.parseInt(args[1]);
         } catch (IllegalArgumentException e) {
-            MessageSender.sendSimpleError("This is not a number", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, receivedEvent.getChannel());
             return;
         }
 
         if (quoteId > quotesCount) {
-            MessageSender.sendSimpleError("There is no quote with this id!", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ID, receivedEvent.getChannel());
         }
 
         QuoteData.removeQuote(receivedEvent.getGuild(), quoteId, receivedEvent);
@@ -116,7 +117,7 @@ public class ManageQuote extends Command {
 
     private void addQuote(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length == 1) {
-            MessageSender.sendSimpleError("No Quote found!", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NO_QUOTE_FOUND, receivedEvent.getChannel());
             return;
         }
 

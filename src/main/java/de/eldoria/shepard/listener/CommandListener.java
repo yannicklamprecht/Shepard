@@ -2,6 +2,7 @@ package de.eldoria.shepard.listener;
 
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.database.queries.PrefixData;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.exceptions.CommandException;
@@ -49,7 +50,7 @@ public class CommandListener extends ListenerAdapter {
                         MessageSender.sendSimpleError(e.getMessage(), event.getChannel());
                     }
                 } else {
-                    MessageSender.sendSimpleError("Too few Arguments", event.getChannel());
+                    MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, event.getChannel());
                     command.sendCommandUsage(event.getChannel());
                 }
                 return;

@@ -4,6 +4,7 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.commons.lang.StringUtils;
@@ -50,7 +51,7 @@ public class Invite extends Command {
             showInvites(receivedEvent);
             return;
         }
-        MessageSender.sendSimpleError("Invalid argument", receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
         sendCommandUsage(receivedEvent.getChannel());
     }
 
@@ -82,7 +83,7 @@ public class Invite extends Command {
 
     private void removeInvite(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError("Invalid Argument", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             return;
         }
         List<DatabaseInvite> databaseInvites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
@@ -92,13 +93,13 @@ public class Invite extends Command {
                 MessageSender.sendMessage("Removed invite " + invite.getSource(), receivedEvent.getChannel());
             }
         }
-        MessageSender.sendSimpleError("No registered invite with code \"" + args[1] + "\" found",
+        MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND,
                 receivedEvent.getChannel());
     }
 
     private void addInvite(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError("Too few Arguments for add invite", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, receivedEvent.getChannel());
             return;
         }
         List<net.dv8tion.jda.api.entities.Invite> invites = receivedEvent.getGuild().retrieveInvites().complete();
@@ -112,6 +113,6 @@ public class Invite extends Command {
                 return;
             }
         }
-        MessageSender.sendSimpleError("No invite with code " + args[1] + " found!", receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, receivedEvent.getChannel());
     }
 }

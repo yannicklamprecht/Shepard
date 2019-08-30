@@ -5,6 +5,7 @@ import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.Permission;
@@ -66,27 +67,27 @@ public class Ticket extends Command {
             typeInfo(args, receivedEvent);
             return;
         }
-        MessageSender.sendSimpleError("Invalid Argument", receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
         sendCommandUsage(receivedEvent.getChannel());
     }
 
     private void close(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length != 1) {
-            MessageSender.sendSimpleError("Invalid Argument", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             return;
         }
 
 
         TextChannel channel = receivedEvent.getGuild().getTextChannelById(receivedEvent.getChannel().getIdLong());
         if (channel == null) {
-            MessageSender.sendSimpleError("This is not a guild text channel!", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_GUILD_TEXT_CHANNEL, receivedEvent.getChannel());
             return;
         }
 
         String channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
 
         if (channelOwnerId == null) {
-            MessageSender.sendSimpleError("This is not a ticket channel!", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_TICKET_CHANEL, receivedEvent.getChannel());
             return;
         }
 
@@ -159,7 +160,7 @@ public class Ticket extends Command {
             TicketType type = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
 
             if (type == null) {
-                MessageSender.sendSimpleError("No such ticket type", receivedEvent.getChannel());
+                MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, receivedEvent.getChannel());
                 return;
             }
 
@@ -189,21 +190,21 @@ public class Ticket extends Command {
 
     private void openTicket(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length != 3) {
-            MessageSender.sendSimpleError("Invalid Argument", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
         }
         Member member = receivedEvent.getGuild().getMemberById(DbUtil.getIdRaw(args[2]));
         if (member == null) {
-            MessageSender.sendSimpleError("User not found!", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_USER, receivedEvent.getChannel());
             return;
         }
         if (member.getIdLong() == receivedEvent.getAuthor().getIdLong()) {
-            MessageSender.sendSimpleError("You can't open a ticket for yourself!", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TICKET_SELF_ASSIGNMENT, receivedEvent.getChannel());
             return;
         }
         TicketType ticket = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
 
         if (ticket == null) {
-            MessageSender.sendSimpleError("Ticket type does not exists!", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, receivedEvent.getChannel());
             return;
         }
 
