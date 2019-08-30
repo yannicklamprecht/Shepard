@@ -4,6 +4,7 @@ import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.KeyWordCollection;
 import de.eldoria.shepard.configuration.Config;
 import de.eldoria.shepard.configuration.Loader;
+import de.eldoria.shepard.input.ConsoleReader;
 import de.eldoria.shepard.register.ContextRegister;
 import de.eldoria.shepard.register.ListenerRegister;
 import net.dv8tion.jda.api.JDA;
@@ -34,6 +35,8 @@ public final class ShepardBot {
 
         CommandCollection.getInstance().debug();
         KeyWordCollection.getInstance().debug();
+
+        new ConsoleReader();
     }
 
     /**
@@ -97,5 +100,12 @@ public final class ShepardBot {
         for (ListenerAdapter l : listener) {
             jda.addEventListener(l);
         }
+    }
+
+    /**
+     * Close the shepard application.
+     */
+    public void shutdown() {
+        System.exit(0);
     }
 }
