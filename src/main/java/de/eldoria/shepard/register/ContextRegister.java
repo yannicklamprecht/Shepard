@@ -4,6 +4,7 @@ import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.commands.admin.Changelog;
 import de.eldoria.shepard.contexts.commands.admin.Greeting;
 import de.eldoria.shepard.contexts.commands.admin.Invite;
+import de.eldoria.shepard.contexts.commands.admin.ManageQuote;
 import de.eldoria.shepard.contexts.commands.admin.Prefix;
 import de.eldoria.shepard.contexts.commands.admin.ShowKeyword;
 import de.eldoria.shepard.contexts.commands.admin.Ticket;
@@ -18,6 +19,7 @@ import de.eldoria.shepard.contexts.commands.fun.MagicConch;
 import de.eldoria.shepard.contexts.commands.fun.Oha;
 import de.eldoria.shepard.contexts.commands.fun.Owo;
 import de.eldoria.shepard.contexts.commands.fun.Owod;
+import de.eldoria.shepard.contexts.commands.fun.Quote;
 import de.eldoria.shepard.contexts.commands.fun.RandomJoke;
 import de.eldoria.shepard.contexts.commands.fun.Sayd;
 import de.eldoria.shepard.contexts.commands.fun.Uwu;
@@ -86,6 +88,7 @@ public final class ContextRegister {
         contextSensitives.add(new Sayd());
         contextSensitives.add(new Uwu());
         contextSensitives.add(new Uwud());
+        contextSensitives.add(new Quote());
     }
 
     private void registerExclusiveCommands() {
@@ -108,6 +111,7 @@ public final class ContextRegister {
         contextSensitives.add(new TicketSettings());
         contextSensitives.add(new Ticket());
         contextSensitives.add(new Changelog());
+        contextSensitives.add(new ManageQuote());
     }
 
     private static void getInstance() {
