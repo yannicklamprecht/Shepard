@@ -1,11 +1,15 @@
 package de.eldoria.shepard.database;
 
+import de.eldoria.shepard.collections.Normandy;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.lang.System.lineSeparator;
 
 public final class DbUtil {
     private static final Pattern ID_PATTERN = Pattern.compile("(?:<[@#!&]{1,2})?(?<id>[0-9]{18})(?:>)?");
@@ -34,17 +38,16 @@ public final class DbUtil {
      * @param event Event for error sending to channel to inform user.
      */
     public static void handleException(SQLException ex, MessageReceivedEvent event) {
-        System.out.println("SQLException: " + ex.getMessage());
-        System.out.println("SQLState: " + ex.getSQLState());
-        System.out.println("VendorError: " + ex.getErrorCode());
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("SQLException: ").append(ex.getMessage()).append(lineSeparator())
+                .append("SQLState: ").append(ex.getSQLState()).append(lineSeparator())
+                .append("VendorError: ").append(ex.getErrorCode());
+        System.out.println(builder.toString());
 
         if (event != null) {
-            MessageSender.sendSimpleError("Ups. Looks like my Database has a small hickup."
-                    + System.lineSeparator()
-                    + "Can you give me another try, pls?", event.getChannel());
+            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, event.getChannel());
         }
+        MessageSender.sendSimpleError(builder.toString(), Normandy.getErrorChannel());
     }
-
-
-
 }

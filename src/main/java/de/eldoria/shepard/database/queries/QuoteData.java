@@ -41,7 +41,7 @@ public final class QuoteData {
      *
      * @param guild   Guild object for lookup
      * @param quoteId id on guild.
-     * @param quote new quote
+     * @param quote   new quote
      * @param event   event from command sending for error handling. Can be null.
      */
     public static void alterQuote(Guild guild, int quoteId, String quote, MessageReceivedEvent event) {
@@ -84,7 +84,7 @@ public final class QuoteData {
     public static List<QuoteElement> getQuotes(Guild guild, MessageReceivedEvent event) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT shepard_func.remove_quote(?,?)")) {
+                .prepareStatement("SELECT * from shepard_func.get_quotes(?)")) {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
             while (result.next()) {
@@ -96,5 +96,77 @@ public final class QuoteData {
             handleException(e, event);
         }
         return quotes;
+    }
+
+    /**
+     * Gets all quotes from guild.
+     *
+     * @param guild Guild object for lookup
+     * @param keyword Keyword for lookup. Not case sensitive
+     * @param event event from command sending for error handling. Can be null.
+     * @return List of Quote objects
+     */
+    public static List<QuoteElement> getQuotesByKeyword(Guild guild, String keyword, MessageReceivedEvent event) {
+        List<QuoteElement> quotes = new ArrayList<>();
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_quotes_by_keyword(?,?)")) {
+            statement.setString(1, guild.getId());
+            statement.setString(2, keyword);
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                quotes.add(new QuoteElement(result.getString("quote"), result.getInt("quote_id")));
+            }
+
+
+        } catch (SQLException e) {
+            handleException(e, event);
+        }
+        return quotes;
+    }
+
+    /**
+     * Gets the number of quotes for a guild.
+     *
+     * @param guild Guild object for lookup
+     * @param event event from command sending for error handling. Can be null.
+     * @return List of Quote objects
+     */
+    public static int getQuotesCount(Guild guild, MessageReceivedEvent event) {
+        List<QuoteElement> quotes = new ArrayList<>();
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.get_quote_count(?)")) {
+            statement.setString(1, guild.getId());
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return result.getInt(1);
+            }
+        } catch (SQLException e) {
+            handleException(e, event);
+        }
+        return 0;
+    }
+
+    /**
+     * Gets the number of quotes for a guild which contains the keyword.
+     *
+     * @param guild   Guild object for lookup
+     * @param keyword Keyword not case sensitive
+     * @param event   event from command sending for error handling. Can be null.
+     * @return List of Quote objects
+     */
+    public static int getQuotesCountByKeyword(Guild guild, String keyword, MessageReceivedEvent event) {
+        List<QuoteElement> quotes = new ArrayList<>();
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.get_quote_count_by_keyword(?,?)")) {
+            statement.setString(1, guild.getId());
+            statement.setString(2, keyword);
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return result.getInt(1);
+            }
+        } catch (SQLException e) {
+            handleException(e, event);
+        }
+        return 0;
     }
 }

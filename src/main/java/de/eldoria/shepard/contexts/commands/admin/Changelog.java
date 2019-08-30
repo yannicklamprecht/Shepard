@@ -3,6 +3,7 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.ChangelogData;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Role;
@@ -64,7 +65,7 @@ public class Changelog extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError("Invalid Argument", receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
         sendCommandUsage(receivedEvent.getChannel());
     }
 
@@ -88,14 +89,14 @@ public class Changelog extends Command {
 
     private void activate(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError("Invalid Arguments", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             return;
         }
 
         TextChannel textChannelById = receivedEvent.getGuild().getTextChannelById(getIdRaw(args[1]));
 
         if (textChannelById == null) {
-            MessageSender.sendSimpleError("Invalid Channel.", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, receivedEvent.getChannel());
             return;
         }
 
@@ -107,13 +108,13 @@ public class Changelog extends Command {
 
     private void modifyRoles(String[] args, MessageReceivedEvent receivedEvent, String cmd) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError("Invalid Arguments", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             return;
         }
 
         Role roleById = receivedEvent.getGuild().getRoleById(getIdRaw(args[1]));
         if (roleById == null) {
-            MessageSender.sendSimpleError("Invalid Group.", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ROLE, receivedEvent.getChannel());
             return;
         }
 

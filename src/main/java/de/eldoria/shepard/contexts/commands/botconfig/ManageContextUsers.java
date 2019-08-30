@@ -5,6 +5,7 @@ import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.ContextData;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
@@ -49,7 +50,7 @@ public class ManageContextUsers extends Command {
         String contextName = getContextName(args[0], receivedEvent);
 
         if (contextName == null) {
-            MessageSender.sendSimpleError("Context not found. Please use the context name or an alias.",
+            MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
                     receivedEvent.getChannel());
             return;
         }
@@ -74,7 +75,7 @@ public class ManageContextUsers extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError("Invalid Argument for action.", receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
         sendCommandArgHelp("action", receivedEvent.getChannel());
 
     }
@@ -126,7 +127,7 @@ public class ManageContextUsers extends Command {
         ListType type = ListType.getType(args[2]);
 
         if (type == null) {
-            MessageSender.sendSimpleError("Invalid Input. Only 'blacklist' or 'whitelist are valid inputs",
+            MessageSender.sendSimpleError(ErrorType.INVALID_LIST_TYPE,
                     receivedEvent.getChannel());
             return;
         }
@@ -142,7 +143,7 @@ public class ManageContextUsers extends Command {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError("Invalid input. Only 'true' and 'false' are valid inputs.",
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN,
                     receivedEvent.getChannel());
             return;
         }

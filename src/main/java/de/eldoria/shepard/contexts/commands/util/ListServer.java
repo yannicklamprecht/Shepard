@@ -41,7 +41,8 @@ public class ListServer extends Command {
             text[i][1] = Objects.requireNonNull(guilds.get(i).getOwner()).getUser().getAsTag();
             if (text[i][1].length() > sizeOwner) sizeOwner = text[i][1].length();
 
-            OffsetDateTime time = Objects.requireNonNull(guilds.get(i).getMemberById("512413049894731780")).getTimeJoined();
+            OffsetDateTime time = Objects.requireNonNull(guilds.get(i)
+                    .getMemberById(ShepardBot.getJDA().getSelfUser().getId())).getTimeJoined();
 
             LocalDate date = time.toLocalDate();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
