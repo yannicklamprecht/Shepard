@@ -2,7 +2,7 @@ package de.eldoria.shepard.contexts.commands.botconfig;
 
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
-import de.eldoria.shepard.database.queries.Context;
+import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.Verifier;
@@ -55,7 +55,7 @@ public class ManageContext extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
-        Context.setContextAdmin(contextName, state, receivedEvent);
+        ContextData.setContextAdmin(contextName, state, receivedEvent);
 
         if (state) {
             MessageSender.sendMessage("**Activated admin and permission check for context \""
@@ -80,7 +80,7 @@ public class ManageContext extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
-        Context.setContextNsfw(contextName, state, receivedEvent);
+        ContextData.setContextNsfw(contextName, state, receivedEvent);
 
         if (state) {
             MessageSender.sendMessage("**Activated NSFW check for context \"" + contextName.toUpperCase() + "\"**",

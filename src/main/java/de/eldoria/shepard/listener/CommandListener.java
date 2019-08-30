@@ -1,7 +1,7 @@
 package de.eldoria.shepard.listener;
 
 import de.eldoria.shepard.collections.CommandCollection;
-import de.eldoria.shepard.database.queries.Prefix;
+import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.exceptions.CommandException;
@@ -21,7 +21,7 @@ public class CommandListener extends ListenerAdapter {
         Message message = event.getMessage();
         String receivedMessage = message.getContentRaw();
         String[] args = receivedMessage.split(" ");
-        args[0] = args[0].replace(Prefix.getPrefix(event.getGuild(), event), "");
+        args[0] = args[0].replace(PrefixData.getPrefix(event.getGuild(), event), "");
 
         if (checkPrefix(receivedMessage, event.getGuild(), event)) {
             //BotCheck
@@ -56,13 +56,13 @@ public class CommandListener extends ListenerAdapter {
             }
 
             MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!", "Type "
-                    + Prefix.getPrefix(event.getGuild(), event)
+                    + PrefixData.getPrefix(event.getGuild(), event)
                     + "help for a full list of available commands!", false)}, event.getChannel());
         }
     }
 
     private boolean checkPrefix(String message, Guild guild, MessageReceivedEvent event) {
-        return message.startsWith(Prefix.getPrefix(event.getGuild(), event));
+        return message.startsWith(PrefixData.getPrefix(event.getGuild(), event));
     }
 }
 

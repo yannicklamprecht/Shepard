@@ -2,7 +2,7 @@ package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.database.ListType;
-import de.eldoria.shepard.database.types.ContextData;
+import de.eldoria.shepard.database.types.ContextSettings;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
@@ -19,17 +19,17 @@ import java.util.Map;
 
 import static de.eldoria.shepard.database.DbUtil.handleException;
 
-public final class Context {
+public final class ContextData {
     //Map with context
     private static final Map<String, Map<String, List<String>>> userPermissions = new HashMap<>();
     private static final Map<String, Map<String, List<String>>> rolePermissions = new HashMap<>();
-    private static final Map<String, ContextData> contextData = new HashMap<>();
+    private static final Map<String, ContextSettings> contextData = new HashMap<>();
 
     private static final Map<String, Boolean> contextDataDirty = new HashMap<>();
     private static final Map<String, Boolean> userPermissionDirty = new HashMap<>();
     private static final Map<String, Boolean> rolePermissionDirty = new HashMap<>();
 
-    private Context() {
+    private ContextData() {
     }
 
     /**
@@ -331,7 +331,7 @@ public final class Context {
      * @param event       event from command sending for error handling. Can be null.
      * @return Context data object.
      */
-    public static ContextData getContextData(String contextName, MessageReceivedEvent event) {
+    public static ContextSettings getContextData(String contextName, MessageReceivedEvent event) {
         if (contextDataDirty.containsKey(contextName)) {
             if (!contextDataDirty.get(contextName)) {
                 return contextData.get(contextName);
@@ -344,7 +344,7 @@ public final class Context {
             ResultSet result = statement.executeQuery();
 
             if (result.next()) {
-                ContextData data = new ContextData();
+                ContextSettings data = new ContextSettings();
 
                 data.setAdminOnly(result.getBoolean("admin_only"));
                 data.setNsfw(result.getBoolean("nsfw"));
@@ -379,7 +379,7 @@ public final class Context {
      *
      * @param contextName Name of the context for permission lookup.
      * @param event       event from command sending for error handling. Can be null.
-     * @return Map <guild_id, List<role_ids>> Map which contains the user as list for each guild
+     * @return Map [guild_id, List(role_ids)] Map which contains the user as list for each guild
      */
     public static Map<String, List<String>> getContextUserPermissions(String contextName, MessageReceivedEvent event) {
         if (userPermissions.containsKey(contextName)) {
@@ -419,7 +419,7 @@ public final class Context {
      *
      * @param contextName Name of the context for permission lookup.
      * @param event       event from command sending for error handling. Can be null.
-     * @return Map <guild_id, List<role_ids>> Map which contains the user as list for each guild
+     * @return Map [guild_id, List(role_ids)] Map which contains the user as list for each guild
      */
     public static Map<String, List<String>> getContextRolePermissions(String contextName, MessageReceivedEvent event) {
         if (rolePermissions.containsKey(contextName)) {

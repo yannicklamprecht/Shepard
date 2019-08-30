@@ -14,9 +14,9 @@ import java.util.List;
 
 import static de.eldoria.shepard.database.DbUtil.handleException;
 
-public final class Monitoring {
+public final class MonitoringData {
 
-    private Monitoring() {
+    private MonitoringData() {
     }
 
     /**

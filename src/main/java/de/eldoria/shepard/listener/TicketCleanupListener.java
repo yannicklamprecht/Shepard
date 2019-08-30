@@ -9,8 +9,8 @@ import javax.annotation.Nonnull;
 
 import java.util.List;
 
-import static de.eldoria.shepard.database.queries.Tickets.getChannelIdsByOwner;
-import static de.eldoria.shepard.database.queries.Tickets.removeChannel;
+import static de.eldoria.shepard.database.queries.TicketData.getChannelIdsByOwner;
+import static de.eldoria.shepard.database.queries.TicketData.removeChannel;
 
 public class TicketCleanupListener extends ListenerAdapter {
     @Override

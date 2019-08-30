@@ -4,7 +4,7 @@ import de.eldoria.shepard.ShepardBot;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-public class Greeting {
+public class GreetingSettings {
     private final Guild guild;
     private final String text;
     private final TextChannel channel;
@@ -16,7 +16,7 @@ public class Greeting {
      * @param channelId channel id
      * @param text      greeting text
      */
-    public Greeting(String guildId, String channelId, String text) {
+    public GreetingSettings(String guildId, String channelId, String text) {
         this.text = text;
 
         guild = ShepardBot.getJDA().getGuildById(guildId);

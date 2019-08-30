@@ -1,6 +1,6 @@
 package de.eldoria.shepard.contexts.commands.util;
 
-import de.eldoria.shepard.database.queries.Prefix;
+import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
@@ -38,11 +38,12 @@ public class UserInfo extends Command {
     public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
 
         if (args.length == 0) {
-            MessageSender.sendError(new MessageEmbed.Field[] {
+            MessageSender.sendError(
+                    new MessageEmbed.Field[] {
                             new MessageEmbed.Field("Too few arguments",
-                                    "Usage: " + Prefix.getPrefix(receivedEvent.getGuild(),
-                                            receivedEvent) + "userInfo <id, name, tag>", false)}
-                    , receivedEvent.getChannel());
+                                    "Usage: " + PrefixData.getPrefix(receivedEvent.getGuild(),
+                                            receivedEvent) + "userInfo <id, name, tag>", false)},
+                    receivedEvent.getChannel());
         }
 
         InternUser internUser = new InternUser(args[0], receivedEvent).invoke();

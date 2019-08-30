@@ -2,8 +2,8 @@ package de.eldoria.shepard.contexts;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.ListType;
-import de.eldoria.shepard.database.queries.Context;
-import de.eldoria.shepard.database.types.ContextData;
+import de.eldoria.shepard.database.queries.ContextData;
+import de.eldoria.shepard.database.types.ContextSettings;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -53,7 +53,7 @@ public abstract class ContextSensitive {
     }
 
     private boolean canExecutedOnGuild(MessageReceivedEvent event) {
-        ContextData data = getContextData(event);
+        ContextSettings data = getContextData(event);
         if (data.isGuildCheckActive()) {
             if (data.getGuildList().contains(event.getGuild())) {
                 return data.getGuildListType() == ListType.WHITELIST;
@@ -63,7 +63,7 @@ public abstract class ContextSensitive {
     }
 
     private boolean canExecutedByUser(MessageReceivedEvent event) {
-        ContextData data = getContextData(event);
+        ContextSettings data = getContextData(event);
         if (data.isUserCheckActive()) {
             if (data.getUserList().contains(event.getAuthor().getId())) {
                 return data.getUserListType() == ListType.WHITELIST;
@@ -156,15 +156,15 @@ public abstract class ContextSensitive {
         System.out.println(getDebugInfo());
     }
 
-    private ContextData getContextData(MessageReceivedEvent event) {
-        return Context.getContextData(getClass().getSimpleName(), event);
+    private ContextSettings getContextData(MessageReceivedEvent event) {
+        return ContextData.getContextData(getClass().getSimpleName(), event);
     }
 
     private Map<String, List<String>> getRolePermissions(MessageReceivedEvent event) {
-        return Context.getContextRolePermissions(getClass().getSimpleName(), event);
+        return ContextData.getContextRolePermissions(getClass().getSimpleName(), event);
     }
 
     private Map<String, List<String>> getUserPermissions(MessageReceivedEvent event) {
-        return Context.getContextUserPermissions(getClass().getSimpleName(), event);
+        return ContextData.getContextUserPermissions(getClass().getSimpleName(), event);
     }
 }

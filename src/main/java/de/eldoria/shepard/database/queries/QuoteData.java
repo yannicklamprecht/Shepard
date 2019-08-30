@@ -13,9 +13,9 @@ import java.util.List;
 
 import static de.eldoria.shepard.database.DbUtil.handleException;
 
-public final class Quotes {
+public final class QuoteData {
 
-    private Quotes() {
+    private QuoteData() {
     }
 
     /**

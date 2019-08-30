@@ -2,7 +2,7 @@ package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
-import de.eldoria.shepard.database.queries.Tickets;
+import de.eldoria.shepard.database.queries.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.Verifier;
@@ -57,7 +57,7 @@ public class TicketSettings extends Command {
     public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String cmd = args[0];
         String type = args[1];
-        List<TicketType> tickets = Tickets.getTypes(receivedEvent.getGuild(), receivedEvent);
+        List<TicketType> tickets = TicketData.getTypes(receivedEvent.getGuild(), receivedEvent);
         TicketType scopeTicket = null;
         for (TicketType ticket : tickets) {
             if (ticket.getKeyword().equalsIgnoreCase(type)) {
@@ -116,7 +116,7 @@ public class TicketSettings extends Command {
 
         String message = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
 
-        Tickets.addType(receivedEvent.getGuild(), null, message,
+        TicketData.addType(receivedEvent.getGuild(), null, message,
                 scopeTicket.getKeyword(), receivedEvent);
         MessageSender.sendSimpleTextBox("Set creation text for ticket type " + scopeTicket.getKeyword() + " to:",
                 message, receivedEvent.getChannel());
@@ -137,7 +137,7 @@ public class TicketSettings extends Command {
             return;
         }
 
-        Tickets.addType(receivedEvent.getGuild(), category, null,
+        TicketData.addType(receivedEvent.getGuild(), category, null,
                 scopeTicket.getKeyword(), receivedEvent);
         MessageSender.sendMessage("Set channel category for ticket type \"" + scopeTicket.getKeyword()
                 + "\" to " + category.getName(), receivedEvent.getChannel());
@@ -156,13 +156,14 @@ public class TicketSettings extends Command {
         validRoles.forEach(role -> roleMentions.add(role.getAsMention()));
 
         if (cmd.equalsIgnoreCase("setOwnerRoles")) {
-            Tickets.setTypeOwnerRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(), validRoles, receivedEvent);
+            TicketData.setTypeOwnerRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(), validRoles, receivedEvent);
 
             MessageSender.sendSimpleTextBox("Set the following roles as owner roles for ticket "
                             + scopeTicket.getKeyword(), String.join(lineSeparator() + "", roleMentions),
                     receivedEvent.getChannel());
         } else {
-            Tickets.setTypeSupportRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(), validRoles, receivedEvent);
+            TicketData.setTypeSupportRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(),
+                    validRoles, receivedEvent);
 
             MessageSender.sendSimpleTextBox("Set the following roles as owner roles for ticket "
                             + scopeTicket.getKeyword(), String.join(lineSeparator() + "", roleMentions),
@@ -177,19 +178,19 @@ public class TicketSettings extends Command {
             return;
         }
 
-        List<String> channelIdsByType = Tickets.getChannelIdsByType(receivedEvent.getGuild(),
+        List<String> channelIdsByType = TicketData.getChannelIdsByType(receivedEvent.getGuild(),
                 scopeTicket.getKeyword(), receivedEvent);
 
         List<TextChannel> validTextChannels = Verifier.getValidTextChannels(receivedEvent.getGuild(),
                 channelIdsByType);
 
-        List<String> typeOwnerRoles = Tickets.getTypeOwnerRoles(receivedEvent.getGuild(),
+        List<String> typeOwnerRoles = TicketData.getTypeOwnerRoles(receivedEvent.getGuild(),
                 scopeTicket.getKeyword(), receivedEvent);
 
         Set<Member> members = new HashSet<>();
 
         for (TextChannel channel : validTextChannels) {
-            String channelOwnerId = Tickets.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
+            String channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
             if (channelOwnerId == null) continue;
             Member memberById = receivedEvent.getGuild().getMemberById(channelOwnerId);
             if (memberById == null) continue;
@@ -199,7 +200,7 @@ public class TicketSettings extends Command {
             TicketHelper.removeAndUpdateTicketRoles(receivedEvent, member, typeOwnerRoles);
         }
 
-        Tickets.removeTypeByKeyword(receivedEvent.getGuild(), scopeTicket.getKeyword(), receivedEvent);
+        TicketData.removeTypeByKeyword(receivedEvent.getGuild(), scopeTicket.getKeyword(), receivedEvent);
 
         for (TextChannel channel : validTextChannels) {
             channel.delete().queue();
@@ -225,7 +226,7 @@ public class TicketSettings extends Command {
             return;
         }
 
-        Tickets.addType(receivedEvent.getGuild(), category, "", type, receivedEvent);
+        TicketData.addType(receivedEvent.getGuild(), category, "", type, receivedEvent);
 
         MessageSender.sendMessage("Created ticket type: **" + type.toLowerCase() + "**", receivedEvent.getChannel());
     }

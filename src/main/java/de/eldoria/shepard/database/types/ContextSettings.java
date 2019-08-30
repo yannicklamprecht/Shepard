@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ContextData {
+public class ContextSettings {
     private boolean adminOnly;
     private boolean nsfw;
     private boolean userCheckActive;
