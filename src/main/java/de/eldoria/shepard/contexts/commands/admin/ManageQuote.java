@@ -22,16 +22,18 @@ public class ManageQuote extends Command {
      */
     public ManageQuote() {
         commandName = "manageQuotes";
-        commandAliases = new String[]{"mq"};
+        commandAliases = new String[] {"mq"};
         commandDesc = "add or remove quotes";
         arguments = new CommandArg[] {
                 new CommandArg("action",
                         "**addQuote** -> Adds a quote" + lineSeparator()
+                                + "**alterQuote** -> Changes the text of a quote" + lineSeparator()
                                 + "**removeQuote** -> Removes a Quote" + lineSeparator()
                                 + "**showQuotes** -> Lists all Quotes with index",
                         true),
                 new CommandArg("action",
                         "**addQuote** -> [Quote]" + lineSeparator()
+                                + "**alterQuote** -> [Quote id to change] [test]" + lineSeparator()
                                 + "**removeQuote** -> [Quote id to remove]" + lineSeparator()
                                 + "**showQuotes** -> [keyword] shows all quotes which contain the keyword or"
                                 + "leave empty to show all quotes",
@@ -54,6 +56,33 @@ public class ManageQuote extends Command {
 
         if (cmd.equalsIgnoreCase("showQuotes")) {
             showQuotes(args, receivedEvent);
+            return;
+        }
+
+        if (cmd.equalsIgnoreCase("alterQuote")) {
+            if (args.length < 3) {
+                MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+            }
+
+            int quoteId;
+            int quotesCount = QuoteData.getQuotesCount(receivedEvent.getGuild(), receivedEvent);
+            try {
+                quoteId = Integer.parseInt(args[1]);
+            } catch (IllegalArgumentException e) {
+                MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, receivedEvent.getChannel());
+                return;
+            }
+
+            if (quoteId > quotesCount) {
+                MessageSender.sendSimpleError(ErrorType.INVALID_ID, receivedEvent.getChannel());
+            }
+
+            String quote = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+
+            QuoteData.alterQuote(receivedEvent.getGuild(), quoteId, quote, receivedEvent);
+
+            MessageSender.sendSimpleTextBox("Changed text of quote with id **" + quoteId + "**",
+                    quote, Color.blue, receivedEvent.getChannel());
             return;
         }
 
@@ -98,8 +127,8 @@ public class ManageQuote extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
         }
 
-        int quotesCount = QuoteData.getQuotesCount(receivedEvent.getGuild(), receivedEvent);
         int quoteId;
+        int quotesCount = QuoteData.getQuotesCount(receivedEvent.getGuild(), receivedEvent);
         try {
             quoteId = Integer.parseInt(args[1]);
         } catch (IllegalArgumentException e) {
@@ -112,7 +141,7 @@ public class ManageQuote extends Command {
         }
 
         QuoteData.removeQuote(receivedEvent.getGuild(), quoteId, receivedEvent);
-        MessageSender.sendMessage("Remove quote with id **" + quoteId + "**", receivedEvent.getChannel());
+        MessageSender.sendSimpleTextBox("Remove quote with id **" + quoteId + "**", "", Color.red, receivedEvent.getChannel());
     }
 
     private void addQuote(String[] args, MessageReceivedEvent receivedEvent) {
@@ -124,6 +153,6 @@ public class ManageQuote extends Command {
         String quote = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
         QuoteData.addQuote(receivedEvent.getGuild(), quote, receivedEvent);
-        MessageSender.sendSimpleTextBox("Saved Quote!", quote, Color.blue, receivedEvent.getChannel());
+        MessageSender.sendSimpleTextBox("Saved Quote!", quote, Color.green, receivedEvent.getChannel());
     }
 }
