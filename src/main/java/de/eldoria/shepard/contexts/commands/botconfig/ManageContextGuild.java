@@ -34,15 +34,15 @@ public class ManageContextGuild extends Command {
                         "**setActive** -> Enables/Disables Guild Check for Command" + System.lineSeparator()
                                 + "**setListType** -> Defines it the list should be used as White or Blacklist"
                                 + System.lineSeparator()
-                                + "**addUser** -> Adds a guild to the list" + System.lineSeparator()
-                                + "**removeUser** -> Removes a guild from the list", true),
+                                + "**addGuild** -> Adds a guild to the list" + System.lineSeparator()
+                                + "**removeGuild** -> Removes a guild from the list", true),
                 new CommandArg("value",
                         "**setActive** -> 'true' or 'false'" + System.lineSeparator()
                                 + "**setListType** -> 'BLACKLIST' or 'WHITELIST'. "
                                 + "Defines as which Type the guild list should be used" + System.lineSeparator()
-                                + "**addUser** -> Add a guild to the list (Multiple guilds possible)"
+                                + "**addGuild** -> Add a guild to the list (Multiple guilds possible)"
                                 + System.lineSeparator()
-                                + "**removeUser** -> Removes a guild from the list (Multiple guilds possible", true)};
+                                + "**removeguild** -> Removes a guild from the list (Multiple guilds possible", true)};
     }
 
     @Override
@@ -110,12 +110,12 @@ public class ManageContextGuild extends Command {
 
         if (modifyType == ModifyType.ADD) {
             MessageSender.sendSimpleTextBox("Added following guilds to context \""
-                            + contextName.toUpperCase() + "\"", names,
+                            + contextName.toUpperCase() + "\"", names + "**",
                     receivedEvent.getChannel());
 
         } else {
             MessageSender.sendSimpleTextBox("Removed following guilds from context \""
-                            + contextName.toUpperCase() + "\"", names,
+                            + contextName.toUpperCase() + "\"", names + "**",
                     receivedEvent.getChannel());
         }
 
@@ -134,7 +134,7 @@ public class ManageContextGuild extends Command {
         ContextData.setContextGuildListType(contextName, type, receivedEvent);
 
         MessageSender.sendMessage("**Changed guild list type of context \""
-                        + contextName.toUpperCase() + "\" to " + type.toString(),
+                        + contextName.toUpperCase() + "\" to " + type.toString() + "**",
                 receivedEvent.getChannel());
     }
 

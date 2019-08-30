@@ -104,11 +104,11 @@ public class ManageContextUsers extends Command {
 
         if (modifyType == ModifyType.ADD) {
             MessageSender.sendSimpleTextBox("Added following users to context \""
-                            + contextName.toUpperCase() + "\"", names,
+                            + contextName.toUpperCase() + "\"", names + "**",
                     receivedEvent.getChannel());
         } else {
             MessageSender.sendSimpleTextBox("Removed following users from context \""
-                            + contextName.toUpperCase() + "\"", names,
+                            + contextName.toUpperCase() + "\"", names + "**",
                     receivedEvent.getChannel());
         }
 
@@ -135,7 +135,7 @@ public class ManageContextUsers extends Command {
         ContextData.setContextUserListType(contextName, type, receivedEvent);
 
         MessageSender.sendMessage("**Changed user list type of context \""
-                        + contextName.toUpperCase() + "\" to " + type.toString(),
+                        + contextName.toUpperCase() + "\" to " + type.toString() + "**",
                 receivedEvent.getChannel());
     }
 

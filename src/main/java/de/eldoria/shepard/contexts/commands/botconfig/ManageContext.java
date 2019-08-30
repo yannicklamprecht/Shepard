@@ -10,6 +10,7 @@ import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import static de.eldoria.shepard.contexts.ContextHelper.getContextName;
+import static java.lang.System.lineSeparator;
 
 public class ManageContext extends Command {
 
@@ -22,7 +23,9 @@ public class ManageContext extends Command {
         commandDesc = "Manage the settings of a context";
         arguments = new CommandArg[] {
                 new CommandArg("context name", "Name of the context to change", true),
-                new CommandArg("action", "setNSFW | setAdminOnly", true),
+                new CommandArg("action", "**setNSFW** -> Sets the context as nsfw" + lineSeparator()
+                        + "**setAdminOnly** -> Marks a command as admin only. Command can only used from users"
+                        + " which are admin on a guild or when they have the permission on the guild", true),
                 new CommandArg("value", "True or False", true)};
     }
 
@@ -43,6 +46,8 @@ public class ManageContext extends Command {
         if (args[1].equalsIgnoreCase("setadminonly")) {
             setAdminOnly(args, contextName, receivedEvent);
         }
+
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
     }
 
     private void setAdminOnly(String[] args, String contextName, MessageReceivedEvent receivedEvent) {

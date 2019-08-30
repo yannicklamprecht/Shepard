@@ -98,6 +98,10 @@ public class ManageQuote extends Command {
             quotes = QuoteData.getQuotes(receivedEvent.getGuild(), receivedEvent);
         }
 
+        if (quotes.size() == 0) {
+            MessageSender.sendMessage("No quotes set on this guild.", receivedEvent.getChannel());
+        }
+
         List<String> quoteStrings = new ArrayList<>();
 
         for (QuoteElement quote : quotes) {

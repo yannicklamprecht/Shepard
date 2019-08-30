@@ -55,9 +55,10 @@ public abstract class ContextSensitive {
     private boolean canExecutedOnGuild(MessageReceivedEvent event) {
         ContextSettings data = getContextData(event);
         if (data.isGuildCheckActive()) {
-            if (data.getGuildList().contains(event.getGuild())) {
+            if (data.getGuildList().contains(event.getGuild().getId())) {
                 return data.getGuildListType() == ListType.WHITELIST;
             }
+            return data.getGuildListType() != ListType.WHITELIST;
         }
         return true;
     }
@@ -68,6 +69,7 @@ public abstract class ContextSensitive {
             if (data.getUserList().contains(event.getAuthor().getId())) {
                 return data.getUserListType() == ListType.WHITELIST;
             }
+            return data.getUserListType() != ListType.WHITELIST;
         }
         return true;
     }
@@ -85,13 +87,22 @@ public abstract class ContextSensitive {
 
         List<String> allowedRoles = getRolePermissions(event).get(event.getGuild().getId());
 
+        if (allowedRoles == null) {
+            allowedRoles = Collections.emptyList();
+        }
+
         for (Role r : memberRoles) {
             if (allowedRoles.contains(r.getId())) {
                 return true;
             }
         }
 
-        return getUserPermissions(event).get(event.getGuild().getId()).contains(event.getAuthor().getId());
+        List<String> allowedUsers = getUserPermissions(event).get(event.getGuild().getId());
+        if (allowedUsers == null) {
+            allowedUsers = Collections.emptyList();
+        }
+
+        return allowedUsers.contains(event.getAuthor().getId());
     }
 
     private void loadCache() {
