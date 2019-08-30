@@ -3,6 +3,7 @@ package de.eldoria.shepard.contexts.commands.botconfig;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.ContextData;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.Verifier;
@@ -30,7 +31,7 @@ public class ManageContext extends Command {
         String contextName = getContextName(args[0], receivedEvent);
 
         if (contextName == null) {
-            MessageSender.sendSimpleError("Context not found. Please use the context name or an alias.",
+            MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
                     receivedEvent.getChannel());
             return;
         }
@@ -48,7 +49,7 @@ public class ManageContext extends Command {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError("Invalid input. Only 'true' and 'false' are valid inputs.",
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN,
                     receivedEvent.getChannel());
             return;
         }
@@ -73,7 +74,7 @@ public class ManageContext extends Command {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError("Invalid input. Only 'true' and 'false' are valid inputs.",
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN,
                     receivedEvent.getChannel());
             return;
         }

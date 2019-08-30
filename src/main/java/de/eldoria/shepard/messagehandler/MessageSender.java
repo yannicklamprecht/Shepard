@@ -118,6 +118,15 @@ public class MessageSender {
     }
 
     /**
+     * Sends a simple error with predefined error messages.
+     * @param type error type
+     * @param channel channel to send
+     */
+    public static void sendSimpleError(ErrorType type, MessageChannel channel) {
+        sendSimpleError(type.message, channel);
+    }
+
+    /**
      * Sends a simple error to a channel.
      *
      * @param error   Error message

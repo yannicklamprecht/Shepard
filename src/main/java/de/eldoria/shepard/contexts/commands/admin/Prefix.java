@@ -3,6 +3,7 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -36,7 +37,7 @@ public class Prefix extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError("Invalid Argument", receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
         sendCommandUsage(receivedEvent.getChannel());
     }
 
@@ -46,13 +47,13 @@ public class Prefix extends Command {
 
     private void set(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length == 1) {
-            MessageSender.sendSimpleError("Too few arguments", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, receivedEvent.getChannel());
             sendCommandUsage(receivedEvent.getChannel());
             return;
         }
 
         if (args[1].length() > 2) {
-            MessageSender.sendSimpleError("Only one or two Chars are allowed as prefix.", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_PREFIX_LENGTH, receivedEvent.getChannel());
             return;
         }
 

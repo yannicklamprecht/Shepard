@@ -4,6 +4,7 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.GreetingData;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -47,7 +48,7 @@ public class Greeting extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError("Invalid argument", receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
         sendCommandUsage(receivedEvent.getChannel());
     }
 
@@ -60,7 +61,7 @@ public class Greeting extends Command {
                     + message, receivedEvent.getChannel());
             return;
         }
-        MessageSender.sendSimpleError("No message was found.", receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.NO_MESSAGE_FOUND, receivedEvent.getChannel());
     }
 
     private void removeChannel(MessageReceivedEvent receivedEvent) {
@@ -84,7 +85,7 @@ public class Greeting extends Command {
                 return;
             }
         }
-        MessageSender.sendSimpleError("Too many arguments", receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, receivedEvent.getChannel());
         sendCommandUsage(receivedEvent.getChannel());
     }
 }
