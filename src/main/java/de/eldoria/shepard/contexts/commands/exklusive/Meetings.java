@@ -24,7 +24,6 @@ public class Meetings extends Command {
         commandName = "meetings";
         commandAliases = new String[] {"besprechung", "meeting"};
         commandDesc = "Der nächste Besprechungstermin";
-        arguments = null;
     }
 
     @Override

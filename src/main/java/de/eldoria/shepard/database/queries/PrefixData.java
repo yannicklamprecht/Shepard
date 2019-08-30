@@ -79,6 +79,4 @@ public final class PrefixData {
             handleException(e, event);
         }
     }
-
-
 }

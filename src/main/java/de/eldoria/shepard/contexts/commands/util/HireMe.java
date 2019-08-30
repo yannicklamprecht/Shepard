@@ -20,7 +20,6 @@ public class HireMe extends Command {
         commandName = "hireMe";
         commandAliases = new String[] {"Iwantyou", "lovemeshepard"};
         commandDesc = "Get a link to invite me!";
-        arguments = null;
     }
 
     @Override
