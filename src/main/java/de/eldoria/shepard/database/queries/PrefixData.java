@@ -13,11 +13,11 @@ import java.util.Map;
 
 import static de.eldoria.shepard.database.DbUtil.handleException;
 
-public final class Prefix {
+public final class PrefixData {
     private static final Map<String, String> prefixes = new DefaultMap<>(ShepardBot.getConfig().getPrefix());
     private static boolean cacheDirty = true;
 
-    private Prefix() {
+    private PrefixData() {
     }
 
     /**

@@ -1,6 +1,6 @@
 package de.eldoria.shepard.messagehandler;
 
-import de.eldoria.shepard.database.types.Greeting;
+import de.eldoria.shepard.database.types.GreetingSettings;
 import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -80,10 +80,23 @@ public class MessageSender {
      * @param channel     channel to send
      */
     public static void sendSimpleTextBox(String title, String description, MessageChannel channel) {
+        sendSimpleTextBox(title, description, Color.gray, channel);
+    }
+
+    /**
+     * Send a simple text box with title and text.
+     *
+     * @param title       Title of text box
+     * @param description Text of textbox
+     * @param channel     channel to send
+     * @param color       Color of the text box
+     */
+    public static void sendSimpleTextBox(String title, String description, Color color, MessageChannel channel) {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle(title);
-        builder.setDescription(description);
-        builder.setFooter("by Shepard", "https://cdn.discordapp.com/avatars/512413049894731780/e7262c349f015c5f6f25e6bca8a689d0.png?size=1024");
+        builder.setTitle(title)
+                .setColor(color)
+                .setDescription(description)
+                .setFooter("by Shepard", "https://cdn.discordapp.com/avatars/512413049894731780/e7262c349f015c5f6f25e6bca8a689d0.png?size=1024");
         channel.sendMessage(builder.build()).queue();
     }
 
@@ -175,7 +188,7 @@ public class MessageSender {
      * @param source   invite source
      * @param greeting Greeting object
      */
-    public static void sendGreeting(GuildMemberJoinEvent event, Greeting greeting,
+    public static void sendGreeting(GuildMemberJoinEvent event, GreetingSettings greeting,
                                     String source, MessageChannel channel) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setThumbnail(event.getUser().getAvatarUrl());

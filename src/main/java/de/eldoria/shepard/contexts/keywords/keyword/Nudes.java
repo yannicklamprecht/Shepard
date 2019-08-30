@@ -25,12 +25,12 @@ public class Nudes extends Keyword {
         if (event.getChannel().getType() == ChannelType.TEXT) {
             TextChannel channel = (TextChannel) event.getChannel();
             if (channel.isNSFW()) {
-                DefaultImageBoards.KONACHAN.search(40, "femshep").async(rule34Images -> {
+                DefaultImageBoards.KONACHAN.search(40, "femshep").async(images -> {
                     Random rand = new Random();
                     BoardImage image;
                     boolean found;
                     do {
-                        image = rule34Images.get(rand.nextInt(rule34Images.size()));
+                        image = images.get(rand.nextInt(images.size()));
                         List<String> tags = image.getTags();
                         found = false;
                         for (String tag : tags) {

@@ -20,9 +20,9 @@ import java.util.List;
 
 import static de.eldoria.shepard.database.DbUtil.handleException;
 
-public final class Tickets {
+public final class TicketData {
 
-    private Tickets() {
+    private TicketData() {
     }
 
     /**

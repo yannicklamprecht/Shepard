@@ -3,7 +3,7 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.DbUtil;
-import de.eldoria.shepard.database.queries.Tickets;
+import de.eldoria.shepard.database.queries.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.Replacer;
@@ -18,14 +18,11 @@ import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import static de.eldoria.shepard.database.queries.Tickets.getChannelOwnerRoles;
-import static de.eldoria.shepard.database.queries.Tickets.getTypeOwnerRoles;
-import static de.eldoria.shepard.database.queries.Tickets.getTypeSupportRoles;
-import static de.eldoria.shepard.database.queries.Tickets.removeChannel;
+import static de.eldoria.shepard.database.queries.TicketData.getTypeOwnerRoles;
+import static de.eldoria.shepard.database.queries.TicketData.getTypeSupportRoles;
+import static de.eldoria.shepard.database.queries.TicketData.removeChannel;
 import static de.eldoria.shepard.util.Verifier.getValidRoles;
 import static java.lang.System.lineSeparator;
 
@@ -86,7 +83,7 @@ public class Ticket extends Command {
             return;
         }
 
-        String channelOwnerId = Tickets.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
+        String channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
 
         if (channelOwnerId == null) {
             MessageSender.sendSimpleError("This is not a ticket channel!", receivedEvent.getChannel());
@@ -94,7 +91,7 @@ public class Ticket extends Command {
         }
 
         //Get the ticket type for caching.
-        TicketType type = Tickets.getTypeByChannel(receivedEvent.getGuild(), channel, receivedEvent);
+        TicketType type = TicketData.getTypeByChannel(receivedEvent.getGuild(), channel, receivedEvent);
 
         //Removes channel from database. needed for further role checking.
         removeChannel(receivedEvent.getGuild(), channel, receivedEvent);
@@ -116,7 +113,7 @@ public class Ticket extends Command {
 
 
     private void typeInfo(String[] args, MessageReceivedEvent receivedEvent) {
-        List<TicketType> tickets = Tickets.getTypes(receivedEvent.getGuild(), receivedEvent);
+        List<TicketType> tickets = TicketData.getTypes(receivedEvent.getGuild(), receivedEvent);
         if (tickets.size() == 0) {
             MessageSender.sendMessage("No ticket types defined", receivedEvent.getChannel());
             return;
@@ -158,7 +155,7 @@ public class Ticket extends Command {
             MessageSender.sendMessage(builder.toString(), receivedEvent.getChannel());
         } else if (args.length == 2) {
             //Return info for one ticket type.
-            TicketType type = Tickets.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
+            TicketType type = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
 
             if (type == null) {
                 MessageSender.sendSimpleError("No such ticket type", receivedEvent.getChannel());
@@ -202,7 +199,7 @@ public class Ticket extends Command {
             MessageSender.sendSimpleError("You can't open a ticket for yourself!", receivedEvent.getChannel());
             return;
         }
-        TicketType ticket = Tickets.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
+        TicketType ticket = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
 
         if (ticket == null) {
             MessageSender.sendSimpleError("Ticket type does not exists!", receivedEvent.getChannel());
@@ -210,7 +207,7 @@ public class Ticket extends Command {
         }
 
         //Set Channel Name
-        String channelName = Tickets.getNextTicketCount(receivedEvent.getGuild(), receivedEvent)
+        String channelName = TicketData.getNextTicketCount(receivedEvent.getGuild(), receivedEvent)
                 + " " + member.getUser().getName();
 
         //Create channel and wait for creation
@@ -230,7 +227,7 @@ public class Ticket extends Command {
         memberOverride.setAllow(Permission.MESSAGE_READ).queue();
 
         //Saves channel in database
-        Tickets.createChannel(receivedEvent.getGuild(), channel,
+        TicketData.createChannel(receivedEvent.getGuild(), channel,
                 member.getUser(), ticket.getKeyword(), receivedEvent);
 
         //Get ticket support and owner roles

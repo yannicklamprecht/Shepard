@@ -12,8 +12,8 @@ import java.sql.SQLException;
 import static de.eldoria.shepard.database.DbUtil.getIdRaw;
 import static de.eldoria.shepard.database.DbUtil.handleException;
 
-public final class MinecraftLinks {
-    private MinecraftLinks() {
+public final class MinecraftLinkData {
+    private MinecraftLinkData() {
     }
 
     /**

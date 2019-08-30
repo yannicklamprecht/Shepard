@@ -3,7 +3,7 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.DbUtil;
-import de.eldoria.shepard.database.queries.Greetings;
+import de.eldoria.shepard.database.queries.GreetingData;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -54,7 +54,7 @@ public class Greeting extends Command {
     private void setMessage(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length > 1) {
             String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-            Greetings.setGreetingText(receivedEvent.getGuild(), message, receivedEvent);
+            GreetingData.setGreetingText(receivedEvent.getGuild(), message, receivedEvent);
 
             MessageSender.sendMessage("Changed greeting message to " + lineSeparator()
                     + message, receivedEvent.getChannel());
@@ -64,13 +64,13 @@ public class Greeting extends Command {
     }
 
     private void removeChannel(MessageReceivedEvent receivedEvent) {
-        Greetings.removeGreetingChannel(receivedEvent.getGuild(), receivedEvent);
+        GreetingData.removeGreetingChannel(receivedEvent.getGuild(), receivedEvent);
         MessageSender.sendMessage("Removed greeting channel.", receivedEvent.getChannel());
     }
 
     private void setChannel(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length == 1) {
-            Greetings.setGreetingChannel(receivedEvent.getGuild(),
+            GreetingData.setGreetingChannel(receivedEvent.getGuild(),
                     receivedEvent.getChannel(), receivedEvent);
             MessageSender.sendMessage("Greeting Channel set to "
                     + ((TextChannel) receivedEvent.getChannel()).getAsMention(), receivedEvent.getChannel());
@@ -78,7 +78,7 @@ public class Greeting extends Command {
         } else if (args.length == 2) {
             TextChannel channel = receivedEvent.getGuild().getTextChannelById(DbUtil.getIdRaw(args[1]));
             if (channel != null) {
-                Greetings.setGreetingChannel(receivedEvent.getGuild(), channel, receivedEvent);
+                GreetingData.setGreetingChannel(receivedEvent.getGuild(), channel, receivedEvent);
                 MessageSender.sendMessage("Greeting channel set to "
                         + channel.getAsMention(), receivedEvent.getChannel());
                 return;

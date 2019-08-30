@@ -15,9 +15,9 @@ import java.util.List;
 
 import static de.eldoria.shepard.database.DbUtil.handleException;
 
-public final class Changelog {
+public final class ChangelogData {
 
-    private Changelog() {
+    private ChangelogData() {
     }
 
     /**
@@ -103,7 +103,7 @@ public final class Changelog {
                 .prepareStatement("SELECT shepard_func.get_changelog_roles(?)")) {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
-            if (result.getArray(1) != null) {
+            if (result.next() && result.getArray(1) != null) {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
         } catch (SQLException e) {

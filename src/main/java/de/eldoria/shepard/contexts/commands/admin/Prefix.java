@@ -6,7 +6,7 @@ import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import static de.eldoria.shepard.database.queries.Prefix.setPrefix;
+import static de.eldoria.shepard.database.queries.PrefixData.setPrefix;
 import static java.lang.System.lineSeparator;
 
 public class Prefix extends Command {

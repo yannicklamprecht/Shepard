@@ -15,9 +15,9 @@ import java.util.List;
 import static de.eldoria.shepard.database.DatabaseConnector.getConn;
 import static de.eldoria.shepard.database.DbUtil.handleException;
 
-public final class Invites {
+public final class InviteData {
 
-    private Invites() {
+    private InviteData() {
     }
 
     /**

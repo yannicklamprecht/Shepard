@@ -1,6 +1,7 @@
 package de.eldoria.shepard.register;
 
 import de.eldoria.shepard.contexts.ContextSensitive;
+import de.eldoria.shepard.contexts.commands.admin.Changelog;
 import de.eldoria.shepard.contexts.commands.admin.Greeting;
 import de.eldoria.shepard.contexts.commands.admin.Invite;
 import de.eldoria.shepard.contexts.commands.admin.Prefix;
@@ -106,6 +107,7 @@ public final class ContextRegister {
         contextSensitives.add(new ShowKeyword());
         contextSensitives.add(new TicketSettings());
         contextSensitives.add(new Ticket());
+        contextSensitives.add(new Changelog());
     }
 
     private static ContextRegister getInstance() {

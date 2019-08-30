@@ -4,7 +4,7 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.ListType;
-import de.eldoria.shepard.database.queries.Context;
+import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
@@ -90,9 +90,9 @@ public class ManageContextUsers extends Command {
                     if (modifyType == ModifyType.ADD) {
 
 
-                        Context.addContextUser(contextName, user, receivedEvent);
+                        ContextData.addContextUser(contextName, user, receivedEvent);
                     } else {
-                        Context.removeContextUser(contextName, user, receivedEvent);
+                        ContextData.removeContextUser(contextName, user, receivedEvent);
                     }
                     mentions.add(user.getAsMention());
                 }
@@ -131,7 +131,7 @@ public class ManageContextUsers extends Command {
             return;
         }
 
-        Context.setContextUserListType(contextName, type, receivedEvent);
+        ContextData.setContextUserListType(contextName, type, receivedEvent);
 
         MessageSender.sendMessage("**Changed user list type of context \""
                         + contextName.toUpperCase() + "\" to " + type.toString(),
@@ -149,7 +149,7 @@ public class ManageContextUsers extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
-        Context.setContextUserCheckActive(contextName, state, receivedEvent);
+        ContextData.setContextUserCheckActive(contextName, state, receivedEvent);
 
         if (state) {
             MessageSender.sendMessage("**Activated user check for context \"" + contextName.toUpperCase() + "\"**",

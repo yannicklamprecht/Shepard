@@ -1,7 +1,7 @@
 package de.eldoria.shepard.contexts.commands.util;
 
 import de.eldoria.shepard.collections.CommandCollection;
-import de.eldoria.shepard.database.queries.Prefix;
+import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
@@ -30,7 +30,7 @@ public class Help extends Command {
 
     @Override
     public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        String prefix = Prefix.getPrefix(receivedEvent.getGuild(), receivedEvent);
+        String prefix = PrefixData.getPrefix(receivedEvent.getGuild(), receivedEvent);
 
         //Command List
         if (args.length == 0) {
@@ -89,7 +89,7 @@ public class Help extends Command {
                 continue;
             }
 
-            aliases = aliases.concat(Prefix.getPrefix(event.getGuild(), event));
+            aliases = aliases.concat(PrefixData.getPrefix(event.getGuild(), event));
             aliases = aliases.concat(command.getCommandName() + " ");
 
             //Build aliases string

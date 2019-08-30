@@ -2,8 +2,8 @@ package de.eldoria.shepard.register;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.listener.CommandListener;
-import de.eldoria.shepard.listener.GroupListener;
-import de.eldoria.shepard.listener.JoinListener;
+import de.eldoria.shepard.listener.ChangelogListener;
+import de.eldoria.shepard.listener.GreetingListener;
 import de.eldoria.shepard.listener.KeywordListener;
 import de.eldoria.shepard.listener.LogListener;
 import de.eldoria.shepard.listener.MessageSniffer;
@@ -20,8 +20,8 @@ public final class ListenerRegister {
 
     private ListenerRegister() {
         listener.add(new CommandListener());
-        listener.add(new GroupListener());
-        listener.add(new JoinListener());
+        listener.add(new ChangelogListener());
+        listener.add(new GreetingListener());
         listener.add(new KeywordListener());
         listener.add(new LogListener());
         listener.add(new MessageSniffer());

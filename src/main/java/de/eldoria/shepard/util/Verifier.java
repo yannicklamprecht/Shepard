@@ -5,7 +5,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -68,8 +67,8 @@ public class Verifier {
      * @param args  array of role id
      * @return list of valid roles
      */
-    public static List<Role> getValidTextChannels(Guild guild, List<String> args) {
-        return getValidRoles(guild, args.toArray(String[]::new));
+    public static List<TextChannel> getValidTextChannels(Guild guild, List<String> args) {
+        return getValidTextChannels(guild, args.toArray(String[]::new));
     }
 
     /**

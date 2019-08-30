@@ -4,7 +4,7 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.ListType;
-import de.eldoria.shepard.database.queries.Context;
+import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
@@ -96,9 +96,9 @@ public class ManageContextGuild extends Command {
                 Guild guild = ShepardBot.getJDA().getGuildById(DbUtil.getIdRaw(guildId));
                 if (guild != null) {
                     if (modifyType == ModifyType.ADD) {
-                        Context.addContextGuild(contextName, guild, receivedEvent);
+                        ContextData.addContextGuild(contextName, guild, receivedEvent);
                     } else {
-                        Context.removeContextGuild(contextName, guild, receivedEvent);
+                        ContextData.removeContextGuild(contextName, guild, receivedEvent);
                     }
                     mentions.add(guild.getName());
                 }
@@ -130,7 +130,7 @@ public class ManageContextGuild extends Command {
             return;
         }
 
-        Context.setContextGuildListType(contextName, type, receivedEvent);
+        ContextData.setContextGuildListType(contextName, type, receivedEvent);
 
         MessageSender.sendMessage("**Changed guild list type of context \""
                         + contextName.toUpperCase() + "\" to " + type.toString(),
@@ -148,7 +148,7 @@ public class ManageContextGuild extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
-        Context.setContextGuildCheckActive(contextName, state, receivedEvent);
+        ContextData.setContextGuildCheckActive(contextName, state, receivedEvent);
 
         if (state) {
             MessageSender.sendMessage("**Activated guild check for context \"" + contextName.toUpperCase() + "\"**",

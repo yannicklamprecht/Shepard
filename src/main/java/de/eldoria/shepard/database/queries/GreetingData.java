@@ -1,7 +1,7 @@
 package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.DatabaseConnector;
-import de.eldoria.shepard.database.types.Greeting;
+import de.eldoria.shepard.database.types.GreetingSettings;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -12,9 +12,9 @@ import java.sql.SQLException;
 
 import static de.eldoria.shepard.database.DbUtil.handleException;
 
-public final class Greetings {
+public final class GreetingData {
 
-    private Greetings() {
+    private GreetingData() {
     }
 
     /**
@@ -75,13 +75,13 @@ public final class Greetings {
      * @param guild Guild object for lookup.
      * @return Greeting object
      */
-    public static Greeting getGreeting(Guild guild) {
+    public static GreetingSettings getGreeting(Guild guild) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_greeting_data(?)")) {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
             if (result.next()) {
-                return new Greeting(guild.getId(),
+                return new GreetingSettings(guild.getId(),
                         result.getString("channel_id"),
                         result.getString("message"));
             }

@@ -1,6 +1,6 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
-import de.eldoria.shepard.database.queries.Tickets;
+import de.eldoria.shepard.database.queries.TicketData;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static de.eldoria.shepard.database.queries.Tickets.getChannelOwnerRoles;
+import static de.eldoria.shepard.database.queries.TicketData.getChannelOwnerRoles;
 
 final class TicketHelper {
     private TicketHelper() {
@@ -23,7 +23,8 @@ final class TicketHelper {
      * @param member member to change roles
      * @param rolesToRemove roles as string list
      */
-    static void removeAndUpdateTicketRoles(MessageReceivedEvent receivedEvent, Member member, List<String> rolesToRemove) {
+    static void removeAndUpdateTicketRoles(MessageReceivedEvent receivedEvent,
+                                           Member member, List<String> rolesToRemove) {
         List<Role> removeRoles = new ArrayList<>();
 
         //Get the role objects if the role exists.
@@ -35,7 +36,7 @@ final class TicketHelper {
         }
 
         //Get all other ticket channels of the owner
-        List<String> channelIdsByOwner = Tickets.getChannelIdsByOwner(receivedEvent.getGuild(),
+        List<String> channelIdsByOwner = TicketData.getChannelIdsByOwner(receivedEvent.getGuild(),
                 member.getUser(), receivedEvent);
 
         List<TextChannel> channels = new ArrayList<>();
