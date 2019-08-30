@@ -24,6 +24,11 @@ public class ChangelogListener extends ListenerAdapter {
         manageChangelog(event.getUser(), event.getGuild(), event.getRoles(), true);
     }
 
+    @Override
+    public void onGuildMemberRoleRemove(@Nonnull GuildMemberRoleRemoveEvent event) {
+        manageChangelog(event.getUser(), event.getGuild(), event.getRoles(), false);
+    }
+
     private void manageChangelog(User user, Guild guild, List<Role> roles, boolean add) {
         String channelId = ChangelogData.getChannel(guild, null);
         if (channelId == null) return;
@@ -52,10 +57,5 @@ public class ChangelogListener extends ListenerAdapter {
             MessageSender.sendSimpleTextBox("[-] " + user.getAsTag(),
                     String.join(lineSeparator(), observedRoles), Color.red, channelById);
         }
-    }
-
-    @Override
-    public void onGuildMemberRoleRemove(@Nonnull GuildMemberRoleRemoveEvent event) {
-        manageChangelog(event.getUser(), event.getGuild(), event.getRoles(), false);
     }
 }
