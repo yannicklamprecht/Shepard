@@ -145,7 +145,8 @@ public class ManageQuote extends Command {
         }
 
         QuoteData.removeQuote(receivedEvent.getGuild(), quoteId, receivedEvent);
-        MessageSender.sendSimpleTextBox("Remove quote with id **" + quoteId + "**", "", Color.red, receivedEvent.getChannel());
+        MessageSender.sendSimpleTextBox("Remove quote with id **" + quoteId + "**",
+                "", Color.red, receivedEvent.getChannel());
     }
 
     private void addQuote(String[] args, MessageReceivedEvent receivedEvent) {

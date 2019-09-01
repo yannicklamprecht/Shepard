@@ -111,7 +111,6 @@ public class ManageContextUsers extends Command {
                             + contextName.toUpperCase() + "\"", names + "**",
                     receivedEvent.getChannel());
         }
-
     }
 
     private void addUser(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
