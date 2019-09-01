@@ -9,6 +9,7 @@ import de.eldoria.shepard.contexts.commands.exceptions.CommandException;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -19,6 +20,11 @@ public class CommandListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        if (event.getChannel() instanceof PrivateChannel) {
+            if (event.getAuthor().isBot()) return;
+            event.getChannel().sendMessage("I'm too shy. Please speak to me on a public Server.").queue();
+            return;
+        }
         Message message = event.getMessage();
         String receivedMessage = message.getContentRaw();
         String[] args = receivedMessage.split(" ");
