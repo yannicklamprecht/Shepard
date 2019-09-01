@@ -23,8 +23,9 @@ public class ManageContext extends Command {
         commandDesc = "Manage the settings of a context";
         commandArgs = new CommandArg[] {
                 new CommandArg("context name", "Name of the context to change", true),
-                new CommandArg("action", "**setNSFW** -> Sets the context as nsfw" + lineSeparator()
-                        + "**setAdminOnly** -> Marks a command as admin only. Command can only used from users"
+                new CommandArg("action",
+                        "**set__NSFW__** -> Sets the context as nsfw" + lineSeparator()
+                        + "**set__Admin__Only** -> Marks a command as admin only. Command can only used from users"
                         + " which are admin on a guild or when they have the permission on the guild", true),
                 new CommandArg("value", "True or False", true)};
     }
@@ -32,6 +33,7 @@ public class ManageContext extends Command {
     @Override
     public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String contextName = getContextName(args[0], receivedEvent);
+        String cmd = args[1];
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
@@ -39,11 +41,11 @@ public class ManageContext extends Command {
             return;
         }
 
-        if (args[1].equalsIgnoreCase("setNSFW")) {
+        if (cmd.equalsIgnoreCase("setNSFW") || cmd.equalsIgnoreCase("nsfw")) {
             setNsfw(args, contextName, receivedEvent);
         }
 
-        if (args[1].equalsIgnoreCase("setadminonly")) {
+        if (cmd.equalsIgnoreCase("setadminonly") ||cmd.equalsIgnoreCase("admin")) {
             setAdminOnly(args, contextName, receivedEvent);
         }
 

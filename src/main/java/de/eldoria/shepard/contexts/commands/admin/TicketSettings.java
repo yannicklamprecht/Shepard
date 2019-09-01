@@ -32,13 +32,16 @@ public class TicketSettings extends Command {
         commandAliases = new String[] {"ts"};
         commandArgs = new CommandArg[] {
                 new CommandArg("action",
-                        "**createType** -> Creates a new ticket type" + lineSeparator()
-                                + "**removeType** -> Removes a ticket type by type name or id" + lineSeparator()
-                                + "**setOwnerRoles** -> Sets ticket owner roles for ticket type" + lineSeparator()
-                                + "**setSupportRoles** -> Sets ticket support roles for ticket type" + lineSeparator()
-                                + "**setChannelCategory** -> Sets Channel Category for support channel."
+                        "**__c__reate__T__ype** -> Creates a new ticket type" + lineSeparator()
+                                + "**__r__emove__T__ype** -> Removes a ticket type by type name or id"
                                 + lineSeparator()
-                                + "**setCreationMessage** -> Sets the creation Message of the ticket type"
+                                + "**__s__et__O__wner__R__oles** -> Sets ticket owner roles for ticket type"
+                                + lineSeparator()
+                                + "**__s__et__S__upport__R__oles** -> Sets ticket support roles for ticket type"
+                                + lineSeparator()
+                                + "**__s__et__C__hannel__C__ategory** -> Sets Channel Category for support channel."
+                                + lineSeparator()
+                                + "**__s__et__C__reation__M__essage** -> Sets the creation Message of the ticket type"
                                 + lineSeparator()
                                 + "Message will be send when a ticket is created.",
                         true),
@@ -70,10 +73,10 @@ public class TicketSettings extends Command {
         //All validation operations are inside the method except when they are needed for more than one method.
 
 
-        if (cmd.equalsIgnoreCase("createType") && scopeTicket != null) {
+        if ((cmd.equalsIgnoreCase("createType") || cmd.equalsIgnoreCase("ct")) && scopeTicket != null) {
             createType(args, receivedEvent, type);
             return;
-        } else if (cmd.equalsIgnoreCase("createType") && scopeTicket == null) {
+        } else if ((cmd.equalsIgnoreCase("createType") || cmd.equalsIgnoreCase("ct")) && scopeTicket == null) {
             MessageSender.sendSimpleError(ErrorType.TYPE_ALREADY_DEFINED, receivedEvent.getChannel());
             return;
         }
@@ -83,23 +86,23 @@ public class TicketSettings extends Command {
             return;
         }
 
-        if (cmd.equalsIgnoreCase("removeType")) {
+        if (cmd.equalsIgnoreCase("removeType") || cmd.equalsIgnoreCase("rt")) {
             removeType(args, receivedEvent, scopeTicket);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("setOwnerRoles")
-                || cmd.equalsIgnoreCase("setSupportRoles")) {
+        if (cmd.equalsIgnoreCase("setOwnerRoles") || cmd.equalsIgnoreCase("sor")
+                || cmd.equalsIgnoreCase("setSupportRoles") || cmd.equalsIgnoreCase("ssr")) {
             setRoles(args, receivedEvent, cmd, scopeTicket);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("setChannelCategory")) {
+        if (cmd.equalsIgnoreCase("setChannelCategory") || cmd.equalsIgnoreCase("scc")) {
             setChannelCategory(args, receivedEvent, scopeTicket);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("setCreationMessage")) {
+        if (cmd.equalsIgnoreCase("setCreationMessage") || cmd.equalsIgnoreCase("scm")) {
             setCreationMessage(args, receivedEvent, scopeTicket);
             return;
         }
@@ -156,7 +159,7 @@ public class TicketSettings extends Command {
         List<String> roleMentions = new ArrayList<>();
         validRoles.forEach(role -> roleMentions.add(role.getAsMention()));
 
-        if (cmd.equalsIgnoreCase("setOwnerRoles")) {
+        if (cmd.equalsIgnoreCase("setOwnerRoles") || cmd.equalsIgnoreCase("sor")) {
             TicketData.setTypeOwnerRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(), validRoles, receivedEvent);
 
             MessageSender.sendSimpleTextBox("Set the following roles as owner roles for ticket "

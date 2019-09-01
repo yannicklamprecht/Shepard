@@ -22,7 +22,9 @@ public class Greeting extends Command {
         commandDesc = "Manage greeting settings.";
         commandArgs = new CommandArg[] {
                 new CommandArg("action",
-                        "setChannel -> Set or change the greeting ChannelremoveChannel | setMessage", true),
+                        "**__s__et__C__hannel** -> Set or change the greeting Channel" + lineSeparator()
+                                + "**__r__emove__C__hannel** -> Remove channel and disable greeting." + lineSeparator()
+                                + "**__s__et__M__essage** -> Set or change the greeting message", true),
                 new CommandArg("value",
                         "**setChannel** -> Channel Mention or execute in greeting Channel." + lineSeparator()
                                 + "**removeChannel** -> leave empty" + lineSeparator()
@@ -33,17 +35,18 @@ public class Greeting extends Command {
 
     @Override
     public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        if (args[0].equalsIgnoreCase("setChannel")) {
+        String cmd = args[0];
+        if (cmd.equalsIgnoreCase("setChannel") || cmd.equalsIgnoreCase("sc")) {
             setChannel(args, receivedEvent);
             return;
         }
 
-        if (args[0].equalsIgnoreCase("removeChannel")) {
+        if (cmd.equalsIgnoreCase("removeChannel") || cmd.equalsIgnoreCase(("rc"))) {
             removeChannel(receivedEvent);
             return;
         }
 
-        if (args[0].equalsIgnoreCase("setMessage")) {
+        if (cmd.equalsIgnoreCase("setMessage") || cmd.equalsIgnoreCase("sm")) {
             setMessage(args, receivedEvent);
             return;
         }

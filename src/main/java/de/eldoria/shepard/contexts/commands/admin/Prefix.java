@@ -19,7 +19,7 @@ public class Prefix extends Command {
         commandName = "prefix";
         commandDesc = "Manage prefix settings";
         commandArgs = new CommandArg[] {new CommandArg("action",
-                "**set** -> changes the prefix" + lineSeparator()
+                "**__s__et** -> changes the prefix" + lineSeparator()
                         + "**reset** -> Sets the prefix to default", true),
                 new CommandArg("value",
                         "**set** -> One or two character" + lineSeparator()
@@ -28,11 +28,12 @@ public class Prefix extends Command {
 
     @Override
     public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        if (args[0].equalsIgnoreCase("set")) {
+        String cmd = args[0];
+        if (cmd.equalsIgnoreCase("set") || cmd.equalsIgnoreCase("s")) {
             set(args, receivedEvent);
             return;
         }
-        if (args[0].equalsIgnoreCase("reset")) {
+        if (cmd.equalsIgnoreCase("reset") || cmd.equalsIgnoreCase("r")) {
             reset(receivedEvent);
             return;
         }

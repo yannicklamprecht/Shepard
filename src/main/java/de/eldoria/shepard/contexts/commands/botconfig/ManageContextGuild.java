@@ -31,11 +31,11 @@ public class ManageContextGuild extends Command {
         commandArgs = new CommandArg[] {
                 new CommandArg("context name", "Name of the context to change", true),
                 new CommandArg("action",
-                        "**setActive** -> Enables/Disables Guild Check for Command" + System.lineSeparator()
-                                + "**setListType** -> Defines it the list should be used as White or Blacklist"
+                        "**set__A__ctive** -> Enables/Disables Guild Check for Command" + System.lineSeparator()
+                                + "**set__L__ist__T__ype** -> Defines it the list should be used as White or Blacklist"
                                 + System.lineSeparator()
-                                + "**addGuild** -> Adds a guild to the list" + System.lineSeparator()
-                                + "**removeGuild** -> Removes a guild from the list", true),
+                                + "**__a__dd__G__uild** -> Adds a guild to the list" + System.lineSeparator()
+                                + "**__r__emove__G__uild** -> Removes a guild from the list", true),
                 new CommandArg("value",
                         "**setActive** -> 'true' or 'false'" + System.lineSeparator()
                                 + "**setListType** -> 'BLACKLIST' or 'WHITELIST'. "
@@ -47,6 +47,7 @@ public class ManageContextGuild extends Command {
 
     @Override
     public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+        String cmd = args[1];
         String contextName = getContextName(args[0], receivedEvent);
 
         if (contextName == null) {
@@ -55,22 +56,22 @@ public class ManageContextGuild extends Command {
             return;
         }
 
-        if (args[1].equalsIgnoreCase("setActive")) {
+        if (cmd.equalsIgnoreCase("setActive") || cmd.equalsIgnoreCase("a")) {
             setActive(args, contextName, receivedEvent);
             return;
         }
 
-        if (args[1].equalsIgnoreCase("setListType")) {
+        if (cmd.equalsIgnoreCase("setListType") || cmd.equalsIgnoreCase("lt")) {
             setListType(args, contextName, receivedEvent);
             return;
         }
 
-        if (args[1].equalsIgnoreCase("addGuild")) {
+        if (cmd.equalsIgnoreCase("addGuild") || cmd.equalsIgnoreCase("ag")) {
             addGuild(args, contextName, receivedEvent);
             return;
         }
 
-        if (args[1].equalsIgnoreCase("removeGuild")) {
+        if (cmd.equalsIgnoreCase("removeGuild") || cmd.equalsIgnoreCase("rg")) {
             removeGuild(args, contextName, receivedEvent);
             return;
         }

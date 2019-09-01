@@ -28,12 +28,12 @@ public class Changelog extends Command {
         commandDesc = "provides function to log role changes on a guild";
         commandArgs = new CommandArg[] {
                 new CommandArg("action",
-                        "**addRole** -> Adds a role to changelog" + lineSeparator()
-                                + "**removeRole** -> Removes a role from changelog" + lineSeparator()
-                                + "**activate** -> Activates changelog posting in a channel."
+                        "**__a__dd__R__ole** -> Adds a role to changelog" + lineSeparator()
+                                + "**__r__emove__R__ole** -> Removes a role from changelog" + lineSeparator()
+                                + "**__a__ctivate** -> Activates changelog posting in a channel."
                                 + "Overrides old channel if set." + lineSeparator()
-                                + "**deactivate** -> Deactivates changelog postings" + lineSeparator()
-                                + "**roles** -> Shows currently observed roles", true),
+                                + "**__d__eactivate** -> Deactivates changelog postings" + lineSeparator()
+                                + "**__r__oles** -> Shows currently observed roles", true),
                 new CommandArg("value",
                         "**addRole** -> [role]" + lineSeparator()
                                 + "**removeRole** -> [role]" + lineSeparator()
@@ -45,22 +45,23 @@ public class Changelog extends Command {
     @Override
     public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String cmd = args[0];
-        if (cmd.equalsIgnoreCase("addRole") || cmd.equalsIgnoreCase("removeRole")) {
+        if (cmd.equalsIgnoreCase("addRole") || cmd.equalsIgnoreCase("ar")
+                || cmd.equalsIgnoreCase("removeRole") || cmd.equalsIgnoreCase("rr")) {
             modifyRoles(args, receivedEvent, cmd);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("activate")) {
+        if (cmd.equalsIgnoreCase("activate") || cmd.equalsIgnoreCase("a")) {
             activate(args, receivedEvent);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("deactivate")) {
+        if (cmd.equalsIgnoreCase("deactivate") || cmd.equalsIgnoreCase("d")) {
             deactivate(receivedEvent);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("roles")) {
+        if (cmd.equalsIgnoreCase("roles") || cmd.equalsIgnoreCase("r")) {
             showRoles(receivedEvent);
             return;
         }
@@ -118,7 +119,7 @@ public class Changelog extends Command {
             return;
         }
 
-        if (cmd.equalsIgnoreCase("addRole")) {
+        if (cmd.equalsIgnoreCase("addRole") || cmd.equalsIgnoreCase("ar")) {
             ChangelogData.addRole(receivedEvent.getGuild(), roleById, receivedEvent);
             MessageSender.sendMessage("Added role **" + roleById.getName() + "** to changelog.",
                     receivedEvent.getChannel());
