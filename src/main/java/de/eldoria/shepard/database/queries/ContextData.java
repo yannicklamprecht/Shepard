@@ -122,7 +122,7 @@ public final class ContextData {
      */
     public static void addContextUserPermission(String contextName, Guild guild,
                                                 User user, MessageReceivedEvent event) {
-        contextDataDirty.put(contextName, true);
+        userPermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_context_user_permission(?,?,?)")) {
@@ -145,7 +145,7 @@ public final class ContextData {
      */
     public static void removeContextUserPermission(String contextName, Guild guild,
                                                    User user, MessageReceivedEvent event) {
-        contextDataDirty.put(contextName, true);
+        userPermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_context_user_permission(?,?,?)")) {
@@ -168,7 +168,7 @@ public final class ContextData {
      */
     public static void addContextRolePermission(String contextName, Guild guild,
                                                 Role role, MessageReceivedEvent event) {
-        contextDataDirty.put(contextName, true);
+        rolePermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_context_role_permission(?,?,?)")) {
@@ -191,7 +191,7 @@ public final class ContextData {
      */
     public static void removeContextRolePermission(String contextName, Guild guild,
                                                    Role role, MessageReceivedEvent event) {
-        contextDataDirty.put(contextName, true);
+        rolePermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_context_role_permission(?,?,?)")) {
@@ -375,6 +375,18 @@ public final class ContextData {
     }
 
     /**
+     * Returns a list of all user ids, which have access to the context on a specific guild.
+     *
+     * @param guild Guild for lookup.
+     * @param contextName Name of the context for permission lookup.
+     * @param event       event from command sending for error handling. Can be null.
+     * @return List of user ids
+     */
+    public static List<String> getContextUserPermission(Guild guild, String contextName, MessageReceivedEvent event) {
+        return getContextUserPermissions(contextName, event).getOrDefault(guild.getId(), Collections.emptyList());
+    }
+
+    /**
      * Returns a map which contains a list of all users per guild, which are allowed to use this context.
      *
      * @param contextName Name of the context for permission lookup.
@@ -419,6 +431,19 @@ public final class ContextData {
 
         return userPermissions.get(contextName);
     }
+
+    /**
+     * Returns a list of all role ids, which have access to the context on a specific guild.
+     *
+     * @param guild Guild for lookup.
+     * @param contextName Name of the context for permission lookup.
+     * @param event       event from command sending for error handling. Can be null.
+     * @return List of user ids
+     */
+    public static List<String> getContextRolePermission(Guild guild, String contextName, MessageReceivedEvent event) {
+        return getContextRolePermissions(contextName, event).getOrDefault(guild.getId(), Collections.emptyList());
+    }
+
 
     /**
      * Returns a map which contains a list of all roles per guild, which are allowed to use this context.
