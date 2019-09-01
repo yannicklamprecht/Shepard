@@ -28,7 +28,7 @@ public class ManageContextGuild extends Command {
         commandName = "manageContextGuild";
         commandAliases = new String[] {"mcg"};
         commandDesc = "Manage which guilds can use a context.";
-        arguments = new CommandArg[] {
+        commandArgs = new CommandArg[] {
                 new CommandArg("context name", "Name of the context to change", true),
                 new CommandArg("action",
                         "**setActive** -> Enables/Disables Guild Check for Command" + System.lineSeparator()

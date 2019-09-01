@@ -36,7 +36,7 @@ public class Ticket extends Command {
         commandName = "ticket";
         commandAliases = new String[] {"t"};
         commandDesc = "Ticket system for creation of channels to help users";
-        arguments = new CommandArg[] {
+        commandArgs = new CommandArg[] {
                 new CommandArg("action",
                         "**open** -> Open a new ticket" + lineSeparator()
                                 + "**close** -> Close a ticket" + lineSeparator()

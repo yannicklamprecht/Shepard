@@ -20,7 +20,7 @@ public class Greeting extends Command {
     public Greeting() {
         commandName = "greeting";
         commandDesc = "Manage greeting settings.";
-        arguments = new CommandArg[] {
+        commandArgs = new CommandArg[] {
                 new CommandArg("action",
                         "setChannel -> Set or change the greeting ChannelremoveChannel | setMessage", true),
                 new CommandArg("value",

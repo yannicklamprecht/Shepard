@@ -26,7 +26,7 @@ public class Changelog extends Command {
         commandName = "changelog";
         commandAliases = new String[] {"log"};
         commandDesc = "provides function to log role changes on a guild";
-        arguments = new CommandArg[] {
+        commandArgs = new CommandArg[] {
                 new CommandArg("action",
                         "**addRole** -> Adds a role to changelog" + lineSeparator()
                                 + "**removeRole** -> Removes a role from changelog" + lineSeparator()

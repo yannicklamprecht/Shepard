@@ -28,7 +28,7 @@ public class ManageContextUsers extends Command {
         commandName = "manageContextUser";
         commandAliases = new String[] {"mcu"};
         commandDesc = "Manage which user can use a context.";
-        arguments = new CommandArg[] {
+        commandArgs = new CommandArg[] {
                 new CommandArg("context name", "Name of the context to change", true),
                 new CommandArg("action",
                         "**setActive** -> Enables/Disables User Check for Command" + System.lineSeparator()

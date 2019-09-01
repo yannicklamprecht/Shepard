@@ -24,7 +24,7 @@ public class ManageQuote extends Command {
         commandName = "manageQuotes";
         commandAliases = new String[] {"mq"};
         commandDesc = "add or remove quotes";
-        arguments = new CommandArg[] {
+        commandArgs = new CommandArg[] {
                 new CommandArg("action",
                         "**addQuote** -> Adds a quote" + lineSeparator()
                                 + "**alterQuote** -> Changes the text of a quote" + lineSeparator()

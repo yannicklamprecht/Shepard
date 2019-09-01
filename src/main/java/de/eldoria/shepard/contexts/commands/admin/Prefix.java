@@ -18,7 +18,7 @@ public class Prefix extends Command {
     public Prefix() {
         commandName = "prefix";
         commandDesc = "Manage prefix settings";
-        arguments = new CommandArg[] {new CommandArg("action",
+        commandArgs = new CommandArg[] {new CommandArg("action",
                 "**set** -> changes the prefix" + lineSeparator()
                         + "**reset** -> Sets the prefix to default", true),
                 new CommandArg("value",

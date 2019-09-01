@@ -19,7 +19,7 @@ public class Quote extends Command {
     public Quote() {
         commandName = "Quote";
         commandDesc = "Get a random quote or a quote with a keyword";
-        arguments = new CommandArg[] {
+        commandArgs = new CommandArg[] {
                 new CommandArg("keyword",
                         "leave empty or enter a keyword to get a quote containing this word",
                         false)};

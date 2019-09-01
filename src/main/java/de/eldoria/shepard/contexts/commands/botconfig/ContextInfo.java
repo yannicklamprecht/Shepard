@@ -20,7 +20,7 @@ public class ContextInfo extends Command {
         commandName = "contextInfo";
         commandDesc = "Information about context settings";
         commandAliases = new String[] {"cinfo"};
-        arguments = new CommandArg[] {new CommandArg("context name", "name of the context", true)};
+        commandArgs = new CommandArg[] {new CommandArg("context name", "name of the context", true)};
     }
 
     @Override

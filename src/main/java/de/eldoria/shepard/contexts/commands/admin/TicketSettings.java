@@ -30,7 +30,7 @@ public class TicketSettings extends Command {
         commandName = "ticketSettings";
         commandDesc = "Manage Ticket settings";
         commandAliases = new String[] {"ts"};
-        arguments = new CommandArg[] {
+        commandArgs = new CommandArg[] {
                 new CommandArg("action",
                         "**createType** -> Creates a new ticket type" + lineSeparator()
                                 + "**removeType** -> Removes a ticket type by type name or id" + lineSeparator()

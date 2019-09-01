@@ -21,7 +21,7 @@ public class Invite extends Command {
     public Invite() {
         commandName = "invite";
         commandDesc = "Manage registered invites";
-        arguments = new CommandArg[] {new CommandArg("action",
+        commandArgs = new CommandArg[] {new CommandArg("action",
                 "**addInvite** -> Registers or update a invite" + lineSeparator()
                         + "**removeInvite** -> removes a invite" + lineSeparator()
                         + "**refreshInvites** -> removes non present invites from database" + lineSeparator()

@@ -21,7 +21,7 @@ public class ManageContext extends Command {
         commandName = "manageContext";
         commandAliases = new String[] {"mc"};
         commandDesc = "Manage the settings of a context";
-        arguments = new CommandArg[] {
+        commandArgs = new CommandArg[] {
                 new CommandArg("context name", "Name of the context to change", true),
                 new CommandArg("action", "**setNSFW** -> Sets the context as nsfw" + lineSeparator()
                         + "**setAdminOnly** -> Marks a command as admin only. Command can only used from users"

@@ -26,7 +26,7 @@ public class Help extends Command {
         commandName = "help";
         commandAliases = new String[] {"Hilfe", "sendhelp"};
         commandDesc = "Alles was du wissen musst.";
-        arguments = new CommandArg[]
+        commandArgs = new CommandArg[]
                 {new CommandArg("Command", "Name or Alias of Command", false),
                         new CommandArg("Argument", "One Argument of the Command", false)};
     }
