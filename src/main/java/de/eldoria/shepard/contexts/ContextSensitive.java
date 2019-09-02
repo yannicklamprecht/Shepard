@@ -165,6 +165,7 @@ public abstract class ContextSensitive {
      */
     public void printDebugInfo() {
         System.out.println(getDebugInfo());
+        ShepardBot.getLogger().info(getDebugInfo());
     }
 
     private ContextSettings getContextData(MessageReceivedEvent event) {

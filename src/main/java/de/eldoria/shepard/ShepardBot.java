@@ -32,13 +32,14 @@ public final class ShepardBot {
     }
 
     private void setup() {
+        logger = new Logger();
+        new ConsoleReader();
+
         ContextRegister.registerContexts();
         ListenerRegister.registerListener();
 
         CommandCollection.getInstance().debug();
         KeyWordCollection.getInstance().debug();
-
-        new ConsoleReader();
 
     }
 
@@ -121,5 +122,9 @@ public final class ShepardBot {
         }
 
         System.exit(0);
+    }
+
+    public static Logger getLogger() {
+        return logger;
     }
 }

@@ -36,6 +36,7 @@ public class ConsoleReader implements Runnable {
         if (input != null && !input.isEmpty()) {
             if (input.equalsIgnoreCase("shutdown")) {
                 ShepardBot.getInstance().shutdown();
+                ShepardBot.getLogger().info(input);
             }
             readText();
         }
