@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -24,7 +25,8 @@ public class Someone extends Command {
             List<Member> members = guildChannelById.getMembers().stream()
                     .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE).collect(Collectors.toList());
 
-            members.removeIf(member -> member.getId().equalsIgnoreCase(receivedEvent.getAuthor().getId()));
+            members.removeIf(member -> member.getId().equalsIgnoreCase(receivedEvent.getAuthor().getId())
+            || member.getUser().isBot());
             if (members.size() == 0) {
                 MessageSender.sendMessage("No one is online :fearful:", receivedEvent.getChannel());
                 return;
