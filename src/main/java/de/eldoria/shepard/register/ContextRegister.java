@@ -40,6 +40,7 @@ import de.eldoria.shepard.contexts.keywords.keyword.DariYes;
 import de.eldoria.shepard.contexts.keywords.keyword.Mlp;
 import de.eldoria.shepard.contexts.keywords.keyword.Normandy;
 import de.eldoria.shepard.contexts.keywords.keyword.Nudes;
+import de.eldoria.shepard.contexts.keywords.keyword.SomeoneKeyword;
 import de.eldoria.shepard.contexts.keywords.keyword.Thing;
 
 import java.util.ArrayList;
@@ -70,6 +71,7 @@ public final class ContextRegister {
         contextSensitives.add(new Normandy());
         contextSensitives.add(new Nudes());
         contextSensitives.add(new Thing());
+        contextSensitives.add(new SomeoneKeyword());
     }
 
     private void registerUtilCommands() {

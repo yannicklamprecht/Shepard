@@ -23,6 +23,8 @@ public class Someone extends Command {
         if (guildChannelById != null) {
             List<Member> members = guildChannelById.getMembers().stream()
                     .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE).collect(Collectors.toList());
+
+            members.removeIf(member -> member.getId().equalsIgnoreCase(receivedEvent.getAuthor().getId()));
             if (members.size() == 0) {
                 MessageSender.sendMessage("No one is online :fearful:", receivedEvent.getChannel());
                 return;
