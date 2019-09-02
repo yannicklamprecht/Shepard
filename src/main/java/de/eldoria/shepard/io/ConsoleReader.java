@@ -1,4 +1,4 @@
-package de.eldoria.shepard.input;
+package de.eldoria.shepard.io;
 
 import de.eldoria.shepard.ShepardBot;
 
