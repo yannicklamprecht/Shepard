@@ -1,10 +1,12 @@
 package de.eldoria.shepard.messagehandler;
 
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.GreetingSettings;
 import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -63,12 +65,13 @@ public class MessageSender {
      */
     public static void sendTextBox(String title, List<MessageEmbed.Field> fields, MessageChannel channel, Color color) {
         EmbedBuilder builder = new EmbedBuilder();
+        builder.setDescription("test");
         builder.setTitle(title);
         builder.setColor(color);
         for (MessageEmbed.Field field : fields) {
             builder.addField(field);
         }
-        builder.setFooter("by Shepard", "https://cdn.discordapp.com/attachments/336844498124668938/614942868053819392/nekoSheps2.png");
+        builder.setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
         channel.sendMessage(builder.build()).queue();
     }
 
@@ -96,7 +99,7 @@ public class MessageSender {
         builder.setTitle(title)
                 .setColor(color)
                 .setDescription(description)
-                .setFooter("by Shepard", "https://cdn.discordapp.com/avatars/512413049894731780/e7262c349f015c5f6f25e6bca8a689d0.png?size=1024");
+                .setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
         channel.sendMessage(builder.build()).queue();
     }
 
@@ -112,14 +115,15 @@ public class MessageSender {
         for (MessageEmbed.Field field : fields) {
             builder.addField(field);
             builder.setColor(Color.red);
-            builder.setFooter("by Shepard", "https://cdn.discordapp.com/avatars/512413049894731780/e7262c349f015c5f6f25e6bca8a689d0.png?size=1024");
+            builder.setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
             channel.sendMessage(builder.build()).queue();
         }
     }
 
     /**
      * Sends a simple error with predefined error messages.
-     * @param type error type
+     *
+     * @param type    error type
      * @param channel channel to send
      */
     public static void sendSimpleError(ErrorType type, MessageChannel channel) {
@@ -137,7 +141,7 @@ public class MessageSender {
                 .setTitle("ERROR!")
                 .setDescription(error)
                 .setColor(Color.red)
-                .setFooter("by Shepard", "https://cdn.discordapp.com/avatars/512413049894731780/e7262c349f015c5f6f25e6bca8a689d0.png?size=1024");
+                .setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
         try {
             channel.sendMessage(builder.build()).queue();
         } catch (ErrorResponseException e) {
@@ -181,12 +185,14 @@ public class MessageSender {
         Instant instant = Instant.now(); // get The current time in instant object
         Timestamp t = java.sql.Timestamp.from(instant); // Convert instant to Timestamp
 
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle(event.getGuild().getName() + " | " + event.getChannel().getName());
-        builder.setTimestamp(t.toInstant());
-        builder.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());
-        builder.setDescription(event.getMessage().getContentRaw());
-        channel.sendMessage(builder.build()).queue();
+        if (event.getChannel() instanceof TextChannel) {
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setTitle(event.getGuild().getName() + " | " + event.getChannel().getName());
+            builder.setTimestamp(t.toInstant());
+            builder.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());
+            builder.setDescription(event.getMessage().getContentRaw());
+            channel.sendMessage(builder.build()).queue();
+        }
     }
 
     /**

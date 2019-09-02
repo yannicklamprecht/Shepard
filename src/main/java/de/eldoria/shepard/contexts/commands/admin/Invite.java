@@ -21,33 +21,37 @@ public class Invite extends Command {
     public Invite() {
         commandName = "invite";
         commandDesc = "Manage registered invites";
-        arguments = new CommandArg[] {new CommandArg("action",
-                "**addInvite** -> Registers or update a invite" + lineSeparator()
-                        + "**removeInvite** -> removes a invite" + lineSeparator()
-                        + "**refreshInvites** -> removes non present invites from database" + lineSeparator()
-                        + "**showInvites** -> Lists all registered invites", true),
-                new CommandArg("values", "**addInvite** -> [codeOfInvite] [Invite Name/Description]"
-                        + lineSeparator()
-                        + "**removeInvite** -> [codeOfInvite]" + lineSeparator()
-                        + "**refreshInvites** -> leave empty" + lineSeparator()
-                        + "**showInvites** -> leave empty", false)};
+        commandArgs = new CommandArg[] {
+                new CommandArg("action",
+                        "**__a__dd__I__nvite** -> Registers or update a invite" + lineSeparator()
+                                + "**__rem__ove__I__nvite** -> removes a invite" + lineSeparator()
+                                + "**__ref__resh__I__nvites** -> removes non present invites from database"
+                                + lineSeparator()
+                                + "**__s__how__I__nvites** -> Lists all registered invites", true),
+                new CommandArg("values",
+                        "**addInvite** -> [codeOfInvite] [Invite Name/Description]"
+                                + lineSeparator()
+                                + "**removeInvite** -> [codeOfInvite]" + lineSeparator()
+                                + "**refreshInvites** -> leave empty" + lineSeparator()
+                                + "**showInvites** -> leave empty", false)};
     }
 
     @Override
     public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        if (args[0].equalsIgnoreCase("addInvite")) {
+        String cmd = args[0];
+        if (cmd.equalsIgnoreCase("addInvite") || cmd.equalsIgnoreCase("ai")) {
             addInvite(args, receivedEvent);
             return;
         }
-        if (args[0].equalsIgnoreCase("removeInvite")) {
+        if (cmd.equalsIgnoreCase("removeInvite") || cmd.equalsIgnoreCase("remi")) {
             removeInvite(args, receivedEvent);
             return;
         }
-        if (args[0].equalsIgnoreCase("refreshInvites")) {
+        if (cmd.equalsIgnoreCase("refreshInvites") || cmd.equalsIgnoreCase("refi")) {
             refreshInvites(receivedEvent);
             return;
         }
-        if (args[0].equalsIgnoreCase("showInvites")) {
+        if (cmd.equalsIgnoreCase("showInvites") ||cmd.equalsIgnoreCase("si")) {
             showInvites(receivedEvent);
             return;
         }

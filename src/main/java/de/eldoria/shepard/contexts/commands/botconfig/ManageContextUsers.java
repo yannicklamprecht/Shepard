@@ -28,14 +28,14 @@ public class ManageContextUsers extends Command {
         commandName = "manageContextUser";
         commandAliases = new String[] {"mcu"};
         commandDesc = "Manage which user can use a context.";
-        arguments = new CommandArg[] {
+        commandArgs = new CommandArg[] {
                 new CommandArg("context name", "Name of the context to change", true),
                 new CommandArg("action",
-                        "**setActive** -> Enables/Disables User Check for Command" + System.lineSeparator()
-                                + "**setListType** -> Defines it the list should be used as White or Blacklist"
+                        "**set__A__ctive** -> Enables/Disables User Check for Command" + System.lineSeparator()
+                                + "**set__L__ist__T__ype** -> Defines it the list should be used as White or Blacklist"
                                 + System.lineSeparator()
-                                + "**addUser** -> Adds a user to the list" + System.lineSeparator()
-                                + "**removeUser** -> Removes a user from the list", true),
+                                + "**__a__dd__U__ser** -> Adds a user to the list" + System.lineSeparator()
+                                + "**__r__emove__U__ser** -> Removes a user from the list", true),
                 new CommandArg("value",
                         "**setActive** -> 'true' or 'false'" + System.lineSeparator()
                                 + "**setListType** -> 'BLACKLIST' or 'WHITELIST'. "
@@ -48,6 +48,7 @@ public class ManageContextUsers extends Command {
     @Override
     public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String contextName = getContextName(args[0], receivedEvent);
+        String cmd = args[1];
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
@@ -55,22 +56,22 @@ public class ManageContextUsers extends Command {
             return;
         }
 
-        if (args[1].equalsIgnoreCase("setActive")) {
+        if (cmd.equalsIgnoreCase("setActive") || cmd.equalsIgnoreCase("a")) {
             setActive(args, contextName, receivedEvent);
             return;
         }
 
-        if (args[1].equalsIgnoreCase("setListType")) {
+        if (cmd.equalsIgnoreCase("setListType") || cmd.equalsIgnoreCase("lt")) {
             setListType(args, contextName, receivedEvent);
             return;
         }
 
-        if (args[1].equalsIgnoreCase("addUser")) {
+        if (cmd.equalsIgnoreCase("addUser") || cmd.equalsIgnoreCase("au")) {
             addUser(args, contextName, receivedEvent);
             return;
         }
 
-        if (args[1].equalsIgnoreCase("removeUser")) {
+        if (cmd.equalsIgnoreCase("removeUser") || cmd.equalsIgnoreCase("ru")) {
             removeUser(args, contextName, receivedEvent);
             return;
         }
@@ -104,14 +105,13 @@ public class ManageContextUsers extends Command {
 
         if (modifyType == ModifyType.ADD) {
             MessageSender.sendSimpleTextBox("Added following users to context \""
-                            + contextName.toUpperCase() + "\"", names,
+                            + contextName.toUpperCase() + "\"", names + "**",
                     receivedEvent.getChannel());
         } else {
             MessageSender.sendSimpleTextBox("Removed following users from context \""
-                            + contextName.toUpperCase() + "\"", names,
+                            + contextName.toUpperCase() + "\"", names + "**",
                     receivedEvent.getChannel());
         }
-
     }
 
     private void addUser(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
@@ -135,7 +135,7 @@ public class ManageContextUsers extends Command {
         ContextData.setContextUserListType(contextName, type, receivedEvent);
 
         MessageSender.sendMessage("**Changed user list type of context \""
-                        + contextName.toUpperCase() + "\" to " + type.toString(),
+                        + contextName.toUpperCase() + "\" to " + type.toString() + "**",
                 receivedEvent.getChannel());
     }
 

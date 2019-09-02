@@ -36,7 +36,7 @@ public final class ContextData {
      * Adds a user to a context list.
      *
      * @param contextName context zo change
-     * @param user      user to add
+     * @param user        user to add
      * @param event       event from command sending for error handling. Can be null.
      */
     public static void addContextUser(String contextName, User user, MessageReceivedEvent event) {
@@ -56,7 +56,7 @@ public final class ContextData {
      * Removes a user from the context list.
      *
      * @param contextName context name to change
-     * @param user      user to remove
+     * @param user        user to remove
      * @param event       event from command sending for error handling. Can be null.
      */
     public static void removeContextUser(String contextName, User user, MessageReceivedEvent event) {
@@ -76,7 +76,7 @@ public final class ContextData {
      * Adds a guild to the context list.
      *
      * @param contextName context name to change
-     * @param guild     guild id to add
+     * @param guild       guild id to add
      * @param event       event from command sending for error handling. Can be null.
      */
     public static void addContextGuild(String contextName, Guild guild, MessageReceivedEvent event) {
@@ -96,7 +96,7 @@ public final class ContextData {
      * Removes a guild from the context list.
      *
      * @param contextName context name to change
-     * @param guild     guild id to remove
+     * @param guild       guild id to remove
      * @param event       event from command sending for error handling. Can be null.
      */
     public static void removeContextGuild(String contextName, Guild guild, MessageReceivedEvent event) {
@@ -117,12 +117,12 @@ public final class ContextData {
      *
      * @param contextName context name to change
      * @param guild       guild id where the permission should be added
-     * @param user      user which should be added
+     * @param user        user which should be added
      * @param event       event from command sending for error handling. Can be null.
      */
     public static void addContextUserPermission(String contextName, Guild guild,
                                                 User user, MessageReceivedEvent event) {
-        contextDataDirty.put(contextName, true);
+        userPermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_context_user_permission(?,?,?)")) {
@@ -140,12 +140,12 @@ public final class ContextData {
      *
      * @param contextName context name to change
      * @param guild       guild id where the permission should be removed
-     * @param user      user which should be removed
+     * @param user        user which should be removed
      * @param event       event from command sending for error handling. Can be null.
      */
     public static void removeContextUserPermission(String contextName, Guild guild,
                                                    User user, MessageReceivedEvent event) {
-        contextDataDirty.put(contextName, true);
+        userPermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_context_user_permission(?,?,?)")) {
@@ -163,12 +163,12 @@ public final class ContextData {
      *
      * @param contextName context name to change
      * @param guild       guild id where the permission should be added
-     * @param role      role which should be added
+     * @param role        role which should be added
      * @param event       event from command sending for error handling. Can be null.
      */
     public static void addContextRolePermission(String contextName, Guild guild,
                                                 Role role, MessageReceivedEvent event) {
-        contextDataDirty.put(contextName, true);
+        rolePermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_context_role_permission(?,?,?)")) {
@@ -186,12 +186,12 @@ public final class ContextData {
      *
      * @param contextName context name to change
      * @param guild       guild id where the permission should be removed
-     * @param role      role which should be removed
+     * @param role        role which should be removed
      * @param event       event from command sending for error handling. Can be null.
      */
     public static void removeContextRolePermission(String contextName, Guild guild,
-                                                    Role role, MessageReceivedEvent event) {
-        contextDataDirty.put(contextName, true);
+                                                   Role role, MessageReceivedEvent event) {
+        rolePermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_context_role_permission(?,?,?)")) {
@@ -375,6 +375,18 @@ public final class ContextData {
     }
 
     /**
+     * Returns a list of all user ids, which have access to the context on a specific guild.
+     *
+     * @param guild Guild for lookup.
+     * @param contextName Name of the context for permission lookup.
+     * @param event       event from command sending for error handling. Can be null.
+     * @return List of user ids
+     */
+    public static List<String> getContextUserPermission(Guild guild, String contextName, MessageReceivedEvent event) {
+        return getContextUserPermissions(contextName, event).getOrDefault(guild.getId(), Collections.emptyList());
+    }
+
+    /**
      * Returns a map which contains a list of all users per guild, which are allowed to use this context.
      *
      * @param contextName Name of the context for permission lookup.
@@ -411,8 +423,27 @@ public final class ContextData {
         } catch (SQLException e) {
             handleException(e, event);
         }
-        return userPermissions.getOrDefault(contextName, Collections.emptyMap());
+        if (userPermissions.containsKey(contextName)) {
+            if (event != null && !userPermissions.get(contextName).containsKey(event.getGuild().getId())) {
+                userPermissions.get(contextName).put(event.getGuild().getId(), Collections.emptyList());
+            }
+        }
+
+        return userPermissions.get(contextName);
     }
+
+    /**
+     * Returns a list of all role ids, which have access to the context on a specific guild.
+     *
+     * @param guild Guild for lookup.
+     * @param contextName Name of the context for permission lookup.
+     * @param event       event from command sending for error handling. Can be null.
+     * @return List of user ids
+     */
+    public static List<String> getContextRolePermission(Guild guild, String contextName, MessageReceivedEvent event) {
+        return getContextRolePermissions(contextName, event).getOrDefault(guild.getId(), Collections.emptyList());
+    }
+
 
     /**
      * Returns a map which contains a list of all roles per guild, which are allowed to use this context.
@@ -452,6 +483,13 @@ public final class ContextData {
         } catch (SQLException e) {
             handleException(e, event);
         }
+
+        if (rolePermissions.containsKey(contextName)) {
+            if (event != null && !rolePermissions.get(contextName).containsKey(event.getGuild().getId())) {
+                rolePermissions.get(contextName).put(event.getGuild().getId(), Collections.emptyList());
+            }
+        }
+
         return rolePermissions.getOrDefault(contextName, Collections.emptyMap());
     }
 }

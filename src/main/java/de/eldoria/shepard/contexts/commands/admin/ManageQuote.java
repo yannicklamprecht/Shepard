@@ -24,18 +24,18 @@ public class ManageQuote extends Command {
         commandName = "manageQuotes";
         commandAliases = new String[] {"mq"};
         commandDesc = "add or remove quotes";
-        arguments = new CommandArg[] {
+        commandArgs = new CommandArg[] {
                 new CommandArg("action",
-                        "**addQuote** -> Adds a quote" + lineSeparator()
-                                + "**alterQuote** -> Changes the text of a quote" + lineSeparator()
-                                + "**removeQuote** -> Removes a Quote" + lineSeparator()
-                                + "**showQuotes** -> Lists all Quotes with index",
+                        "**__a__dd** -> Adds a quote" + lineSeparator()
+                                + "**__alt__er** -> Changes the text of a quote" + lineSeparator()
+                                + "**__r__emove** -> Removes a Quote" + lineSeparator()
+                                + "**__l__ist** -> Lists all Quotes with index",
                         true),
                 new CommandArg("action",
-                        "**addQuote** -> [Quote]" + lineSeparator()
-                                + "**alterQuote** -> [Quote id to change] [test]" + lineSeparator()
-                                + "**removeQuote** -> [Quote id to remove]" + lineSeparator()
-                                + "**showQuotes** -> [keyword] shows all quotes which contain the keyword or"
+                        "**add** -> [Quote]" + lineSeparator()
+                                + "**alter** -> [Quote id to change] [test]" + lineSeparator()
+                                + "**remove** -> [Quote id to remove]" + lineSeparator()
+                                + "**show** -> [keyword] shows all quotes which contain the keyword or"
                                 + "leave empty to show all quotes",
                         false)};
     }
@@ -44,22 +44,22 @@ public class ManageQuote extends Command {
     public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String cmd = args[0];
 
-        if (cmd.equalsIgnoreCase("addQuote")) {
+        if (cmd.equalsIgnoreCase("add") || cmd.equalsIgnoreCase("a")) {
             addQuote(args, receivedEvent);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("removeQuote")) {
+        if (cmd.equalsIgnoreCase("remove") || cmd.equalsIgnoreCase("r")) {
             removeQuote(args, receivedEvent);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("showQuotes")) {
+        if (cmd.equalsIgnoreCase("list") || cmd.equalsIgnoreCase("l")) {
             showQuotes(args, receivedEvent);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("alterQuote")) {
+        if (cmd.equalsIgnoreCase("alter") || cmd.equalsIgnoreCase("alt")) {
             if (args.length < 3) {
                 MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             }
@@ -96,6 +96,10 @@ public class ManageQuote extends Command {
                     String.join(" ", Arrays.copyOfRange(args, 1, args.length)), receivedEvent);
         } else {
             quotes = QuoteData.getQuotes(receivedEvent.getGuild(), receivedEvent);
+        }
+
+        if (quotes.size() == 0) {
+            MessageSender.sendMessage("No quotes set on this guild.", receivedEvent.getChannel());
         }
 
         List<String> quoteStrings = new ArrayList<>();
@@ -141,7 +145,8 @@ public class ManageQuote extends Command {
         }
 
         QuoteData.removeQuote(receivedEvent.getGuild(), quoteId, receivedEvent);
-        MessageSender.sendSimpleTextBox("Remove quote with id **" + quoteId + "**", "", Color.red, receivedEvent.getChannel());
+        MessageSender.sendSimpleTextBox("Remove quote with id **" + quoteId + "**",
+                "", Color.red, receivedEvent.getChannel());
     }
 
     private void addQuote(String[] args, MessageReceivedEvent receivedEvent) {

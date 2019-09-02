@@ -32,7 +32,7 @@ public abstract class Command extends ContextSensitive {
     /**
      * Command args as command arg array.
      */
-    protected CommandArg[] arguments = new CommandArg[0];
+    protected CommandArg[] commandArgs = new CommandArg[0];
 
     /**
      * Create a new command an register it to the {@link CommandCollection}.
@@ -74,11 +74,11 @@ public abstract class Command extends ContextSensitive {
      *
      * @return an array of command arguments.
      */
-    private CommandArg[] getArguments() {
-        if (arguments == null) {
-            arguments = new CommandArg[0];
+    private CommandArg[] getCommandArgs() {
+        if (commandArgs == null) {
+            commandArgs = new CommandArg[0];
         }
-        return arguments;
+        return commandArgs;
     }
 
     /**
@@ -117,7 +117,7 @@ public abstract class Command extends ContextSensitive {
      */
     public boolean checkArguments(String[] args) {
         int requiredArguments = 0;
-        for (CommandArg a : arguments) {
+        for (CommandArg a : commandArgs) {
             if (a.isRequired()) {
                 requiredArguments++;
             }
@@ -143,8 +143,8 @@ public abstract class Command extends ContextSensitive {
         StringBuilder desc = new StringBuilder();
 
         desc.append(getCommandName()).append(" ");
-        if (getArguments() != null) {
-            for (CommandArg arg : getArguments()) {
+        if (getCommandArgs() != null) {
+            for (CommandArg arg : getCommandArgs()) {
                 if (arg.isRequired()) {
                     desc.append("[").append(arg.getArgName().toUpperCase()).append("] ");
                 } else {
@@ -156,9 +156,9 @@ public abstract class Command extends ContextSensitive {
         fields.add(new MessageEmbed.Field("__**Usage:**__", desc.toString(), false));
 
         desc.setLength(0);
-        if (arguments.length != 0) {
+        if (commandArgs.length != 0) {
 
-            for (CommandArg arg : arguments) {
+            for (CommandArg arg : commandArgs) {
                 desc.append("**").append(arg.getArgName().toUpperCase()).append("**")
                         .append(arg.isRequired() ? " REQUIRED" : " OPTIONAL")
                         .append(System.lineSeparator())
@@ -182,13 +182,13 @@ public abstract class Command extends ContextSensitive {
      */
     public void sendCommandArgHelp(String argument, MessageChannel channel) {
 
-        if (arguments == null || arguments.length == 0) {
+        if (commandArgs == null || commandArgs.length == 0) {
             MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("No Argument found!",
                     "This command, doesn't have any arguments.", false)}, channel);
             return;
         }
 
-        for (CommandArg arg : arguments) {
+        for (CommandArg arg : commandArgs) {
             if (arg.getArgName().equalsIgnoreCase(argument)) {
                 List<MessageEmbed.Field> fields = new ArrayList<>();
                 fields.add(new MessageEmbed.Field("Description:", arg.getArgDesc(), false));
@@ -199,7 +199,7 @@ public abstract class Command extends ContextSensitive {
             }
         }
 
-        String argsAsString =  Arrays.stream(arguments).map(CommandArg::getArgName).collect(Collectors.joining(" "));
+        String argsAsString =  Arrays.stream(commandArgs).map(CommandArg::getArgName).collect(Collectors.joining(" "));
 
         MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Argument not found!",
                 "Try one of these: " + argsAsString, false)}, channel);

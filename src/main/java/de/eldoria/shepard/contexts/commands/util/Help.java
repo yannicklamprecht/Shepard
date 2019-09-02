@@ -7,8 +7,11 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +26,7 @@ public class Help extends Command {
         commandName = "help";
         commandAliases = new String[] {"Hilfe", "sendhelp"};
         commandDesc = "Alles was du wissen musst.";
-        arguments = new CommandArg[]
+        commandArgs = new CommandArg[]
                 {new CommandArg("Command", "Name or Alias of Command", false),
                         new CommandArg("Argument", "One Argument of the Command", false)};
     }
@@ -41,7 +44,7 @@ public class Help extends Command {
         Command command = CommandCollection.getInstance().getCommand(args[0]);
         if (command == null || !command.isContextValid(receivedEvent)) {
             MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!",
-                    "Type " + prefix + "help for a full list of available commands!", false)},
+                            "Type " + prefix + "help for a full list of available commands!", false)},
                     receivedEvent.getChannel());
             return;
         }
@@ -61,9 +64,9 @@ public class Help extends Command {
         }
 
         MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Usage:", "Type:\n"
-                + prefix + "help for a list of commands.\n"
-                + prefix + "help [command] for help for a specific command.\n"
-                + prefix + "help [command] [arg] for a description of the argument.", false)},
+                        + prefix + "help for a list of commands.\n"
+                        + prefix + "help [command] for help for a specific command.\n"
+                        + prefix + "help [command] [arg] for a description of the argument.", false)},
                 receivedEvent.getChannel());
     }
 
@@ -81,33 +84,33 @@ public class Help extends Command {
     private void listCommands(MessageReceivedEvent event) {
         List<Command> commands = CommandCollection.getInstance().getCommands();
 
-        String aliases = "";
-        StringBuilder output = new StringBuilder();
+        List<MessageEmbed.Field> fields = new ArrayList<>();
+
+        int inline = 0;
 
         for (Command command : commands) {
             if (!command.isContextValid(event)) {
                 continue;
             }
 
-            aliases = aliases.concat(PrefixData.getPrefix(event.getGuild(), event));
-            aliases = aliases.concat(command.getCommandName() + " ");
+            var field = new MessageEmbed.Field(command.getCommandName(), command.getCommandDesc(),
+                    (inline % 2) != 0);
 
-            //Build aliases string
-            if (command.getCommandAliases() != null && command.getCommandAliases().length != 0) {
-                for (String alias : command.getCommandAliases()) {
-                    aliases = aliases.concat(" / " + alias + "");
-                }
-            }
-
-            aliases = "**" + aliases + "**";
-
-            output.append(aliases).append(System.lineSeparator()).append("`")
-                    .append(command.getCommandDesc()).append("`").append(System.lineSeparator());
-            aliases = "";
+            fields.add(field);
+            inline++;
         }
 
+        PrivateChannel complete = event.getAuthor().openPrivateChannel().complete();
+        if (complete != null && event.getAuthor().hasPrivateChannel()) {
+            MessageSender.sendTextBox("__**COMMANDS**__", fields, complete, Color.green);
+            MessageSender.sendMessage("I send you a direct message with a list of commands.", event.getChannel());
+        } else {
+            MessageSender.sendTextBox("__**COMMANDS**__", fields, event.getChannel(), Color.green);
+        }
+
+
         //fields.add(new MessageEmbed.Field("help", output, false));
-        MessageSender.sendMessage("**__HELP__**" + System.lineSeparator() + output, event.getChannel());
+        //MessageSender.sendMessage("**__HELP__**" + System.lineSeparator() + output, event.getChannel());
 
 
     }

@@ -5,6 +5,7 @@ import de.eldoria.shepard.contexts.commands.admin.Changelog;
 import de.eldoria.shepard.contexts.commands.admin.Greeting;
 import de.eldoria.shepard.contexts.commands.admin.Invite;
 import de.eldoria.shepard.contexts.commands.admin.ManageQuote;
+import de.eldoria.shepard.contexts.commands.admin.Permission;
 import de.eldoria.shepard.contexts.commands.admin.Prefix;
 import de.eldoria.shepard.contexts.commands.admin.ShowKeyword;
 import de.eldoria.shepard.contexts.commands.admin.Ticket;
@@ -112,6 +113,7 @@ public final class ContextRegister {
         contextSensitives.add(new Ticket());
         contextSensitives.add(new Changelog());
         contextSensitives.add(new ManageQuote());
+        contextSensitives.add(new Permission());
     }
 
     private static void getInstance() {

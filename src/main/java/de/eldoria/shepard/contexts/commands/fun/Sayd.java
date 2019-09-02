@@ -15,7 +15,7 @@ public class Sayd extends Command {
     public Sayd() {
         commandName = "sayd";
         commandDesc = "Say and delete";
-        arguments = new CommandArg[]
+        commandArgs = new CommandArg[]
                 {new CommandArg("Message", "Message Shepard should say.", true),};
     }
 

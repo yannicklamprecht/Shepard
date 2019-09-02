@@ -31,7 +31,7 @@ public class UserInfo extends Command {
         commandName = "UserInfo";
         commandAliases = new String[] {"aboutuser"};
         commandDesc = "Information about a user";
-        arguments = new CommandArg[] {new CommandArg("user", "Tag, Name or ID of user", true)};
+        commandArgs = new CommandArg[] {new CommandArg("user", "Tag, Name or ID of user", true)};
     }
 
     @Override

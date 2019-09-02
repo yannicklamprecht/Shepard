@@ -36,34 +36,34 @@ public class Ticket extends Command {
         commandName = "ticket";
         commandAliases = new String[] {"t"};
         commandDesc = "Ticket system for creation of channels to help users";
-        arguments = new CommandArg[] {
+        commandArgs = new CommandArg[] {
                 new CommandArg("action",
-                        "**open** -> Open a new ticket" + lineSeparator()
-                                + "**close** -> Close a ticket" + lineSeparator()
-                                + "**showTypes** -> Shows a list of all available ticket types",
+                        "**__o__pen** -> Open a new ticket" + lineSeparator()
+                                + "**__c__lose** -> Close a ticket" + lineSeparator()
+                                + "**__l__ist** -> Shows a list of all available ticket types",
                         true),
                 new CommandArg("value",
                         "**open** -> [ticket_type] [user_name]" + lineSeparator()
                                 + "**close** -> Leave empty. Execute in channel which you want to close."
                                 + lineSeparator()
-                                + "**typeinfo** -> Leave empty for a overview or type keyword for further type infos",
+                                + "**list** -> Leave empty for a overview or type keyword for further type infos",
                         false)};
     }
 
     @Override
     public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String cmd = args[0];
-        if (cmd.equalsIgnoreCase("open")) {
+        if (cmd.equalsIgnoreCase("open") || cmd.equalsIgnoreCase("o")) {
             openTicket(args, receivedEvent);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("close")) {
+        if (cmd.equalsIgnoreCase("close") || cmd.equalsIgnoreCase("c")) {
             close(args, receivedEvent);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("typeinfo")) {
+        if (cmd.equalsIgnoreCase("list") || cmd.equalsIgnoreCase("l")) {
             typeInfo(args, receivedEvent);
             return;
         }

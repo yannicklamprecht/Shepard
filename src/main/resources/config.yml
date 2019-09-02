@@ -1,5 +1,7 @@
-prefix: "&"
-token: "NTEyNDEzMDQ5ODk0NzMxNzgw.DxjtCg.6nF2czGITfrX-HHR4cN7eCfil7I"
+#prefix: "&"
+prefix: "!"
+#token: "NTEyNDEzMDQ5ODk0NzMxNzgw.DxjtCg.6nF2czGITfrX-HHR4cN7eCfil7I"
+token: "NjE3NzYxMDc3MDYwNTY3MDcw.XWv1Ow.Y-8QpkNEm2Uq52a-FruQfydiwr4"
 #database:
 #  username: postgres
 #  password: chojo
