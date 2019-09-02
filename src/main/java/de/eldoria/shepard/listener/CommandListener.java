@@ -1,11 +1,14 @@
 package de.eldoria.shepard.listener;
 
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
+import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.exceptions.CommandException;
+import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -28,9 +31,18 @@ public class CommandListener extends ListenerAdapter {
         Message message = event.getMessage();
         String receivedMessage = message.getContentRaw();
         String[] args = receivedMessage.split(" ");
-        args[0] = args[0].replace(PrefixData.getPrefix(event.getGuild(), event), "");
+        boolean isCommand = false;
+        String firstArg = args[0];
+        if (checkPrefix(receivedMessage, event)) {
+            isCommand = true;
+            args[0] = args[0].replace(PrefixData.getPrefix(event.getGuild(), event), "");
+        } else if (DbUtil.getIdRaw(firstArg).contentEquals(ShepardBot.getJDA().getSelfUser().getId())) {
+            args = Arrays.copyOfRange(args, 1, args.length);
+            isCommand = true;
+        }
 
-        if (checkPrefix(receivedMessage, event.getGuild(), event)) {
+
+        if (isCommand) {
             //BotCheck
             if (event.getAuthor().isBot()) {
                 MessageSender.sendMessage("I'm not allowed to talk to you " + event.getAuthor().getName()
@@ -68,7 +80,7 @@ public class CommandListener extends ListenerAdapter {
         }
     }
 
-    private boolean checkPrefix(String message, Guild guild, MessageReceivedEvent event) {
+    private boolean checkPrefix(String message, MessageReceivedEvent event) {
         return message.startsWith(PrefixData.getPrefix(event.getGuild(), event));
     }
 }
