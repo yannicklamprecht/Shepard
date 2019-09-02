@@ -43,10 +43,12 @@ public class ManageContext extends Command {
 
         if (cmd.equalsIgnoreCase("setNSFW") || cmd.equalsIgnoreCase("nsfw")) {
             setNsfw(args, contextName, receivedEvent);
+            return;
         }
 
         if (cmd.equalsIgnoreCase("setadminonly") ||cmd.equalsIgnoreCase("admin")) {
             setAdminOnly(args, contextName, receivedEvent);
+            return;
         }
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
