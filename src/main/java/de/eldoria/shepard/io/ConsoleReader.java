@@ -8,16 +8,23 @@ public class ConsoleReader implements Runnable {
 
     private static Thread thread;
 
+    private static ConsoleReader instance;
+
     private Scanner inputReader = new Scanner(System.in);
 
-    /**
-     * Creates a new console reader object.
-     */
-    public ConsoleReader() {
-        System.out.println("Console reader started!");
+    private ConsoleReader() {
+        ShepardBot.getLogger().info("Console reader started!");
         start();
     }
 
+    /**
+     * Initializes the console reader.
+     */
+    public static void initialize() {
+        if (instance == null) {
+            instance = new ConsoleReader();
+        }
+    }
 
     @Override
     public void run() {
