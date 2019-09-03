@@ -22,7 +22,10 @@ public final class ShepardBot {
     private static Logger logger;
 
     private ShepardBot() {
+        logger = new Logger();
         config = Loader.getConfigLoader().getConfig();
+
+        ConsoleReader.initialize();
 
         try {
             initiateJda();
@@ -32,14 +35,13 @@ public final class ShepardBot {
     }
 
     private void setup() {
-        logger = new Logger();
-        new ConsoleReader();
 
         ContextRegister.registerContexts();
         ListenerRegister.registerListener();
 
         CommandCollection.getInstance().debug();
         KeyWordCollection.getInstance().debug();
+
 
     }
 
@@ -76,7 +78,7 @@ public final class ShepardBot {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            ShepardBot.getLogger().error(e.getMessage());
         }
     }
 
@@ -114,11 +116,11 @@ public final class ShepardBot {
      */
     public void shutdown() {
         jda.shutdown();
-        System.out.println("JDA shut down. Closing Application in 5 Seconds!");
+        ShepardBot.getLogger().info("JDA shut down. Closing Application in 5 Seconds!");
         try {
             Thread.sleep(5000);
-        }catch (InterruptedException e){
-            System.out.println("Shutdown interrupted!");
+        } catch (InterruptedException e) {
+            ShepardBot.getLogger().info("Shutdown interrupted!");
         }
 
         System.exit(0);

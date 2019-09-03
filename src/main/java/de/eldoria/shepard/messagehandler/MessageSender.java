@@ -145,7 +145,7 @@ public class MessageSender {
         try {
             channel.sendMessage(builder.build()).queue();
         } catch (ErrorResponseException e) {
-            System.out.println(e.getMessage());
+            ShepardBot.getLogger().error(e.getMessage());
         }
     }
 
@@ -216,5 +216,12 @@ public class MessageSender {
         builder.addField(event.getMember().getUser().getAsTag(),
                 message, true);
         channel.sendMessage((builder.build())).queue();
+    }
+
+    public static void logCommand(String label, String[] args, MessageReceivedEvent receivedEvent) {
+        String command = "Executed command \"" + label + " " + String.join(" ", args)
+                + "\" on  guild " + receivedEvent.getGuild().getName() + " ("
+                + receivedEvent.getGuild().getId() + ")";
+        ShepardBot.getLogger().command(command);
     }
 }
