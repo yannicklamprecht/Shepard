@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousFileChannel;
-import java.nio.channels.CompletionHandler;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,13 +14,13 @@ import java.nio.file.StandardOpenOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.concurrent.Future;
+
+import static java.lang.System.lineSeparator;
 
 public class Logger {
 
-    private final String HOME;
-    private Path logFile;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss");
+    private Path logFile;
 
 
     /**
@@ -31,9 +30,9 @@ public class Logger {
         File shepardJar = new File(ClassLoader.getSystemClassLoader()
                 .getResource(".").getPath());
         File shepardFolder = shepardJar.getAbsoluteFile().getParentFile();
-        HOME = shepardFolder.toString();
+        String home = shepardFolder.toString();
 
-        Path logs = Paths.get(HOME + "/logs");
+        Path logs = Paths.get(home + "/logs");
 
         if (!Files.exists(logs)) {
             try {
@@ -56,38 +55,54 @@ public class Logger {
 
     /**
      * Writes a error to log.
+     *
      * @param message Message to write
      */
     public void error(String message) {
-        Arrays.stream(message.split(System.lineSeparator())).forEach(s -> log(s, LogType.ERROR));
+        Arrays.stream(message.split(lineSeparator())).forEach(s -> log(s, LogType.ERROR));
     }
 
     /**
      * Writes a info to log.
+     *
      * @param message Message to write
      */
     public void info(String message) {
-        Arrays.stream(message.split(System.lineSeparator())).forEach(s -> log(s, LogType.INFO));
+        Arrays.stream(message.split(lineSeparator())).forEach(s -> log(s, LogType.INFO));
+    }
+
+    /**
+     * Writes a command to log.
+     *
+     * @param message Message to write
+     */
+    public void command(String message) {
+        Arrays.stream(message.split(lineSeparator())).forEach(s -> log(s, LogType.COMMAND));
     }
 
     private void log(String message, LogType type) {
         String header = "[" + LocalDateTime.now().format(FORMATTER) + " " + type.toString() + "]: ";
+        System.out.println(header + message);
+
         AsynchronousFileChannel fileChannel;
         try {
             fileChannel = AsynchronousFileChannel.open(
                     logFile, StandardOpenOption.WRITE);
         } catch (IOException e) {
+            System.out.println("Could open log file." + lineSeparator());
+            e.printStackTrace();
             return;
         }
 
         ByteBuffer buffer = ByteBuffer.allocate(2048);
-        buffer.put((header + message + System.lineSeparator()).getBytes());
+        buffer.put((header + message + lineSeparator()).getBytes());
         buffer.flip();
 
-        Future<Integer> operation;
         try {
-            operation = fileChannel.write(buffer, fileChannel.size());
+            fileChannel.write(buffer, fileChannel.size());
         } catch (IOException e) {
+            System.out.println("Failed writing to log." + lineSeparator());
+            e.printStackTrace();
             buffer.clear();
             return;
         }

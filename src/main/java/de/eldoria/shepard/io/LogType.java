@@ -8,5 +8,9 @@ enum LogType {
     /**
      * Info log type.
      */
-    INFO
+    INFO,
+    /**
+     * Command log type.
+     */
+    COMMAND
 }
