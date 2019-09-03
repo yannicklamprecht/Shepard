@@ -24,7 +24,7 @@ public class ContextInfo extends Command {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String contextName = ContextHelper.getContextName(args[0], receivedEvent);
         if (contextName != null) {
             ContextSettings data = ContextData.getContextData(contextName, receivedEvent);

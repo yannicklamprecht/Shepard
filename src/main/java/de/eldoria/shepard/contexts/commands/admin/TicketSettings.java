@@ -58,7 +58,7 @@ public class TicketSettings extends Command {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String cmd = args[0];
         String type = args[1];
         List<TicketType> tickets = TicketData.getTypes(receivedEvent.getGuild(), receivedEvent);

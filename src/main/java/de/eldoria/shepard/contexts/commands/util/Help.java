@@ -32,7 +32,7 @@ public class Help extends Command {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String prefix = PrefixData.getPrefix(receivedEvent.getGuild(), receivedEvent);
 
         //Command List

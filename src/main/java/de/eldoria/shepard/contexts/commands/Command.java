@@ -48,7 +48,20 @@ public abstract class Command extends ContextSensitive {
      * @param args          Arguments of the command.
      * @param receivedEvent Message Received Event of the command execution
      */
-    public abstract void execute(String label, String[] args, MessageReceivedEvent receivedEvent);
+    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+        internalExecute(label, args, receivedEvent);
+        MessageSender.logCommand(label, args, receivedEvent);
+    }
+
+
+    /**
+     * Internal executor for command. Called from inside the class.
+     *
+     * @param label         Label/Alias which was used for command execution
+     * @param args          Arguments of the command.
+     * @param receivedEvent Message Received Event of the command execution
+     */
+    protected abstract void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent);
 
     /**
      * Get the name of the command.
@@ -199,7 +212,7 @@ public abstract class Command extends ContextSensitive {
             }
         }
 
-        String argsAsString =  Arrays.stream(commandArgs).map(CommandArg::getArgName).collect(Collectors.joining(" "));
+        String argsAsString = Arrays.stream(commandArgs).map(CommandArg::getArgName).collect(Collectors.joining(" "));
 
         MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Argument not found!",
                 "Try one of these: " + argsAsString, false)}, channel);

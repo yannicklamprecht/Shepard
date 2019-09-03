@@ -19,7 +19,7 @@ public class ShowKeyword extends Command {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         List<Keyword> keywords = KeyWordCollection.getInstance().getKeywords();
 
         int maxContextLength = "Context Name".length() + 1;

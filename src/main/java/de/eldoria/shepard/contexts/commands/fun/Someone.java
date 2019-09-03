@@ -19,7 +19,7 @@ public class Someone extends Command {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         GuildChannel guildChannelById = receivedEvent.getGuild().getGuildChannelById(receivedEvent.getChannel().getId());
         if (guildChannelById != null) {
             List<Member> members = guildChannelById.getMembers().stream()

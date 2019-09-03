@@ -34,7 +34,7 @@ public class Greeting extends Command {
 
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String cmd = args[0];
         if (cmd.equalsIgnoreCase("setChannel") || cmd.equalsIgnoreCase("sc")) {
             setChannel(args, receivedEvent);

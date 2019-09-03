@@ -27,7 +27,7 @@ public class ListServer extends Command {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         List<Guild> guilds = ShepardBot.getJDA().getGuilds();
         String[][] text = new String[guilds.size()][3];
         int sizeName = 0;

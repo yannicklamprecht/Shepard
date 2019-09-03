@@ -22,7 +22,7 @@ public class Test extends Command {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         EmbedBuilder builder = new EmbedBuilder();
 
         List<MessageEmbed.Field> fields = new ArrayList<>();
