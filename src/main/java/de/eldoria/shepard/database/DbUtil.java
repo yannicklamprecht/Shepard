@@ -1,5 +1,6 @@
 package de.eldoria.shepard.database;
 
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -43,7 +44,7 @@ public final class DbUtil {
         builder.append("SQLException: ").append(ex.getMessage()).append(lineSeparator())
                 .append("SQLState: ").append(ex.getSQLState()).append(lineSeparator())
                 .append("VendorError: ").append(ex.getErrorCode());
-        System.out.println(builder.toString());
+        ShepardBot.getLogger().error(builder.toString());
 
         if (event != null) {
             MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, event.getChannel());

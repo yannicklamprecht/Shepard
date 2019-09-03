@@ -32,7 +32,7 @@ public final class DatabaseConnector {
             conn = DriverManager.getConnection(String.format("jdbc:postgresql://%s:%s/%s",
                     config.getAddress(), config.getPort(), config.getDb()),
                     config.getUsername(), config.getPassword());
-            System.out.println(
+            ShepardBot.getLogger().info(
                     String.format("SQL connection established on %s:%s@%s:%s/%s",
                             config.getUsername(), config.getPassword(), config.getAddress(),
                             config.getPort(), config.getDb()));

@@ -38,7 +38,7 @@ public final class PrefixData {
             handleException(e, event);
         }
 
-        System.out.println("Changed prefix of server " + guild.getName() + " to " + prefix);
+        ShepardBot.getLogger().info("Changed prefix of server " + guild.getName() + " to " + prefix);
     }
 
     /**
