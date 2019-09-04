@@ -26,19 +26,22 @@ public class CommandListener extends ListenerAdapter {
             event.getChannel().sendMessage("I'm too shy. Please speak to me on a public Server.").queue();
             return;
         }
-        Message message = event.getMessage();
-        String receivedMessage = message.getContentRaw();
+
+
+        String receivedMessage = event.getMessage().getContentRaw();
         String[] args = receivedMessage.split(" ");
+
         boolean isCommand = false;
-        String firstArg = args[0];
+        
         if (checkPrefix(receivedMessage, event)) {
             isCommand = true;
-            args[0] = args[0].replace(PrefixData.getPrefix(event.getGuild(), event), "");
-        } else if (DbUtil.getIdRaw(firstArg).contentEquals(ShepardBot.getJDA().getSelfUser().getId())) {
+            args[0] = args[0].replaceFirst(PrefixData.getPrefix(event.getGuild(), event), "");
+        } else if (DbUtil.getIdRaw(args[0]).contentEquals(ShepardBot.getJDA().getSelfUser().getId())) {
             args = Arrays.copyOfRange(args, 1, args.length);
             isCommand = true;
         }
 
+        String label = args[0];
 
         if (isCommand) {
             //BotCheck
@@ -52,7 +55,6 @@ public class CommandListener extends ListenerAdapter {
             Command command = CommandCollection.getInstance().getCommand(args[0]);
             if (command != null && command.isContextValid(event)) {
                 //TODO Check Arg length of command
-                String label = args[0];
 
                 if (args.length > 1) {
                     args = Arrays.copyOfRange(args, 1, args.length);
