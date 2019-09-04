@@ -23,7 +23,7 @@ public class HireMe extends Command {
     }
 
     @Override
-    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         List<MessageEmbed.Field> fields;
         if (label.equalsIgnoreCase(commandName)) {
             fields = Collections.singletonList(

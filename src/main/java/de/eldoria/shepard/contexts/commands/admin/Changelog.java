@@ -43,7 +43,7 @@ public class Changelog extends Command {
     }
 
     @Override
-    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String cmd = args[0];
         if (cmd.equalsIgnoreCase("addRole") || cmd.equalsIgnoreCase("ar")
                 || cmd.equalsIgnoreCase("removeRole") || cmd.equalsIgnoreCase("rr")) {

@@ -19,14 +19,15 @@ public class Someone extends Command {
     }
 
     @Override
-    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         GuildChannel guildChannelById = receivedEvent.getGuild().getGuildChannelById(receivedEvent.getChannel().getId());
         if (guildChannelById != null) {
             List<Member> members = guildChannelById.getMembers().stream()
-                    .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE).collect(Collectors.toList());
+                    .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE
+                            && member.getIdLong() != receivedEvent.getAuthor().getIdLong()
+                            && !member.getUser().isBot()
+                    ).collect(Collectors.toList());
 
-            members.removeIf(member -> member.getId().equalsIgnoreCase(receivedEvent.getAuthor().getId())
-            || member.getUser().isBot());
             if (members.size() == 0) {
                 MessageSender.sendMessage("No one is online :fearful:", receivedEvent.getChannel());
                 return;

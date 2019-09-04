@@ -53,7 +53,6 @@ public abstract class Command extends ContextSensitive {
         MessageSender.logCommand(label, args, receivedEvent);
     }
 
-
     /**
      * Internal executor for command. Called from inside the class.
      *

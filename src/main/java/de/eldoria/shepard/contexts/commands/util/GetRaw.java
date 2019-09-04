@@ -18,7 +18,7 @@ public class GetRaw extends Command {
     }
 
     @Override
-    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         MessageSender.sendMessage("`" + receivedEvent.getMessage().getContentRaw() + "`", receivedEvent.getChannel());
     }
 }
