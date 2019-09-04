@@ -27,7 +27,7 @@ public class Meetings extends Command {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         try {
             java.util.Calendar cal = java.util.Calendar.getInstance();
             Date currentDate = cal.getTime();

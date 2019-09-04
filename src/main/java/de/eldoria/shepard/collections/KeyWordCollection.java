@@ -1,5 +1,6 @@
 package de.eldoria.shepard.collections;
 
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.keywords.KeywordArgs;
 import de.eldoria.shepard.contexts.keywords.Keyword;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -81,10 +82,9 @@ public final class KeyWordCollection {
      * Prints a debug for all keywords to console.
      */
     public void debug() {
-        System.out.println("++++ DEBUG OF KEYWORDS ++++");
+        ShepardBot.getLogger().info("++++ DEBUG OF KEYWORDS ++++");
         for (Keyword c : keywords) {
             c.printDebugInfo();
         }
     }
-
 }

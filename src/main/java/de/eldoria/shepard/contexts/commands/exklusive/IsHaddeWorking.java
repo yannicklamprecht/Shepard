@@ -28,7 +28,7 @@ public class IsHaddeWorking extends Command {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         try {
             Calendar cal = Calendar.getInstance();
             Date currentDate = cal.getTime();

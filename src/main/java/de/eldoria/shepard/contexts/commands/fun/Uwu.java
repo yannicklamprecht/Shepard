@@ -16,7 +16,7 @@ public class Uwu extends Command {
 
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         MessageSender.sendMessage(":regional_indicator_u::regional_indicator_w::regional_indicator_u:",
                 receivedEvent.getChannel());
     }

@@ -31,7 +31,7 @@ public class ManageContext extends Command {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String contextName = getContextName(args[0], receivedEvent);
         String cmd = args[1];
 
@@ -43,10 +43,12 @@ public class ManageContext extends Command {
 
         if (cmd.equalsIgnoreCase("setNSFW") || cmd.equalsIgnoreCase("nsfw")) {
             setNsfw(args, contextName, receivedEvent);
+            return;
         }
 
         if (cmd.equalsIgnoreCase("setadminonly") ||cmd.equalsIgnoreCase("admin")) {
             setAdminOnly(args, contextName, receivedEvent);
+            return;
         }
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());

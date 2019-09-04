@@ -114,7 +114,7 @@ public abstract class ContextSensitive {
     private String getDebugInfo() {
         JDA jda = ShepardBot.getJDA();
         StringBuilder builder = new StringBuilder();
-        builder.append("|+++++++++++++++++++++++++++++++|").append(System.lineSeparator())
+        builder.append(System.lineSeparator())
                 .append("Context \"")
                 .append(getClass().getSimpleName().toUpperCase())
                 .append("\" initialised with settings:")
@@ -164,7 +164,7 @@ public abstract class ContextSensitive {
      * Prints debug info of the context.
      */
     public void printDebugInfo() {
-        System.out.println(getDebugInfo());
+        ShepardBot.getLogger().info(getDebugInfo());
     }
 
     private ContextSettings getContextData(MessageReceivedEvent event) {

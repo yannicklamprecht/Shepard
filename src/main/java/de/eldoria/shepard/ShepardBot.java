@@ -4,7 +4,8 @@ import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.KeyWordCollection;
 import de.eldoria.shepard.configuration.Config;
 import de.eldoria.shepard.configuration.Loader;
-import de.eldoria.shepard.input.ConsoleReader;
+import de.eldoria.shepard.io.ConsoleReader;
+import de.eldoria.shepard.io.Logger;
 import de.eldoria.shepard.register.ContextRegister;
 import de.eldoria.shepard.register.ListenerRegister;
 import net.dv8tion.jda.api.JDA;
@@ -18,9 +19,13 @@ public final class ShepardBot {
     private static JDA jda;
     private static Config config;
     private static ShepardBot instance;
+    private static Logger logger;
 
     private ShepardBot() {
+        logger = new Logger();
         config = Loader.getConfigLoader().getConfig();
+
+        ConsoleReader.initialize();
 
         try {
             initiateJda();
@@ -30,17 +35,19 @@ public final class ShepardBot {
     }
 
     private void setup() {
+
         ContextRegister.registerContexts();
         ListenerRegister.registerListener();
 
         CommandCollection.getInstance().debug();
         KeyWordCollection.getInstance().debug();
 
-        new ConsoleReader();
+
     }
 
     /**
      * Returns the Shepard Bot instance.
+     *
      * @return Instance of Shepard bot.
      */
     public static ShepardBot getInstance() {
@@ -49,6 +56,7 @@ public final class ShepardBot {
 
     /**
      * Main method.
+     *
      * @param args Arguments.
      */
     public static void main(String[] args) {
@@ -70,7 +78,7 @@ public final class ShepardBot {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            ShepardBot.getLogger().error(e.getMessage());
         }
     }
 
@@ -94,6 +102,7 @@ public final class ShepardBot {
 
     /**
      * Registers listener at jda.
+     *
      * @param listener List of listener.
      */
     public void registerListener(List<ListenerAdapter> listener) {
@@ -106,6 +115,18 @@ public final class ShepardBot {
      * Close the shepard application.
      */
     public void shutdown() {
+        jda.shutdown();
+        ShepardBot.getLogger().info("JDA shut down. Closing Application in 5 Seconds!");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            ShepardBot.getLogger().info("Shutdown interrupted!");
+        }
+
         System.exit(0);
+    }
+
+    public static Logger getLogger() {
+        return logger;
     }
 }

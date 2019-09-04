@@ -51,7 +51,7 @@ public class Permission extends Command {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String cmd = args[1];
 
         String contextName = getContextName(args[0], receivedEvent);
@@ -99,7 +99,7 @@ public class Permission extends Command {
         MessageSender.sendSimpleTextBox(message,
                 Verifier.getValidRoles(receivedEvent.getGuild(), contextRolePermission)
                         .stream().map(IMentionable::getAsMention).collect(Collectors.joining(lineSeparator())),
-                Color.green, receivedEvent.getChannel());
+                Color.blue, receivedEvent.getChannel());
     }
 
     private void modifyUsers(String[] args, MessageReceivedEvent receivedEvent,
@@ -124,11 +124,11 @@ public class Permission extends Command {
 
         if (modifyType == ModifyType.ADD) {
             MessageSender.sendSimpleTextBox("Granted following users access to context \""
-                            + contextName.toUpperCase() + "\"", names + "**",
+                            + contextName.toUpperCase() + "\"", names + "**", Color.green,
                     receivedEvent.getChannel());
         } else {
             MessageSender.sendSimpleTextBox("Revoked access from following users for context \""
-                            + contextName.toUpperCase() + "\"", names + "**",
+                            + contextName.toUpperCase() + "\"", names + "**", Color.red,
                     receivedEvent.getChannel());
         }
     }

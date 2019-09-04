@@ -26,7 +26,7 @@ public class Quote extends Command {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         List<QuoteElement> quotes;
         if (args.length > 0) {
             quotes = QuoteData.getQuotesByKeyword(receivedEvent.getGuild(),

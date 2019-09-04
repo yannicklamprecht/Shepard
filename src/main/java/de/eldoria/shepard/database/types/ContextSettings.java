@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.lang.System.lineSeparator;
+
 public class ContextSettings {
     private boolean adminOnly;
     private boolean nsfw;
@@ -169,50 +171,41 @@ public class ContextSettings {
     public String toString() {
         JDA jda = ShepardBot.getJDA();
         StringBuilder builder = new StringBuilder();
-        builder.append("  admin_only: ")
-                .append(isAdminOnly())
-                .append(System.lineSeparator())
-                .append("  nsfw: ")
-                .append(isNsfw())
-                .append(System.lineSeparator())
-                .append("  user_check_active: ")
-                .append(isUserCheckActive())
-                .append(System.lineSeparator());
+        builder.append("  admin_only: ").append(isAdminOnly()).append(lineSeparator())
+                .append("  nsfw: ").append(isNsfw()).append(lineSeparator())
+                .append("  user_check_active: ").append(isUserCheckActive()).append(lineSeparator());
         if (isUserCheckActive()) {
-            builder.append("    List_Type: ")
-                    .append(getUserListType())
-                    .append(System.lineSeparator())
-                    .append("    Users_on_List: ");
+            builder.append("    List_Type: ").append(getUserListType()).append(lineSeparator())
+                    .append("    Users_on_List: ").append(lineSeparator());
             List<String> names = new ArrayList<>();
             getUserList().forEach(u -> {
                 User user = jda.getUserById(u);
                 if (user != null) {
-                    names.add(user.getAsTag());
+                    names.add("      " + user.getAsTag());
                 }
             });
-            builder.append(String.join(", ", names))
-                    .append(System.lineSeparator());
+            builder.append(String.join(lineSeparator(), names))
+                    .append(lineSeparator());
         }
-        builder.append("  guild_check_active: ")
-                .append(isGuildCheckActive())
-                .append(System.lineSeparator());
+        builder.append("  guild_check_active: ").append(isGuildCheckActive()).append(lineSeparator());
         if (isGuildCheckActive()) {
             builder.append("    List_Type: ")
                     .append(getGuildListType())
-                    .append(System.lineSeparator());
+                    .append(lineSeparator());
             List<String> names = new ArrayList<>();
             getGuildList().forEach(g -> {
                 Guild guild = jda.getGuildById(g);
                 if (guild != null) {
                     Member member = guild.getOwner();
                     if (member != null) {
-                        names.add(guild.getName() + " by " + member.getUser().getAsTag());
+                        names.add("      " + guild.getName() + " by " + member.getUser().getAsTag());
                     }
                 }
             });
 
-            builder.append("    Guilds_on_List: ")
-                    .append(String.join(", ", names));
+            builder.append("    Guilds_on_List: ").append(lineSeparator())
+                    .append(String.join(lineSeparator(), names)).append(lineSeparator());
+
         }
         return builder.toString();
     }

@@ -35,7 +35,7 @@ public class UserInfo extends Command {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
 
         if (args.length == 0) {
             MessageSender.sendError(

@@ -23,6 +23,7 @@ import de.eldoria.shepard.contexts.commands.fun.Owod;
 import de.eldoria.shepard.contexts.commands.fun.Quote;
 import de.eldoria.shepard.contexts.commands.fun.RandomJoke;
 import de.eldoria.shepard.contexts.commands.fun.Sayd;
+import de.eldoria.shepard.contexts.commands.fun.Someone;
 import de.eldoria.shepard.contexts.commands.fun.Uwu;
 import de.eldoria.shepard.contexts.commands.fun.Uwud;
 import de.eldoria.shepard.contexts.commands.util.GetRaw;
@@ -39,6 +40,7 @@ import de.eldoria.shepard.contexts.keywords.keyword.DariYes;
 import de.eldoria.shepard.contexts.keywords.keyword.Mlp;
 import de.eldoria.shepard.contexts.keywords.keyword.Normandy;
 import de.eldoria.shepard.contexts.keywords.keyword.Nudes;
+import de.eldoria.shepard.contexts.keywords.keyword.SomeoneKeyword;
 import de.eldoria.shepard.contexts.keywords.keyword.Thing;
 
 import java.util.ArrayList;
@@ -50,11 +52,11 @@ public final class ContextRegister {
     private final List<ContextSensitive> contextSensitives = new ArrayList<>();
 
     private ContextRegister() {
-        registerAdminCommands();
         registerBotConfigCommands();
+        registerAdminCommands();
         registerExclusiveCommands();
-        registerFunCommands();
         registerUtilCommands();
+        registerFunCommands();
 
         registerKeywords();
     }
@@ -69,6 +71,7 @@ public final class ContextRegister {
         contextSensitives.add(new Normandy());
         contextSensitives.add(new Nudes());
         contextSensitives.add(new Thing());
+        contextSensitives.add(new SomeoneKeyword());
     }
 
     private void registerUtilCommands() {
@@ -90,6 +93,7 @@ public final class ContextRegister {
         contextSensitives.add(new Uwu());
         contextSensitives.add(new Uwud());
         contextSensitives.add(new Quote());
+        contextSensitives.add(new Someone());
     }
 
     private void registerExclusiveCommands() {

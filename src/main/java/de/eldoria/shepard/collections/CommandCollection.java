@@ -1,5 +1,6 @@
 package de.eldoria.shepard.collections;
 
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.Command;
 
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public final class CommandCollection {
      * Prints a debug message for all commands to console.
      */
     public void debug() {
-        System.out.println("++++ DEBUG OF COMMANDS ++++");
+        ShepardBot.getLogger().info("++++ DEBUG OF COMMANDS ++++");
         for (Command c : commands) {
             c.printDebugInfo();
         }

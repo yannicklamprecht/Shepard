@@ -17,7 +17,7 @@ public class Oha extends Command {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String oha = "oha";
         Random rand = new Random();
         int loops = rand.nextInt(30) + 10;

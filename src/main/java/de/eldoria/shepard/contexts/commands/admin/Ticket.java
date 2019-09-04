@@ -51,7 +51,7 @@ public class Ticket extends Command {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String cmd = args[0];
         if (cmd.equalsIgnoreCase("open") || cmd.equalsIgnoreCase("o")) {
             openTicket(args, receivedEvent);

@@ -25,14 +25,14 @@ public class Help extends Command {
     public Help() {
         commandName = "help";
         commandAliases = new String[] {"Hilfe", "sendhelp"};
-        commandDesc = "Alles was du wissen musst.";
+        commandDesc = "Help for all commands and arguments.";
         commandArgs = new CommandArg[]
                 {new CommandArg("Command", "Name or Alias of Command", false),
                         new CommandArg("Argument", "One Argument of the Command", false)};
     }
 
     @Override
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String prefix = PrefixData.getPrefix(receivedEvent.getGuild(), receivedEvent);
 
         //Command List
