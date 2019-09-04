@@ -33,8 +33,8 @@ public final class DatabaseConnector {
                     config.getAddress(), config.getPort(), config.getDb()),
                     config.getUsername(), config.getPassword());
             ShepardBot.getLogger().info(
-                    String.format("SQL connection established on %s:%s@%s:%s/%s",
-                            config.getUsername(), config.getPassword(), config.getAddress(),
+                    String.format("SQL connection established on %s:*******@%s:%s/%s",
+                            config.getUsername(), config.getAddress(),
                             config.getPort(), config.getDb()));
         } catch (SQLException ex) {
             handleException(ex, null);
