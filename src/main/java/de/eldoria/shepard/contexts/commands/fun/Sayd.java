@@ -20,7 +20,7 @@ public class Sayd extends Command {
     }
 
     @Override
-    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         try {
             if (args.length == 0) {
                 MessageSender.sendError(

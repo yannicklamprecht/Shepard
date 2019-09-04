@@ -23,7 +23,7 @@ public class RandomJoke extends Command {
     }
 
     @Override
-    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         try {
             MessageSender.sendSimpleTextBox("Random Joke", getRandomJoke(), receivedEvent.getChannel());
         } catch (IOException e) {

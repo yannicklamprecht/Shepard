@@ -51,7 +51,7 @@ public class Permission extends Command {
     }
 
     @Override
-    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String cmd = args[1];
 
         String contextName = getContextName(args[0], receivedEvent);

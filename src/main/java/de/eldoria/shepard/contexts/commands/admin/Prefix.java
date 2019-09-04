@@ -27,7 +27,7 @@ public class Prefix extends Command {
     }
 
     @Override
-    public void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String cmd = args[0];
         if (cmd.equalsIgnoreCase("set") || cmd.equalsIgnoreCase("s")) {
             set(args, receivedEvent);
