@@ -22,27 +22,38 @@ public final class ShepardBot {
     private static Logger logger;
 
     private ShepardBot() {
-        logger = new Logger();
-        config = Loader.getConfigLoader().getConfig();
-
-        ConsoleReader.initialize();
-
         try {
-            initiateJda();
-        } catch (LoginException | InterruptedException e) {
-            e.printStackTrace();
+            System.out.println("Startup in progress. Bot is heating up");
+            System.out.println("Initialising Logger");
+            logger = new Logger();
+            config = Loader.getConfigLoader().getConfig();
+            Thread.sleep(100);
+            ConsoleReader.initialize();
+            logger.info("Console initialized");
+
+            logger.info("Initialising JDA");
+
+            try {
+                initiateJda();
+            } catch (LoginException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        } catch (InterruptedException e) {
+            System.out.println("Startup interrupted");
         }
+
     }
 
     private void setup() {
-
         ContextRegister.registerContexts();
         ListenerRegister.registerListener();
+        logger.info("Registered " + CommandCollection.getInstance().getCommands().size() + " Commands");
+        logger.info("Registered " + KeyWordCollection.getInstance().getKeywords().size() + " Keywords");
 
-        CommandCollection.getInstance().debug();
-        KeyWordCollection.getInstance().debug();
-
-
+        if (config.debugActive()) {
+            CommandCollection.getInstance().debug();
+            KeyWordCollection.getInstance().debug();
+        }
     }
 
     /**

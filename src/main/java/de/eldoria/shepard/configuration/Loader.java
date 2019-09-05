@@ -1,25 +1,23 @@
 package de.eldoria.shepard.configuration;
 
 import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.io.Logger;
-import de.eldoria.shepard.messagehandler.MessageSender;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static java.lang.System.lineSeparator;
-import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
+import static java.lang.System.out;
 
 public final class Loader {
     private static Loader loader;
@@ -52,33 +50,74 @@ public final class Loader {
     }
 
     private void reloadConfig() {
-        File shepardJar = new File(ClassLoader.getSystemClassLoader()
-                .getResource(".").getPath());
+        File shepardJar = new File(".");
         File shepardFolder = shepardJar.getAbsoluteFile().getParentFile();
         String home = shepardFolder.toString();
 
-        Path configDir = Paths.get(home + "/config");
+        Logger logger = ShepardBot.getLogger();
+
+        Path configDir = Paths.get(home, "/config");
 
         if (!Files.exists(configDir)) {
+            logger.info(configDir + " not found. Trying to create");
             try {
                 Files.createDirectory(configDir);
             } catch (IOException e) {
-                ShepardBot.getLogger().error("Directory for config could not be created!"
-                        + lineSeparator() + getStackTrace(e));
+                logger.error("Directory for config could not be created!", e);
+                return;
             }
+        } else {
+            logger.info("Config directory found!");
         }
 
-        Path configFile = Paths.get(configDir + "\\config.yml");
+        Path configFile = Paths.get(configDir + "/config.yml");
 
         if (!Files.exists(configFile)) {
+            logger.info(configFile + lineSeparator() + "Config file not found! Trying to create a default config!");
+
             try {
-                Files.copy(Paths.get(Paths.get(getClass().getClassLoader().getResource("config.yml")
-                                .toURI()).toFile().getAbsolutePath()),
-                        configFile);
-            } catch (IOException | URISyntaxException e) {
-                ShepardBot.getLogger().error("Config file could not be created!"
-                        + lineSeparator() + getStackTrace(e));
+                Files.createFile(configFile);
+            } catch (IOException e) {
+                logger.error("Could not create config file", e);
             }
+            InputStream systemResource;
+            try {
+                systemResource = getClass().getClassLoader().getResourceAsStream("config.yml");
+                out.println(systemResource.toString());
+            } catch (NullPointerException e) {
+                logger.error(e);
+                return;
+            }
+
+            logger.info("Loading config template from " + systemResource.toString());
+
+            InputStream is = null;
+            OutputStream os = null;
+            try {
+                is = systemResource;
+                os = new FileOutputStream(configFile.toFile());
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = is.read(buffer)) > 0) {
+                    os.write(buffer, 0, length);
+                }
+
+            } catch (IOException e) {
+                logger.error(e);
+            } finally {
+                try {
+                    is.close();
+                    os.close();
+
+                } catch (NullPointerException | IOException e) {
+                    logger.error(e);
+                    return;
+                }
+            }
+
+            logger.info("Config file created!");
+
+
         }
 
         InputStream inputStream;
@@ -86,10 +125,10 @@ public final class Loader {
         try {
             inputStream = new FileInputStream(configFile.toString());
         } catch (FileNotFoundException e) {
-            ShepardBot.getLogger().error("File not found!"
-                    + lineSeparator() + getStackTrace(e));
+            logger.error("File not found!", e);
             return;
         }
         this.config = yaml.load(inputStream);
+        logger.info("Config loaded");
     }
 }
