@@ -2,6 +2,7 @@ package de.eldoria.shepard.configuration;
 
 public class Config {
     private String token = null;
+    private boolean debug = false;
     private Database database = null;
     private String prefix = null;
 
@@ -60,5 +61,13 @@ public class Config {
     public void setPrefix(String prefix) {
         if (this.prefix != null) return;
         this.prefix = prefix;
+    }
+
+    public boolean debugActive() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 }
