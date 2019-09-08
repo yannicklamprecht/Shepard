@@ -1,6 +1,5 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
-import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -20,7 +19,8 @@ public class Someone extends Command {
 
     @Override
     protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        GuildChannel guildChannelById = receivedEvent.getGuild().getGuildChannelById(receivedEvent.getChannel().getId());
+        GuildChannel guildChannelById = receivedEvent.getGuild()
+                .getGuildChannelById(receivedEvent.getChannel().getId());
         if (guildChannelById != null) {
             List<Member> members = guildChannelById.getMembers().stream()
                     .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE

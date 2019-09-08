@@ -25,8 +25,9 @@ public class ManageContext extends Command {
                 new CommandArg("context name", "Name of the context to change", true),
                 new CommandArg("action",
                         "**set__NSFW__** -> Sets the context as nsfw" + lineSeparator()
-                        + "**set__Admin__Only** -> Marks a command as admin only. Command can only used from users"
-                        + " which are admin on a guild or when they have the permission on the guild", true),
+                                + "**set__Admin__Only** -> Marks a command as admin only. "
+                                + "Command can only used from users"
+                                + " which are admin on a guild or when they have the permission on the guild", true),
                 new CommandArg("value", "True or False", true)};
     }
 
@@ -46,7 +47,7 @@ public class ManageContext extends Command {
             return;
         }
 
-        if (cmd.equalsIgnoreCase("setadminonly") ||cmd.equalsIgnoreCase("admin")) {
+        if (cmd.equalsIgnoreCase("setadminonly") || cmd.equalsIgnoreCase("admin")) {
             setAdminOnly(args, contextName, receivedEvent);
             return;
         }

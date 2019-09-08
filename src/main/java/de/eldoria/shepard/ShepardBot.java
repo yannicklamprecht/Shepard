@@ -2,10 +2,13 @@ package de.eldoria.shepard;
 
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.KeyWordCollection;
+import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.configuration.Config;
 import de.eldoria.shepard.configuration.Loader;
 import de.eldoria.shepard.io.ConsoleReader;
 import de.eldoria.shepard.io.Logger;
+import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.register.ContextRegister;
 import de.eldoria.shepard.register.ListenerRegister;
 import net.dv8tion.jda.api.JDA;
@@ -13,6 +16,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.security.auth.login.LoginException;
+import java.awt.Color;
 import java.util.List;
 
 public final class ShepardBot {
@@ -49,11 +53,22 @@ public final class ShepardBot {
         ListenerRegister.registerListener();
         logger.info("Registered " + CommandCollection.getInstance().getCommands().size() + " Commands");
         logger.info("Registered " + KeyWordCollection.getInstance().getKeywords().size() + " Keywords");
+        logger.info("Registered on " + jda.getGuilds().size() + " Guilds!");
 
         if (config.debugActive()) {
             CommandCollection.getInstance().debug();
             KeyWordCollection.getInstance().debug();
         }
+
+        MessageSender.sendSimpleTextBox("Shepard meldet sich zum Dienst! Erwarte ihre Befehle!",
+                "Registered " + CommandCollection.getInstance().getCommands().size() + " Commands!"
+                        + System.lineSeparator()
+                        + "Registered " + KeyWordCollection.getInstance().getKeywords().size() + " Keywords!"
+                        + System.lineSeparator()
+                        + "Serving " + jda.getGuilds().size() + " Guilds!",
+                Color.GREEN, ShepardReactions.EXCITED, Normandy.getGeneralLogChannel());
+
+        logger.info("Setup complete!");
     }
 
     /**
@@ -126,6 +141,10 @@ public final class ShepardBot {
      * Close the shepard application.
      */
     public void shutdown() {
+        MessageSender.sendSimpleTextBox("Shepard verlässt die Brücke!!",
+                "",
+                Color.RED, ShepardReactions.ASLEEP, Normandy.getGeneralLogChannel());
+
         jda.shutdown();
         ShepardBot.getLogger().info("JDA shut down. Closing Application in 5 Seconds!");
         try {

@@ -80,10 +80,12 @@ public class MessageSender {
      *
      * @param title       Title of text box
      * @param description Text of textbox
+     * @param reaction    Reaction for thumbnail
      * @param channel     channel to send
      */
-    public static void sendSimpleTextBox(String title, String description, MessageChannel channel) {
-        sendSimpleTextBox(title, description, Color.gray, channel);
+    public static void sendSimpleTextBox(String title, String description,
+                                         ShepardReactions reaction, MessageChannel channel) {
+        sendSimpleTextBox(title, description, Color.gray, reaction, channel);
     }
 
     /**
@@ -92,14 +94,42 @@ public class MessageSender {
      * @param title       Title of text box
      * @param description Text of textbox
      * @param channel     channel to send
+     */
+    public static void sendSimpleTextBox(String title, String description, MessageChannel channel) {
+        sendSimpleTextBox(title, description, Color.gray, ShepardReactions.NONE, channel);
+    }
+
+    /**
+     * Send a simple text box with title and text.
+     *
+     * @param title       Title of text box
+     * @param description Text of textbox
      * @param color       Color of the text box
+     * @param channel     channel to send
      */
     public static void sendSimpleTextBox(String title, String description, Color color, MessageChannel channel) {
+        sendSimpleTextBox(title, description, color, ShepardReactions.NONE, channel);
+    }
+
+    /**
+     * Send a simple text box with title and text.
+     *
+     * @param title       Title of text box
+     * @param description Text of textbox
+     * @param color       Color of the text box
+     * @param reaction    Reaction for thumbnail
+     * @param channel     channel to send
+     */
+    public static void sendSimpleTextBox(String title, String description, Color color,
+                                         ShepardReactions reaction, MessageChannel channel) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle(title)
                 .setColor(color)
                 .setDescription(description)
                 .setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
+        if (reaction != ShepardReactions.NONE) {
+            builder.setThumbnail(reaction.thumbnail);
+        }
         channel.sendMessage(builder.build()).queue();
     }
 
@@ -111,7 +141,8 @@ public class MessageSender {
      */
     public static void sendError(MessageEmbed.Field[] fields, MessageChannel channel) {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("ERROR!");
+        builder.setTitle("ERROR!")
+                .setThumbnail(ShepardReactions.SHULKY.thumbnail);
         for (MessageEmbed.Field field : fields) {
             builder.addField(field);
             builder.setColor(Color.red);
@@ -141,6 +172,7 @@ public class MessageSender {
                 .setTitle("ERROR!")
                 .setDescription(error)
                 .setColor(Color.red)
+                .setThumbnail(ShepardReactions.SHULKY.thumbnail)
                 .setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
         try {
             channel.sendMessage(builder.build()).queue();
