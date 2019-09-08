@@ -7,13 +7,14 @@ import de.eldoria.shepard.contexts.keywords.Keyword;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public final class ContextHelper {
-    private ContextHelper(){}
+    private ContextHelper() {
+    }
 
     /**
      * Get the name of the context from a string.
      *
      * @param indicator for lookup
-     * @param event  event from command sending for error handling. Can be null.
+     * @param event     event from command sending for error handling. Can be null.
      * @return Name of the context or null if no context was found
      */
     public static String getContextName(String indicator, MessageReceivedEvent event) {

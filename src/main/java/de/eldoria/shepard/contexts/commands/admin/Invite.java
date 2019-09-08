@@ -51,7 +51,7 @@ public class Invite extends Command {
             refreshInvites(receivedEvent);
             return;
         }
-        if (cmd.equalsIgnoreCase("showInvites") ||cmd.equalsIgnoreCase("si")) {
+        if (cmd.equalsIgnoreCase("showInvites") || cmd.equalsIgnoreCase("si")) {
             showInvites(receivedEvent);
             return;
         }

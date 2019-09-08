@@ -2,15 +2,9 @@ package de.eldoria.shepard.io;
 
 import de.eldoria.shepard.ShepardBot;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.Scanner;
 
-public class ConsoleReader implements Runnable {
+public final class ConsoleReader implements Runnable {
 
     private static Thread thread;
 
