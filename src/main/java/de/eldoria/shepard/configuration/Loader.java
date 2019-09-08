@@ -16,7 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static java.lang.System.lineSeparator;
 import static java.lang.System.out;
 
 public final class Loader {
@@ -73,7 +72,7 @@ public final class Loader {
         Path configFile = Paths.get(configDir + "/config.yml");
 
         if (!Files.exists(configFile)) {
-            logger.info(configFile + lineSeparator() + "Config file not found! Trying to create a default config!");
+            logger.info("Config file not found! Trying to create a default config!");
 
             try {
                 Files.createFile(configFile);
@@ -89,7 +88,7 @@ public final class Loader {
                 return;
             }
 
-            logger.info("Loading config template from " + systemResource.toString());
+            logger.info("Loading config template!");
 
             InputStream is = null;
             OutputStream os = null;
