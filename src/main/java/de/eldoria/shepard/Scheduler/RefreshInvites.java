@@ -18,8 +18,6 @@ public final class RefreshInvites implements Runnable {
 
     private static RefreshInvites instance;
 
-    private HashMap<Long, Set<String>> invites = new HashMap<>();
-
     private RefreshInvites() {
         start();
     }
@@ -53,7 +51,9 @@ public final class RefreshInvites implements Runnable {
                 continue;
             }
             InviteData.updateInvite(guild, guild.retrieveInvites().complete(), null);
+
         }
+        ShepardBot.getLogger().info("Cleaned up Invites");
         try {
             Thread.sleep(600000);
         } catch (InterruptedException e) {
