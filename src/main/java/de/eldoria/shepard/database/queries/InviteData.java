@@ -123,10 +123,7 @@ public final class InviteData {
             }
             Array codes = getConn().createArrayOf("varchar", codeStrings);
             statement.setArray(2, codes);
-
             statement.execute();
-
-            codes.free();
         } catch (SQLException e) {
             handleException(e, event);
         }

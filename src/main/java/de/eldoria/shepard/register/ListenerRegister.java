@@ -47,6 +47,4 @@ public final class ListenerRegister {
         registered = true;
         ShepardBot.getInstance().registerListener(getInstance().listener);
     }
-
-
 }

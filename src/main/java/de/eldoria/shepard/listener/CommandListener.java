@@ -11,6 +11,7 @@ import de.eldoria.shepard.contexts.commands.exceptions.CommandException;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.Arrays;
@@ -63,7 +64,7 @@ public class CommandListener extends ListenerAdapter {
                 if (command.checkArguments(args)) {
                     try {
                         command.execute(label, args, event);
-                    } catch (CommandException e) {
+                    } catch (CommandException | InsufficientPermissionException e) {
                         MessageSender.sendSimpleError(e.getMessage(), event.getChannel());
                     }
                 } else {
