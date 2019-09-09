@@ -63,11 +63,11 @@ public class Invite extends Command {
         List<DatabaseInvite> invites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
         StringBuilder message = new StringBuilder();
         String code = "code      ";
-        String usages = "Usage Count";
+        String usages = "Usage Count ";
         String name = "Name";
         message.append("Registered Invites: ").append(lineSeparator())
                 .append("```yaml").append(lineSeparator())
-                .append(code).append(usages).append(name);
+                .append(code).append(usages).append(name).append(lineSeparator());
 
         for (DatabaseInvite invite : invites) {
             String invCode = StringUtils.rightPad(invite.getCode(), code.length(), " ");
