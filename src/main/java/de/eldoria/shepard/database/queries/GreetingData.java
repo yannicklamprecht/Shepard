@@ -77,7 +77,7 @@ public final class GreetingData {
      */
     public static GreetingSettings getGreeting(Guild guild) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT shepard_func.get_greeting_data(?)")) {
+                .prepareStatement("SELECT * from shepard_func.get_greeting_data(?)")) {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
             if (result.next()) {
