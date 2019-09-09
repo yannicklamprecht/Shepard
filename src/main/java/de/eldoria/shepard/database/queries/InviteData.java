@@ -56,7 +56,7 @@ public final class InviteData {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
 
-            if (result.next()) {
+            while (result.next()) {
                 String code = result.getString("inv_code");
                 int used = result.getInt("inv_used");
                 String name = result.getString("inv_source");
