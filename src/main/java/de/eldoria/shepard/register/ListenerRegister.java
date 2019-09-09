@@ -4,6 +4,7 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.listener.CommandListener;
 import de.eldoria.shepard.listener.ChangelogListener;
 import de.eldoria.shepard.listener.GreetingListener;
+import de.eldoria.shepard.Scheduler.InviteUpdater;
 import de.eldoria.shepard.listener.KeywordListener;
 import de.eldoria.shepard.listener.LogListener;
 import de.eldoria.shepard.listener.MessageSniffer;
@@ -26,6 +27,7 @@ public final class ListenerRegister {
         listener.add(new LogListener());
         listener.add(new MessageSniffer());
         listener.add(new TicketCleanupListener());
+        InviteUpdater.initialize();
     }
 
     private static ListenerRegister getInstance() {
