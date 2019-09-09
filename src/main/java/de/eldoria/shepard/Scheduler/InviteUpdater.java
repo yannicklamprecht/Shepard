@@ -49,12 +49,14 @@ public final class InviteUpdater implements Runnable {
             if (invites.containsKey(guild.getIdLong())) {
                 guild.retrieveInvites().complete().stream()
                         .filter(i -> !invites.get(guild.getIdLong()).contains(i.getCode()))
-                        .collect(Collectors.toList())
                         .forEach(i -> {
-                            InviteData.addInvite(guild, i.getCode(),
+                            InviteData.addInvite(guild,
+                                    i.getCode(),
                                     i.getInviter() != null ? i.getInviter().getAsTag() : "unknown user",
                                     i.getUses(), null);
                             invites.get(guild.getIdLong()).add(i.getCode());
+                            ShepardBot.getLogger().info("Auto registered invite " + i.getCode()
+                                    + " on guild " + guild.getName() + "(" + guild.getId() + ")");
                         });
             } else {
                 invites.put(guild.getIdLong(),
@@ -64,7 +66,7 @@ public final class InviteUpdater implements Runnable {
             }
         }
         try {
-            Thread.sleep(60000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             ShepardBot.getLogger().error(e);
         }
