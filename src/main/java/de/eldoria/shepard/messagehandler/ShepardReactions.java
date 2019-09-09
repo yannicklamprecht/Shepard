@@ -40,7 +40,15 @@ public enum ShepardReactions {
     /**
      * Wink image.
      */
-    WINK("shep_wink.png");
+    WINK("shep_wink.png"),
+    /**
+     * Confused image.
+     */
+    CONFUSED("shep_confused.png"),
+    /**
+     * Cry image.
+     */
+    CRY("shep_cry.png");
 
     /**
      * Returns image with 100x100px.
