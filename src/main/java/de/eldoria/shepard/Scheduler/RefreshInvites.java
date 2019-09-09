@@ -44,7 +44,12 @@ public final class RefreshInvites implements Runnable {
     }
 
     private void refreshInvites() {
-        List<Guild> guilds = ShepardBot.getJDA().getGuilds();
+        List<Guild> guilds;
+        try{
+            guilds = ShepardBot.getJDA().getGuilds();
+        }catch (IllegalArgumentException e){
+            return;
+        }
 
         for (Guild guild : guilds) {
             if (!guild.getMember(ShepardBot.getJDA().getSelfUser()).hasPermission(Permission.MANAGE_SERVER)) {
