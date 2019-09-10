@@ -14,6 +14,7 @@ import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -90,11 +91,17 @@ public class ManageContextUsers extends Command {
                 User user = ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(userId));
                 if (user != null) {
                     if (modifyType == ModifyType.ADD) {
-
-
+                        try {
                         ContextData.addContextUser(contextName, user, receivedEvent);
+                        }catch (SQLException e){
+                            return;
+                        }
                     } else {
+                        try {
                         ContextData.removeContextUser(contextName, user, receivedEvent);
+                        }catch (SQLException e){
+                            return;
+                        }
                     }
                     mentions.add(user.getAsMention());
                 }
@@ -132,7 +139,11 @@ public class ManageContextUsers extends Command {
             return;
         }
 
+        try {
         ContextData.setContextUserListType(contextName, type, receivedEvent);
+        }catch (SQLException e){
+            return;
+        }
 
         MessageSender.sendMessage("**Changed user list type of context \""
                         + contextName.toUpperCase() + "\" to " + type.toString() + "**",
@@ -150,7 +161,11 @@ public class ManageContextUsers extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
+        try {
         ContextData.setContextUserCheckActive(contextName, state, receivedEvent);
+        }catch (SQLException e){
+            return;
+        }
 
         if (state) {
             MessageSender.sendMessage("**Activated user check for context \"" + contextName.toUpperCase() + "\"**",

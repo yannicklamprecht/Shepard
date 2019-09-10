@@ -27,7 +27,7 @@ public final class MonitoringData {
      * @param name    name of the address
      * @param event   event from command sending for error handling. Can be null.
      */
-    public static void addMonitoringAdress(Guild guild, String address, String name, MessageReceivedEvent event) {
+    public static void addMonitoringAdress(Guild guild, String address, String name, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_monitoring_adress(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -46,7 +46,7 @@ public final class MonitoringData {
      * @param index address index
      * @param event event from command sending for error handling. Can be null.
      */
-    public static void removeMonitoringAdressByIndex(Guild guild, int index, MessageReceivedEvent event) {
+    public static void removeMonitoringAdressByIndex(Guild guild, int index, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_monitoring_adress_by_index(?,?)")) {
             statement.setString(1, guild.getId());
@@ -64,7 +64,7 @@ public final class MonitoringData {
      * @param channel iod of the channel
      * @param event     event from command sending for error handling. Can be null.
      */
-    public static void setMonitoringChannel(Guild guild, TextChannel channel, MessageReceivedEvent event) {
+    public static void setMonitoringChannel(Guild guild, TextChannel channel, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_monitoring_channel(?,?)")) {
             statement.setString(1, guild.getId());
@@ -81,7 +81,7 @@ public final class MonitoringData {
      * @param guild Guild object for lookup
      * @param event event from command sending for error handling. Can be null.
      */
-    public static void removeMonitoringChannel(Guild guild, MessageReceivedEvent event) {
+    public static void removeMonitoringChannel(Guild guild, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_monitoring_channel(?)")) {
             statement.setString(1, guild.getId());
@@ -98,7 +98,7 @@ public final class MonitoringData {
      * @param event event from command sending for error handling. Can be null.
      * @return list of address object
      */
-    public static List<Address> getMonitoringAddresses(Guild guild, MessageReceivedEvent event) {
+    public static List<Address> getMonitoringAddresses(Guild guild, MessageReceivedEvent event) throws SQLException {
         List<Address> addresses = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_monitoring_adresses(?)")) {
@@ -122,7 +122,7 @@ public final class MonitoringData {
      * @param event event from command sending for error handling. Can be null.
      * @return Channel id as string
      */
-    public static String getMonitoringChannel(Guild guild, MessageReceivedEvent event) {
+    public static String getMonitoringChannel(Guild guild, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_monitoring_channel(?)")) {
             statement.setString(1, guild.getId());

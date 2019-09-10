@@ -34,7 +34,7 @@ public final class MuteData {
      * @param duration duration of the mute
      * @param event    event from command sending for error handling. Can be null.
      */
-    public static void setMuted(Guild guild, User user, String duration, MessageReceivedEvent event) {
+    public static void setMuted(Guild guild, User user, String duration, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_muted(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -48,7 +48,7 @@ public final class MuteData {
         mutedUsersDirty.put(guild.getId(), true);
     }
 
-    private static void refreshGuildData(Guild guild, MessageReceivedEvent event) {
+    private static void refreshGuildData(Guild guild, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_muted_users(?)")) {
             statement.setString(1, guild.getId());
@@ -69,7 +69,7 @@ public final class MuteData {
      * @param user id of the user
      * @param event  event from command sending for error handling. Can be null.
      */
-    public static void removeMute(Guild guild, User user, MessageReceivedEvent event) {
+    public static void removeMute(Guild guild, User user, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_mute(?,?)")) {
             statement.setString(1, guild.getId());
@@ -88,7 +88,7 @@ public final class MuteData {
      * @param event event from command sending for error handling. Can be null.
      * @return List of muted users on a server.
      */
-    public static List<String> getMutedUsers(Guild guild, MessageReceivedEvent event) {
+    public static List<String> getMutedUsers(Guild guild, MessageReceivedEvent event) throws SQLException {
         if (lastRefresh.isBefore(LocalDateTime.now().minusMinutes(1))) {
 
 

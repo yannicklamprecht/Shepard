@@ -9,6 +9,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 
 import static java.lang.System.lineSeparator;
@@ -58,7 +59,11 @@ public class Greeting extends Command {
     private void setMessage(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length > 1) {
             String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-            GreetingData.setGreetingText(receivedEvent.getGuild(), message, receivedEvent);
+            try {
+                GreetingData.setGreetingText(receivedEvent.getGuild(), message, receivedEvent);
+            } catch (SQLException e) {
+                return;
+            }
 
             MessageSender.sendMessage("Changed greeting message to " + lineSeparator()
                     + message, receivedEvent.getChannel());
@@ -68,21 +73,36 @@ public class Greeting extends Command {
     }
 
     private void removeChannel(MessageReceivedEvent receivedEvent) {
-        GreetingData.removeGreetingChannel(receivedEvent.getGuild(), receivedEvent);
+        try {
+            GreetingData.removeGreetingChannel(receivedEvent.getGuild(), receivedEvent);
+        } catch (SQLException e) {
+            return;
+        }
+
         MessageSender.sendMessage("Removed greeting channel.", receivedEvent.getChannel());
     }
 
     private void setChannel(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length == 1) {
-            GreetingData.setGreetingChannel(receivedEvent.getGuild(),
-                    receivedEvent.getChannel(), receivedEvent);
+            try {
+                GreetingData.setGreetingChannel(receivedEvent.getGuild(),
+                        receivedEvent.getChannel(), receivedEvent);
+            } catch (SQLException e) {
+                return;
+            }
+
             MessageSender.sendMessage("Greeting Channel set to "
                     + ((TextChannel) receivedEvent.getChannel()).getAsMention(), receivedEvent.getChannel());
             return;
         } else if (args.length == 2) {
             TextChannel channel = receivedEvent.getGuild().getTextChannelById(DbUtil.getIdRaw(args[1]));
             if (channel != null) {
-                GreetingData.setGreetingChannel(receivedEvent.getGuild(), channel, receivedEvent);
+                try {
+                    GreetingData.setGreetingChannel(receivedEvent.getGuild(), channel, receivedEvent);
+                } catch (SQLException e) {
+                    return;
+                }
+
                 MessageSender.sendMessage("Greeting channel set to "
                         + channel.getAsMention(), receivedEvent.getChannel());
                 return;

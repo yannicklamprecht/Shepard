@@ -25,7 +25,7 @@ public final class QuoteData {
      * @param quote quote to add
      * @param event event from command sending for error handling. Can be null.
      */
-    public static void addQuote(Guild guild, String quote, MessageReceivedEvent event) {
+    public static void addQuote(Guild guild, String quote, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_quote(?,?)")) {
             statement.setString(1, guild.getId());
@@ -44,7 +44,7 @@ public final class QuoteData {
      * @param quote   new quote
      * @param event   event from command sending for error handling. Can be null.
      */
-    public static void alterQuote(Guild guild, int quoteId, String quote, MessageReceivedEvent event) {
+    public static void alterQuote(Guild guild, int quoteId, String quote, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.alter_quote(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -63,7 +63,7 @@ public final class QuoteData {
      * @param quoteId id on guild.
      * @param event   event from command sending for error handling. Can be null.
      */
-    public static void removeQuote(Guild guild, int quoteId, MessageReceivedEvent event) {
+    public static void removeQuote(Guild guild, int quoteId, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_quote(?,?)")) {
             statement.setString(1, guild.getId());
@@ -81,7 +81,7 @@ public final class QuoteData {
      * @param event event from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static List<QuoteElement> getQuotes(Guild guild, MessageReceivedEvent event) {
+    public static List<QuoteElement> getQuotes(Guild guild, MessageReceivedEvent event) throws SQLException {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_quotes(?)")) {
@@ -106,7 +106,7 @@ public final class QuoteData {
      * @param event event from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static List<QuoteElement> getQuotesByKeyword(Guild guild, String keyword, MessageReceivedEvent event) {
+    public static List<QuoteElement> getQuotesByKeyword(Guild guild, String keyword, MessageReceivedEvent event) throws SQLException {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_quotes_by_keyword(?,?)")) {
@@ -131,7 +131,7 @@ public final class QuoteData {
      * @param event event from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static int getQuotesCount(Guild guild, MessageReceivedEvent event) {
+    public static int getQuotesCount(Guild guild, MessageReceivedEvent event) throws SQLException {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_quote_count(?)")) {
@@ -154,7 +154,7 @@ public final class QuoteData {
      * @param event   event from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static int getQuotesCountByKeyword(Guild guild, String keyword, MessageReceivedEvent event) {
+    public static int getQuotesCountByKeyword(Guild guild, String keyword, MessageReceivedEvent event) throws SQLException {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_quote_count_by_keyword(?,?)")) {

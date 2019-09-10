@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,8 +20,9 @@ final class TicketHelper {
 
     /**
      * Removes the roles from a user, but secures, that he keeps all necessary roles for other tickets.
+     *
      * @param receivedEvent Received event of the message.
-     * @param member member to change roles
+     * @param member        member to change roles
      * @param rolesToRemove roles as string list
      */
     static void removeAndUpdateTicketRoles(MessageReceivedEvent receivedEvent,
@@ -36,8 +38,14 @@ final class TicketHelper {
         }
 
         //Get all other ticket channels of the owner
-        List<String> channelIdsByOwner = TicketData.getChannelIdsByOwner(receivedEvent.getGuild(),
-                member.getUser(), receivedEvent);
+        List<String> channelIdsByOwner;
+        try {
+            channelIdsByOwner = TicketData.getChannelIdsByOwner(receivedEvent.getGuild(),
+                    member.getUser(), receivedEvent);
+        } catch (SQLException e) {
+            return;
+        }
+
 
         List<TextChannel> channels = new ArrayList<>();
 
@@ -52,11 +60,16 @@ final class TicketHelper {
         //Create a set of all roles the player should keep.
         Set<Role> newRoleSet = new HashSet<>();
         for (TextChannel c : channels) {
-            for (String s : getChannelOwnerRoles(receivedEvent.getGuild(), c, receivedEvent)) {
-                Role role = receivedEvent.getGuild().getRoleById(s);
-                if (role != null) {
-                    newRoleSet.add(role);
+            try {
+                for (String s : getChannelOwnerRoles(receivedEvent.getGuild(), c, receivedEvent)) {
+                    Role role = receivedEvent.getGuild().getRoleById(s);
+                    if (role != null) {
+                        newRoleSet.add(role);
+                    }
                 }
+            } catch (SQLException e) {
+                return;
+
             }
         }
 

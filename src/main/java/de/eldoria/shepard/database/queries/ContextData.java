@@ -39,7 +39,7 @@ public final class ContextData {
      * @param user        user to add
      * @param event       event from command sending for error handling. Can be null.
      */
-    public static void addContextUser(String contextName, User user, MessageReceivedEvent event) {
+    public static void addContextUser(String contextName, User user, MessageReceivedEvent event) throws SQLException {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -59,7 +59,7 @@ public final class ContextData {
      * @param user        user to remove
      * @param event       event from command sending for error handling. Can be null.
      */
-    public static void removeContextUser(String contextName, User user, MessageReceivedEvent event) {
+    public static void removeContextUser(String contextName, User user, MessageReceivedEvent event) throws SQLException {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -79,7 +79,7 @@ public final class ContextData {
      * @param guild       guild id to add
      * @param event       event from command sending for error handling. Can be null.
      */
-    public static void addContextGuild(String contextName, Guild guild, MessageReceivedEvent event) {
+    public static void addContextGuild(String contextName, Guild guild, MessageReceivedEvent event) throws SQLException {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -99,7 +99,7 @@ public final class ContextData {
      * @param guild       guild id to remove
      * @param event       event from command sending for error handling. Can be null.
      */
-    public static void removeContextGuild(String contextName, Guild guild, MessageReceivedEvent event) {
+    public static void removeContextGuild(String contextName, Guild guild, MessageReceivedEvent event) throws SQLException {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -121,7 +121,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      */
     public static void addContextUserPermission(String contextName, Guild guild,
-                                                User user, MessageReceivedEvent event) {
+                                                User user, MessageReceivedEvent event) throws SQLException {
         userPermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -144,7 +144,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      */
     public static void removeContextUserPermission(String contextName, Guild guild,
-                                                   User user, MessageReceivedEvent event) {
+                                                   User user, MessageReceivedEvent event) throws SQLException {
         userPermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -167,7 +167,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      */
     public static void addContextRolePermission(String contextName, Guild guild,
-                                                Role role, MessageReceivedEvent event) {
+                                                Role role, MessageReceivedEvent event) throws SQLException {
         rolePermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -190,7 +190,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      */
     public static void removeContextRolePermission(String contextName, Guild guild,
-                                                   Role role, MessageReceivedEvent event) {
+                                                   Role role, MessageReceivedEvent event) throws SQLException {
         rolePermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -211,7 +211,7 @@ public final class ContextData {
      * @param state       True if it is a admin only command.
      * @param event       event from command sending for error handling. Can be null.
      */
-    public static void setContextAdmin(String contextName, boolean state, MessageReceivedEvent event) {
+    public static void setContextAdmin(String contextName, boolean state, MessageReceivedEvent event) throws SQLException {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -231,7 +231,7 @@ public final class ContextData {
      * @param state       True if it is a nsfw command.
      * @param event       event from command sending for error handling. Can be null.
      */
-    public static void setContextNsfw(String contextName, boolean state, MessageReceivedEvent event) {
+    public static void setContextNsfw(String contextName, boolean state, MessageReceivedEvent event) throws SQLException {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -251,7 +251,7 @@ public final class ContextData {
      * @param state       true when user should be checked
      * @param event       event from command sending for error handling. Can be null.
      */
-    public static void setContextUserCheckActive(String contextName, boolean state, MessageReceivedEvent event) {
+    public static void setContextUserCheckActive(String contextName, boolean state, MessageReceivedEvent event) throws SQLException {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -271,7 +271,7 @@ public final class ContextData {
      * @param state       true when guild should be checked
      * @param event       event from command sending for error handling. Can be null.
      */
-    public static void setContextGuildCheckActive(String contextName, boolean state, MessageReceivedEvent event) {
+    public static void setContextGuildCheckActive(String contextName, boolean state, MessageReceivedEvent event) throws SQLException {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -291,7 +291,7 @@ public final class ContextData {
      * @param listType    ListType enum.
      * @param event       event from command sending for error handling. Can be null.
      */
-    public static void setContextUserListType(String contextName, ListType listType, MessageReceivedEvent event) {
+    public static void setContextUserListType(String contextName, ListType listType, MessageReceivedEvent event) throws SQLException {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -311,7 +311,7 @@ public final class ContextData {
      * @param listType    ListType enum.
      * @param event       event from command sending for error handling. Can be null.
      */
-    public static void setContextGuildListType(String contextName, ListType listType, MessageReceivedEvent event) {
+    public static void setContextGuildListType(String contextName, ListType listType, MessageReceivedEvent event) throws SQLException {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -331,7 +331,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return Context data object.
      */
-    public static ContextSettings getContextData(String contextName, MessageReceivedEvent event) {
+    public static ContextSettings getContextData(String contextName, MessageReceivedEvent event) throws SQLException {
         if (contextDataDirty.containsKey(contextName)) {
             if (!contextDataDirty.get(contextName)) {
                 return contextData.get(contextName);
@@ -382,7 +382,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return List of user ids
      */
-    public static List<String> getContextUserPermission(Guild guild, String contextName, MessageReceivedEvent event) {
+    public static List<String> getContextUserPermission(Guild guild, String contextName, MessageReceivedEvent event) throws SQLException {
         return getContextUserPermissions(contextName, event).getOrDefault(guild.getId(), Collections.emptyList());
     }
 
@@ -393,7 +393,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return Map [guild_id, List(role_ids)] Map which contains the user as list for each guild
      */
-    public static Map<String, List<String>> getContextUserPermissions(String contextName, MessageReceivedEvent event) {
+    public static Map<String, List<String>> getContextUserPermissions(String contextName, MessageReceivedEvent event) throws SQLException {
         if (userPermissions.containsKey(contextName)) {
             if (!userPermissionDirty.get(contextName)) {
                 return userPermissions.get(contextName);
@@ -440,7 +440,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return List of user ids
      */
-    public static List<String> getContextRolePermission(Guild guild, String contextName, MessageReceivedEvent event) {
+    public static List<String> getContextRolePermission(Guild guild, String contextName, MessageReceivedEvent event) throws SQLException {
         return getContextRolePermissions(contextName, event).getOrDefault(guild.getId(), Collections.emptyList());
     }
 
@@ -452,7 +452,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return Map [guild_id, List(role_ids)] Map which contains the user as list for each guild
      */
-    public static Map<String, List<String>> getContextRolePermissions(String contextName, MessageReceivedEvent event) {
+    public static Map<String, List<String>> getContextRolePermissions(String contextName, MessageReceivedEvent event) throws SQLException {
         if (rolePermissions.containsKey(contextName)) {
             if (!rolePermissionDirty.get(contextName)) {
                 return rolePermissions.get(contextName);

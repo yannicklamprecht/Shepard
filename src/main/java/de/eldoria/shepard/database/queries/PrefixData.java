@@ -27,7 +27,7 @@ public final class PrefixData {
      * @param prefix prefix to set.
      * @param event  event from command sending for error handling. Can be null.
      */
-    public static void setPrefix(Guild guild, String prefix, MessageReceivedEvent event) {
+    public static void setPrefix(Guild guild, String prefix, MessageReceivedEvent event) throws SQLException {
         cacheDirty = true;
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_prefix(?,?)")) {
@@ -48,7 +48,7 @@ public final class PrefixData {
      * @param event event from command sending for error handling. Can be null.
      * @return Prefix as string
      */
-    public static String getPrefix(Guild guild, MessageReceivedEvent event) {
+    public static String getPrefix(Guild guild, MessageReceivedEvent event) throws SQLException {
         if (!cacheDirty) {
             return prefixes.get(guild.getId());
         }
@@ -58,7 +58,7 @@ public final class PrefixData {
         return getPrefix(guild, event);
     }
 
-    private static void refreshPrefixes(MessageReceivedEvent event) {
+    private static void refreshPrefixes(MessageReceivedEvent event) throws SQLException {
         if (!cacheDirty) {
             return;
         }

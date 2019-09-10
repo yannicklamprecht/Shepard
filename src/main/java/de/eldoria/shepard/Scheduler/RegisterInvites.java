@@ -53,6 +53,8 @@ public final class RegisterInvites implements Runnable {
             return;
         }
 
+        ShepardBot.getLogger().info("Looking for unregistered invites.");
+
         for (Guild guild : guilds) {
             if (!guild.getMember(ShepardBot.getJDA().getSelfUser()).hasPermission(Permission.MANAGE_SERVER)) {
                 continue;

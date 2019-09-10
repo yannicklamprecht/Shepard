@@ -24,7 +24,7 @@ public final class GreetingData {
      * @param channel channel which should be used for greetings
      * @param event     event from command sending for error handling. Can be null.
      */
-    public static void setGreetingChannel(Guild guild, MessageChannel channel, MessageReceivedEvent event) {
+    public static void setGreetingChannel(Guild guild, MessageChannel channel, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_greeting_channel(?,?)")) {
             statement.setString(1, guild.getId());
@@ -41,7 +41,7 @@ public final class GreetingData {
      * @param guild Guild object for lookup
      * @param event event from command sending for error handling. Can be null.
      */
-    public static void removeGreetingChannel(Guild guild, MessageReceivedEvent event) {
+    public static void removeGreetingChannel(Guild guild, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_greeting_channel(?)")) {
             statement.setString(1, guild.getId());
@@ -58,7 +58,7 @@ public final class GreetingData {
      * @param text text for greeting
      * @param event event from command sending for error handling. Can be null.
      */
-    public static void setGreetingText(Guild guild, String text, MessageReceivedEvent event) {
+    public static void setGreetingText(Guild guild, String text, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_greeting_text(?,?)")) {
             statement.setString(1, guild.getId());
@@ -75,7 +75,7 @@ public final class GreetingData {
      * @param guild Guild object for lookup.
      * @return Greeting object
      */
-    public static GreetingSettings getGreeting(Guild guild) {
+    public static GreetingSettings getGreeting(Guild guild) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_greeting_data(?)")) {
             statement.setString(1, guild.getId());

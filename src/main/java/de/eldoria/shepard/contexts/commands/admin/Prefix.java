@@ -7,6 +7,8 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.sql.SQLException;
+
 import static de.eldoria.shepard.database.queries.PrefixData.setPrefix;
 import static java.lang.System.lineSeparator;
 
@@ -43,7 +45,13 @@ public class Prefix extends Command {
     }
 
     private void reset(MessageReceivedEvent receivedEvent) {
-        setPrefix(receivedEvent.getGuild(), ShepardBot.getConfig().getPrefix(), receivedEvent);
+        try {
+            setPrefix(receivedEvent.getGuild(), ShepardBot.getConfig().getPrefix(), receivedEvent);
+        } catch (SQLException e) {
+            return;
+        }
+        MessageSender.sendMessage("Set Prefix to '" + ShepardBot.getConfig().getPrefix() + "'",
+                receivedEvent.getChannel());
     }
 
     private void set(String[] args, MessageReceivedEvent receivedEvent) {
@@ -58,7 +66,11 @@ public class Prefix extends Command {
             return;
         }
 
-        setPrefix(receivedEvent.getGuild(), args[1].trim(), receivedEvent);
+        try {
+            setPrefix(receivedEvent.getGuild(), args[1].trim(), receivedEvent);
+        } catch (SQLException e) {
+            return;
+        }
         MessageSender.sendMessage("Changed prefix to '" + args[1].trim() + "'", receivedEvent.getChannel());
     }
 }

@@ -23,7 +23,7 @@ public final class MinecraftLinkData {
      * @param event event from command sending for error handling. Can be null.
      * @return Minecraft Link object or null if no link was found
      */
-    public static MinecraftLink getLinkByUserId(User user, MessageReceivedEvent event) {
+    public static MinecraftLink getLinkByUserId(User user, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_minecraft_link_user_id(?)")) {
             statement.setString(1, getIdRaw(user.getId()));
@@ -44,7 +44,7 @@ public final class MinecraftLinkData {
      * @param event event from command sending for error handling. Can be null.
      * @return Minecraft Link object or null if no link was found
      */
-    public static MinecraftLink getLinkByUUID(String uuid, MessageReceivedEvent event) {
+    public static MinecraftLink getLinkByUUID(String uuid, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_minecraft_link_uuid(?)")) {
             statement.setString(1, getIdRaw(uuid));
@@ -65,7 +65,7 @@ public final class MinecraftLinkData {
      * @param uuid  uuid of player
      * @param event event from command sending for error handling. Can be null.
      */
-    public static void addLinkCode(String code, String uuid, MessageReceivedEvent event) {
+    public static void addLinkCode(String code, String uuid, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.add_minecraft_link_code(?,?)")) {
             statement.setString(1, code);
@@ -83,7 +83,7 @@ public final class MinecraftLinkData {
      * @param event event from command sending for error handling. Can be null.
      * @return UUID as String.
      */
-    public static String getUUIDByCode(String code, MessageReceivedEvent event) {
+    public static String getUUIDByCode(String code, MessageReceivedEvent event) throws SQLException {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.add_minecraft_link_code(?)")) {
             statement.setString(1, code);

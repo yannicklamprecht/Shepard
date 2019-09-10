@@ -9,6 +9,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.commons.lang.StringUtils;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,7 +61,13 @@ public class Invite extends Command {
     }
 
     private void showInvites(MessageReceivedEvent receivedEvent) {
-        List<DatabaseInvite> invites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
+        List<DatabaseInvite> invites;
+        try {
+            invites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
+        } catch (SQLException e) {
+            return;
+        }
+
         StringBuilder message = new StringBuilder();
         String code = "code      ";
         String usages = "Usage Count ";
@@ -80,8 +87,13 @@ public class Invite extends Command {
     }
 
     private void refreshInvites(MessageReceivedEvent receivedEvent) {
-        InviteData.updateInvite(receivedEvent.getGuild(),
-                receivedEvent.getGuild().retrieveInvites().complete(), receivedEvent);
+        try {
+            InviteData.updateInvite(receivedEvent.getGuild(),
+                    receivedEvent.getGuild().retrieveInvites().complete(), receivedEvent);
+        } catch (SQLException e) {
+            return;
+        }
+
         MessageSender.sendMessage("Removed non existent invites!", receivedEvent.getChannel());
     }
 
@@ -90,10 +102,20 @@ public class Invite extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             return;
         }
-        List<DatabaseInvite> databaseInvites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
+        List<DatabaseInvite> databaseInvites;
+        try {
+            databaseInvites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
+        } catch (SQLException e) {
+            return;
+        }
+
         for (DatabaseInvite invite : databaseInvites) {
             if (invite.getCode().equals(args[1])) {
-                InviteData.removeInvite(receivedEvent.getGuild(), args[1], receivedEvent);
+                try {
+                    InviteData.removeInvite(receivedEvent.getGuild(), args[1], receivedEvent);
+                } catch (SQLException e) {
+                    return;
+                }
                 MessageSender.sendMessage("Removed invite " + invite.getSource(), receivedEvent.getChannel());
             }
         }
@@ -110,8 +132,12 @@ public class Invite extends Command {
         for (var invite : invites) {
             if (invite.getCode().equals(args[1])) {
                 String name = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-                InviteData.addInvite(receivedEvent.getGuild(), invite.getCode(), name,
-                        invite.getUses(), receivedEvent);
+                try {
+                    InviteData.addInvite(receivedEvent.getGuild(), invite.getCode(), name,
+                            invite.getUses(), receivedEvent);
+                } catch (SQLException e) {
+                    return;
+                }
                 MessageSender.sendMessage("Added Invite \"" + name + " with code " + invite.getCode()
                         + " to database with usage count of " + invite.getUses(), receivedEvent.getChannel());
                 return;

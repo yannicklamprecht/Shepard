@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -71,7 +72,12 @@ public class Changelog extends Command {
     }
 
     private void showRoles(MessageReceivedEvent receivedEvent) {
-        List<String> roleIds = ChangelogData.getRoles(receivedEvent.getGuild(), receivedEvent);
+        List<String> roleIds;
+        try {
+            roleIds = ChangelogData.getRoles(receivedEvent.getGuild(), receivedEvent);
+        } catch (SQLException e) {
+            return;
+        }
 
         List<String> roleMentions = roleIds.stream()
                 .map(roleId -> receivedEvent.getGuild().getRoleById(getIdRaw(roleId)))
@@ -83,7 +89,11 @@ public class Changelog extends Command {
     }
 
     private void deactivate(MessageReceivedEvent receivedEvent) {
-        ChangelogData.removeChannel(receivedEvent.getGuild(), receivedEvent);
+        try {
+            ChangelogData.removeChannel(receivedEvent.getGuild(), receivedEvent);
+        } catch (SQLException e) {
+            return;
+        }
 
         MessageSender.sendMessage("Changelog is deactivated", receivedEvent.getChannel());
     }
@@ -101,7 +111,11 @@ public class Changelog extends Command {
             return;
         }
 
-        ChangelogData.setChannel(receivedEvent.getGuild(), textChannelById, receivedEvent);
+        try {
+            ChangelogData.setChannel(receivedEvent.getGuild(), textChannelById, receivedEvent);
+        } catch (SQLException e) {
+            return;
+        }
 
         MessageSender.sendMessage("Changelog is presented in channel" + textChannelById.getAsMention(),
                 receivedEvent.getChannel());
@@ -120,11 +134,19 @@ public class Changelog extends Command {
         }
 
         if (cmd.equalsIgnoreCase("addRole") || cmd.equalsIgnoreCase("ar")) {
-            ChangelogData.addRole(receivedEvent.getGuild(), roleById, receivedEvent);
+            try {
+                ChangelogData.addRole(receivedEvent.getGuild(), roleById, receivedEvent);
+            } catch (SQLException e) {
+                return;
+            }
             MessageSender.sendMessage("Added role **" + roleById.getName() + "** to changelog.",
                     receivedEvent.getChannel());
         } else {
-            ChangelogData.removeRole(receivedEvent.getGuild(), roleById, receivedEvent);
+            try {
+                ChangelogData.removeRole(receivedEvent.getGuild(), roleById, receivedEvent);
+            } catch (SQLException e) {
+                return;
+            }
             MessageSender.sendMessage("Removed role **" + roleById.getName() + "** from changelog.",
                     receivedEvent.getChannel());
         }

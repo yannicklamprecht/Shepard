@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
 import java.awt.Color;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,13 +31,23 @@ public class ChangelogListener extends ListenerAdapter {
     }
 
     private void manageChangelog(User user, Guild guild, List<Role> roles, boolean add) {
-        String channelId = ChangelogData.getChannel(guild, null);
+        String channelId;
+        try {
+        channelId = ChangelogData.getChannel(guild, null);
+        }catch (SQLException e){
+            return;
+        }
+
         if (channelId == null) return;
 
         TextChannel channelById = guild.getTextChannelById(channelId);
         if (channelById == null) return;
-
-        List<String> changelogRoles = ChangelogData.getRoles(guild, null);
+        List<String> changelogRoles;
+        try {
+        changelogRoles = ChangelogData.getRoles(guild, null);
+        }catch (SQLException e){
+            return;
+        }
 
         List<String> observedRoles = new ArrayList<>();
 

@@ -9,6 +9,8 @@ import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.sql.SQLException;
+
 import static de.eldoria.shepard.contexts.ContextHelper.getContextName;
 import static java.lang.System.lineSeparator;
 
@@ -66,7 +68,11 @@ public class ManageContext extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
+        try {
         ContextData.setContextAdmin(contextName, state, receivedEvent);
+        }catch (SQLException e){
+            return;
+        }
 
         if (state) {
             MessageSender.sendMessage("**Activated admin and permission check for context \""
@@ -91,7 +97,11 @@ public class ManageContext extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
+        try {
         ContextData.setContextNsfw(contextName, state, receivedEvent);
+        }catch (SQLException e){
+            return;
+        }
 
         if (state) {
             MessageSender.sendMessage("**Activated NSFW check for context \"" + contextName.toUpperCase() + "\"**",
