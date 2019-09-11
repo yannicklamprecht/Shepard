@@ -20,6 +20,7 @@ import javax.annotation.Nonnull;
 import java.awt.Color;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class CommandListener extends ListenerAdapter {
@@ -91,10 +92,15 @@ public class CommandListener extends ListenerAdapter {
                 return;
             }
 
-            Command similarCommand = CommandCollection.getInstance().getSimilarCommand(args[0]);
-            if(similarCommand != null){
-                MessageSender.sendSimpleTextBox("Command not found!", "I don't have a command with this name." +
-                        "Maybe you meant: " +command.getCommandName(), Color.green, ShepardReactions.WINK, wrapper.getChannel());
+            List<Command> similarCommand = CommandCollection.getInstance().getSimilarCommands(args[0]);
+            if (similarCommand.size() != 0) {
+                for (Command cmd : similarCommand) {
+                    if (cmd.isContextValid(wrapper)) {
+                        MessageSender.sendSimpleTextBox("Command not found!", "I don't have a command with this name. "
+                                + "Maybe you meant: " + System.lineSeparator() + "**" + cmd.getCommandName() + "**", Color.green, ShepardReactions.WINK, wrapper.getChannel());
+                        return;
+                    }
+                }
             }
 
             MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!", "Type "
