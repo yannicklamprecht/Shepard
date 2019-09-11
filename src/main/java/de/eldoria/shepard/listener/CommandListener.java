@@ -9,6 +9,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.exceptions.CommandException;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -96,8 +97,10 @@ public class CommandListener extends ListenerAdapter {
             if (similarCommand.size() != 0) {
                 for (Command cmd : similarCommand) {
                     if (cmd.isContextValid(wrapper)) {
-                        MessageSender.sendSimpleTextBox("Command not found!", "I don't have a command with this name. "
-                                + "Maybe you meant: " + System.lineSeparator() + "**" + cmd.getCommandName() + "**", Color.green, ShepardReactions.WINK, wrapper.getChannel());
+                        MessageSender.sendSimpleTextBox("Command not found!",
+                                "I don't have a command with this name. Maybe you meant: "
+                                        + System.lineSeparator() + "**" + cmd.getCommandName() + "**",
+                                Color.green, ShepardReactions.WINK, wrapper.getChannel());
                         return;
                     }
                 }

@@ -2,7 +2,6 @@ package de.eldoria.shepard.collections;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.Command;
-import info.debatty.java.stringsimilarity.JaroWinkler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -97,10 +96,16 @@ public final class CommandCollection {
     }
 
     static class RankedCommand implements Comparable<RankedCommand> {
+        /**
+         * Rank of the command.
+         */
         double rank;
+        /**
+         * Command object which is ranked.
+         */
         Command command;
 
-        public RankedCommand(double rank, Command command) {
+        RankedCommand(double rank, Command command) {
             this.rank = rank;
             this.command = command;
         }
