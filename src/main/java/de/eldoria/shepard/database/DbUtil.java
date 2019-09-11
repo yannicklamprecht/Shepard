@@ -33,7 +33,7 @@ public final class DbUtil {
     }
 
     /**
-     * Handles SQL Exceptions.
+     * Handles SQL Exceptions and throws it.
      *
      * @param ex    SQL Exception
      * @param event Event for error sending to channel to inform user.
@@ -52,4 +52,19 @@ public final class DbUtil {
         MessageSender.sendSimpleError(builder.toString(), Normandy.getErrorChannel());
         throw ex;
     }
+
+    /**
+     * Handles SQL Exceptions.
+     *
+     * @param ex    SQL Exception
+     * @param event Event for error sending to channel to inform user.
+     */
+    public static void handleExceptionAndSuppress(SQLException ex, MessageReceivedEvent event) {
+        try {
+            handleException(ex, event);
+        } catch (SQLException e) {
+            //DO NOTHING
+        }
+    }
+
 }
