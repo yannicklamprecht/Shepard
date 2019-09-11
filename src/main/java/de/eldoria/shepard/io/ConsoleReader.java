@@ -7,14 +7,13 @@ import java.util.Scanner;
 public final class ConsoleReader implements Runnable {
 
     private static Thread thread;
-
     private static ConsoleReader instance;
 
     private Scanner inputReader = new Scanner(System.in);
 
     private ConsoleReader() {
         ShepardBot.getLogger().info("Console reader started!");
-        waitForInput();
+        start();
     }
 
     /**
@@ -31,22 +30,26 @@ public final class ConsoleReader implements Runnable {
         readText();
     }
 
-    private void waitForInput() {
-        thread = new Thread(this);
+    private void start() {
+        if (thread == null) {
+            thread = new Thread(this);
+        } else {
+            thread.interrupt();
+        }
         thread.start();
     }
 
     private void readText() {
-        String input = inputReader.nextLine();
-        if (input != null && !input.isEmpty()) {
+        while (true) {
+            String input = inputReader.nextLine();
+            if (input == null || input.isEmpty()) {
+                continue;
+            }
             if (input.equalsIgnoreCase("shutdown")) {
                 ShepardBot.getInstance().shutdown();
                 ShepardBot.getLogger().info(input);
+                return;
             }
-            if (input.equals("ping")) {
-                ShepardBot.getLogger().info("pong");
-            }
-            waitForInput();
         }
     }
 }
