@@ -100,18 +100,13 @@ public class Help extends Command {
             inline++;
         }
 
-        PrivateChannel complete = event.getAuthor().openPrivateChannel().complete();
-        if (complete != null && event.getAuthor().hasPrivateChannel()) {
-            MessageSender.sendTextBox("__**COMMANDS**__", fields, complete, Color.green);
-            MessageSender.sendMessage("I send you a direct message with a list of commands.", event.getChannel());
-        } else {
-            MessageSender.sendTextBox("__**COMMANDS**__", fields, event.getChannel(), Color.green);
-        }
-
-
-        //fields.add(new MessageEmbed.Field("help", output, false));
-        //MessageSender.sendMessage("**__HELP__**" + System.lineSeparator() + output, event.getChannel());
-
-
+        event.getAuthor().openPrivateChannel().queue(privateChannel -> {
+            if (privateChannel != null && event.getAuthor().hasPrivateChannel()) {
+                MessageSender.sendTextBox("__**COMMANDS**__", fields, privateChannel, Color.green);
+                MessageSender.sendMessage("I send you a direct message with a list of commands.", event.getChannel());
+            } else {
+                MessageSender.sendTextBox("__**COMMANDS**__", fields, event.getChannel(), Color.green);
+            }
+        });
     }
 }

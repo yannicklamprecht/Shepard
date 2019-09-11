@@ -81,11 +81,11 @@ public class Invite extends Command {
     }
 
     private void refreshInvites(MessageReceivedEvent receivedEvent) {
-        if (InviteData.updateInvite(receivedEvent.getGuild(),
-                receivedEvent.getGuild().retrieveInvites().complete(), receivedEvent)) {
-            MessageSender.sendMessage("Removed non existent invites!", receivedEvent.getChannel());
-        }
-
+        receivedEvent.getGuild().retrieveInvites().queue(invites -> {
+            if (InviteData.updateInvite(receivedEvent.getGuild(), invites, receivedEvent)) {
+                MessageSender.sendMessage("Removed non existent invites!", receivedEvent.getChannel());
+            }
+        });
     }
 
     private void removeInvite(String[] args, MessageReceivedEvent receivedEvent) {
@@ -112,18 +112,19 @@ public class Invite extends Command {
             MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, receivedEvent.getChannel());
             return;
         }
-        List<net.dv8tion.jda.api.entities.Invite> invites = receivedEvent.getGuild().retrieveInvites().complete();
-        for (var invite : invites) {
-            if (invite.getCode().equals(args[1])) {
-                String name = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-                if (InviteData.addInvite(receivedEvent.getGuild(), invite.getCode(), name,
-                        invite.getUses(), receivedEvent)) {
-                    MessageSender.sendMessage("Added Invite \"" + name + " with code " + invite.getCode()
-                            + " to database with usage count of " + invite.getUses(), receivedEvent.getChannel());
+        receivedEvent.getGuild().retrieveInvites().queue(invites -> {
+            for (var invite : invites) {
+                if (invite.getCode().equals(args[1])) {
+                    String name = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+                    if (InviteData.addInvite(receivedEvent.getGuild(), invite.getCode(), name,
+                            invite.getUses(), receivedEvent)) {
+                        MessageSender.sendMessage("Added Invite \"" + name + " with code " + invite.getCode()
+                                + " to database with usage count of " + invite.getUses(), receivedEvent.getChannel());
+                    }
+                    return;
                 }
-                return;
             }
-        }
-        MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, receivedEvent.getChannel());
+        });
     }
 }
