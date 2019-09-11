@@ -2,9 +2,9 @@ package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.DatabaseConnector;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.util.DefaultMap;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,7 +28,7 @@ public final class PrefixData {
      * @param event  event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setPrefix(Guild guild, String prefix, MessageReceivedEvent event) {
+    public static boolean setPrefix(Guild guild, String prefix, MessageEventDataWrapper event) {
         cacheDirty = true;
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_prefix(?,?)")) {
@@ -51,7 +51,7 @@ public final class PrefixData {
      * @param event event from command sending for error handling. Can be null.
      * @return Prefix as string
      */
-    public static String getPrefix(Guild guild, MessageReceivedEvent event) {
+    public static String getPrefix(Guild guild, MessageEventDataWrapper event) {
         if (!cacheDirty) {
             return prefixes.get(guild.getId());
         }
@@ -61,7 +61,7 @@ public final class PrefixData {
         return getPrefix(guild, event);
     }
 
-    private static void refreshPrefixes(MessageReceivedEvent event) {
+    private static void refreshPrefixes(MessageEventDataWrapper event) {
         if (!cacheDirty) {
             return;
         }

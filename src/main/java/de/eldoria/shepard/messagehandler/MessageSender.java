@@ -2,6 +2,7 @@ package de.eldoria.shepard.messagehandler;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.GreetingSettings;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -9,7 +10,6 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
@@ -186,7 +186,7 @@ public class MessageSender {
      *
      * @param receivedEvent Event of message receive
      */
-    public static void deleteMessage(MessageReceivedEvent receivedEvent) {
+    public static void deleteMessage(MessageEventDataWrapper receivedEvent) {
         try {
             receivedEvent.getMessage().delete().submit();
         } catch (InsufficientPermissionException e) {
@@ -201,7 +201,7 @@ public class MessageSender {
      * @param event   event to log
      * @param channel channel to log
      */
-    public static void logMessageAsPlainText(MessageReceivedEvent event, MessageChannel channel) {
+    public static void logMessageAsPlainText(MessageEventDataWrapper event, MessageChannel channel) {
         channel.sendMessage(event.getGuild().getName() + " | " + event.getMessage().getCategory().getName()
                 + " | " + event.getMessage().getChannel().getName() + " by " + event.getAuthor().getName()
                 + ": " + event.getMessage().getContentRaw()).queue();
@@ -213,7 +213,7 @@ public class MessageSender {
      * @param event   event to log
      * @param channel channel to log
      */
-    public static void logMessageAsEmbedded(MessageReceivedEvent event, MessageChannel channel) {
+    public static void logMessageAsEmbedded(MessageEventDataWrapper event, MessageChannel channel) {
         Instant instant = Instant.now(); // get The current time in instant object
         Timestamp t = java.sql.Timestamp.from(instant); // Convert instant to Timestamp
 
@@ -250,7 +250,7 @@ public class MessageSender {
         channel.sendMessage((builder.build())).queue();
     }
 
-    public static void logCommand(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public static void logCommand(String label, String[] args, MessageEventDataWrapper receivedEvent) {
         String command = "Executed command \"" + label + " " + String.join(" ", args)
                 + "\" on  guild " + receivedEvent.getGuild().getName() + " ("
                 + receivedEvent.getGuild().getId() + ")";

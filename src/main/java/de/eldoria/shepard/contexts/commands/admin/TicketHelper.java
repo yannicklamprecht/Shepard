@@ -1,10 +1,10 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.database.queries.TicketData;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,7 +24,7 @@ final class TicketHelper {
      * @param member        member to change roles
      * @param rolesToRemove roles as string list
      */
-    static void removeAndUpdateTicketRoles(MessageReceivedEvent receivedEvent,
+    static void removeAndUpdateTicketRoles(MessageEventDataWrapper receivedEvent,
                                            Member member, List<String> rolesToRemove) {
         List<Role> removeRoles = new ArrayList<>();
 

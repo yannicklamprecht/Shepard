@@ -3,9 +3,9 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import static de.eldoria.shepard.database.queries.PrefixData.setPrefix;
 import static java.lang.System.lineSeparator;
@@ -27,29 +27,29 @@ public class Prefix extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
         String cmd = args[0];
         if (cmd.equalsIgnoreCase("set") || cmd.equalsIgnoreCase("s")) {
-            set(args, receivedEvent);
+            set(args, dataWrapper);
             return;
         }
         if (cmd.equalsIgnoreCase("reset") || cmd.equalsIgnoreCase("r")) {
-            reset(receivedEvent);
+            reset(dataWrapper);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
-        sendCommandUsage(receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
+        sendCommandUsage(dataWrapper.getChannel());
     }
 
-    private void reset(MessageReceivedEvent receivedEvent) {
+    private void reset(MessageEventDataWrapper receivedEvent) {
         if (setPrefix(receivedEvent.getGuild(), ShepardBot.getConfig().getPrefix(), receivedEvent)) {
             MessageSender.sendMessage("Set Prefix to '" + ShepardBot.getConfig().getPrefix() + "'",
                     receivedEvent.getChannel());
         }
     }
 
-    private void set(String[] args, MessageReceivedEvent receivedEvent) {
+    private void set(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length == 1) {
             MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, receivedEvent.getChannel());
             sendCommandUsage(receivedEvent.getChannel());

@@ -5,6 +5,7 @@ import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.ContextData;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
@@ -12,7 +13,6 @@ import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,43 +46,43 @@ public class ManageContextUsers extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        String contextName = getContextName(args[0], receivedEvent);
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+        String contextName = getContextName(args[0], dataWrapper);
         String cmd = args[1];
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
-                    receivedEvent.getChannel());
+                    dataWrapper.getChannel());
             return;
         }
 
         if (cmd.equalsIgnoreCase("setActive") || cmd.equalsIgnoreCase("a")) {
-            setActive(args, contextName, receivedEvent);
+            setActive(args, contextName, dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("setListType") || cmd.equalsIgnoreCase("lt")) {
-            setListType(args, contextName, receivedEvent);
+            setListType(args, contextName, dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("addUser") || cmd.equalsIgnoreCase("au")) {
-            addUser(args, contextName, receivedEvent);
+            addUser(args, contextName, dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("removeUser") || cmd.equalsIgnoreCase("ru")) {
-            removeUser(args, contextName, receivedEvent);
+            removeUser(args, contextName, dataWrapper);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
-        sendCommandArgHelp("action", receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
+        sendCommandArgHelp("action", dataWrapper.getChannel());
 
     }
 
     private void manageUser(String[] args, String contextName,
-                            ModifyType modifyType, MessageReceivedEvent receivedEvent) {
+                            ModifyType modifyType, MessageEventDataWrapper receivedEvent) {
         List<String> mentions = new ArrayList<>();
 
         for (String userId : Arrays.copyOfRange(args, 2, args.length)) {
@@ -116,16 +116,16 @@ public class ManageContextUsers extends Command {
         }
     }
 
-    private void addUser(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
+    private void addUser(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
         manageUser(args, contextName, ModifyType.ADD, receivedEvent);
     }
 
-    private void removeUser(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
+    private void removeUser(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
         manageUser(args, contextName, ModifyType.REMOVE, receivedEvent);
     }
 
 
-    private void setListType(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
+    private void setListType(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
         ListType type = ListType.getType(args[2]);
 
         if (type == null) {
@@ -142,7 +142,7 @@ public class ManageContextUsers extends Command {
 
     }
 
-    private void setActive(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
+    private void setActive(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {

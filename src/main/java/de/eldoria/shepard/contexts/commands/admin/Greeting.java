@@ -4,10 +4,10 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.GreetingData;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Arrays;
 
@@ -34,28 +34,28 @@ public class Greeting extends Command {
 
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
         String cmd = args[0];
         if (cmd.equalsIgnoreCase("setChannel") || cmd.equalsIgnoreCase("sc")) {
-            setChannel(args, receivedEvent);
+            setChannel(args, dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("removeChannel") || cmd.equalsIgnoreCase(("rc"))) {
-            removeChannel(receivedEvent);
+            removeChannel(dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("setMessage") || cmd.equalsIgnoreCase("sm")) {
-            setMessage(args, receivedEvent);
+            setMessage(args, dataWrapper);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
-        sendCommandUsage(receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
+        sendCommandUsage(dataWrapper.getChannel());
     }
 
-    private void setMessage(String[] args, MessageReceivedEvent receivedEvent) {
+    private void setMessage(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length > 1) {
             String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
             if (GreetingData.setGreetingText(receivedEvent.getGuild(), message, receivedEvent)) {
@@ -67,13 +67,13 @@ public class Greeting extends Command {
         MessageSender.sendSimpleError(ErrorType.NO_MESSAGE_FOUND, receivedEvent.getChannel());
     }
 
-    private void removeChannel(MessageReceivedEvent receivedEvent) {
+    private void removeChannel(MessageEventDataWrapper receivedEvent) {
         GreetingData.removeGreetingChannel(receivedEvent.getGuild(), receivedEvent);
 
         MessageSender.sendMessage("Removed greeting channel.", receivedEvent.getChannel());
     }
 
-    private void setChannel(String[] args, MessageReceivedEvent receivedEvent) {
+    private void setChannel(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length == 1) {
             if (GreetingData.setGreetingChannel(receivedEvent.getGuild(), receivedEvent.getChannel(), receivedEvent)) {
                 MessageSender.sendMessage("Greeting Channel set to "

@@ -4,9 +4,9 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Arrays;
@@ -37,29 +37,29 @@ public class Invite extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
         String cmd = args[0];
         if (cmd.equalsIgnoreCase("addInvite") || cmd.equalsIgnoreCase("ai")) {
-            addInvite(args, receivedEvent);
+            addInvite(args, dataWrapper);
             return;
         }
         if (cmd.equalsIgnoreCase("removeInvite") || cmd.equalsIgnoreCase("remi")) {
-            removeInvite(args, receivedEvent);
+            removeInvite(args, dataWrapper);
             return;
         }
         if (cmd.equalsIgnoreCase("refreshInvites") || cmd.equalsIgnoreCase("refi")) {
-            refreshInvites(receivedEvent);
+            refreshInvites(dataWrapper);
             return;
         }
         if (cmd.equalsIgnoreCase("showInvites") || cmd.equalsIgnoreCase("si")) {
-            showInvites(receivedEvent);
+            showInvites(dataWrapper);
             return;
         }
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
-        sendCommandUsage(receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
+        sendCommandUsage(dataWrapper.getChannel());
     }
 
-    private void showInvites(MessageReceivedEvent receivedEvent) {
+    private void showInvites(MessageEventDataWrapper receivedEvent) {
         List<DatabaseInvite> invites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
 
         StringBuilder message = new StringBuilder();
@@ -80,7 +80,7 @@ public class Invite extends Command {
         MessageSender.sendMessage(message.toString(), receivedEvent.getChannel());
     }
 
-    private void refreshInvites(MessageReceivedEvent receivedEvent) {
+    private void refreshInvites(MessageEventDataWrapper receivedEvent) {
         if (InviteData.updateInvite(receivedEvent.getGuild(),
                 receivedEvent.getGuild().retrieveInvites().complete(), receivedEvent)) {
             MessageSender.sendMessage("Removed non existent invites!", receivedEvent.getChannel());
@@ -88,7 +88,7 @@ public class Invite extends Command {
 
     }
 
-    private void removeInvite(String[] args, MessageReceivedEvent receivedEvent) {
+    private void removeInvite(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length != 2) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             return;
@@ -107,7 +107,7 @@ public class Invite extends Command {
                 receivedEvent.getChannel());
     }
 
-    private void addInvite(String[] args, MessageReceivedEvent receivedEvent) {
+    private void addInvite(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length < 3) {
             MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, receivedEvent.getChannel());
             return;

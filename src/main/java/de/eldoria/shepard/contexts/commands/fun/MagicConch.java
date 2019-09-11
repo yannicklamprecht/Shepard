@@ -1,9 +1,9 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Collections;
 import java.util.Random;
@@ -26,7 +26,7 @@ public class MagicConch extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
         String word;
         Random rand = new Random();
         int type = rand.nextInt(3);
@@ -47,7 +47,7 @@ public class MagicConch extends Command {
 
         MessageSender.sendTextBox(null,
                 Collections.singletonList(new MessageEmbed.Field("The magic conch says:", word, false)),
-                receivedEvent.getChannel());
+                dataWrapper.getChannel());
 
     }
 }

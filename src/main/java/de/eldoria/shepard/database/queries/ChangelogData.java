@@ -1,10 +1,10 @@
 package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.DatabaseConnector;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,7 +28,7 @@ public final class ChangelogData {
      * @param event event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addRole(Guild guild, Role role, MessageReceivedEvent event) {
+    public static boolean addRole(Guild guild, Role role, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_changelog_role(?,?)")) {
             statement.setString(1, guild.getId());
@@ -49,7 +49,7 @@ public final class ChangelogData {
      * @param event event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeRole(Guild guild, Role role, MessageReceivedEvent event) {
+    public static boolean removeRole(Guild guild, Role role, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_changelog_role(?,?)")) {
             statement.setString(1, guild.getId());
@@ -70,7 +70,7 @@ public final class ChangelogData {
      * @param event   event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setChannel(Guild guild, TextChannel channel, MessageReceivedEvent event) {
+    public static boolean setChannel(Guild guild, TextChannel channel, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_changelog_channel(?,?)")) {
             statement.setString(1, guild.getId());
@@ -90,7 +90,7 @@ public final class ChangelogData {
      * @param event event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeChannel(Guild guild, MessageReceivedEvent event) {
+    public static boolean removeChannel(Guild guild, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_changelog_channel(?)")) {
             statement.setString(1, guild.getId());
@@ -109,7 +109,7 @@ public final class ChangelogData {
      * @param event event from command sending for error handling. Can be null.
      * @return list of role ids
      */
-    public static List<String> getRoles(Guild guild, MessageReceivedEvent event) {
+    public static List<String> getRoles(Guild guild, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_changelog_roles(?)")) {
             statement.setString(1, guild.getId());
@@ -130,7 +130,7 @@ public final class ChangelogData {
      * @param event event from command sending for error handling. Can be null.
      * @return channel id as string
      */
-    public static String getChannel(Guild guild, MessageReceivedEvent event) {
+    public static String getChannel(Guild guild, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_changelog_channel(?)")) {
             statement.setString(1, guild.getId());

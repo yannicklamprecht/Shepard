@@ -3,10 +3,10 @@ package de.eldoria.shepard.database.queries;
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.types.ContextSettings;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,7 +40,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addContextUser(String contextName, User user, MessageReceivedEvent event) {
+    public static boolean addContextUser(String contextName, User user, MessageEventDataWrapper event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -63,7 +63,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeContextUser(String contextName, User user, MessageReceivedEvent event) {
+    public static boolean removeContextUser(String contextName, User user, MessageEventDataWrapper event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -86,7 +86,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addContextGuild(String contextName, Guild guild, MessageReceivedEvent event) {
+    public static boolean addContextGuild(String contextName, Guild guild, MessageEventDataWrapper event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -109,7 +109,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeContextGuild(String contextName, Guild guild, MessageReceivedEvent event) {
+    public static boolean removeContextGuild(String contextName, Guild guild, MessageEventDataWrapper event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -134,7 +134,7 @@ public final class ContextData {
      * @return true if the query execution was successful
      */
     public static boolean addContextUserPermission(String contextName, Guild guild,
-                                                   User user, MessageReceivedEvent event) {
+                                                   User user, MessageEventDataWrapper event) {
         userPermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -160,7 +160,7 @@ public final class ContextData {
      * @return true if the query execution was successful
      */
     public static boolean removeContextUserPermission(String contextName, Guild guild,
-                                                      User user, MessageReceivedEvent event) {
+                                                      User user, MessageEventDataWrapper event) {
         userPermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -186,7 +186,7 @@ public final class ContextData {
      * @return true if the query execution was successful
      */
     public static boolean addContextRolePermission(String contextName, Guild guild,
-                                                   Role role, MessageReceivedEvent event) {
+                                                   Role role, MessageEventDataWrapper event) {
         rolePermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -212,7 +212,7 @@ public final class ContextData {
      * @return true if the query execution was successful
      */
     public static boolean removeContextRolePermission(String contextName, Guild guild,
-                                                      Role role, MessageReceivedEvent event) {
+                                                      Role role, MessageEventDataWrapper event) {
         rolePermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -236,7 +236,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextAdmin(String contextName, boolean state, MessageReceivedEvent event) {
+    public static boolean setContextAdmin(String contextName, boolean state, MessageEventDataWrapper event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -259,7 +259,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextNsfw(String contextName, boolean state, MessageReceivedEvent event) {
+    public static boolean setContextNsfw(String contextName, boolean state, MessageEventDataWrapper event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -282,7 +282,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextUserCheckActive(String contextName, boolean state, MessageReceivedEvent event) {
+    public static boolean setContextUserCheckActive(String contextName, boolean state, MessageEventDataWrapper event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -305,7 +305,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextGuildCheckActive(String contextName, boolean state, MessageReceivedEvent event) {
+    public static boolean setContextGuildCheckActive(String contextName, boolean state, MessageEventDataWrapper event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -328,7 +328,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextUserListType(String contextName, ListType listType, MessageReceivedEvent event) {
+    public static boolean setContextUserListType(String contextName, ListType listType, MessageEventDataWrapper event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -351,7 +351,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextGuildListType(String contextName, ListType listType, MessageReceivedEvent event) {
+    public static boolean setContextGuildListType(String contextName, ListType listType, MessageEventDataWrapper event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -373,7 +373,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return Context data object.
      */
-    public static ContextSettings getContextData(String contextName, MessageReceivedEvent event) {
+    public static ContextSettings getContextData(String contextName, MessageEventDataWrapper event) {
         if (contextDataDirty.containsKey(contextName)) {
             if (!contextDataDirty.get(contextName)) {
                 return contextData.get(contextName);
@@ -424,7 +424,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return List of user ids
      */
-    public static List<String> getContextUserPermission(Guild guild, String contextName, MessageReceivedEvent event) {
+    public static List<String> getContextUserPermission(Guild guild, String contextName, MessageEventDataWrapper event) {
         return getContextUserPermissions(contextName, event).getOrDefault(guild.getId(), Collections.emptyList());
     }
 
@@ -435,7 +435,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return Map [guild_id, List(role_ids)] Map which contains the user as list for each guild
      */
-    public static Map<String, List<String>> getContextUserPermissions(String contextName, MessageReceivedEvent event) {
+    public static Map<String, List<String>> getContextUserPermissions(String contextName, MessageEventDataWrapper event) {
         if (userPermissions.containsKey(contextName)) {
             if (!userPermissionDirty.get(contextName)) {
                 return userPermissions.get(contextName);
@@ -482,7 +482,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return List of user ids
      */
-    public static List<String> getContextRolePermission(Guild guild, String contextName, MessageReceivedEvent event) {
+    public static List<String> getContextRolePermission(Guild guild, String contextName, MessageEventDataWrapper event) {
         return getContextRolePermissions(contextName, event).getOrDefault(guild.getId(), Collections.emptyList());
     }
 
@@ -494,7 +494,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return Map [guild_id, List(role_ids)] Map which contains the user as list for each guild
      */
-    public static Map<String, List<String>> getContextRolePermissions(String contextName, MessageReceivedEvent event) {
+    public static Map<String, List<String>> getContextRolePermissions(String contextName, MessageEventDataWrapper event) {
         if (rolePermissions.containsKey(contextName)) {
             if (!rolePermissionDirty.get(contextName)) {
                 return rolePermissions.get(contextName);

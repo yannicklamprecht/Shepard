@@ -1,10 +1,10 @@
 package de.eldoria.shepard.contexts.commands.exklusive;
 
 import de.eldoria.shepard.calendar.CalendarEvent;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -28,7 +28,7 @@ public class IsHaddeWorking extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
         try {
             Calendar cal = Calendar.getInstance();
             Date currentDate = cal.getTime();
@@ -53,21 +53,21 @@ public class IsHaddeWorking extends Command {
                 if (currentDate.after(event.getStart()) && currentDate.before(event.getEnd())) {
                     fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?", "Ja, bis "
                             + getTime.format(event.getEnd()) + " Uhr " + endDate, false));
-                    MessageSender.sendTextBox(null, fields, receivedEvent.getChannel());
+                    MessageSender.sendTextBox(null, fields, dataWrapper.getChannel());
                 } else {
                     fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?", "Nein, er arbeitet "
                             + startDate + " von " + getTime.format(event.getStart()) + " Uhr bis "
                             + getTime.format(event.getEnd()) + " Uhr.", false));
-                    MessageSender.sendTextBox(null, fields, receivedEvent.getChannel());
+                    MessageSender.sendTextBox(null, fields, dataWrapper.getChannel());
                 }
             } else {
                 fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?",
                         "Ich hab derzeit leider keine Arbeitszeiten", false));
-                MessageSender.sendTextBox(null, fields, receivedEvent.getChannel());
+                MessageSender.sendTextBox(null, fields, dataWrapper.getChannel());
 
             }
         } catch (IOException | GeneralSecurityException e) {
-            receivedEvent.getChannel().sendMessage("**Exception** occurred :confused:").queue();
+            dataWrapper.getChannel().sendMessage("**Exception** occurred :confused:").queue();
         }
 
     }

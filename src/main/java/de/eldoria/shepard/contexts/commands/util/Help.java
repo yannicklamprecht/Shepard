@@ -2,13 +2,13 @@ package de.eldoria.shepard.contexts.commands.util;
 
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.database.queries.PrefixData;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.PrivateChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -32,33 +32,33 @@ public class Help extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        String prefix = PrefixData.getPrefix(receivedEvent.getGuild(), receivedEvent);
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+        String prefix = PrefixData.getPrefix(dataWrapper.getGuild(), dataWrapper);
 
         //Command List
         if (args.length == 0) {
-            listCommands(receivedEvent);
+            listCommands(dataWrapper);
             return;
         }
 
         Command command = CommandCollection.getInstance().getCommand(args[0]);
-        if (command == null || !command.isContextValid(receivedEvent)) {
+        if (command == null || !command.isContextValid(dataWrapper)) {
             MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!",
                             "Type " + prefix + "help for a full list of available commands!", false)},
-                    receivedEvent.getChannel());
+                    dataWrapper.getChannel());
             return;
         }
 
         //Command Help
         if (args.length == 1) {
-            commandHelp(receivedEvent.getChannel(), command);
+            commandHelp(dataWrapper.getChannel(), command);
             return;
         }
 
 
         //Arg help
         if (args.length == 2) {
-            argumentHelp(args[1], receivedEvent.getChannel(), command);
+            argumentHelp(args[1], dataWrapper.getChannel(), command);
             return;
 
         }
@@ -67,7 +67,7 @@ public class Help extends Command {
                         + prefix + "help for a list of commands.\n"
                         + prefix + "help [command] for help for a specific command.\n"
                         + prefix + "help [command] [arg] for a description of the argument.", false)},
-                receivedEvent.getChannel());
+                dataWrapper.getChannel());
     }
 
     /* Sends help for a specific argument of a command.*/
@@ -81,7 +81,7 @@ public class Help extends Command {
     }
 
     /* Sends a list of all commands with description */
-    private void listCommands(MessageReceivedEvent event) {
+    private void listCommands(MessageEventDataWrapper event) {
         List<Command> commands = CommandCollection.getInstance().getCommands();
 
         List<MessageEmbed.Field> fields = new ArrayList<>();

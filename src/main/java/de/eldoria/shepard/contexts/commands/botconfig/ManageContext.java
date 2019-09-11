@@ -3,11 +3,11 @@ package de.eldoria.shepard.contexts.commands.botconfig;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.ContextData;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.Verifier;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import static de.eldoria.shepard.contexts.ContextHelper.getContextName;
 import static java.lang.System.lineSeparator;
@@ -32,30 +32,30 @@ public class ManageContext extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        String contextName = getContextName(args[0], receivedEvent);
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+        String contextName = getContextName(args[0], dataWrapper);
         String cmd = args[1];
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
-                    receivedEvent.getChannel());
+                    dataWrapper.getChannel());
             return;
         }
 
         if (cmd.equalsIgnoreCase("setNSFW") || cmd.equalsIgnoreCase("nsfw")) {
-            setNsfw(args, contextName, receivedEvent);
+            setNsfw(args, contextName, dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("setadminonly") || cmd.equalsIgnoreCase("admin")) {
-            setAdminOnly(args, contextName, receivedEvent);
+            setAdminOnly(args, contextName, dataWrapper);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
     }
 
-    private void setAdminOnly(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
+    private void setAdminOnly(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
@@ -82,7 +82,7 @@ public class ManageContext extends Command {
         }
     }
 
-    private void setNsfw(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
+    private void setNsfw(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {

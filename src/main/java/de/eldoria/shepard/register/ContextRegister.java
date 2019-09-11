@@ -16,6 +16,7 @@ import de.eldoria.shepard.contexts.commands.botconfig.ManageContextGuild;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContextUsers;
 import de.eldoria.shepard.contexts.commands.exklusive.IsHaddeWorking;
 import de.eldoria.shepard.contexts.commands.exklusive.Meetings;
+import de.eldoria.shepard.contexts.commands.fun.LargeEmote;
 import de.eldoria.shepard.contexts.commands.fun.MagicConch;
 import de.eldoria.shepard.contexts.commands.fun.Oha;
 import de.eldoria.shepard.contexts.commands.fun.Owo;
@@ -94,6 +95,7 @@ public final class ContextRegister {
         contextSensitives.add(new Uwud());
         contextSensitives.add(new Quote());
         contextSensitives.add(new Someone());
+        contextSensitives.add(new LargeEmote());
     }
 
     private void registerExclusiveCommands() {

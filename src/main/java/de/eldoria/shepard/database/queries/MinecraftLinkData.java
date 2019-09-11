@@ -2,8 +2,8 @@ package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.database.types.MinecraftLink;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,7 +23,7 @@ public final class MinecraftLinkData {
      * @param event event from command sending for error handling. Can be null.
      * @return Minecraft Link object or null if no link was found
      */
-    public static MinecraftLink getLinkByUserId(User user, MessageReceivedEvent event) {
+    public static MinecraftLink getLinkByUserId(User user, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_minecraft_link_user_id(?)")) {
             statement.setString(1, getIdRaw(user.getId()));
@@ -44,7 +44,7 @@ public final class MinecraftLinkData {
      * @param event event from command sending for error handling. Can be null.
      * @return Minecraft Link object or null if no link was found
      */
-    public static MinecraftLink getLinkByUUID(String uuid, MessageReceivedEvent event) {
+    public static MinecraftLink getLinkByUUID(String uuid, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_minecraft_link_uuid(?)")) {
             statement.setString(1, getIdRaw(uuid));
@@ -66,7 +66,7 @@ public final class MinecraftLinkData {
      * @param event event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addLinkCode(String code, String uuid, MessageReceivedEvent event) {
+    public static boolean addLinkCode(String code, String uuid, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.add_minecraft_link_code(?,?)")) {
             statement.setString(1, code);
@@ -86,7 +86,7 @@ public final class MinecraftLinkData {
      * @param event event from command sending for error handling. Can be null.
      * @return UUID as String.
      */
-    public static String getUUIDByCode(String code, MessageReceivedEvent event) {
+    public static String getUUIDByCode(String code, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.add_minecraft_link_code(?)")) {
             statement.setString(1, code);

@@ -1,8 +1,8 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Uwud extends Command {
 
@@ -16,9 +16,9 @@ public class Uwud extends Command {
 
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
         MessageSender.sendMessage(":regional_indicator_u::regional_indicator_w::regional_indicator_u:",
-                receivedEvent.getChannel());
-        MessageSender.deleteMessage(receivedEvent);
+                dataWrapper.getChannel());
+        MessageSender.deleteMessage(dataWrapper);
     }
 }

@@ -1,10 +1,10 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 public class Sayd extends Command {
@@ -20,28 +20,28 @@ public class Sayd extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
         try {
             if (args.length == 0) {
                 MessageSender.sendError(
                         new MessageEmbed.Field[] {
                                 new MessageEmbed.Field("Too few arguments",
                                         "Use \"&help sayd\" for more information", false)},
-                        receivedEvent.getChannel());
+                        dataWrapper.getChannel());
             } else {
                 String message = "";
                 for (String arg : args) {
                     message = message.concat(arg + " ");
                 }
-                MessageSender.deleteMessage(receivedEvent);
-                MessageSender.sendMessage(message, receivedEvent.getChannel());
+                MessageSender.deleteMessage(dataWrapper);
+                MessageSender.sendMessage(message, dataWrapper.getChannel());
             }
 
         } catch (InsufficientPermissionException e) {
             MessageSender.sendError(
                     new MessageEmbed.Field[] {new MessageEmbed.Field("Lack of Permission",
                             "Missing permission: MESSAGE_MANAGE", false)},
-                    receivedEvent.getChannel());
+                    dataWrapper.getChannel());
         }
     }
 }

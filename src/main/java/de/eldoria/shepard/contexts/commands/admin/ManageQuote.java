@@ -4,9 +4,9 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.QuoteData;
 import de.eldoria.shepard.database.types.QuoteElement;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -41,55 +41,55 @@ public class ManageQuote extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
         String cmd = args[0];
 
         if (cmd.equalsIgnoreCase("add") || cmd.equalsIgnoreCase("a")) {
-            addQuote(args, receivedEvent);
+            addQuote(args, dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("remove") || cmd.equalsIgnoreCase("r")) {
-            removeQuote(args, receivedEvent);
+            removeQuote(args, dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("list") || cmd.equalsIgnoreCase("l")) {
-            showQuotes(args, receivedEvent);
+            showQuotes(args, dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("alter") || cmd.equalsIgnoreCase("alt")) {
             if (args.length < 3) {
-                MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+                MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, dataWrapper.getChannel());
             }
 
             int quoteId;
-            int quotesCount = QuoteData.getQuotesCount(receivedEvent.getGuild(), receivedEvent);
+            int quotesCount = QuoteData.getQuotesCount(dataWrapper.getGuild(), dataWrapper);
             try {
                 quoteId = Integer.parseInt(args[1]);
             } catch (IllegalArgumentException e) {
-                MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, receivedEvent.getChannel());
+                MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, dataWrapper.getChannel());
                 return;
             }
 
             if (quoteId > quotesCount) {
-                MessageSender.sendSimpleError(ErrorType.INVALID_ID, receivedEvent.getChannel());
+                MessageSender.sendSimpleError(ErrorType.INVALID_ID, dataWrapper.getChannel());
             }
 
             String quote = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
 
-            QuoteData.alterQuote(receivedEvent.getGuild(), quoteId, quote, receivedEvent);
+            QuoteData.alterQuote(dataWrapper.getGuild(), quoteId, quote, dataWrapper);
 
             MessageSender.sendSimpleTextBox("Changed text of quote with id **" + quoteId + "**",
-                    quote, Color.blue, receivedEvent.getChannel());
+                    quote, Color.blue, dataWrapper.getChannel());
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
     }
 
-    private void showQuotes(String[] args, MessageReceivedEvent receivedEvent) {
+    private void showQuotes(String[] args, MessageEventDataWrapper receivedEvent) {
         List<QuoteElement> quotes;
         if (args.length > 1) {
             quotes = QuoteData.getQuotesByKeyword(receivedEvent.getGuild(),
@@ -127,7 +127,7 @@ public class ManageQuote extends Command {
         }
     }
 
-    private void removeQuote(String[] args, MessageReceivedEvent receivedEvent) {
+    private void removeQuote(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length != 2) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
         }
@@ -150,7 +150,7 @@ public class ManageQuote extends Command {
                 "", Color.red, receivedEvent.getChannel());
     }
 
-    private void addQuote(String[] args, MessageReceivedEvent receivedEvent) {
+    private void addQuote(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length == 1) {
             MessageSender.sendSimpleError(ErrorType.NO_QUOTE_FOUND, receivedEvent.getChannel());
             return;

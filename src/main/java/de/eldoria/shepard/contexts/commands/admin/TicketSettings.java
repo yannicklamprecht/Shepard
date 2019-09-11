@@ -4,6 +4,7 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.Verifier;
@@ -11,7 +12,6 @@ import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,10 +58,10 @@ public class TicketSettings extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
         String cmd = args[0];
         String type = args[1];
-        List<TicketType> tickets = TicketData.getTypes(receivedEvent.getGuild(), receivedEvent);
+        List<TicketType> tickets = TicketData.getTypes(dataWrapper.getGuild(), dataWrapper);
         TicketType scopeTicket = null;
         for (TicketType ticket : tickets) {
             if (ticket.getKeyword().equalsIgnoreCase(type)) {
@@ -74,44 +74,44 @@ public class TicketSettings extends Command {
 
 
         if ((cmd.equalsIgnoreCase("createType") || cmd.equalsIgnoreCase("ct")) && scopeTicket != null) {
-            createType(args, receivedEvent, type);
+            createType(args, dataWrapper, type);
             return;
         } else if ((cmd.equalsIgnoreCase("createType") || cmd.equalsIgnoreCase("ct")) && scopeTicket == null) {
-            MessageSender.sendSimpleError(ErrorType.TYPE_ALREADY_DEFINED, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TYPE_ALREADY_DEFINED, dataWrapper.getChannel());
             return;
         }
 
         if (scopeTicket == null) {
-            MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, dataWrapper.getChannel());
             return;
         }
 
         if (cmd.equalsIgnoreCase("removeType") || cmd.equalsIgnoreCase("rt")) {
-            removeType(args, receivedEvent, scopeTicket);
+            removeType(args, dataWrapper, scopeTicket);
             return;
         }
 
         if (cmd.equalsIgnoreCase("setOwnerRoles") || cmd.equalsIgnoreCase("sor")
                 || cmd.equalsIgnoreCase("setSupportRoles") || cmd.equalsIgnoreCase("ssr")) {
-            setRoles(args, receivedEvent, cmd, scopeTicket);
+            setRoles(args, dataWrapper, cmd, scopeTicket);
             return;
         }
 
         if (cmd.equalsIgnoreCase("setChannelCategory") || cmd.equalsIgnoreCase("scc")) {
-            setChannelCategory(args, receivedEvent, scopeTicket);
+            setChannelCategory(args, dataWrapper, scopeTicket);
             return;
         }
 
         if (cmd.equalsIgnoreCase("setCreationMessage") || cmd.equalsIgnoreCase("scm")) {
-            setCreationMessage(args, receivedEvent, scopeTicket);
+            setCreationMessage(args, dataWrapper, scopeTicket);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
-        sendCommandUsage(receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, dataWrapper.getChannel());
+        sendCommandUsage(dataWrapper.getChannel());
     }
 
-    private void setCreationMessage(String[] args, MessageReceivedEvent receivedEvent, TicketType scopeTicket) {
+    private void setCreationMessage(String[] args, MessageEventDataWrapper receivedEvent, TicketType scopeTicket) {
         if (args.length < 3) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             sendCommandUsage(receivedEvent.getChannel());
@@ -127,7 +127,7 @@ public class TicketSettings extends Command {
         }
     }
 
-    private void setChannelCategory(String[] args, MessageReceivedEvent receivedEvent, TicketType scopeTicket) {
+    private void setChannelCategory(String[] args, MessageEventDataWrapper receivedEvent, TicketType scopeTicket) {
         if (args.length != 3) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             sendCommandUsage(receivedEvent.getChannel());
@@ -148,7 +148,7 @@ public class TicketSettings extends Command {
         }
     }
 
-    private void setRoles(String[] args, MessageReceivedEvent receivedEvent, String cmd, TicketType scopeTicket) {
+    private void setRoles(String[] args, MessageEventDataWrapper receivedEvent, String cmd, TicketType scopeTicket) {
         if (args.length < 3) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             sendCommandUsage(receivedEvent.getChannel());
@@ -178,7 +178,7 @@ public class TicketSettings extends Command {
 
     }
 
-    private void removeType(String[] args, MessageReceivedEvent receivedEvent, TicketType scopeTicket) {
+    private void removeType(String[] args, MessageEventDataWrapper receivedEvent, TicketType scopeTicket) {
         if (args.length != 2) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             sendCommandUsage(receivedEvent.getChannel());
@@ -219,7 +219,7 @@ public class TicketSettings extends Command {
         }
     }
 
-    private void createType(String[] args, MessageReceivedEvent receivedEvent, String type) {
+    private void createType(String[] args, MessageEventDataWrapper receivedEvent, String type) {
         if (args.length != 3) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             sendCommandUsage(receivedEvent.getChannel());

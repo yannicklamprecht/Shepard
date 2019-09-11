@@ -5,6 +5,7 @@ import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.ContextData;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
@@ -12,7 +13,6 @@ import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,51 +46,51 @@ public class ManageContextGuild extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
         String cmd = args[1];
-        String contextName = getContextName(args[0], receivedEvent);
+        String contextName = getContextName(args[0], dataWrapper);
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
-                    receivedEvent.getChannel());
+                    dataWrapper.getChannel());
             return;
         }
 
         if (cmd.equalsIgnoreCase("setActive") || cmd.equalsIgnoreCase("a")) {
-            setActive(args, contextName, receivedEvent);
+            setActive(args, contextName, dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("setListType") || cmd.equalsIgnoreCase("lt")) {
-            setListType(args, contextName, receivedEvent);
+            setListType(args, contextName, dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("addGuild") || cmd.equalsIgnoreCase("ag")) {
-            addGuild(args, contextName, receivedEvent);
+            addGuild(args, contextName, dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("removeGuild") || cmd.equalsIgnoreCase("rg")) {
-            removeGuild(args, contextName, receivedEvent);
+            removeGuild(args, contextName, dataWrapper);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
-        sendCommandArgHelp("action", receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
+        sendCommandArgHelp("action", dataWrapper.getChannel());
 
     }
 
-    private void addGuild(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
+    private void addGuild(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
         modifyGuild(args, contextName, ModifyType.ADD, receivedEvent);
     }
 
-    private void removeGuild(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
+    private void removeGuild(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
         modifyGuild(args, contextName, ModifyType.REMOVE, receivedEvent);
     }
 
     private void modifyGuild(String[] args, String contextName,
-                             ModifyType modifyType, MessageReceivedEvent receivedEvent) {
+                             ModifyType modifyType, MessageEventDataWrapper receivedEvent) {
         List<String> mentions = new ArrayList<>();
 
         for (String guildId : Arrays.copyOfRange(args, 2, args.length)) {
@@ -129,7 +129,7 @@ public class ManageContextGuild extends Command {
     }
 
 
-    private void setListType(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
+    private void setListType(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
         ListType type = ListType.getType(args[2]);
 
         if (type == null) {
@@ -146,7 +146,7 @@ public class ManageContextGuild extends Command {
 
     }
 
-    private void setActive(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
+    private void setActive(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {

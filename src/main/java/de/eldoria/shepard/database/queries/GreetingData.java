@@ -2,9 +2,9 @@ package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.database.types.GreetingSettings;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,7 +25,7 @@ public final class GreetingData {
      * @param event   event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setGreetingChannel(Guild guild, MessageChannel channel, MessageReceivedEvent event) {
+    public static boolean setGreetingChannel(Guild guild, MessageChannel channel, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_greeting_channel(?,?)")) {
             statement.setString(1, guild.getId());
@@ -45,7 +45,7 @@ public final class GreetingData {
      * @param event event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeGreetingChannel(Guild guild, MessageReceivedEvent event) {
+    public static boolean removeGreetingChannel(Guild guild, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_greeting_channel(?)")) {
             statement.setString(1, guild.getId());
@@ -65,7 +65,7 @@ public final class GreetingData {
      * @param event event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setGreetingText(Guild guild, String text, MessageReceivedEvent event) {
+    public static boolean setGreetingText(Guild guild, String text, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_greeting_text(?,?)")) {
             statement.setString(1, guild.getId());

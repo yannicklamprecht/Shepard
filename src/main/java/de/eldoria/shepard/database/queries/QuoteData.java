@@ -2,8 +2,8 @@ package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.database.types.QuoteElement;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,7 +26,7 @@ public final class QuoteData {
      * @param event event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addQuote(Guild guild, String quote, MessageReceivedEvent event) {
+    public static boolean addQuote(Guild guild, String quote, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_quote(?,?)")) {
             statement.setString(1, guild.getId());
@@ -48,7 +48,7 @@ public final class QuoteData {
      * @param event   event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean alterQuote(Guild guild, int quoteId, String quote, MessageReceivedEvent event) {
+    public static boolean alterQuote(Guild guild, int quoteId, String quote, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.alter_quote(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -70,7 +70,7 @@ public final class QuoteData {
      * @param event   event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeQuote(Guild guild, int quoteId, MessageReceivedEvent event) {
+    public static boolean removeQuote(Guild guild, int quoteId, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_quote(?,?)")) {
             statement.setString(1, guild.getId());
@@ -90,7 +90,7 @@ public final class QuoteData {
      * @param event event from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static List<QuoteElement> getQuotes(Guild guild, MessageReceivedEvent event) {
+    public static List<QuoteElement> getQuotes(Guild guild, MessageEventDataWrapper event) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_quotes(?)")) {
@@ -113,7 +113,7 @@ public final class QuoteData {
      * @param event   event from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static List<QuoteElement> getQuotesByKeyword(Guild guild, String keyword, MessageReceivedEvent event) {
+    public static List<QuoteElement> getQuotesByKeyword(Guild guild, String keyword, MessageEventDataWrapper event) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_quotes_by_keyword(?,?)")) {
@@ -136,7 +136,7 @@ public final class QuoteData {
      * @param event event from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static int getQuotesCount(Guild guild, MessageReceivedEvent event) {
+    public static int getQuotesCount(Guild guild, MessageEventDataWrapper event) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_quote_count(?)")) {
@@ -159,7 +159,7 @@ public final class QuoteData {
      * @param event   event from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static int getQuotesCountByKeyword(Guild guild, String keyword, MessageReceivedEvent event) {
+    public static int getQuotesCountByKeyword(Guild guild, String keyword, MessageEventDataWrapper event) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_quote_count_by_keyword(?,?)")) {

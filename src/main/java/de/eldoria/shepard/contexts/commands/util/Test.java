@@ -1,7 +1,7 @@
 package de.eldoria.shepard.contexts.commands.util;
 
 import de.eldoria.shepard.contexts.commands.Command;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 
 /**
  * A test command without specified behaviour.
@@ -14,6 +14,6 @@ public class Test extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
     }
 }

@@ -1,9 +1,9 @@
 package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.DatabaseConnector;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -35,7 +35,7 @@ public final class MuteData {
      * @param event    event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setMuted(Guild guild, User user, String duration, MessageReceivedEvent event) {
+    public static boolean setMuted(Guild guild, User user, String duration, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_muted(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -51,7 +51,7 @@ public final class MuteData {
         return true;
     }
 
-    private static boolean refreshGuildData(Guild guild, MessageReceivedEvent event) {
+    private static boolean refreshGuildData(Guild guild, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_muted_users(?)")) {
             statement.setString(1, guild.getId());
@@ -75,7 +75,7 @@ public final class MuteData {
      * @param event event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeMute(Guild guild, User user, MessageReceivedEvent event) {
+    public static boolean removeMute(Guild guild, User user, MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_mute(?,?)")) {
             statement.setString(1, guild.getId());
@@ -96,7 +96,7 @@ public final class MuteData {
      * @param event event from command sending for error handling. Can be null.
      * @return List of muted users on a server.
      */
-    public static List<String> getMutedUsers(Guild guild, MessageReceivedEvent event) {
+    public static List<String> getMutedUsers(Guild guild, MessageEventDataWrapper event) {
         if (lastRefresh.isBefore(LocalDateTime.now().minusMinutes(1))) {
 
 

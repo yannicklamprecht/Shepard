@@ -1,8 +1,8 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Random;
 
@@ -17,11 +17,11 @@ public class Oha extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
         String oha = "oha";
         Random rand = new Random();
         int loops = rand.nextInt(30) + 10;
         oha = oha + "a".repeat(loops);
-        MessageSender.sendMessage(oha, receivedEvent.getChannel());
+        MessageSender.sendMessage(oha, dataWrapper.getChannel());
     }
 }

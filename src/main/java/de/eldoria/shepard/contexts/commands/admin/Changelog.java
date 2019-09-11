@@ -3,12 +3,12 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.ChangelogData;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
 import java.util.Objects;
@@ -43,34 +43,34 @@ public class Changelog extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
         String cmd = args[0];
         if (cmd.equalsIgnoreCase("addRole") || cmd.equalsIgnoreCase("ar")
                 || cmd.equalsIgnoreCase("removeRole") || cmd.equalsIgnoreCase("rr")) {
-            modifyRoles(args, receivedEvent, cmd);
+            modifyRoles(args, dataWrapper, cmd);
             return;
         }
 
         if (cmd.equalsIgnoreCase("activate") || cmd.equalsIgnoreCase("a")) {
-            activate(args, receivedEvent);
+            activate(args, dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("deactivate") || cmd.equalsIgnoreCase("d")) {
-            deactivate(receivedEvent);
+            deactivate(dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("roles") || cmd.equalsIgnoreCase("r")) {
-            showRoles(receivedEvent);
+            showRoles(dataWrapper);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
-        sendCommandUsage(receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
+        sendCommandUsage(dataWrapper.getChannel());
     }
 
-    private void showRoles(MessageReceivedEvent receivedEvent) {
+    private void showRoles(MessageEventDataWrapper receivedEvent) {
         List<String> roleIds = ChangelogData.getRoles(receivedEvent.getGuild(), receivedEvent);
 
         List<String> roleMentions = roleIds.stream()
@@ -82,13 +82,13 @@ public class Changelog extends Command {
                 String.join(lineSeparator(), roleMentions), receivedEvent.getChannel());
     }
 
-    private void deactivate(MessageReceivedEvent receivedEvent) {
+    private void deactivate(MessageEventDataWrapper receivedEvent) {
         if (ChangelogData.removeChannel(receivedEvent.getGuild(), receivedEvent)) {
             MessageSender.sendMessage("Changelog is deactivated", receivedEvent.getChannel());
         }
     }
 
-    private void activate(String[] args, MessageReceivedEvent receivedEvent) {
+    private void activate(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length != 2) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             return;
@@ -108,7 +108,7 @@ public class Changelog extends Command {
 
     }
 
-    private void modifyRoles(String[] args, MessageReceivedEvent receivedEvent, String cmd) {
+    private void modifyRoles(String[] args, MessageEventDataWrapper receivedEvent, String cmd) {
         if (args.length != 2) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             return;

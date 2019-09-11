@@ -5,6 +5,7 @@ import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.Replacer;
@@ -13,7 +14,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.managers.ChannelManager;
 import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
 import org.apache.commons.lang.StringUtils;
@@ -51,27 +51,27 @@ public class Ticket extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
         String cmd = args[0];
         if (cmd.equalsIgnoreCase("open") || cmd.equalsIgnoreCase("o")) {
-            openTicket(args, receivedEvent);
+            openTicket(args, dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("close") || cmd.equalsIgnoreCase("c")) {
-            close(args, receivedEvent);
+            close(args, dataWrapper);
             return;
         }
 
         if (cmd.equalsIgnoreCase("list") || cmd.equalsIgnoreCase("l")) {
-            typeInfo(args, receivedEvent);
+            typeInfo(args, dataWrapper);
             return;
         }
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
-        sendCommandUsage(receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
+        sendCommandUsage(dataWrapper.getChannel());
     }
 
-    private void close(String[] args, MessageReceivedEvent receivedEvent) {
+    private void close(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length != 1) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             return;
@@ -117,7 +117,7 @@ public class Ticket extends Command {
     }
 
 
-    private void typeInfo(String[] args, MessageReceivedEvent receivedEvent) {
+    private void typeInfo(String[] args, MessageEventDataWrapper receivedEvent) {
         List<TicketType> tickets = TicketData.getTypes(receivedEvent.getGuild(), receivedEvent);
         if (tickets.size() == 0) {
             MessageSender.sendMessage("No ticket types defined", receivedEvent.getChannel());
@@ -191,7 +191,7 @@ public class Ticket extends Command {
         }
     }
 
-    private void openTicket(String[] args, MessageReceivedEvent receivedEvent) {
+    private void openTicket(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length != 3) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
         }

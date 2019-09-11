@@ -1,10 +1,10 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.collections.KeyWordCollection;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.keywords.Keyword;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
@@ -19,13 +19,13 @@ public class ShowKeyword extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
         List<Keyword> keywords = KeyWordCollection.getInstance().getKeywords();
 
         int maxContextLength = "Context Name".length() + 1;
 
         for (Keyword k : keywords) {
-            if (k.isContextValid(receivedEvent)) {
+            if (k.isContextValid(dataWrapper)) {
                 if (k.getClass().getSimpleName().length() + 1 > maxContextLength) {
                     maxContextLength = k.getClass().getSimpleName().length() + 1;
                 }
@@ -38,13 +38,13 @@ public class ShowKeyword extends Command {
                 .append(System.lineSeparator());
 
         for (Keyword k : keywords) {
-            if (k.isContextValid(receivedEvent)) {
+            if (k.isContextValid(dataWrapper)) {
                 builder.append(StringUtils.rightPad(k.getClass().getSimpleName(), maxContextLength)).append(" -> ")
                         .append(k.toString()).append(System.lineSeparator());
             }
         }
         builder.append("```");
 
-        MessageSender.sendSimpleTextBox("Keywords", builder.toString(), receivedEvent.getChannel());
+        MessageSender.sendSimpleTextBox("Keywords", builder.toString(), dataWrapper.getChannel());
     }
 }

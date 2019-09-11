@@ -4,6 +4,7 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.database.types.ContextSettings;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -11,7 +12,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.Collections;
@@ -38,7 +38,7 @@ public abstract class ContextSensitive {
      * @param event the event of the command.
      * @return {@code true} if the command is valid, {@code false} otherwise.
      */
-    public boolean isContextValid(MessageReceivedEvent event) {
+    public boolean isContextValid(MessageEventDataWrapper event) {
         if (event.getChannel() instanceof TextChannel) {
             TextChannel textChannel = (TextChannel) event.getChannel();
             if (getContextData(event).isNsfw() && !textChannel.isNSFW()) {
@@ -52,7 +52,7 @@ public abstract class ContextSensitive {
         return false;
     }
 
-    private boolean canExecutedOnGuild(MessageReceivedEvent event) {
+    private boolean canExecutedOnGuild(MessageEventDataWrapper event) {
         ContextSettings data = getContextData(event);
         if (data.isGuildCheckActive()) {
             if (data.getGuildList().contains(event.getGuild().getId())) {
@@ -63,7 +63,7 @@ public abstract class ContextSensitive {
         return true;
     }
 
-    private boolean canExecutedByUser(MessageReceivedEvent event) {
+    private boolean canExecutedByUser(MessageEventDataWrapper event) {
         ContextSettings data = getContextData(event);
         if (data.isUserCheckActive()) {
             if (data.getUserList().contains(event.getAuthor().getId())) {
@@ -75,7 +75,7 @@ public abstract class ContextSensitive {
     }
 
 
-    private boolean hasPermission(MessageReceivedEvent event) {
+    private boolean hasPermission(MessageEventDataWrapper event) {
         Member member = event.getMember();
         if (!getContextData(event).isAdminOnly()
                 || (member != null && member.hasPermission(Permission.ADMINISTRATOR))) {
@@ -167,15 +167,15 @@ public abstract class ContextSensitive {
         ShepardBot.getLogger().info(getDebugInfo());
     }
 
-    private ContextSettings getContextData(MessageReceivedEvent event) {
+    private ContextSettings getContextData(MessageEventDataWrapper event) {
         return ContextData.getContextData(getClass().getSimpleName(), event);
     }
 
-    private Map<String, List<String>> getRolePermissions(MessageReceivedEvent event) {
+    private Map<String, List<String>> getRolePermissions(MessageEventDataWrapper event) {
         return ContextData.getContextRolePermissions(getClass().getSimpleName(), event);
     }
 
-    private Map<String, List<String>> getUserPermissions(MessageReceivedEvent event) {
+    private Map<String, List<String>> getUserPermissions(MessageEventDataWrapper event) {
         return ContextData.getContextUserPermissions(getClass().getSimpleName(), event);
     }
 }
