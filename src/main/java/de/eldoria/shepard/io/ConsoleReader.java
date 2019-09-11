@@ -14,7 +14,7 @@ public final class ConsoleReader implements Runnable {
 
     private ConsoleReader() {
         ShepardBot.getLogger().info("Console reader started!");
-        start();
+        waitForInput();
     }
 
     /**
@@ -31,11 +31,9 @@ public final class ConsoleReader implements Runnable {
         readText();
     }
 
-    private void start() {
-        if (thread == null) {
-            thread = new Thread(this);
-            thread.start();
-        }
+    private void waitForInput() {
+        thread = new Thread(this);
+        thread.start();
     }
 
     private void readText() {
@@ -45,7 +43,10 @@ public final class ConsoleReader implements Runnable {
                 ShepardBot.getInstance().shutdown();
                 ShepardBot.getLogger().info(input);
             }
-            readText();
+            if (input.equals("ping")) {
+                ShepardBot.getLogger().info("pong");
+            }
+            waitForInput();
         }
     }
 }
