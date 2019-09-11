@@ -2,6 +2,7 @@ package de.eldoria.shepard.collections;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.Command;
+import info.debatty.java.stringsimilarity.JaroWinkler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +11,6 @@ import java.util.List;
 public final class CommandCollection {
     private static CommandCollection instance;
     private final List<Command> commands = new ArrayList<>();
-
 
     private CommandCollection() {
     }
@@ -61,8 +61,28 @@ public final class CommandCollection {
             if (currentCommand.isCommand(command)) {
                 return currentCommand;
             }
+        }
+        return null;
+    }
 
-
+    /**
+     * Returns a command which have the most similar name or alias.
+     *
+     * @param command command entered.
+     * @return Command or null if no command was found which was similar enough.
+     */
+    public Command getSimilarCommand(String command) {
+        double score = 0;
+        Command cmd = null;
+        for (Command currentCommand : commands) {
+            double similarityScore = currentCommand.getSimilarityScore(command);
+            if (similarityScore > score) {
+                score = similarityScore;
+                cmd = currentCommand;
+            }
+        }
+        if (score > 0.75) {
+            return cmd;
         }
         return null;
     }

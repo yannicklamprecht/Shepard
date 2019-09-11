@@ -1,11 +1,12 @@
 package de.eldoria.shepard.contexts.commands;
 
 import de.eldoria.shepard.collections.CommandCollection;
+import de.eldoria.shepard.listener.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.ContextSensitive;
+import info.debatty.java.stringsimilarity.JaroWinkler;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
  * An abstract class for commands.
  */
 public abstract class Command extends ContextSensitive {
+    private JaroWinkler similarity = new JaroWinkler();
+
     /**
      * Name of the command.
      */
@@ -39,28 +42,29 @@ public abstract class Command extends ContextSensitive {
      */
     protected Command() {
         CommandCollection.getInstance().addCommand(this);
+
     }
 
     /**
      * Executes the command.
      *
-     * @param label         Label/Alias which was used for command execution
-     * @param args          Arguments of the command.
-     * @param receivedEvent Message Received Event of the command execution
+     * @param label       Label/Alias which was used for command execution
+     * @param args        Arguments of the command.
+     * @param dataWrapper Message Received Event of the command execution
      */
-    public void execute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        internalExecute(label, args, receivedEvent);
-        MessageSender.logCommand(label, args, receivedEvent);
+    public void execute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+        internalExecute(label, args, dataWrapper);
+        MessageSender.logCommand(label, args, dataWrapper);
     }
 
     /**
      * Internal executor for command. Called from inside the class.
      *
-     * @param label         Label/Alias which was used for command execution
-     * @param args          Arguments of the command.
-     * @param receivedEvent Message Received Event of the command execution
+     * @param label       Label/Alias which was used for command execution
+     * @param args        Arguments of the command.
+     * @param dataWrapper Message Received Event of the command execution
      */
-    protected abstract void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent);
+    protected abstract void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper);
 
     /**
      * Get the name of the command.
@@ -215,5 +219,17 @@ public abstract class Command extends ContextSensitive {
 
         MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Argument not found!",
                 "Try one of these: " + argsAsString, false)}, channel);
+    }
+
+    public double getSimilarityScore(String command) {
+        command = command.toLowerCase();
+        double cmdScore = similarity.similarity(commandName.toLowerCase(),
+                command.toLowerCase());
+
+        for (String alias : commandAliases) {
+            double similarity = this.similarity.similarity(alias.toLowerCase(), command);
+            cmdScore = Math.max(cmdScore, similarity);
+        }
+        return cmdScore;
     }
 }
