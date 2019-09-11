@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.sql.SQLException;
 import java.time.Period;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -38,12 +39,17 @@ public class UserInfo extends Command {
     protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
 
         if (args.length == 0) {
+            try{
+
             MessageSender.sendError(
                     new MessageEmbed.Field[] {
                             new MessageEmbed.Field("Too few arguments",
                                     "Usage: " + PrefixData.getPrefix(receivedEvent.getGuild(),
                                             receivedEvent) + "userInfo <id, name, tag>", false)},
                     receivedEvent.getChannel());
+            }catch (SQLException e){
+                return;
+            }
         }
 
         InternUser internUser = new InternUser(args[0], receivedEvent).invoke();

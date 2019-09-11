@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import static de.eldoria.shepard.database.DbUtil.handleException;
+import static de.eldoria.shepard.database.DbUtil.handleExceptionAndSuppress;
 
 
 public final class DatabaseConnector {
@@ -37,7 +38,7 @@ public final class DatabaseConnector {
                             config.getUsername(), config.getAddress(),
                             config.getPort(), config.getDb()));
         } catch (SQLException ex) {
-            handleException(ex, null);
+            handleExceptionAndSuppress(ex, null);
         }
     }
 

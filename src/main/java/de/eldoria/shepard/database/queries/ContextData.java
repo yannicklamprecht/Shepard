@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import static de.eldoria.shepard.database.DbUtil.handleException;
+import static de.eldoria.shepard.database.DbUtil.handleExceptionAndSuppress;
 
 public final class ContextData {
     //Map with context
@@ -331,7 +332,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return Context data object.
      */
-    public static ContextSettings getContextData(String contextName, MessageReceivedEvent event) throws SQLException {
+    public static ContextSettings getContextData(String contextName, MessageReceivedEvent event) {
         if (contextDataDirty.containsKey(contextName)) {
             if (!contextDataDirty.get(contextName)) {
                 return contextData.get(contextName);
@@ -368,7 +369,12 @@ public final class ContextData {
             }
 
         } catch (SQLException e) {
+            try {
             handleException(e, event);
+
+            }catch (SQLException ex){
+
+            }
         }
 
         return contextData.getOrDefault(contextName, null);
@@ -393,7 +399,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return Map [guild_id, List(role_ids)] Map which contains the user as list for each guild
      */
-    public static Map<String, List<String>> getContextUserPermissions(String contextName, MessageReceivedEvent event) throws SQLException {
+    public static Map<String, List<String>> getContextUserPermissions(String contextName, MessageReceivedEvent event) {
         if (userPermissions.containsKey(contextName)) {
             if (!userPermissionDirty.get(contextName)) {
                 return userPermissions.get(contextName);
@@ -421,7 +427,7 @@ public final class ContextData {
             userPermissions.put(contextName, data);
             userPermissionDirty.put(contextName, false);
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndSuppress(e, event);
         }
         if (userPermissions.containsKey(contextName)) {
             if (event != null && !userPermissions.get(contextName).containsKey(event.getGuild().getId())) {
@@ -452,7 +458,7 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return Map [guild_id, List(role_ids)] Map which contains the user as list for each guild
      */
-    public static Map<String, List<String>> getContextRolePermissions(String contextName, MessageReceivedEvent event) throws SQLException {
+    public static Map<String, List<String>> getContextRolePermissions(String contextName, MessageReceivedEvent event) {
         if (rolePermissions.containsKey(contextName)) {
             if (!rolePermissionDirty.get(contextName)) {
                 return rolePermissions.get(contextName);
@@ -481,7 +487,7 @@ public final class ContextData {
             rolePermissions.put(contextName, data);
             rolePermissionDirty.put(contextName, false);
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndSuppress(e, event);
         }
 
         if (rolePermissions.containsKey(contextName)) {

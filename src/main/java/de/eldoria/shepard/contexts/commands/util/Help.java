@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.Color;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,12 @@ public class Help extends Command {
 
     @Override
     protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        String prefix = PrefixData.getPrefix(receivedEvent.getGuild(), receivedEvent);
+        String prefix;
+        try {
+            prefix = PrefixData.getPrefix(receivedEvent.getGuild(), receivedEvent);
+        }catch (SQLException e){
+            return;
+        }
 
         //Command List
         if (args.length == 0) {
