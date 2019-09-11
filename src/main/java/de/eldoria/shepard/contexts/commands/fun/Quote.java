@@ -7,7 +7,6 @@ import de.eldoria.shepard.database.types.QuoteElement;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -30,19 +29,11 @@ public class Quote extends Command {
     protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         List<QuoteElement> quotes;
         if (args.length > 0) {
-            try {
             quotes = QuoteData.getQuotesByKeyword(receivedEvent.getGuild(),
                     String.join(" ", Arrays.copyOfRange(args, 0, args.length)), receivedEvent);
-            }catch (SQLException e){
-                return;
-            }
 
         } else {
-            try {
             quotes = QuoteData.getQuotes(receivedEvent.getGuild(), receivedEvent);
-            }catch (SQLException e){
-                return;
-            }
         }
 
         if (quotes.size() == 0) {

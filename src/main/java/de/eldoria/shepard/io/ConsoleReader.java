@@ -9,7 +9,7 @@ public final class ConsoleReader implements Runnable {
     private static Thread thread;
     private static ConsoleReader instance;
 
-    private Scanner inputReader = new Scanner(System.in);
+    private final Scanner inputReader = new Scanner(System.in);
 
     private ConsoleReader() {
         ShepardBot.getLogger().info("Console reader started!");

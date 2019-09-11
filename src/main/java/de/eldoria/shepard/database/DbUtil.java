@@ -59,7 +59,7 @@ public final class DbUtil {
      * @param ex    SQL Exception
      * @param event Event for error sending to channel to inform user.
      */
-    public static void handleExceptionAndSuppress(SQLException ex, MessageReceivedEvent event) {
+    public static void handleExceptionAndIgnore(SQLException ex, MessageReceivedEvent event) {
         try {
             handleException(ex, event);
         } catch (SQLException e) {

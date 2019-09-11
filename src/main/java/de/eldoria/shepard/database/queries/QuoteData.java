@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.eldoria.shepard.database.DbUtil.handleException;
+import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public final class QuoteData {
 
@@ -25,15 +25,17 @@ public final class QuoteData {
      * @param quote quote to add
      * @param event event from command sending for error handling. Can be null.
      */
-    public static void addQuote(Guild guild, String quote, MessageReceivedEvent event) throws SQLException {
+    public static boolean addQuote(Guild guild, String quote, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_quote(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, quote);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -44,7 +46,7 @@ public final class QuoteData {
      * @param quote   new quote
      * @param event   event from command sending for error handling. Can be null.
      */
-    public static void alterQuote(Guild guild, int quoteId, String quote, MessageReceivedEvent event) throws SQLException {
+    public static boolean alterQuote(Guild guild, int quoteId, String quote, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.alter_quote(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -52,8 +54,10 @@ public final class QuoteData {
             statement.setString(3, quote);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -63,15 +67,17 @@ public final class QuoteData {
      * @param quoteId id on guild.
      * @param event   event from command sending for error handling. Can be null.
      */
-    public static void removeQuote(Guild guild, int quoteId, MessageReceivedEvent event) throws SQLException {
+    public static boolean removeQuote(Guild guild, int quoteId, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_quote(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setInt(2, quoteId);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -81,7 +87,7 @@ public final class QuoteData {
      * @param event event from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static List<QuoteElement> getQuotes(Guild guild, MessageReceivedEvent event) throws SQLException {
+    public static List<QuoteElement> getQuotes(Guild guild, MessageReceivedEvent event)  {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_quotes(?)")) {
@@ -90,10 +96,8 @@ public final class QuoteData {
             while (result.next()) {
                 quotes.add(new QuoteElement(result.getString("quote"), result.getInt("quote_id")));
             }
-
-
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
         }
         return quotes;
     }
@@ -106,7 +110,7 @@ public final class QuoteData {
      * @param event event from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static List<QuoteElement> getQuotesByKeyword(Guild guild, String keyword, MessageReceivedEvent event) throws SQLException {
+    public static List<QuoteElement> getQuotesByKeyword(Guild guild, String keyword, MessageReceivedEvent event) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_quotes_by_keyword(?,?)")) {
@@ -116,10 +120,8 @@ public final class QuoteData {
             while (result.next()) {
                 quotes.add(new QuoteElement(result.getString("quote"), result.getInt("quote_id")));
             }
-
-
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
         }
         return quotes;
     }
@@ -131,7 +133,7 @@ public final class QuoteData {
      * @param event event from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static int getQuotesCount(Guild guild, MessageReceivedEvent event) throws SQLException {
+    public static int getQuotesCount(Guild guild, MessageReceivedEvent event) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_quote_count(?)")) {
@@ -141,7 +143,7 @@ public final class QuoteData {
                 return result.getInt(1);
             }
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
         }
         return 0;
     }
@@ -154,7 +156,7 @@ public final class QuoteData {
      * @param event   event from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static int getQuotesCountByKeyword(Guild guild, String keyword, MessageReceivedEvent event) throws SQLException {
+    public static int getQuotesCountByKeyword(Guild guild, String keyword, MessageReceivedEvent event) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_quote_count_by_keyword(?,?)")) {
@@ -165,7 +167,7 @@ public final class QuoteData {
                 return result.getInt(1);
             }
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
         }
         return 0;
     }

@@ -9,8 +9,6 @@ import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.sql.SQLException;
-
 import static de.eldoria.shepard.contexts.ContextHelper.getContextName;
 import static java.lang.System.lineSeparator;
 
@@ -68,9 +66,7 @@ public class ManageContext extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
-        try {
-        ContextData.setContextAdmin(contextName, state, receivedEvent);
-        }catch (SQLException e){
+        if (!ContextData.setContextAdmin(contextName, state, receivedEvent)) {
             return;
         }
 
@@ -97,9 +93,7 @@ public class ManageContext extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
-        try {
-        ContextData.setContextNsfw(contextName, state, receivedEvent);
-        }catch (SQLException e){
+        if (!ContextData.setContextNsfw(contextName, state, receivedEvent)) {
             return;
         }
 

@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -63,11 +62,7 @@ public class TicketSettings extends Command {
         String cmd = args[0];
         String type = args[1];
         List<TicketType> tickets;
-        try {
-            tickets = TicketData.getTypes(receivedEvent.getGuild(), receivedEvent);
-        } catch (SQLException e) {
-            return;
-        }
+        tickets = TicketData.getTypes(receivedEvent.getGuild(), receivedEvent);
         TicketType scopeTicket = null;
         for (TicketType ticket : tickets) {
             if (ticket.getKeyword().equalsIgnoreCase(type)) {
@@ -126,12 +121,8 @@ public class TicketSettings extends Command {
 
         String message = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
 
-        try {
-            TicketData.addType(receivedEvent.getGuild(), null, message,
-                    scopeTicket.getKeyword(), receivedEvent);
-        } catch (SQLException e) {
-            return;
-        }
+        TicketData.setCreationMessage(receivedEvent.getGuild(), scopeTicket.getKeyword(), message,
+                receivedEvent);
         MessageSender.sendSimpleTextBox("Set creation text for ticket type " + scopeTicket.getKeyword() + " to:",
                 message, receivedEvent.getChannel());
 
@@ -151,14 +142,11 @@ public class TicketSettings extends Command {
             return;
         }
 
-        try {
-            TicketData.addType(receivedEvent.getGuild(), category, null,
-                    scopeTicket.getKeyword(), receivedEvent);
-        } catch (SQLException e) {
-            return;
+        if (TicketData.addType(receivedEvent.getGuild(), category, null,
+                scopeTicket.getKeyword(), receivedEvent)) {
+            MessageSender.sendMessage("Set channel category for ticket type \"" + scopeTicket.getKeyword()
+                    + "\" to " + category.getName(), receivedEvent.getChannel());
         }
-        MessageSender.sendMessage("Set channel category for ticket type \"" + scopeTicket.getKeyword()
-                + "\" to " + category.getName(), receivedEvent.getChannel());
     }
 
     private void setRoles(String[] args, MessageReceivedEvent receivedEvent, String cmd, TicketType scopeTicket) {
@@ -174,26 +162,20 @@ public class TicketSettings extends Command {
         validRoles.forEach(role -> roleMentions.add(role.getAsMention()));
 
         if (cmd.equalsIgnoreCase("setOwnerRoles") || cmd.equalsIgnoreCase("sor")) {
-            try {
-                TicketData.setTypeOwnerRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(), validRoles, receivedEvent);
-            } catch (SQLException e) {
-                return;
+            if (TicketData.setTypeOwnerRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(), validRoles, receivedEvent)) {
+
+                MessageSender.sendSimpleTextBox("Set the following roles as owner roles for ticket "
+                                + scopeTicket.getKeyword(), String.join(lineSeparator() + "", roleMentions),
+                        receivedEvent.getChannel());
             }
 
-            MessageSender.sendSimpleTextBox("Set the following roles as owner roles for ticket "
-                            + scopeTicket.getKeyword(), String.join(lineSeparator() + "", roleMentions),
-                    receivedEvent.getChannel());
         } else {
-            try {
-                TicketData.setTypeSupportRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(),
-                        validRoles, receivedEvent);
-            } catch (SQLException e) {
-                return;
+            if (TicketData.setTypeSupportRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(),
+                    validRoles, receivedEvent)) {
+                MessageSender.sendSimpleTextBox("Set the following roles as owner roles for ticket "
+                                + scopeTicket.getKeyword(), String.join(lineSeparator() + "", roleMentions),
+                        receivedEvent.getChannel());
             }
-
-            MessageSender.sendSimpleTextBox("Set the following roles as owner roles for ticket "
-                            + scopeTicket.getKeyword(), String.join(lineSeparator() + "", roleMentions),
-                    receivedEvent.getChannel());
         }
     }
 
@@ -206,18 +188,14 @@ public class TicketSettings extends Command {
         List<String> channelIdsByType;
         List<TextChannel> validTextChannels;
         List<String> typeOwnerRoles;
-        try {
-            channelIdsByType = TicketData.getChannelIdsByType(receivedEvent.getGuild(),
-                    scopeTicket.getKeyword(), receivedEvent);
+        channelIdsByType = TicketData.getChannelIdsByType(receivedEvent.getGuild(),
+                scopeTicket.getKeyword(), receivedEvent);
 
-            validTextChannels = Verifier.getValidTextChannels(receivedEvent.getGuild(),
-                    channelIdsByType);
+        validTextChannels = Verifier.getValidTextChannels(receivedEvent.getGuild(),
+                channelIdsByType);
 
-            typeOwnerRoles = TicketData.getTypeOwnerRoles(receivedEvent.getGuild(),
-                    scopeTicket.getKeyword(), receivedEvent);
-        } catch (SQLException e) {
-            return;
-        }
+        typeOwnerRoles = TicketData.getTypeOwnerRoles(receivedEvent.getGuild(),
+                scopeTicket.getKeyword(), receivedEvent);
 
 
         Set<Member> members = new HashSet<>();
@@ -225,11 +203,7 @@ public class TicketSettings extends Command {
         for (TextChannel channel : validTextChannels) {
             String channelOwnerId;
 
-            try {
-                channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
-            } catch (SQLException e) {
-                return;
-            }
+            channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
 
             if (channelOwnerId == null) continue;
             Member memberById = receivedEvent.getGuild().getMemberById(channelOwnerId);
@@ -240,19 +214,14 @@ public class TicketSettings extends Command {
             TicketHelper.removeAndUpdateTicketRoles(receivedEvent, member, typeOwnerRoles);
         }
 
-        try {
-            TicketData.removeTypeByKeyword(receivedEvent.getGuild(), scopeTicket.getKeyword(), receivedEvent);
-        } catch (SQLException e) {
-            return;
+        if (TicketData.removeTypeByKeyword(receivedEvent.getGuild(), scopeTicket.getKeyword(), receivedEvent)) {
+            for (TextChannel channel : validTextChannels) {
+                channel.delete().queue();
+            }
+            MessageSender.sendMessage("Removed ticket type **" + scopeTicket.getKeyword()
+                            + "** and all channels of this type!",
+                    receivedEvent.getChannel());
         }
-
-        for (TextChannel channel : validTextChannels) {
-            channel.delete().queue();
-        }
-
-        MessageSender.sendMessage("Removed ticket type **" + scopeTicket.getKeyword()
-                        + "** and all channels of this type!",
-                receivedEvent.getChannel());
     }
 
     private void createType(String[] args, MessageReceivedEvent receivedEvent, String type) {
@@ -270,12 +239,8 @@ public class TicketSettings extends Command {
             return;
         }
 
-        try {
-            TicketData.addType(receivedEvent.getGuild(), category, "", type, receivedEvent);
-        } catch (SQLException e) {
-            return;
+        if (TicketData.addType(receivedEvent.getGuild(), category, "", type, receivedEvent)) {
+            MessageSender.sendMessage("Created ticket type: **" + type.toLowerCase() + "**", receivedEvent.getChannel());
         }
-
-        MessageSender.sendMessage("Created ticket type: **" + type.toLowerCase() + "**", receivedEvent.getChannel());
     }
 }

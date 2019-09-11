@@ -14,7 +14,6 @@ import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -99,16 +98,12 @@ public class ManageContextGuild extends Command {
                 Guild guild = ShepardBot.getJDA().getGuildById(DbUtil.getIdRaw(guildId));
                 if (guild != null) {
                     if (modifyType == ModifyType.ADD) {
-                        try {
-                            ContextData.addContextGuild(contextName, guild, receivedEvent);
-                        } catch (SQLException e) {
+                        if (!ContextData.addContextGuild(contextName, guild, receivedEvent)) {
                             return;
                         }
 
                     } else {
-                        try {
-                            ContextData.removeContextGuild(contextName, guild, receivedEvent);
-                        } catch (SQLException e) {
+                        if (!ContextData.removeContextGuild(contextName, guild, receivedEvent)) {
                             return;
                         }
 
@@ -143,15 +138,12 @@ public class ManageContextGuild extends Command {
             return;
         }
 
-        try {
-            ContextData.setContextGuildListType(contextName, type, receivedEvent);
-        } catch (SQLException e) {
-            return;
+        if (ContextData.setContextGuildListType(contextName, type, receivedEvent)) {
+            MessageSender.sendMessage("**Changed guild list type of context \""
+                            + contextName.toUpperCase() + "\" to " + type.toString() + "**",
+                    receivedEvent.getChannel());
         }
 
-        MessageSender.sendMessage("**Changed guild list type of context \""
-                        + contextName.toUpperCase() + "\" to " + type.toString() + "**",
-                receivedEvent.getChannel());
     }
 
     private void setActive(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
@@ -165,19 +157,14 @@ public class ManageContextGuild extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
-        try {
-            ContextData.setContextGuildCheckActive(contextName, state, receivedEvent);
-        } catch (SQLException e) {
-            return;
-        }
-
-        if (state) {
-            MessageSender.sendMessage("**Activated guild check for context \"" + contextName.toUpperCase() + "\"**",
-                    receivedEvent.getChannel());
-
-        } else {
-            MessageSender.sendMessage("**Deactivated guild check for context \"" + contextName.toUpperCase() + "\"**",
-                    receivedEvent.getChannel());
+        if (ContextData.setContextGuildCheckActive(contextName, state, receivedEvent)) {
+            if (state) {
+                MessageSender.sendMessage("**Activated guild check for context \"" + contextName.toUpperCase() + "\"**",
+                        receivedEvent.getChannel());
+            } else {
+                MessageSender.sendMessage("**Deactivated guild check for context \"" + contextName.toUpperCase() + "\"**",
+                        receivedEvent.getChannel());
+            }
         }
     }
 }

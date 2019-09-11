@@ -9,7 +9,6 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 
 import static java.lang.System.lineSeparator;
@@ -59,52 +58,36 @@ public class Greeting extends Command {
     private void setMessage(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length > 1) {
             String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-            try {
-                GreetingData.setGreetingText(receivedEvent.getGuild(), message, receivedEvent);
-            } catch (SQLException e) {
-                return;
+            if (GreetingData.setGreetingText(receivedEvent.getGuild(), message, receivedEvent)) {
+                MessageSender.sendMessage("Changed greeting message to " + lineSeparator()
+                        + message, receivedEvent.getChannel());
             }
-
-            MessageSender.sendMessage("Changed greeting message to " + lineSeparator()
-                    + message, receivedEvent.getChannel());
             return;
         }
         MessageSender.sendSimpleError(ErrorType.NO_MESSAGE_FOUND, receivedEvent.getChannel());
     }
 
     private void removeChannel(MessageReceivedEvent receivedEvent) {
-        try {
-            GreetingData.removeGreetingChannel(receivedEvent.getGuild(), receivedEvent);
-        } catch (SQLException e) {
-            return;
-        }
+        GreetingData.removeGreetingChannel(receivedEvent.getGuild(), receivedEvent);
 
         MessageSender.sendMessage("Removed greeting channel.", receivedEvent.getChannel());
     }
 
     private void setChannel(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length == 1) {
-            try {
-                GreetingData.setGreetingChannel(receivedEvent.getGuild(),
-                        receivedEvent.getChannel(), receivedEvent);
-            } catch (SQLException e) {
-                return;
+            if (GreetingData.setGreetingChannel(receivedEvent.getGuild(), receivedEvent.getChannel(), receivedEvent)) {
+                MessageSender.sendMessage("Greeting Channel set to "
+                        + ((TextChannel) receivedEvent.getChannel()).getAsMention(), receivedEvent.getChannel());
             }
-
-            MessageSender.sendMessage("Greeting Channel set to "
-                    + ((TextChannel) receivedEvent.getChannel()).getAsMention(), receivedEvent.getChannel());
             return;
         } else if (args.length == 2) {
             TextChannel channel = receivedEvent.getGuild().getTextChannelById(DbUtil.getIdRaw(args[1]));
             if (channel != null) {
-                try {
-                    GreetingData.setGreetingChannel(receivedEvent.getGuild(), channel, receivedEvent);
-                } catch (SQLException e) {
-                    return;
+                if (GreetingData.setGreetingChannel(receivedEvent.getGuild(), channel, receivedEvent)) {
+                    MessageSender.sendMessage("Greeting channel set to "
+                            + channel.getAsMention(), receivedEvent.getChannel());
                 }
 
-                MessageSender.sendMessage("Greeting channel set to "
-                        + channel.getAsMention(), receivedEvent.getChannel());
                 return;
             }
         }

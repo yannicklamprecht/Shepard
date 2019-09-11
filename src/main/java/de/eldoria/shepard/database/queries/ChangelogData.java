@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static de.eldoria.shepard.database.DbUtil.handleException;
+import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public final class ChangelogData {
 
@@ -27,16 +28,17 @@ public final class ChangelogData {
      * @param role id of the role id of the role
      * @param event  event from command sending for error handling. Can be null.
      */
-    public static void addRole(Guild guild, Role role, MessageReceivedEvent event) throws SQLException {
+    public static boolean addRole(Guild guild, Role role, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_changelog_role(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, role.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
-
+        return true;
     }
 
     /**
@@ -46,15 +48,17 @@ public final class ChangelogData {
      * @param role id of the role
      * @param event  event from command sending for error handling. Can be null.
      */
-    public static void removeRole(Guild guild, Role role, MessageReceivedEvent event) throws SQLException {
+    public static boolean removeRole(Guild guild, Role role, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_changelog_role(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, role.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -81,14 +85,16 @@ public final class ChangelogData {
      * @param guild Guild object for lookup
      * @param event event from command sending for error handling. Can be null.
      */
-    public static void removeChannel(Guild guild, MessageReceivedEvent event) throws SQLException {
+    public static boolean removeChannel(Guild guild, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_changelog_channel(?)")) {
             statement.setString(1, guild.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -98,7 +104,7 @@ public final class ChangelogData {
      * @param event event from command sending for error handling. Can be null.
      * @return list of role ids
      */
-    public static List<String> getRoles(Guild guild, MessageReceivedEvent event) throws SQLException {
+    public static List<String> getRoles(Guild guild, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_changelog_roles(?)")) {
             statement.setString(1, guild.getId());
@@ -107,7 +113,7 @@ public final class ChangelogData {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
         }
         return Collections.emptyList();
     }
@@ -119,7 +125,7 @@ public final class ChangelogData {
      * @param event event from command sending for error handling. Can be null.
      * @return channel id as string
      */
-    public static String getChannel(Guild guild, MessageReceivedEvent event) throws SQLException {
+    public static String getChannel(Guild guild, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_changelog_channel(?)")) {
             statement.setString(1, guild.getId());
@@ -128,7 +134,7 @@ public final class ChangelogData {
                 return result.getString(1);
             }
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
         }
         return null;
     }

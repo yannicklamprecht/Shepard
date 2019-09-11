@@ -18,7 +18,6 @@ import net.dv8tion.jda.api.managers.ChannelManager;
 import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
 import org.apache.commons.lang.StringUtils;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,11 +85,7 @@ public class Ticket extends Command {
         }
 
         String channelOwnerId;
-        try {
-            channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
-        } catch (SQLException e) {
-            return;
-        }
+        channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
 
         if (channelOwnerId == null) {
             MessageSender.sendSimpleError(ErrorType.NOT_TICKET_CHANEL, receivedEvent.getChannel());
@@ -99,48 +94,34 @@ public class Ticket extends Command {
 
         //Get the ticket type for caching.
         TicketType type;
-        try {
-            type = TicketData.getTypeByChannel(receivedEvent.getGuild(), channel, receivedEvent);
-        } catch (SQLException e) {
-            return;
-        }
+        type = TicketData.getTypeByChannel(receivedEvent.getGuild(), channel, receivedEvent);
 
         //Removes channel from database. needed for further role checking.
-        try {
-            removeChannel(receivedEvent.getGuild(), channel, receivedEvent);
-        } catch (SQLException e) {
-            return;
-        }
+        if (removeChannel(receivedEvent.getGuild(), channel, receivedEvent)) {
 
-        //Get the ticket owner member object
-        Member member = receivedEvent.getGuild().getMemberById(channelOwnerId);
 
-        //If Member is present remove roles for this ticket.
-        if (member != null) {
-            //Get the owner roles of the current ticket. They should be removed.
-            assert type != null;
-            List<String> ownerRolesAsString;
-            try {
+            //Get the ticket owner member object
+            Member member = receivedEvent.getGuild().getMemberById(channelOwnerId);
+
+            //If Member is present remove roles for this ticket.
+            if (member != null) {
+                //Get the owner roles of the current ticket. They should be removed.
+                assert type != null;
+                List<String> ownerRolesAsString;
                 ownerRolesAsString = getTypeOwnerRoles(receivedEvent.getGuild(),
                         type.getKeyword(), receivedEvent);
-            } catch (SQLException e) {
-                return;
+                TicketHelper.removeAndUpdateTicketRoles(receivedEvent, member, ownerRolesAsString);
             }
-            TicketHelper.removeAndUpdateTicketRoles(receivedEvent, member, ownerRolesAsString);
-        }
 
-        //Finally delete the channel.
-        channel.delete().queue();
+            //Finally delete the channel.
+            channel.delete().queue();
+        }
     }
 
 
     private void typeInfo(String[] args, MessageReceivedEvent receivedEvent) {
         List<TicketType> tickets;
-        try {
-            tickets = TicketData.getTypes(receivedEvent.getGuild(), receivedEvent);
-        } catch (SQLException e) {
-            return;
-        }
+        tickets = TicketData.getTypes(receivedEvent.getGuild(), receivedEvent);
         if (tickets.size() == 0) {
             MessageSender.sendMessage("No ticket types defined", receivedEvent.getChannel());
             return;
@@ -183,11 +164,7 @@ public class Ticket extends Command {
         } else if (args.length == 2) {
             //Return info for one ticket type.
             TicketType type;
-            try {
-                type = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
-            } catch (SQLException e) {
-                return;
-            }
+            type = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
 
             if (type == null) {
                 MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, receivedEvent.getChannel());
@@ -197,18 +174,13 @@ public class Ticket extends Command {
             List<String> ownerMentions = new ArrayList<>();
             List<String> supporterMentions = new ArrayList<>();
 
-            try {
+            getValidRoles(receivedEvent.getGuild(),
+                    getTypeOwnerRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent)
+                            .toArray(String[]::new)).forEach(role -> ownerMentions.add(role.getAsMention()));
 
-                getValidRoles(receivedEvent.getGuild(),
-                        getTypeOwnerRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent)
-                                .toArray(String[]::new)).forEach(role -> ownerMentions.add(role.getAsMention()));
-
-                getValidRoles(receivedEvent.getGuild(),
-                        getTypeSupportRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent)
-                                .toArray(String[]::new)).forEach(role -> supporterMentions.add(role.getAsMention()));
-            } catch (SQLException e) {
-                return;
-            }
+            getValidRoles(receivedEvent.getGuild(),
+                    getTypeSupportRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent)
+                            .toArray(String[]::new)).forEach(role -> supporterMentions.add(role.getAsMention()));
 
             List<MessageEmbed.Field> fields = new ArrayList<>();
             fields.add(new MessageEmbed.Field("Channel Category:", type.getCategory().getName(), false));
@@ -238,11 +210,7 @@ public class Ticket extends Command {
         }
 
         TicketType ticket;
-        try {
-            ticket = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
-        } catch (SQLException e) {
-            return;
-        }
+        ticket = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
 
         if (ticket == null) {
             MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, receivedEvent.getChannel());
@@ -251,12 +219,8 @@ public class Ticket extends Command {
 
         //Set Channel Name
         String channelName;
-        try {
-            channelName = TicketData.getNextTicketCount(receivedEvent.getGuild(), receivedEvent)
-                    + " " + member.getUser().getName();
-        } catch (SQLException e) {
-            return;
-        }
+        channelName = TicketData.getNextTicketCount(receivedEvent.getGuild(), receivedEvent)
+                + " " + member.getUser().getName();
 
         //Create channel and wait for creation
         TextChannel channel = receivedEvent.getGuild()
@@ -279,19 +243,15 @@ public class Ticket extends Command {
         List<Role> supportRoles;
         List<Role> ownerRoles;
 
-        try {
-            TicketData.createChannel(receivedEvent.getGuild(), channel,
-                    member.getUser(), ticket.getKeyword(), receivedEvent);
+        TicketData.createChannel(receivedEvent.getGuild(), channel,
+                member.getUser(), ticket.getKeyword(), receivedEvent);
 
-            //Get ticket support and owner roles
-            supportRoles = getValidRoles(receivedEvent.getGuild(),
-                    getTypeSupportRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
+        //Get ticket support and owner roles
+        supportRoles = getValidRoles(receivedEvent.getGuild(),
+                getTypeSupportRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
 
-            ownerRoles = getValidRoles(receivedEvent.getGuild(),
-                    getTypeOwnerRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
-        } catch (SQLException e) {
-            return;
-        }
+        ownerRoles = getValidRoles(receivedEvent.getGuild(),
+                getTypeOwnerRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
         //Assign ticket support and owner roles
         for (Role role : ownerRoles) {
             receivedEvent.getGuild().addRoleToMember(member, role).queue();

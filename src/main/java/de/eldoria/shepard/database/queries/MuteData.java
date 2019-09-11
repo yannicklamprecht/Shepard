@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static de.eldoria.shepard.database.DbUtil.handleException;
+import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public final class MuteData {
 
@@ -34,7 +34,7 @@ public final class MuteData {
      * @param duration duration of the mute
      * @param event    event from command sending for error handling. Can be null.
      */
-    public static void setMuted(Guild guild, User user, String duration, MessageReceivedEvent event) throws SQLException {
+    public static boolean setMuted(Guild guild, User user, String duration, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_muted(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -42,13 +42,15 @@ public final class MuteData {
             statement.setString(3, duration);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
 
         mutedUsersDirty.put(guild.getId(), true);
+        return true;
     }
 
-    private static void refreshGuildData(Guild guild, MessageReceivedEvent event) throws SQLException {
+    private static boolean refreshGuildData(Guild guild, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_muted_users(?)")) {
             statement.setString(1, guild.getId());
@@ -58,8 +60,10 @@ public final class MuteData {
                 mutedUsers.put(guild.getId(), Arrays.asList((String[]) result.getArray(1).getArray()));
             }
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -69,16 +73,18 @@ public final class MuteData {
      * @param user id of the user
      * @param event  event from command sending for error handling. Can be null.
      */
-    public static void removeMute(Guild guild, User user, MessageReceivedEvent event) throws SQLException {
+    public static boolean removeMute(Guild guild, User user, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_mute(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, user.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
         mutedUsersDirty.put(guild.getId(), true);
+        return true;
     }
 
     /**
@@ -88,7 +94,7 @@ public final class MuteData {
      * @param event event from command sending for error handling. Can be null.
      * @return List of muted users on a server.
      */
-    public static List<String> getMutedUsers(Guild guild, MessageReceivedEvent event) throws SQLException {
+    public static List<String> getMutedUsers(Guild guild, MessageReceivedEvent event)  {
         if (lastRefresh.isBefore(LocalDateTime.now().minusMinutes(1))) {
 
 
@@ -111,7 +117,7 @@ public final class MuteData {
                 mutedUsers = data;
 
             } catch (SQLException e) {
-                handleException(e, event);
+                handleExceptionAndIgnore(e, event);
             }
             lastRefresh = LocalDateTime.now();
 

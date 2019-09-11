@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,8 +29,8 @@ final class TicketHelper {
         List<Role> removeRoles = new ArrayList<>();
 
         //Get the role objects if the role exists.
-        for (String s : rolesToRemove) {
-            Role roleById = receivedEvent.getGuild().getRoleById(s);
+        for (String roleId : rolesToRemove) {
+            Role roleById = receivedEvent.getGuild().getRoleById(roleId);
             if (roleById != null) {
                 removeRoles.add(roleById);
             }
@@ -39,19 +38,15 @@ final class TicketHelper {
 
         //Get all other ticket channels of the owner
         List<String> channelIdsByOwner;
-        try {
-            channelIdsByOwner = TicketData.getChannelIdsByOwner(receivedEvent.getGuild(),
-                    member.getUser(), receivedEvent);
-        } catch (SQLException e) {
-            return;
-        }
+        channelIdsByOwner = TicketData.getChannelIdsByOwner(receivedEvent.getGuild(),
+                member.getUser(), receivedEvent);
 
 
         List<TextChannel> channels = new ArrayList<>();
 
         //Get the channel objects
-        for (String s : channelIdsByOwner) {
-            TextChannel textChannel = receivedEvent.getGuild().getTextChannelById(s);
+        for (String channelId : channelIdsByOwner) {
+            TextChannel textChannel = receivedEvent.getGuild().getTextChannelById(channelId);
             if (textChannel != null) {
                 channels.add(textChannel);
             }
@@ -59,29 +54,24 @@ final class TicketHelper {
 
         //Create a set of all roles the player should keep.
         Set<Role> newRoleSet = new HashSet<>();
-        for (TextChannel c : channels) {
-            try {
-                for (String s : getChannelOwnerRoles(receivedEvent.getGuild(), c, receivedEvent)) {
-                    Role role = receivedEvent.getGuild().getRoleById(s);
-                    if (role != null) {
-                        newRoleSet.add(role);
-                    }
+        for (TextChannel channel : channels) {
+            for (String s : getChannelOwnerRoles(receivedEvent.getGuild(), channel, receivedEvent)) {
+                Role role = receivedEvent.getGuild().getRoleById(s);
+                if (role != null) {
+                    newRoleSet.add(role);
                 }
-            } catch (SQLException e) {
-                return;
-
             }
         }
 
         //Removes all roles for the current ticket
-        for (Role r : removeRoles) {
-            receivedEvent.getGuild().removeRoleFromMember(member, r).queue();
+        for (Role role : removeRoles) {
+            receivedEvent.getGuild().removeRoleFromMember(member, role).queue();
         }
 
         //Adds all roles for the other tickets. needed if two ticket types use the same role or
         // if there are more than one ticket channel with this type.
-        for (Role r : newRoleSet) {
-            receivedEvent.getGuild().addRoleToMember(member, r).queue();
+        for (Role role : newRoleSet) {
+            receivedEvent.getGuild().addRoleToMember(member, role).queue();
         }
     }
 

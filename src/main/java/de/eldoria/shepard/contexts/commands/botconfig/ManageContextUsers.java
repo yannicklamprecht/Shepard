@@ -14,7 +14,6 @@ import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -91,15 +90,11 @@ public class ManageContextUsers extends Command {
                 User user = ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(userId));
                 if (user != null) {
                     if (modifyType == ModifyType.ADD) {
-                        try {
-                        ContextData.addContextUser(contextName, user, receivedEvent);
-                        }catch (SQLException e){
+                        if (!ContextData.addContextUser(contextName, user, receivedEvent)) {
                             return;
                         }
                     } else {
-                        try {
-                        ContextData.removeContextUser(contextName, user, receivedEvent);
-                        }catch (SQLException e){
+                        if (!ContextData.removeContextUser(contextName, user, receivedEvent)) {
                             return;
                         }
                     }
@@ -139,15 +134,12 @@ public class ManageContextUsers extends Command {
             return;
         }
 
-        try {
-        ContextData.setContextUserListType(contextName, type, receivedEvent);
-        }catch (SQLException e){
-            return;
+        if (ContextData.setContextUserListType(contextName, type, receivedEvent)) {
+            MessageSender.sendMessage("**Changed user list type of context \""
+                            + contextName.toUpperCase() + "\" to " + type.toString() + "**",
+                    receivedEvent.getChannel());
         }
 
-        MessageSender.sendMessage("**Changed user list type of context \""
-                        + contextName.toUpperCase() + "\" to " + type.toString() + "**",
-                receivedEvent.getChannel());
     }
 
     private void setActive(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
@@ -161,9 +153,7 @@ public class ManageContextUsers extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
-        try {
-        ContextData.setContextUserCheckActive(contextName, state, receivedEvent);
-        }catch (SQLException e){
+        if (!ContextData.setContextUserCheckActive(contextName, state, receivedEvent)) {
             return;
         }
 

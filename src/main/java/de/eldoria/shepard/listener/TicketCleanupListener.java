@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import static de.eldoria.shepard.database.queries.TicketData.getChannelIdsByOwner;
@@ -17,23 +16,15 @@ public class TicketCleanupListener extends ListenerAdapter {
     @Override
     public void onGuildMemberLeave(@Nonnull GuildMemberLeaveEvent event) {
         List<String> channelIds;
-        try {
-            channelIds = getChannelIdsByOwner(event.getGuild(), event.getUser(), null);
-        } catch (SQLException e) {
-            return;
-        }
+        channelIds = getChannelIdsByOwner(event.getGuild(), event.getUser(), null);
 
 
         List<TextChannel> validTextChannels = Verifier.getValidTextChannels(event.getGuild(), channelIds);
         for (TextChannel channel : validTextChannels) {
-            try {
-                removeChannel(event.getGuild(), channel, null);
-            } catch (SQLException e) {
-                return;
+            if (removeChannel(event.getGuild(), channel, null)) {
+                channel.delete().queue();
             }
 
-            channel.delete().queue();
         }
-
     }
 }

@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
-import static de.eldoria.shepard.database.DbUtil.handleException;
+import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public final class PrefixData {
     private static final Map<String, String> prefixes = new DefaultMap<>(ShepardBot.getConfig().getPrefix());
@@ -27,7 +27,7 @@ public final class PrefixData {
      * @param prefix prefix to set.
      * @param event  event from command sending for error handling. Can be null.
      */
-    public static void setPrefix(Guild guild, String prefix, MessageReceivedEvent event) throws SQLException {
+    public static boolean setPrefix(Guild guild, String prefix, MessageReceivedEvent event)  {
         cacheDirty = true;
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_prefix(?,?)")) {
@@ -35,10 +35,12 @@ public final class PrefixData {
             statement.setString(2, prefix);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
 
         ShepardBot.getLogger().info("Changed prefix of server " + guild.getName() + " to " + prefix);
+        return true;
     }
 
     /**
@@ -48,7 +50,7 @@ public final class PrefixData {
      * @param event event from command sending for error handling. Can be null.
      * @return Prefix as string
      */
-    public static String getPrefix(Guild guild, MessageReceivedEvent event) throws SQLException {
+    public static String getPrefix(Guild guild, MessageReceivedEvent event)  {
         if (!cacheDirty) {
             return prefixes.get(guild.getId());
         }
@@ -58,7 +60,7 @@ public final class PrefixData {
         return getPrefix(guild, event);
     }
 
-    private static void refreshPrefixes(MessageReceivedEvent event) throws SQLException {
+    private static void refreshPrefixes(MessageReceivedEvent event)  {
         if (!cacheDirty) {
             return;
         }
@@ -76,7 +78,7 @@ public final class PrefixData {
             cacheDirty = false;
 
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
         }
     }
 }

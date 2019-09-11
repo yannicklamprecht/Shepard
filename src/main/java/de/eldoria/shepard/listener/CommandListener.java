@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 
 
@@ -36,11 +35,7 @@ public class CommandListener extends ListenerAdapter {
 
         if (checkPrefix(receivedMessage, event)) {
             isCommand = true;
-            try {
-                args[0] = args[0].replaceFirst(PrefixData.getPrefix(event.getGuild(), event), "");
-            } catch (SQLException e) {
-                return;
-            }
+            args[0] = args[0].replaceFirst(PrefixData.getPrefix(event.getGuild(), event), "");
 
         } else if (DbUtil.getIdRaw(args[0]).contentEquals(ShepardBot.getJDA().getSelfUser().getId())) {
             args = Arrays.copyOfRange(args, 1, args.length);
@@ -79,23 +74,15 @@ public class CommandListener extends ListenerAdapter {
                 }
                 return;
             }
-            try {
-                MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!", "Type "
-                        + PrefixData.getPrefix(event.getGuild(), event)
-                        + "help for a full list of available commands!", false)}, event.getChannel());
-            } catch (SQLException e) {
-                return;
-            }
+            MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!", "Type "
+                    + PrefixData.getPrefix(event.getGuild(), event)
+                    + "help for a full list of available commands!", false)}, event.getChannel());
 
         }
     }
 
     private boolean checkPrefix(String message, MessageReceivedEvent event) {
-        try {
-            return message.startsWith(PrefixData.getPrefix(event.getGuild(), event));
-        } catch (SQLException e) {
-            return false;
-        }
+        return message.startsWith(PrefixData.getPrefix(event.getGuild(), event));
 
     }
 }

@@ -9,8 +9,6 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.sql.SQLException;
-
 import static java.lang.System.lineSeparator;
 
 public class ContextInfo extends Command {

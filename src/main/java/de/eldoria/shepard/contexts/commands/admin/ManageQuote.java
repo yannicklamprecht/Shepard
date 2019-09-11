@@ -9,7 +9,6 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.Color;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,11 +66,7 @@ public class ManageQuote extends Command {
 
             int quoteId;
             int quotesCount;
-            try {
-                quotesCount = QuoteData.getQuotesCount(receivedEvent.getGuild(), receivedEvent);
-            } catch (SQLException e) {
-                return;
-            }
+            quotesCount = QuoteData.getQuotesCount(receivedEvent.getGuild(), receivedEvent);
             try {
                 quoteId = Integer.parseInt(args[1]);
             } catch (IllegalArgumentException e) {
@@ -85,11 +80,7 @@ public class ManageQuote extends Command {
 
             String quote = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
 
-            try {
             QuoteData.alterQuote(receivedEvent.getGuild(), quoteId, quote, receivedEvent);
-            }catch (SQLException e){
-                return;
-            }
 
             MessageSender.sendSimpleTextBox("Changed text of quote with id **" + quoteId + "**",
                     quote, Color.blue, receivedEvent.getChannel());
@@ -102,19 +93,11 @@ public class ManageQuote extends Command {
     private void showQuotes(String[] args, MessageReceivedEvent receivedEvent) {
         List<QuoteElement> quotes;
         if (args.length > 1) {
-            try {
-                quotes = QuoteData.getQuotesByKeyword(receivedEvent.getGuild(),
-                        String.join(" ", Arrays.copyOfRange(args, 1, args.length)), receivedEvent);
-            } catch (SQLException e) {
-                return;
-            }
+            quotes = QuoteData.getQuotesByKeyword(receivedEvent.getGuild(),
+                    String.join(" ", Arrays.copyOfRange(args, 1, args.length)), receivedEvent);
 
         } else {
-            try {
             quotes = QuoteData.getQuotes(receivedEvent.getGuild(), receivedEvent);
-            }catch (SQLException e){
-                return;
-            }
         }
 
         if (quotes.size() == 0) {
@@ -152,11 +135,7 @@ public class ManageQuote extends Command {
 
         int quoteId;
         int quotesCount;
-        try {
-            quotesCount = QuoteData.getQuotesCount(receivedEvent.getGuild(), receivedEvent);
-        } catch (SQLException e) {
-            return;
-        }
+        quotesCount = QuoteData.getQuotesCount(receivedEvent.getGuild(), receivedEvent);
         try {
             quoteId = Integer.parseInt(args[1]);
         } catch (IllegalArgumentException e) {
@@ -168,11 +147,7 @@ public class ManageQuote extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ID, receivedEvent.getChannel());
         }
 
-        try {
         QuoteData.removeQuote(receivedEvent.getGuild(), quoteId, receivedEvent);
-        }catch (SQLException e){
-            return;
-        }
         MessageSender.sendSimpleTextBox("Remove quote with id **" + quoteId + "**",
                 "", Color.red, receivedEvent.getChannel());
     }
@@ -185,11 +160,7 @@ public class ManageQuote extends Command {
 
         String quote = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
-        try {
         QuoteData.addQuote(receivedEvent.getGuild(), quote, receivedEvent);
-        }catch (SQLException e){
-            return;
-        }
         MessageSender.sendSimpleTextBox("Saved Quote!", quote, Color.green, receivedEvent.getChannel());
     }
 }

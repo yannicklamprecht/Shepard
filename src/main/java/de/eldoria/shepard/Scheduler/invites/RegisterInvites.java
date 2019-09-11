@@ -8,14 +8,13 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 class RegisterInvites implements Runnable {
-    private HashMap<Long, Set<String>> invites = new HashMap<>();
+    private final HashMap<Long, Set<String>> invites = new HashMap<>();
 
     RegisterInvites() {
     }
@@ -41,32 +40,23 @@ class RegisterInvites implements Runnable {
                     guildInvites.stream()
                             .filter(i -> !invites.get(guild.getIdLong()).contains(i.getCode()))
                             .forEach(i -> {
-                                try {
-                                    InviteData.addInvite(guild,
-                                            i.getCode(),
-                                            i.getInviter() != null ? i.getInviter().getAsTag() : "unknown user",
-                                            i.getUses(), null);
-                                } catch (SQLException e) {
-                                    return;
+                                if (InviteData.addInvite(guild,
+                                        i.getCode(),
+                                        i.getInviter() != null ? i.getInviter().getAsTag() : "unknown user",
+                                        i.getUses(), null)) {
+                                    invites.get(guild.getIdLong()).add(i.getCode());
+                                    ShepardBot.getLogger().info("Auto registered invite " + i.getCode()
+                                            + " on guild " + guild.getName() + "(" + guild.getId() + ")");
                                 }
-                                invites.get(guild.getIdLong()).add(i.getCode());
-                                ShepardBot.getLogger().info("Auto registered invite " + i.getCode()
-                                        + " on guild " + guild.getName() + "(" + guild.getId() + ")");
                             });
                 } catch (InsufficientPermissionException e) {
                     ShepardBot.getLogger().error("Error occurred on guild " + guild.getName()
                             + "(" + guild.getId() + ")", e);
                 }
             } else {
-                try {
-                    invites.put(guild.getIdLong(),
-
-                            InviteData.getInvites(guild, null)
-                                    .stream().map(DatabaseInvite::getCode)
-                                    .collect(Collectors.toSet()));
-                } catch (SQLException e) {
-                    return;
-                }
+                invites.put(guild.getIdLong(), InviteData.getInvites(guild, null).stream()
+                        .map(DatabaseInvite::getCode)
+                        .collect(Collectors.toSet()));
             }
         }
     }

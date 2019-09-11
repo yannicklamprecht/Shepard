@@ -73,11 +73,7 @@ public class Changelog extends Command {
 
     private void showRoles(MessageReceivedEvent receivedEvent) {
         List<String> roleIds;
-        try {
-            roleIds = ChangelogData.getRoles(receivedEvent.getGuild(), receivedEvent);
-        } catch (SQLException e) {
-            return;
-        }
+        roleIds = ChangelogData.getRoles(receivedEvent.getGuild(), receivedEvent);
 
         List<String> roleMentions = roleIds.stream()
                 .map(roleId -> receivedEvent.getGuild().getRoleById(getIdRaw(roleId)))
@@ -89,13 +85,9 @@ public class Changelog extends Command {
     }
 
     private void deactivate(MessageReceivedEvent receivedEvent) {
-        try {
-            ChangelogData.removeChannel(receivedEvent.getGuild(), receivedEvent);
-        } catch (SQLException e) {
-            return;
+        if (ChangelogData.removeChannel(receivedEvent.getGuild(), receivedEvent)) {
+            MessageSender.sendMessage("Changelog is deactivated", receivedEvent.getChannel());
         }
-
-        MessageSender.sendMessage("Changelog is deactivated", receivedEvent.getChannel());
     }
 
     private void activate(String[] args, MessageReceivedEvent receivedEvent) {
@@ -134,21 +126,15 @@ public class Changelog extends Command {
         }
 
         if (cmd.equalsIgnoreCase("addRole") || cmd.equalsIgnoreCase("ar")) {
-            try {
-                ChangelogData.addRole(receivedEvent.getGuild(), roleById, receivedEvent);
-            } catch (SQLException e) {
-                return;
+            if (ChangelogData.addRole(receivedEvent.getGuild(), roleById, receivedEvent)) {
+                MessageSender.sendMessage("Added role **" + roleById.getName() + "** to changelog.",
+                        receivedEvent.getChannel());
             }
-            MessageSender.sendMessage("Added role **" + roleById.getName() + "** to changelog.",
-                    receivedEvent.getChannel());
         } else {
-            try {
-                ChangelogData.removeRole(receivedEvent.getGuild(), roleById, receivedEvent);
-            } catch (SQLException e) {
-                return;
+            if (ChangelogData.removeRole(receivedEvent.getGuild(), roleById, receivedEvent)) {
+                MessageSender.sendMessage("Removed role **" + roleById.getName() + "** from changelog.",
+                        receivedEvent.getChannel());
             }
-            MessageSender.sendMessage("Removed role **" + roleById.getName() + "** from changelog.",
-                    receivedEvent.getChannel());
         }
     }
 }

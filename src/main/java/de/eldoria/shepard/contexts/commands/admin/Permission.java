@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.Color;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -96,12 +95,8 @@ public class Permission extends Command {
 
     private void showMentions(MessageReceivedEvent receivedEvent, String contextName, String message) {
         List<String> contextRolePermission;
-        try {
-            contextRolePermission = ContextData.getContextRolePermission(receivedEvent.getGuild(),
-                    contextName, receivedEvent);
-        } catch (SQLException e) {
-            return;
-        }
+        contextRolePermission = ContextData.getContextRolePermission(receivedEvent.getGuild(),
+                contextName, receivedEvent);
         MessageSender.sendSimpleTextBox(message,
                 Verifier.getValidRoles(receivedEvent.getGuild(), contextRolePermission)
                         .stream().map(IMentionable::getAsMention).collect(Collectors.joining(lineSeparator())),
@@ -120,15 +115,13 @@ public class Permission extends Command {
 
         for (User user : validUser) {
             if (modifyType == ModifyType.ADD) {
-                try {
-                    ContextData.addContextUserPermission(contextName, receivedEvent.getGuild(), user, receivedEvent);
-                } catch (SQLException e) {
+                if (!ContextData.addContextUserPermission(contextName,
+                        receivedEvent.getGuild(), user, receivedEvent)) {
                     return;
                 }
             } else {
-                try {
-                    ContextData.removeContextUserPermission(contextName, receivedEvent.getGuild(), user, receivedEvent);
-                } catch (SQLException e) {
+                if (!ContextData.removeContextUserPermission(contextName,
+                        receivedEvent.getGuild(), user, receivedEvent)) {
                     return;
                 }
             }
@@ -159,15 +152,13 @@ public class Permission extends Command {
 
         for (Role role : validRoles) {
             if (modifyType == ModifyType.ADD) {
-                try {
-                    ContextData.addContextRolePermission(contextName, receivedEvent.getGuild(), role, receivedEvent);
-                } catch (SQLException e) {
+                if (!ContextData.addContextRolePermission(contextName,
+                        receivedEvent.getGuild(), role, receivedEvent)) {
                     return;
                 }
             } else {
-                try {
-                    ContextData.removeContextRolePermission(contextName, receivedEvent.getGuild(), role, receivedEvent);
-                } catch (SQLException e) {
+                if (!ContextData.removeContextRolePermission(contextName,
+                        receivedEvent.getGuild(), role, receivedEvent)) {
                     return;
                 }
             }

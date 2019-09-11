@@ -6,9 +6,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 
-import java.sql.SQLException;
-import java.util.List;
-
 class RefreshInvites implements Runnable {
     RefreshInvites() {
     }
@@ -26,13 +23,10 @@ class RefreshInvites implements Runnable {
             if (!guild.getMember(ShepardBot.getJDA().getSelfUser()).hasPermission(Permission.MANAGE_SERVER)) {
                 continue;
             }
-            try {
-                InviteData.updateInvite(guild, guild.retrieveInvites().complete(), null);
-
-            } catch (SQLException e) {
-                return;
+            if (InviteData.updateInvite(guild, guild.retrieveInvites().complete(), null)) {
+                ShepardBot.getLogger().info("Update Invites for guild " + guild.getName()
+                        + "(" + guild.getId() + ")");
             }
-
         }
         ShepardBot.getLogger().info("Cleaned up Invites");
     }
