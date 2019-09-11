@@ -145,6 +145,7 @@ public final class ShepardBot {
                 Color.RED, ShepardReactions.ASLEEP, Normandy.getGeneralLogChannel());
 
         jda.shutdown();
+        jda = null;
         ShepardBot.getLogger().info("JDA shut down. Closing Application in 5 Seconds!");
         try {
             Thread.sleep(5000);
