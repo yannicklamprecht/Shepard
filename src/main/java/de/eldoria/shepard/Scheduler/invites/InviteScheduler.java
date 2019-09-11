@@ -8,7 +8,7 @@ public final class InviteScheduler {
 
     private static InviteScheduler instance;
 
-    private InviteScheduler(){
+    private InviteScheduler() {
         ScheduledExecutorService autoRegister = Executors.newSingleThreadScheduledExecutor();
 
         autoRegister.scheduleAtFixedRate(new RegisterInvites(), 0, 10, TimeUnit.SECONDS);
@@ -18,8 +18,8 @@ public final class InviteScheduler {
         refreshInvites.scheduleAtFixedRate(new RefreshInvites(), 0, 60, TimeUnit.MINUTES);
     }
 
-    public static void initialize(){
-        if(instance == null){
+    public static void initialize() {
+        if (instance == null) {
             instance = new InviteScheduler();
         }
     }

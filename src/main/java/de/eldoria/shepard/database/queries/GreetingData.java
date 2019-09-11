@@ -23,6 +23,7 @@ public final class GreetingData {
      * @param guild     Guild object for which the channel should be added
      * @param channel channel which should be used for greetings
      * @param event     event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean setGreetingChannel(Guild guild, MessageChannel channel, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -42,6 +43,7 @@ public final class GreetingData {
      *
      * @param guild Guild object for lookup
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean removeGreetingChannel(Guild guild, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -61,6 +63,7 @@ public final class GreetingData {
      * @param guild Guild object for lookup
      * @param text text for greeting
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean setGreetingText(Guild guild, String text, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()

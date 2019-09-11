@@ -24,6 +24,7 @@ public final class QuoteData {
      * @param guild Guild for which the quote should be added.
      * @param quote quote to add
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean addQuote(Guild guild, String quote, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -45,6 +46,7 @@ public final class QuoteData {
      * @param quoteId id on guild.
      * @param quote   new quote
      * @param event   event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean alterQuote(Guild guild, int quoteId, String quote, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -66,6 +68,7 @@ public final class QuoteData {
      * @param guild   Guild object for lookup
      * @param quoteId id on guild.
      * @param event   event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean removeQuote(Guild guild, int quoteId, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()

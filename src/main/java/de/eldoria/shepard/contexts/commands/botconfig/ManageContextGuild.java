@@ -159,11 +159,11 @@ public class ManageContextGuild extends Command {
 
         if (ContextData.setContextGuildCheckActive(contextName, state, receivedEvent)) {
             if (state) {
-                MessageSender.sendMessage("**Activated guild check for context \"" + contextName.toUpperCase() + "\"**",
-                        receivedEvent.getChannel());
+                MessageSender.sendMessage("**Activated guild check for context \""
+                        + contextName.toUpperCase() + "\"**", receivedEvent.getChannel());
             } else {
-                MessageSender.sendMessage("**Deactivated guild check for context \"" + contextName.toUpperCase() + "\"**",
-                        receivedEvent.getChannel());
+                MessageSender.sendMessage("**Deactivated guild check for context \""
+                        + contextName.toUpperCase() + "\"**", receivedEvent.getChannel());
             }
         }
     }

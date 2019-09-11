@@ -64,6 +64,7 @@ public final class MinecraftLinkData {
      * @param code  Code to add
      * @param uuid  uuid of player
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean addLinkCode(String code, String uuid, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()

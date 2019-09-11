@@ -38,6 +38,7 @@ public final class ContextData {
      * @param contextName context zo change
      * @param user        user to add
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean addContextUser(String contextName, User user, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
@@ -60,6 +61,7 @@ public final class ContextData {
      * @param contextName context name to change
      * @param user        user to remove
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean removeContextUser(String contextName, User user, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
@@ -82,6 +84,7 @@ public final class ContextData {
      * @param contextName context name to change
      * @param guild       guild id to add
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean addContextGuild(String contextName, Guild guild, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
@@ -104,6 +107,7 @@ public final class ContextData {
      * @param contextName context name to change
      * @param guild       guild id to remove
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean removeContextGuild(String contextName, Guild guild, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
@@ -127,6 +131,7 @@ public final class ContextData {
      * @param guild       guild id where the permission should be added
      * @param user        user which should be added
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean addContextUserPermission(String contextName, Guild guild,
                                                    User user, MessageReceivedEvent event) {
@@ -152,6 +157,7 @@ public final class ContextData {
      * @param guild       guild id where the permission should be removed
      * @param user        user which should be removed
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean removeContextUserPermission(String contextName, Guild guild,
                                                       User user, MessageReceivedEvent event) {
@@ -177,6 +183,7 @@ public final class ContextData {
      * @param guild       guild id where the permission should be added
      * @param role        role which should be added
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean addContextRolePermission(String contextName, Guild guild,
                                                    Role role, MessageReceivedEvent event) {
@@ -202,6 +209,7 @@ public final class ContextData {
      * @param guild       guild id where the permission should be removed
      * @param role        role which should be removed
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean removeContextRolePermission(String contextName, Guild guild,
                                                       Role role, MessageReceivedEvent event) {
@@ -226,6 +234,7 @@ public final class ContextData {
      * @param contextName Name of the context to change
      * @param state       True if it is a admin only command.
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean setContextAdmin(String contextName, boolean state, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
@@ -248,6 +257,7 @@ public final class ContextData {
      * @param contextName Name of the context to change
      * @param state       True if it is a nsfw command.
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean setContextNsfw(String contextName, boolean state, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
@@ -270,6 +280,7 @@ public final class ContextData {
      * @param contextName Name of the context to change
      * @param state       true when user should be checked
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean setContextUserCheckActive(String contextName, boolean state, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
@@ -292,6 +303,7 @@ public final class ContextData {
      * @param contextName Name of the context to change
      * @param state       true when guild should be checked
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean setContextGuildCheckActive(String contextName, boolean state, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
@@ -314,6 +326,7 @@ public final class ContextData {
      * @param contextName Name of the context to change
      * @param listType    ListType enum.
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean setContextUserListType(String contextName, ListType listType, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
@@ -336,6 +349,7 @@ public final class ContextData {
      * @param contextName Name of the context to change
      * @param listType    ListType enum.
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean setContextGuildListType(String contextName, ListType listType, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);

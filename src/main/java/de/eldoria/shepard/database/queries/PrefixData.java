@@ -26,6 +26,7 @@ public final class PrefixData {
      * @param guild  Guild for which the prefix should be set
      * @param prefix prefix to set.
      * @param event  event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean setPrefix(Guild guild, String prefix, MessageReceivedEvent event)  {
         cacheDirty = true;

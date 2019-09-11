@@ -28,6 +28,7 @@ public final class InviteData {
      * @param name  Name of the invite
      * @param count How often the invite was used
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean addInvite(Guild guild, String code, String name, int count, MessageReceivedEvent event)  {
         try (PreparedStatement statement = getConn()
@@ -77,6 +78,7 @@ public final class InviteData {
      * @param guild Guild object for lookup
      * @param code  Code of the invite to remove
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean removeInvite(Guild guild, String code, MessageReceivedEvent event)  {
         try (PreparedStatement statement = getConn()
@@ -97,6 +99,7 @@ public final class InviteData {
      * @param guild Guild object for lookup
      * @param code  Code of the invite for upcount
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean upCountInvite(Guild guild, String code, MessageReceivedEvent event)  {
         try (PreparedStatement statement = getConn()
@@ -117,6 +120,7 @@ public final class InviteData {
      * @param guild   Guild object for lookup
      * @param invites List of invites of a guild
      * @param event   event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean updateInvite(Guild guild, List<Invite> invites, MessageReceivedEvent event)  {
         try (PreparedStatement statement = getConn()

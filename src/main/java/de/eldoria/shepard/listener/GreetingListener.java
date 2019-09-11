@@ -17,7 +17,6 @@ public class GreetingListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        List<Invite> invites = event.getGuild().retrieveInvites().complete();
         List<DatabaseInvite> databaseInvites;
         databaseInvites = InviteData.getInvites(event.getGuild(), null);
 
@@ -27,6 +26,7 @@ public class GreetingListener extends ListenerAdapter {
         if (greeting == null) return;
         MessageChannel channel = greeting.getChannel();
         if (channel == null) return;
+        List<Invite> invites = event.getGuild().retrieveInvites().complete();
         for (Invite invite : invites) {
             Optional<DatabaseInvite> dInvite = databaseInvites.stream()
                     .filter(inv -> inv.getCode().equals(invite.getCode())).findAny();

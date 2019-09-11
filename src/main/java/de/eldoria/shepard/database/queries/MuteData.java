@@ -33,6 +33,7 @@ public final class MuteData {
      * @param user   user id
      * @param duration duration of the mute
      * @param event    event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean setMuted(Guild guild, User user, String duration, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -72,6 +73,7 @@ public final class MuteData {
      * @param guild  Guild object for lookup
      * @param user id of the user
      * @param event  event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean removeMute(Guild guild, User user, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()

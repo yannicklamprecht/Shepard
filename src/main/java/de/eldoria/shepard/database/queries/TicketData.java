@@ -34,9 +34,10 @@ public final class TicketData {
      * @param creationMessage creation message
      * @param keyword         type keyword
      * @param event           event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean addType(Guild guild, Category category, String creationMessage,
-                               String keyword, MessageReceivedEvent event) {
+                                  String keyword, MessageReceivedEvent event) {
         String categoryId = null;
         if (category != null) {
             categoryId = category.getId();
@@ -61,8 +62,9 @@ public final class TicketData {
      * @param guild Guild object for lookup
      * @param id    id of the type
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static boolean removeTypeByIndex(Guild guild, int id, MessageReceivedEvent event)  {
+    public static boolean removeTypeByIndex(Guild guild, int id, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_ticket_type_by_index(?,?)")) {
             statement.setString(1, guild.getId());
@@ -81,6 +83,7 @@ public final class TicketData {
      * @param guild   Guild object for lookup
      * @param keyword keyword of the type
      * @param event   event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean removeTypeByKeyword(Guild guild, String keyword, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -181,6 +184,7 @@ public final class TicketData {
      * @param keyword keyword of type
      * @param message new message
      * @param event   event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean setCreationMessage(Guild guild, String keyword, String message, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -204,9 +208,10 @@ public final class TicketData {
      * @param ticketOwner user object of the ticket owner
      * @param keyword     keyword of the ticket type.
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean createChannel(Guild guild, TextChannel channel,
-                                     User ticketOwner, String keyword, MessageReceivedEvent event) {
+                                        User ticketOwner, String keyword, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.create_ticket_channel(?,?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -320,6 +325,7 @@ public final class TicketData {
      * @param guild   Guild object for lookup
      * @param channel channel object
      * @param event   event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean removeChannel(Guild guild, TextChannel channel, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -340,6 +346,7 @@ public final class TicketData {
      * @param guild       Guild object for lookup
      * @param ticketOwner ticketOwner as user.
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean removeChannelByUser(Guild guild, User ticketOwner, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -361,6 +368,7 @@ public final class TicketData {
      * @param keyword keyword of the type
      * @param roles   one or more role ids.
      * @param event   event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean setTypeOwnerRoles(Guild guild, String keyword, List<Role> roles, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -385,8 +393,10 @@ public final class TicketData {
      * @param keyword keyword of ticket type
      * @param roles   one or more role ids
      * @param event   event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static boolean setTypeSupportRoles(Guild guild, String keyword, List<Role> roles, MessageReceivedEvent event) {
+    public static boolean setTypeSupportRoles(Guild guild, String keyword, List<Role> roles,
+                                              MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_ticket_support_roles(?,?,?)")) {
             statement.setString(1, guild.getId());

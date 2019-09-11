@@ -26,6 +26,7 @@ public final class MonitoringData {
      * @param address address to add
      * @param name    name of the address
      * @param event   event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean addMonitoringAddress(Guild guild, String address, String name, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -47,6 +48,7 @@ public final class MonitoringData {
      * @param guild Guild object for lookup
      * @param index address index
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean removeMonitoringAddressByIndex(Guild guild, int index, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -67,6 +69,7 @@ public final class MonitoringData {
      * @param guild     Guild object for which the channel should be set
      * @param channel iod of the channel
      * @param event     event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean setMonitoringChannel(Guild guild, TextChannel channel, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -86,6 +89,7 @@ public final class MonitoringData {
      *
      * @param guild Guild object for lookup
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
     public static boolean removeMonitoringChannel(Guild guild, MessageReceivedEvent event)  {
         try (PreparedStatement statement = DatabaseConnector.getConn()
