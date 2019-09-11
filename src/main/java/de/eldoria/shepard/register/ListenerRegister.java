@@ -1,5 +1,6 @@
 package de.eldoria.shepard.register;
 
+import de.eldoria.shepard.scheduler.invites.InviteScheduler;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.listener.CommandListener;
 import de.eldoria.shepard.listener.ChangelogListener;
@@ -26,6 +27,7 @@ public final class ListenerRegister {
         listener.add(new LogListener());
         listener.add(new MessageSniffer());
         listener.add(new TicketCleanupListener());
+        InviteScheduler.initialize();
     }
 
     private static ListenerRegister getInstance() {
@@ -43,6 +45,4 @@ public final class ListenerRegister {
         registered = true;
         ShepardBot.getInstance().registerListener(getInstance().listener);
     }
-
-
 }

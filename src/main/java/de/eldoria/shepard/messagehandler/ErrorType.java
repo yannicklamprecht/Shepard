@@ -106,7 +106,7 @@ public enum ErrorType {
      */
     public final String message;
 
-    private ErrorType(String message) {
+    ErrorType(String message) {
         this.message = message;
     }
 }

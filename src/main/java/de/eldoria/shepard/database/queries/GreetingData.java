@@ -10,7 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static de.eldoria.shepard.database.DbUtil.handleException;
+import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public final class GreetingData {
 
@@ -20,19 +20,22 @@ public final class GreetingData {
     /**
      * Sets a greeting channel for a guild.
      *
-     * @param guild     Guild object for which the channel should be added
+     * @param guild   Guild object for which the channel should be added
      * @param channel channel which should be used for greetings
-     * @param event     event from command sending for error handling. Can be null.
+     * @param event   event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void setGreetingChannel(Guild guild, MessageChannel channel, MessageReceivedEvent event) {
+    public static boolean setGreetingChannel(Guild guild, MessageChannel channel, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_greeting_channel(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, channel.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -40,33 +43,39 @@ public final class GreetingData {
      *
      * @param guild Guild object for lookup
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void removeGreetingChannel(Guild guild, MessageReceivedEvent event) {
+    public static boolean removeGreetingChannel(Guild guild, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_greeting_channel(?)")) {
             statement.setString(1, guild.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
      * Sets the greeting text for a guild.
      *
      * @param guild Guild object for lookup
-     * @param text text for greeting
+     * @param text  text for greeting
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void setGreetingText(Guild guild, String text, MessageReceivedEvent event) {
+    public static boolean setGreetingText(Guild guild, String text, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_greeting_text(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, text);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -77,7 +86,7 @@ public final class GreetingData {
      */
     public static GreetingSettings getGreeting(Guild guild) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT shepard_func.get_greeting_data(?)")) {
+                .prepareStatement("SELECT * from shepard_func.get_greeting_data(?)")) {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
             if (result.next()) {
@@ -87,10 +96,8 @@ public final class GreetingData {
             }
 
         } catch (SQLException e) {
-            handleException(e, null);
+            handleExceptionAndIgnore(e, null);
         }
         return null;
     }
-
-
 }

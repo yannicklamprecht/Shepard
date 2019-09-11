@@ -94,8 +94,8 @@ public class Permission extends Command {
     }
 
     private void showMentions(MessageReceivedEvent receivedEvent, String contextName, String message) {
-        List<String> contextRolePermission =
-                ContextData.getContextRolePermission(receivedEvent.getGuild(), contextName, receivedEvent);
+        List<String> contextRolePermission = ContextData.getContextRolePermission(receivedEvent.getGuild(),
+                contextName, receivedEvent);
         MessageSender.sendSimpleTextBox(message,
                 Verifier.getValidRoles(receivedEvent.getGuild(), contextRolePermission)
                         .stream().map(IMentionable::getAsMention).collect(Collectors.joining(lineSeparator())),
@@ -114,9 +114,15 @@ public class Permission extends Command {
 
         for (User user : validUser) {
             if (modifyType == ModifyType.ADD) {
-                ContextData.addContextUserPermission(contextName, receivedEvent.getGuild(), user, receivedEvent);
+                if (!ContextData.addContextUserPermission(contextName,
+                        receivedEvent.getGuild(), user, receivedEvent)) {
+                    return;
+                }
             } else {
-                ContextData.removeContextUserPermission(contextName, receivedEvent.getGuild(), user, receivedEvent);
+                if (!ContextData.removeContextUserPermission(contextName,
+                        receivedEvent.getGuild(), user, receivedEvent)) {
+                    return;
+                }
             }
         }
 
@@ -145,9 +151,15 @@ public class Permission extends Command {
 
         for (Role role : validRoles) {
             if (modifyType == ModifyType.ADD) {
-                ContextData.addContextRolePermission(contextName, receivedEvent.getGuild(), role, receivedEvent);
+                if (!ContextData.addContextRolePermission(contextName,
+                        receivedEvent.getGuild(), role, receivedEvent)) {
+                    return;
+                }
             } else {
-                ContextData.removeContextRolePermission(contextName, receivedEvent.getGuild(), role, receivedEvent);
+                if (!ContextData.removeContextRolePermission(contextName,
+                        receivedEvent.getGuild(), role, receivedEvent)) {
+                    return;
+                }
             }
         }
 

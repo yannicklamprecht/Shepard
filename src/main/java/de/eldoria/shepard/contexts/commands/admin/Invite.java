@@ -61,13 +61,14 @@ public class Invite extends Command {
 
     private void showInvites(MessageReceivedEvent receivedEvent) {
         List<DatabaseInvite> invites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
+
         StringBuilder message = new StringBuilder();
         String code = "code      ";
-        String usages = "Usage Count";
+        String usages = "Usage Count ";
         String name = "Name";
         message.append("Registered Invites: ").append(lineSeparator())
                 .append("```yaml").append(lineSeparator())
-                .append(code).append(usages).append(name);
+                .append(code).append(usages).append(name).append(lineSeparator());
 
         for (DatabaseInvite invite : invites) {
             String invCode = StringUtils.rightPad(invite.getCode(), code.length(), " ");
@@ -80,9 +81,11 @@ public class Invite extends Command {
     }
 
     private void refreshInvites(MessageReceivedEvent receivedEvent) {
-        InviteData.updateInvite(receivedEvent.getGuild(),
-                receivedEvent.getGuild().retrieveInvites().complete(), receivedEvent);
-        MessageSender.sendMessage("Removed non existent invites!", receivedEvent.getChannel());
+        if (InviteData.updateInvite(receivedEvent.getGuild(),
+                receivedEvent.getGuild().retrieveInvites().complete(), receivedEvent)) {
+            MessageSender.sendMessage("Removed non existent invites!", receivedEvent.getChannel());
+        }
+
     }
 
     private void removeInvite(String[] args, MessageReceivedEvent receivedEvent) {
@@ -91,10 +94,13 @@ public class Invite extends Command {
             return;
         }
         List<DatabaseInvite> databaseInvites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
+
         for (DatabaseInvite invite : databaseInvites) {
             if (invite.getCode().equals(args[1])) {
-                InviteData.removeInvite(receivedEvent.getGuild(), args[1], receivedEvent);
-                MessageSender.sendMessage("Removed invite " + invite.getSource(), receivedEvent.getChannel());
+                if (InviteData.removeInvite(receivedEvent.getGuild(), args[1], receivedEvent)) {
+                    MessageSender.sendMessage("Removed invite " + invite.getSource(), receivedEvent.getChannel());
+                    return;
+                }
             }
         }
         MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND,
@@ -110,10 +116,11 @@ public class Invite extends Command {
         for (var invite : invites) {
             if (invite.getCode().equals(args[1])) {
                 String name = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-                InviteData.addInvite(receivedEvent.getGuild(), invite.getCode(), name,
-                        invite.getUses(), receivedEvent);
-                MessageSender.sendMessage("Added Invite \"" + name + " with code " + invite.getCode()
-                        + " to database with usage count of " + invite.getUses(), receivedEvent.getChannel());
+                if (InviteData.addInvite(receivedEvent.getGuild(), invite.getCode(), name,
+                        invite.getUses(), receivedEvent)) {
+                    MessageSender.sendMessage("Added Invite \"" + name + " with code " + invite.getCode()
+                            + " to database with usage count of " + invite.getUses(), receivedEvent.getChannel());
+                }
                 return;
             }
         }

@@ -43,7 +43,10 @@ public class Prefix extends Command {
     }
 
     private void reset(MessageReceivedEvent receivedEvent) {
-        setPrefix(receivedEvent.getGuild(), ShepardBot.getConfig().getPrefix(), receivedEvent);
+        if (setPrefix(receivedEvent.getGuild(), ShepardBot.getConfig().getPrefix(), receivedEvent)) {
+            MessageSender.sendMessage("Set Prefix to '" + ShepardBot.getConfig().getPrefix() + "'",
+                    receivedEvent.getChannel());
+        }
     }
 
     private void set(String[] args, MessageReceivedEvent receivedEvent) {
@@ -58,7 +61,8 @@ public class Prefix extends Command {
             return;
         }
 
-        setPrefix(receivedEvent.getGuild(), args[1].trim(), receivedEvent);
-        MessageSender.sendMessage("Changed prefix to '" + args[1].trim() + "'", receivedEvent.getChannel());
+        if (setPrefix(receivedEvent.getGuild(), args[1].trim(), receivedEvent)) {
+            MessageSender.sendMessage("Changed prefix to '" + args[1].trim() + "'", receivedEvent.getChannel());
+        }
     }
 }

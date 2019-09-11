@@ -90,11 +90,13 @@ public class ManageContextUsers extends Command {
                 User user = ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(userId));
                 if (user != null) {
                     if (modifyType == ModifyType.ADD) {
-
-
-                        ContextData.addContextUser(contextName, user, receivedEvent);
+                        if (!ContextData.addContextUser(contextName, user, receivedEvent)) {
+                            return;
+                        }
                     } else {
-                        ContextData.removeContextUser(contextName, user, receivedEvent);
+                        if (!ContextData.removeContextUser(contextName, user, receivedEvent)) {
+                            return;
+                        }
                     }
                     mentions.add(user.getAsMention());
                 }
@@ -132,11 +134,12 @@ public class ManageContextUsers extends Command {
             return;
         }
 
-        ContextData.setContextUserListType(contextName, type, receivedEvent);
+        if (ContextData.setContextUserListType(contextName, type, receivedEvent)) {
+            MessageSender.sendMessage("**Changed user list type of context \""
+                            + contextName.toUpperCase() + "\" to " + type.toString() + "**",
+                    receivedEvent.getChannel());
+        }
 
-        MessageSender.sendMessage("**Changed user list type of context \""
-                        + contextName.toUpperCase() + "\" to " + type.toString() + "**",
-                receivedEvent.getChannel());
     }
 
     private void setActive(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
@@ -150,7 +153,9 @@ public class ManageContextUsers extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
-        ContextData.setContextUserCheckActive(contextName, state, receivedEvent);
+        if (!ContextData.setContextUserCheckActive(contextName, state, receivedEvent)) {
+            return;
+        }
 
         if (state) {
             MessageSender.sendMessage("**Activated user check for context \"" + contextName.toUpperCase() + "\"**",

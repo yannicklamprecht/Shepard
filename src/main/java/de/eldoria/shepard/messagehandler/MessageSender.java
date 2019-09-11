@@ -142,7 +142,7 @@ public class MessageSender {
     public static void sendError(MessageEmbed.Field[] fields, MessageChannel channel) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("ERROR!")
-                .setThumbnail(ShepardReactions.SHULKY.thumbnail);
+                .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
         for (MessageEmbed.Field field : fields) {
             builder.addField(field);
             builder.setColor(Color.red);
@@ -172,7 +172,7 @@ public class MessageSender {
                 .setTitle("ERROR!")
                 .setDescription(error)
                 .setColor(Color.red)
-                .setThumbnail(ShepardReactions.SHULKY.thumbnail)
+                .setThumbnail(ShepardReactions.CONFUSED.thumbnail)
                 .setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
         try {
             channel.sendMessage(builder.build()).queue();

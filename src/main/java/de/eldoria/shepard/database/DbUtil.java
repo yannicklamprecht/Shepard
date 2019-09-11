@@ -33,12 +33,13 @@ public final class DbUtil {
     }
 
     /**
-     * Handles SQL Exceptions.
+     * Handles SQL Exceptions and throws it.
      *
      * @param ex    SQL Exception
      * @param event Event for error sending to channel to inform user.
+     * @throws SQLException when the query was not executed successful
      */
-    public static void handleException(SQLException ex, MessageReceivedEvent event) {
+    public static void handleException(SQLException ex, MessageReceivedEvent event) throws SQLException {
         StringBuilder builder = new StringBuilder();
 
         builder.append("SQLException: ").append(ex.getMessage()).append(lineSeparator())
@@ -50,5 +51,21 @@ public final class DbUtil {
             MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, event.getChannel());
         }
         MessageSender.sendSimpleError(builder.toString(), Normandy.getErrorChannel());
+        throw ex;
     }
+
+    /**
+     * Handles SQL Exceptions.
+     *
+     * @param ex    SQL Exception
+     * @param event Event for error sending to channel to inform user.
+     */
+    public static void handleExceptionAndIgnore(SQLException ex, MessageReceivedEvent event) {
+        try {
+            handleException(ex, event);
+        } catch (SQLException e) {
+            //DO NOTHING
+        }
+    }
+
 }

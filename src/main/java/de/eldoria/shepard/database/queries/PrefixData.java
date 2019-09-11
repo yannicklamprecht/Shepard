@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
-import static de.eldoria.shepard.database.DbUtil.handleException;
+import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public final class PrefixData {
     private static final Map<String, String> prefixes = new DefaultMap<>(ShepardBot.getConfig().getPrefix());
@@ -26,8 +26,9 @@ public final class PrefixData {
      * @param guild  Guild for which the prefix should be set
      * @param prefix prefix to set.
      * @param event  event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void setPrefix(Guild guild, String prefix, MessageReceivedEvent event) {
+    public static boolean setPrefix(Guild guild, String prefix, MessageReceivedEvent event) {
         cacheDirty = true;
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_prefix(?,?)")) {
@@ -35,10 +36,12 @@ public final class PrefixData {
             statement.setString(2, prefix);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
 
         ShepardBot.getLogger().info("Changed prefix of server " + guild.getName() + " to " + prefix);
+        return true;
     }
 
     /**
@@ -76,7 +79,7 @@ public final class PrefixData {
             cacheDirty = false;
 
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
         }
     }
 }

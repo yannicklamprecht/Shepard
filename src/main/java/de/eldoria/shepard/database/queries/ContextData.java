@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static de.eldoria.shepard.database.DbUtil.handleException;
+import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public final class ContextData {
     //Map with context
@@ -38,8 +38,9 @@ public final class ContextData {
      * @param contextName context zo change
      * @param user        user to add
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void addContextUser(String contextName, User user, MessageReceivedEvent event) {
+    public static boolean addContextUser(String contextName, User user, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -48,8 +49,10 @@ public final class ContextData {
             statement.setString(2, user.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -58,8 +61,9 @@ public final class ContextData {
      * @param contextName context name to change
      * @param user        user to remove
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void removeContextUser(String contextName, User user, MessageReceivedEvent event) {
+    public static boolean removeContextUser(String contextName, User user, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -68,8 +72,10 @@ public final class ContextData {
             statement.setString(2, user.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -78,8 +84,9 @@ public final class ContextData {
      * @param contextName context name to change
      * @param guild       guild id to add
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void addContextGuild(String contextName, Guild guild, MessageReceivedEvent event) {
+    public static boolean addContextGuild(String contextName, Guild guild, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -88,8 +95,10 @@ public final class ContextData {
             statement.setString(2, guild.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -98,8 +107,9 @@ public final class ContextData {
      * @param contextName context name to change
      * @param guild       guild id to remove
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void removeContextGuild(String contextName, Guild guild, MessageReceivedEvent event) {
+    public static boolean removeContextGuild(String contextName, Guild guild, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -108,8 +118,10 @@ public final class ContextData {
             statement.setString(2, guild.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -119,9 +131,10 @@ public final class ContextData {
      * @param guild       guild id where the permission should be added
      * @param user        user which should be added
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void addContextUserPermission(String contextName, Guild guild,
-                                                User user, MessageReceivedEvent event) {
+    public static boolean addContextUserPermission(String contextName, Guild guild,
+                                                   User user, MessageReceivedEvent event) {
         userPermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -131,8 +144,10 @@ public final class ContextData {
             statement.setString(3, user.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -142,9 +157,10 @@ public final class ContextData {
      * @param guild       guild id where the permission should be removed
      * @param user        user which should be removed
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void removeContextUserPermission(String contextName, Guild guild,
-                                                   User user, MessageReceivedEvent event) {
+    public static boolean removeContextUserPermission(String contextName, Guild guild,
+                                                      User user, MessageReceivedEvent event) {
         userPermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -154,8 +170,10 @@ public final class ContextData {
             statement.setString(3, user.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -165,9 +183,10 @@ public final class ContextData {
      * @param guild       guild id where the permission should be added
      * @param role        role which should be added
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void addContextRolePermission(String contextName, Guild guild,
-                                                Role role, MessageReceivedEvent event) {
+    public static boolean addContextRolePermission(String contextName, Guild guild,
+                                                   Role role, MessageReceivedEvent event) {
         rolePermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -177,8 +196,10 @@ public final class ContextData {
             statement.setString(3, role.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -188,9 +209,10 @@ public final class ContextData {
      * @param guild       guild id where the permission should be removed
      * @param role        role which should be removed
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void removeContextRolePermission(String contextName, Guild guild,
-                                                   Role role, MessageReceivedEvent event) {
+    public static boolean removeContextRolePermission(String contextName, Guild guild,
+                                                      Role role, MessageReceivedEvent event) {
         rolePermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -200,8 +222,10 @@ public final class ContextData {
             statement.setString(3, role.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -210,8 +234,9 @@ public final class ContextData {
      * @param contextName Name of the context to change
      * @param state       True if it is a admin only command.
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void setContextAdmin(String contextName, boolean state, MessageReceivedEvent event) {
+    public static boolean setContextAdmin(String contextName, boolean state, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -220,8 +245,10 @@ public final class ContextData {
             statement.setBoolean(2, state);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -230,8 +257,9 @@ public final class ContextData {
      * @param contextName Name of the context to change
      * @param state       True if it is a nsfw command.
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void setContextNsfw(String contextName, boolean state, MessageReceivedEvent event) {
+    public static boolean setContextNsfw(String contextName, boolean state, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -240,8 +268,10 @@ public final class ContextData {
             statement.setBoolean(2, state);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -250,8 +280,9 @@ public final class ContextData {
      * @param contextName Name of the context to change
      * @param state       true when user should be checked
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void setContextUserCheckActive(String contextName, boolean state, MessageReceivedEvent event) {
+    public static boolean setContextUserCheckActive(String contextName, boolean state, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -260,8 +291,10 @@ public final class ContextData {
             statement.setBoolean(2, state);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -270,8 +303,9 @@ public final class ContextData {
      * @param contextName Name of the context to change
      * @param state       true when guild should be checked
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void setContextGuildCheckActive(String contextName, boolean state, MessageReceivedEvent event) {
+    public static boolean setContextGuildCheckActive(String contextName, boolean state, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -280,8 +314,10 @@ public final class ContextData {
             statement.setBoolean(2, state);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -290,8 +326,9 @@ public final class ContextData {
      * @param contextName Name of the context to change
      * @param listType    ListType enum.
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void setContextUserListType(String contextName, ListType listType, MessageReceivedEvent event) {
+    public static boolean setContextUserListType(String contextName, ListType listType, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -300,8 +337,10 @@ public final class ContextData {
             statement.setString(2, listType.toString());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -310,8 +349,9 @@ public final class ContextData {
      * @param contextName Name of the context to change
      * @param listType    ListType enum.
      * @param event       event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void setContextGuildListType(String contextName, ListType listType, MessageReceivedEvent event) {
+    public static boolean setContextGuildListType(String contextName, ListType listType, MessageReceivedEvent event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -320,8 +360,10 @@ public final class ContextData {
             statement.setString(2, listType.toString());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -368,7 +410,7 @@ public final class ContextData {
             }
 
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
         }
 
         return contextData.getOrDefault(contextName, null);
@@ -377,7 +419,7 @@ public final class ContextData {
     /**
      * Returns a list of all user ids, which have access to the context on a specific guild.
      *
-     * @param guild Guild for lookup.
+     * @param guild       Guild for lookup.
      * @param contextName Name of the context for permission lookup.
      * @param event       event from command sending for error handling. Can be null.
      * @return List of user ids
@@ -421,7 +463,7 @@ public final class ContextData {
             userPermissions.put(contextName, data);
             userPermissionDirty.put(contextName, false);
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
         }
         if (userPermissions.containsKey(contextName)) {
             if (event != null && !userPermissions.get(contextName).containsKey(event.getGuild().getId())) {
@@ -435,7 +477,7 @@ public final class ContextData {
     /**
      * Returns a list of all role ids, which have access to the context on a specific guild.
      *
-     * @param guild Guild for lookup.
+     * @param guild       Guild for lookup.
      * @param contextName Name of the context for permission lookup.
      * @param event       event from command sending for error handling. Can be null.
      * @return List of user ids
@@ -481,7 +523,7 @@ public final class ContextData {
             rolePermissions.put(contextName, data);
             rolePermissionDirty.put(contextName, false);
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
         }
 
         if (rolePermissions.containsKey(contextName)) {

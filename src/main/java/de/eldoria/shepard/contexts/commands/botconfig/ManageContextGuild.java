@@ -98,9 +98,15 @@ public class ManageContextGuild extends Command {
                 Guild guild = ShepardBot.getJDA().getGuildById(DbUtil.getIdRaw(guildId));
                 if (guild != null) {
                     if (modifyType == ModifyType.ADD) {
-                        ContextData.addContextGuild(contextName, guild, receivedEvent);
+                        if (!ContextData.addContextGuild(contextName, guild, receivedEvent)) {
+                            return;
+                        }
+
                     } else {
-                        ContextData.removeContextGuild(contextName, guild, receivedEvent);
+                        if (!ContextData.removeContextGuild(contextName, guild, receivedEvent)) {
+                            return;
+                        }
+
                     }
                     mentions.add(guild.getName());
                 }
@@ -132,11 +138,12 @@ public class ManageContextGuild extends Command {
             return;
         }
 
-        ContextData.setContextGuildListType(contextName, type, receivedEvent);
+        if (ContextData.setContextGuildListType(contextName, type, receivedEvent)) {
+            MessageSender.sendMessage("**Changed guild list type of context \""
+                            + contextName.toUpperCase() + "\" to " + type.toString() + "**",
+                    receivedEvent.getChannel());
+        }
 
-        MessageSender.sendMessage("**Changed guild list type of context \""
-                        + contextName.toUpperCase() + "\" to " + type.toString() + "**",
-                receivedEvent.getChannel());
     }
 
     private void setActive(String[] args, String contextName, MessageReceivedEvent receivedEvent) {
@@ -150,15 +157,14 @@ public class ManageContextGuild extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
-        ContextData.setContextGuildCheckActive(contextName, state, receivedEvent);
-
-        if (state) {
-            MessageSender.sendMessage("**Activated guild check for context \"" + contextName.toUpperCase() + "\"**",
-                    receivedEvent.getChannel());
-
-        } else {
-            MessageSender.sendMessage("**Deactivated guild check for context \"" + contextName.toUpperCase() + "\"**",
-                    receivedEvent.getChannel());
+        if (ContextData.setContextGuildCheckActive(contextName, state, receivedEvent)) {
+            if (state) {
+                MessageSender.sendMessage("**Activated guild check for context \""
+                        + contextName.toUpperCase() + "\"**", receivedEvent.getChannel());
+            } else {
+                MessageSender.sendMessage("**Deactivated guild check for context \""
+                        + contextName.toUpperCase() + "\"**", receivedEvent.getChannel());
+            }
         }
     }
 }

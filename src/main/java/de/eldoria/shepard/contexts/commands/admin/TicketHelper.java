@@ -19,8 +19,9 @@ final class TicketHelper {
 
     /**
      * Removes the roles from a user, but secures, that he keeps all necessary roles for other tickets.
+     *
      * @param receivedEvent Received event of the message.
-     * @param member member to change roles
+     * @param member        member to change roles
      * @param rolesToRemove roles as string list
      */
     static void removeAndUpdateTicketRoles(MessageReceivedEvent receivedEvent,
@@ -28,8 +29,8 @@ final class TicketHelper {
         List<Role> removeRoles = new ArrayList<>();
 
         //Get the role objects if the role exists.
-        for (String s : rolesToRemove) {
-            Role roleById = receivedEvent.getGuild().getRoleById(s);
+        for (String roleId : rolesToRemove) {
+            Role roleById = receivedEvent.getGuild().getRoleById(roleId);
             if (roleById != null) {
                 removeRoles.add(roleById);
             }
@@ -39,11 +40,12 @@ final class TicketHelper {
         List<String> channelIdsByOwner = TicketData.getChannelIdsByOwner(receivedEvent.getGuild(),
                 member.getUser(), receivedEvent);
 
+
         List<TextChannel> channels = new ArrayList<>();
 
         //Get the channel objects
-        for (String s : channelIdsByOwner) {
-            TextChannel textChannel = receivedEvent.getGuild().getTextChannelById(s);
+        for (String channelId : channelIdsByOwner) {
+            TextChannel textChannel = receivedEvent.getGuild().getTextChannelById(channelId);
             if (textChannel != null) {
                 channels.add(textChannel);
             }
@@ -51,8 +53,8 @@ final class TicketHelper {
 
         //Create a set of all roles the player should keep.
         Set<Role> newRoleSet = new HashSet<>();
-        for (TextChannel c : channels) {
-            for (String s : getChannelOwnerRoles(receivedEvent.getGuild(), c, receivedEvent)) {
+        for (TextChannel channel : channels) {
+            for (String s : getChannelOwnerRoles(receivedEvent.getGuild(), channel, receivedEvent)) {
                 Role role = receivedEvent.getGuild().getRoleById(s);
                 if (role != null) {
                     newRoleSet.add(role);
@@ -61,14 +63,14 @@ final class TicketHelper {
         }
 
         //Removes all roles for the current ticket
-        for (Role r : removeRoles) {
-            receivedEvent.getGuild().removeRoleFromMember(member, r).queue();
+        for (Role role : removeRoles) {
+            receivedEvent.getGuild().removeRoleFromMember(member, role).queue();
         }
 
         //Adds all roles for the other tickets. needed if two ticket types use the same role or
         // if there are more than one ticket channel with this type.
-        for (Role r : newRoleSet) {
-            receivedEvent.getGuild().addRoleToMember(member, r).queue();
+        for (Role role : newRoleSet) {
+            receivedEvent.getGuild().addRoleToMember(member, role).queue();
         }
     }
 

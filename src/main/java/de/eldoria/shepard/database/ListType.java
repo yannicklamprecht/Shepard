@@ -13,6 +13,7 @@ public enum ListType {
 
     /**
      * Get list type from string.
+     *
      * @param s string for lookup
      * @return list type or null if no match was found.
      */

@@ -66,7 +66,9 @@ public class ManageContext extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
-        ContextData.setContextAdmin(contextName, state, receivedEvent);
+        if (!ContextData.setContextAdmin(contextName, state, receivedEvent)) {
+            return;
+        }
 
         if (state) {
             MessageSender.sendMessage("**Activated admin and permission check for context \""
@@ -91,7 +93,9 @@ public class ManageContext extends Command {
 
         boolean state = bState == BooleanState.TRUE;
 
-        ContextData.setContextNsfw(contextName, state, receivedEvent);
+        if (!ContextData.setContextNsfw(contextName, state, receivedEvent)) {
+            return;
+        }
 
         if (state) {
             MessageSender.sendMessage("**Activated NSFW check for context \"" + contextName.toUpperCase() + "\"**",

@@ -94,6 +94,7 @@ public class ManageQuote extends Command {
         if (args.length > 1) {
             quotes = QuoteData.getQuotesByKeyword(receivedEvent.getGuild(),
                     String.join(" ", Arrays.copyOfRange(args, 1, args.length)), receivedEvent);
+
         } else {
             quotes = QuoteData.getQuotes(receivedEvent.getGuild(), receivedEvent);
         }

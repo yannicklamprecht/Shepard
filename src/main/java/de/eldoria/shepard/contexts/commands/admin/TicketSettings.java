@@ -120,11 +120,11 @@ public class TicketSettings extends Command {
 
         String message = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
 
-        TicketData.addType(receivedEvent.getGuild(), null, message,
-                scopeTicket.getKeyword(), receivedEvent);
-        MessageSender.sendSimpleTextBox("Set creation text for ticket type " + scopeTicket.getKeyword() + " to:",
-                message, receivedEvent.getChannel());
-
+        if (TicketData.setCreationMessage(receivedEvent.getGuild(), scopeTicket.getKeyword(), message,
+                receivedEvent)) {
+            MessageSender.sendSimpleTextBox("Set creation text for ticket type " + scopeTicket.getKeyword() + " to:",
+                    message, receivedEvent.getChannel());
+        }
     }
 
     private void setChannelCategory(String[] args, MessageReceivedEvent receivedEvent, TicketType scopeTicket) {
@@ -141,10 +141,11 @@ public class TicketSettings extends Command {
             return;
         }
 
-        TicketData.addType(receivedEvent.getGuild(), category, null,
-                scopeTicket.getKeyword(), receivedEvent);
-        MessageSender.sendMessage("Set channel category for ticket type \"" + scopeTicket.getKeyword()
-                + "\" to " + category.getName(), receivedEvent.getChannel());
+        if (TicketData.addType(receivedEvent.getGuild(), category, null,
+                scopeTicket.getKeyword(), receivedEvent)) {
+            MessageSender.sendMessage("Set channel category for ticket type \"" + scopeTicket.getKeyword()
+                    + "\" to " + category.getName(), receivedEvent.getChannel());
+        }
     }
 
     private void setRoles(String[] args, MessageReceivedEvent receivedEvent, String cmd, TicketType scopeTicket) {
@@ -160,19 +161,21 @@ public class TicketSettings extends Command {
         validRoles.forEach(role -> roleMentions.add(role.getAsMention()));
 
         if (cmd.equalsIgnoreCase("setOwnerRoles") || cmd.equalsIgnoreCase("sor")) {
-            TicketData.setTypeOwnerRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(), validRoles, receivedEvent);
+            if (TicketData.setTypeOwnerRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(),
+                    validRoles, receivedEvent)) {
 
-            MessageSender.sendSimpleTextBox("Set the following roles as owner roles for ticket "
-                            + scopeTicket.getKeyword(), String.join(lineSeparator() + "", roleMentions),
-                    receivedEvent.getChannel());
-        } else {
-            TicketData.setTypeSupportRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(),
-                    validRoles, receivedEvent);
+                MessageSender.sendSimpleTextBox("Set the following roles as owner roles for ticket "
+                                + scopeTicket.getKeyword(), String.join(lineSeparator() + "", roleMentions),
+                        receivedEvent.getChannel());
+            }
 
+        } else if (TicketData.setTypeSupportRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(),
+                validRoles, receivedEvent)) {
             MessageSender.sendSimpleTextBox("Set the following roles as owner roles for ticket "
                             + scopeTicket.getKeyword(), String.join(lineSeparator() + "", roleMentions),
                     receivedEvent.getChannel());
         }
+
     }
 
     private void removeType(String[] args, MessageReceivedEvent receivedEvent, TicketType scopeTicket) {
@@ -181,7 +184,6 @@ public class TicketSettings extends Command {
             sendCommandUsage(receivedEvent.getChannel());
             return;
         }
-
         List<String> channelIdsByType = TicketData.getChannelIdsByType(receivedEvent.getGuild(),
                 scopeTicket.getKeyword(), receivedEvent);
 
@@ -191,10 +193,13 @@ public class TicketSettings extends Command {
         List<String> typeOwnerRoles = TicketData.getTypeOwnerRoles(receivedEvent.getGuild(),
                 scopeTicket.getKeyword(), receivedEvent);
 
+
         Set<Member> members = new HashSet<>();
 
         for (TextChannel channel : validTextChannels) {
+
             String channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
+
             if (channelOwnerId == null) continue;
             Member memberById = receivedEvent.getGuild().getMemberById(channelOwnerId);
             if (memberById == null) continue;
@@ -204,15 +209,14 @@ public class TicketSettings extends Command {
             TicketHelper.removeAndUpdateTicketRoles(receivedEvent, member, typeOwnerRoles);
         }
 
-        TicketData.removeTypeByKeyword(receivedEvent.getGuild(), scopeTicket.getKeyword(), receivedEvent);
-
-        for (TextChannel channel : validTextChannels) {
-            channel.delete().queue();
+        if (TicketData.removeTypeByKeyword(receivedEvent.getGuild(), scopeTicket.getKeyword(), receivedEvent)) {
+            for (TextChannel channel : validTextChannels) {
+                channel.delete().queue();
+            }
+            MessageSender.sendMessage("Removed ticket type **" + scopeTicket.getKeyword()
+                            + "** and all channels of this type!",
+                    receivedEvent.getChannel());
         }
-
-        MessageSender.sendMessage("Removed ticket type **" + scopeTicket.getKeyword()
-                        + "** and all channels of this type!",
-                receivedEvent.getChannel());
     }
 
     private void createType(String[] args, MessageReceivedEvent receivedEvent, String type) {
@@ -230,8 +234,9 @@ public class TicketSettings extends Command {
             return;
         }
 
-        TicketData.addType(receivedEvent.getGuild(), category, "", type, receivedEvent);
-
-        MessageSender.sendMessage("Created ticket type: **" + type.toLowerCase() + "**", receivedEvent.getChannel());
+        if (TicketData.addType(receivedEvent.getGuild(), category, "", type, receivedEvent)) {
+            MessageSender.sendMessage("Created ticket type: **"
+                    + type.toLowerCase() + "**", receivedEvent.getChannel());
+        }
     }
 }

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.eldoria.shepard.database.DatabaseConnector.getConn;
-import static de.eldoria.shepard.database.DbUtil.handleException;
+import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public final class InviteData {
 
@@ -28,8 +28,9 @@ public final class InviteData {
      * @param name  Name of the invite
      * @param count How often the invite was used
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void addInvite(Guild guild, String code, String name, int count, MessageReceivedEvent event) {
+    public static boolean addInvite(Guild guild, String code, String name, int count, MessageReceivedEvent event) {
         try (PreparedStatement statement = getConn()
                 .prepareStatement("SELECT shepard_func.add_invite(?,?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -38,8 +39,10 @@ public final class InviteData {
             statement.setInt(4, count);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -56,7 +59,7 @@ public final class InviteData {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
 
-            if (result.next()) {
+            while (result.next()) {
                 String code = result.getString("inv_code");
                 int used = result.getInt("inv_used");
                 String name = result.getString("inv_source");
@@ -64,7 +67,7 @@ public final class InviteData {
                 invites.add(new DatabaseInvite(code, used, name));
             }
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
         }
         return invites;
     }
@@ -75,16 +78,19 @@ public final class InviteData {
      * @param guild Guild object for lookup
      * @param code  Code of the invite to remove
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void removeInvite(Guild guild, String code, MessageReceivedEvent event) {
+    public static boolean removeInvite(Guild guild, String code, MessageReceivedEvent event) {
         try (PreparedStatement statement = getConn()
                 .prepareStatement("SELECT shepard_func.remove_invite(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, code);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -93,16 +99,19 @@ public final class InviteData {
      * @param guild Guild object for lookup
      * @param code  Code of the invite for upcount
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void upcountInvite(Guild guild, String code, MessageReceivedEvent event) {
+    public static boolean upCountInvite(Guild guild, String code, MessageReceivedEvent event) {
         try (PreparedStatement statement = getConn()
                 .prepareStatement("SELECT shepard_func.upcount_invite(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, code);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -111,8 +120,9 @@ public final class InviteData {
      * @param guild   Guild object for lookup
      * @param invites List of invites of a guild
      * @param event   event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void updateInvite(Guild guild, List<Invite> invites, MessageReceivedEvent event) {
+    public static boolean updateInvite(Guild guild, List<Invite> invites, MessageReceivedEvent event) {
         try (PreparedStatement statement = getConn()
                 .prepareStatement("SELECT shepard_func.update_invites(?,?)")) {
             statement.setString(1, guild.getId());
@@ -123,13 +133,12 @@ public final class InviteData {
             }
             Array codes = getConn().createArrayOf("varchar", codeStrings);
             statement.setArray(2, codes);
-
             statement.execute();
-
-            codes.free();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 }
 

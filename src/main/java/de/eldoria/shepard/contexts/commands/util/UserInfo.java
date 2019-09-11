@@ -38,6 +38,7 @@ public class UserInfo extends Command {
     protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
 
         if (args.length == 0) {
+
             MessageSender.sendError(
                     new MessageEmbed.Field[] {
                             new MessageEmbed.Field("Too few arguments",

@@ -58,10 +58,10 @@ public class Greeting extends Command {
     private void setMessage(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length > 1) {
             String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-            GreetingData.setGreetingText(receivedEvent.getGuild(), message, receivedEvent);
-
-            MessageSender.sendMessage("Changed greeting message to " + lineSeparator()
-                    + message, receivedEvent.getChannel());
+            if (GreetingData.setGreetingText(receivedEvent.getGuild(), message, receivedEvent)) {
+                MessageSender.sendMessage("Changed greeting message to " + lineSeparator()
+                        + message, receivedEvent.getChannel());
+            }
             return;
         }
         MessageSender.sendSimpleError(ErrorType.NO_MESSAGE_FOUND, receivedEvent.getChannel());
@@ -69,22 +69,25 @@ public class Greeting extends Command {
 
     private void removeChannel(MessageReceivedEvent receivedEvent) {
         GreetingData.removeGreetingChannel(receivedEvent.getGuild(), receivedEvent);
+
         MessageSender.sendMessage("Removed greeting channel.", receivedEvent.getChannel());
     }
 
     private void setChannel(String[] args, MessageReceivedEvent receivedEvent) {
         if (args.length == 1) {
-            GreetingData.setGreetingChannel(receivedEvent.getGuild(),
-                    receivedEvent.getChannel(), receivedEvent);
-            MessageSender.sendMessage("Greeting Channel set to "
-                    + ((TextChannel) receivedEvent.getChannel()).getAsMention(), receivedEvent.getChannel());
+            if (GreetingData.setGreetingChannel(receivedEvent.getGuild(), receivedEvent.getChannel(), receivedEvent)) {
+                MessageSender.sendMessage("Greeting Channel set to "
+                        + ((TextChannel) receivedEvent.getChannel()).getAsMention(), receivedEvent.getChannel());
+            }
             return;
         } else if (args.length == 2) {
             TextChannel channel = receivedEvent.getGuild().getTextChannelById(DbUtil.getIdRaw(args[1]));
             if (channel != null) {
-                GreetingData.setGreetingChannel(receivedEvent.getGuild(), channel, receivedEvent);
-                MessageSender.sendMessage("Greeting channel set to "
-                        + channel.getAsMention(), receivedEvent.getChannel());
+                if (GreetingData.setGreetingChannel(receivedEvent.getGuild(), channel, receivedEvent)) {
+                    MessageSender.sendMessage("Greeting channel set to "
+                            + channel.getAsMention(), receivedEvent.getChannel());
+                }
+
                 return;
             }
         }

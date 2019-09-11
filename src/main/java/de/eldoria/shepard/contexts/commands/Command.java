@@ -98,7 +98,7 @@ public abstract class Command extends ContextSensitive {
      *
      * @return an array of aliases.
      */
-    public String[] getCommandAliases() {
+    private String[] getCommandAliases() {
         return commandAliases;
     }
 

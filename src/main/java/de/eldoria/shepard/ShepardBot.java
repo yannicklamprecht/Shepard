@@ -87,12 +87,11 @@ public final class ShepardBot {
      */
     public static void main(String[] args) {
         // Note: It is important to register your ReadyListener before building
-        org.apache.log4j.BasicConfigurator.configure();
+        // org.apache.log4j.BasicConfigurator.configure();
 
         instance = new ShepardBot();
 
         instance.setup();
-
     }
 
     private void initiateJda() throws LoginException, InterruptedException {
@@ -146,6 +145,7 @@ public final class ShepardBot {
                 Color.RED, ShepardReactions.ASLEEP, Normandy.getGeneralLogChannel());
 
         jda.shutdown();
+        jda = null;
         ShepardBot.getLogger().info("JDA shut down. Closing Application in 5 Seconds!");
         try {
             Thread.sleep(5000);

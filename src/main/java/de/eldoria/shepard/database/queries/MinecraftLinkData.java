@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static de.eldoria.shepard.database.DbUtil.getIdRaw;
-import static de.eldoria.shepard.database.DbUtil.handleException;
+import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public final class MinecraftLinkData {
     private MinecraftLinkData() {
@@ -32,7 +32,7 @@ public final class MinecraftLinkData {
                 return new MinecraftLink(user, result.getString("uuid"));
             }
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
         }
         return null;
     }
@@ -53,7 +53,7 @@ public final class MinecraftLinkData {
                 return new MinecraftLink(result.getString("user_id"), uuid.replace("-", ""));
             }
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
         }
         return null;
     }
@@ -64,16 +64,19 @@ public final class MinecraftLinkData {
      * @param code  Code to add
      * @param uuid  uuid of player
      * @param event event from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
      */
-    public static void addLinkCode(String code, String uuid, MessageReceivedEvent event) {
+    public static boolean addLinkCode(String code, String uuid, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.add_minecraft_link_code(?,?)")) {
             statement.setString(1, code);
             statement.setString(2, uuid);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
+            return false;
         }
+        return true;
     }
 
     /**
@@ -93,7 +96,7 @@ public final class MinecraftLinkData {
                 return result.getString(1);
             }
         } catch (SQLException e) {
-            handleException(e, event);
+            handleExceptionAndIgnore(e, event);
         }
         return null;
     }
