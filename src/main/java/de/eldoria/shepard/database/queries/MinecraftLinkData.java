@@ -2,7 +2,7 @@ package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.database.types.MinecraftLink;
-import de.eldoria.shepard.listener.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
 
 import java.sql.PreparedStatement;

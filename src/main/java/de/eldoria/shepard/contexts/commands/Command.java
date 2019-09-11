@@ -1,7 +1,7 @@
 package de.eldoria.shepard.contexts.commands;
 
 import de.eldoria.shepard.collections.CommandCollection;
-import de.eldoria.shepard.listener.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.ContextSensitive;
 import info.debatty.java.stringsimilarity.JaroWinkler;
@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
  * An abstract class for commands.
  */
 public abstract class Command extends ContextSensitive {
-    private JaroWinkler similarity = new JaroWinkler();
 
     /**
      * Name of the command.
@@ -36,6 +35,8 @@ public abstract class Command extends ContextSensitive {
      * Command args as command arg array.
      */
     protected CommandArg[] commandArgs = new CommandArg[0];
+
+    private JaroWinkler similarity = new JaroWinkler();
 
     /**
      * Create a new command an register it to the {@link CommandCollection}.
@@ -222,12 +223,12 @@ public abstract class Command extends ContextSensitive {
     }
 
     public double getSimilarityScore(String command) {
-        command = command.toLowerCase();
+        String lowerCommand = command.toLowerCase();
         double cmdScore = similarity.similarity(commandName.toLowerCase(),
-                command.toLowerCase());
+                lowerCommand);
 
         for (String alias : commandAliases) {
-            double similarity = this.similarity.similarity(alias.toLowerCase(), command);
+            double similarity = this.similarity.similarity(alias.toLowerCase(), lowerCommand);
             cmdScore = Math.max(cmdScore, similarity);
         }
         return cmdScore;

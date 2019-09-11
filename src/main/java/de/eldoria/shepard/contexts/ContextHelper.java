@@ -4,7 +4,7 @@ import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.KeyWordCollection;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.keywords.Keyword;
-import de.eldoria.shepard.listener.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 public final class ContextHelper {
     private ContextHelper() {

@@ -4,7 +4,7 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.database.types.ContextSettings;
-import de.eldoria.shepard.listener.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;

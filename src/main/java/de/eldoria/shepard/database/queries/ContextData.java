@@ -3,7 +3,7 @@ package de.eldoria.shepard.database.queries;
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.types.ContextSettings;
-import de.eldoria.shepard.listener.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
@@ -351,7 +351,8 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextGuildListType(String contextName, ListType listType, MessageEventDataWrapper event) {
+    public static boolean setContextGuildListType(String contextName, ListType listType,
+                                                  MessageEventDataWrapper event) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -424,7 +425,8 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return List of user ids
      */
-    public static List<String> getContextUserPermission(Guild guild, String contextName, MessageEventDataWrapper event) {
+    public static List<String> getContextUserPermission(Guild guild, String contextName,
+                                                        MessageEventDataWrapper event) {
         return getContextUserPermissions(contextName, event).getOrDefault(guild.getId(), Collections.emptyList());
     }
 
@@ -435,7 +437,8 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return Map [guild_id, List(role_ids)] Map which contains the user as list for each guild
      */
-    public static Map<String, List<String>> getContextUserPermissions(String contextName, MessageEventDataWrapper event) {
+    public static Map<String, List<String>> getContextUserPermissions(String contextName,
+                                                                      MessageEventDataWrapper event) {
         if (userPermissions.containsKey(contextName)) {
             if (!userPermissionDirty.get(contextName)) {
                 return userPermissions.get(contextName);
@@ -482,7 +485,8 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return List of user ids
      */
-    public static List<String> getContextRolePermission(Guild guild, String contextName, MessageEventDataWrapper event) {
+    public static List<String> getContextRolePermission(Guild guild, String contextName,
+                                                        MessageEventDataWrapper event) {
         return getContextRolePermissions(contextName, event).getOrDefault(guild.getId(), Collections.emptyList());
     }
 
@@ -494,7 +498,8 @@ public final class ContextData {
      * @param event       event from command sending for error handling. Can be null.
      * @return Map [guild_id, List(role_ids)] Map which contains the user as list for each guild
      */
-    public static Map<String, List<String>> getContextRolePermissions(String contextName, MessageEventDataWrapper event) {
+    public static Map<String, List<String>> getContextRolePermissions(String contextName,
+                                                                      MessageEventDataWrapper event) {
         if (rolePermissions.containsKey(contextName)) {
             if (!rolePermissionDirty.get(contextName)) {
                 return rolePermissions.get(contextName);

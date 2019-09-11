@@ -2,7 +2,7 @@ package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.database.types.QuoteElement;
-import de.eldoria.shepard.listener.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.sql.PreparedStatement;

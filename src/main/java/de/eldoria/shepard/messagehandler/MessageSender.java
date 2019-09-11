@@ -2,7 +2,7 @@ package de.eldoria.shepard.messagehandler;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.GreetingSettings;
-import de.eldoria.shepard.listener.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;

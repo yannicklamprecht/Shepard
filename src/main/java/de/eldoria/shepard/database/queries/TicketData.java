@@ -2,7 +2,7 @@ package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.database.types.TicketType;
-import de.eldoria.shepard.listener.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ISnowflake;
@@ -186,7 +186,8 @@ public final class TicketData {
      * @param event   event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setCreationMessage(Guild guild, String keyword, String message, MessageEventDataWrapper event) {
+    public static boolean setCreationMessage(Guild guild, String keyword, String message,
+                                             MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_creation_message(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -370,7 +371,8 @@ public final class TicketData {
      * @param event   event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setTypeOwnerRoles(Guild guild, String keyword, List<Role> roles, MessageEventDataWrapper event) {
+    public static boolean setTypeOwnerRoles(Guild guild, String keyword, List<Role> roles,
+                                            MessageEventDataWrapper event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_ticket_owner_roles(?,?,?)")) {
             statement.setString(1, guild.getId());

@@ -1,7 +1,7 @@
 package de.eldoria.shepard.contexts.commands.util;
 
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.listener.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 /**
  * A test command without specified behaviour.

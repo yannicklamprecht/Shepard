@@ -1,7 +1,7 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.listener.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.GuildChannel;

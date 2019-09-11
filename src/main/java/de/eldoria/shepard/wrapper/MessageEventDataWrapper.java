@@ -1,4 +1,4 @@
-package de.eldoria.shepard.listener;
+package de.eldoria.shepard.wrapper;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.ChannelType;
@@ -27,23 +27,23 @@ public class MessageEventDataWrapper<T extends GenericMessageEvent> {
         }
     }
 
-    public Guild getGuild(){
+    public Guild getGuild() {
         return isUpdate ? updateEvent.getGuild() : receivedEvent.getGuild();
     }
 
-    public Member getMember(){
+    public Member getMember() {
         return isUpdate ? updateEvent.getMember() : receivedEvent.getMember();
     }
 
-    public User getAuthor(){
+    public User getAuthor() {
         return isUpdate ? updateEvent.getAuthor() : receivedEvent.getAuthor();
     }
 
-    public Message getMessage(){
+    public Message getMessage() {
         return isUpdate ? updateEvent.getMessage() : receivedEvent.getMessage();
     }
 
-    public MessageChannel getChannel(){
+    public MessageChannel getChannel() {
         return isUpdate ? updateEvent.getChannel() : receivedEvent.getChannel();
     }
 
@@ -52,30 +52,31 @@ public class MessageEventDataWrapper<T extends GenericMessageEvent> {
         return isUpdate ? updateEvent.equals(obj) : receivedEvent.equals(obj);
     }
 
-    public ChannelType getChannelType(){
+    public ChannelType getChannelType() {
         return isUpdate ? updateEvent.getChannelType() : receivedEvent.getChannelType();
     }
 
-    public JDA getJDA(){
+    public JDA getJDA() {
         return isUpdate ? updateEvent.getJDA() : receivedEvent.getJDA();
     }
 
-    public String getMessageId(){
+    public String getMessageId() {
         return isUpdate ? updateEvent.getMessageId() : receivedEvent.getMessageId();
     }
-    public Long getMessageIdLong(){
+
+    public Long getMessageIdLong() {
         return isUpdate ? updateEvent.getMessageIdLong() : receivedEvent.getMessageIdLong();
     }
 
-    public PrivateChannel getPrivateChannel(){
+    public PrivateChannel getPrivateChannel() {
         return isUpdate ? updateEvent.getPrivateChannel() : receivedEvent.getPrivateChannel();
     }
 
-    public TextChannel getTextChannel(){
+    public TextChannel getTextChannel() {
         return isUpdate ? updateEvent.getTextChannel() : receivedEvent.getTextChannel();
     }
 
-    public boolean isFromGuild(){
+    public boolean isFromGuild() {
         return isUpdate ? updateEvent.isFromGuild() : receivedEvent.isFromGuild();
     }
 }
