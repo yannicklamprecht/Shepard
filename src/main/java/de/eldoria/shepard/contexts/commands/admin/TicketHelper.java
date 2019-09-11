@@ -37,8 +37,7 @@ final class TicketHelper {
         }
 
         //Get all other ticket channels of the owner
-        List<String> channelIdsByOwner;
-        channelIdsByOwner = TicketData.getChannelIdsByOwner(receivedEvent.getGuild(),
+        List<String> channelIdsByOwner = TicketData.getChannelIdsByOwner(receivedEvent.getGuild(),
                 member.getUser(), receivedEvent);
 
 

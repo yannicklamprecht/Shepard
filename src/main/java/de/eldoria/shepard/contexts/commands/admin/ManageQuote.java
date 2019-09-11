@@ -65,8 +65,7 @@ public class ManageQuote extends Command {
             }
 
             int quoteId;
-            int quotesCount;
-            quotesCount = QuoteData.getQuotesCount(receivedEvent.getGuild(), receivedEvent);
+            int quotesCount = QuoteData.getQuotesCount(receivedEvent.getGuild(), receivedEvent);
             try {
                 quoteId = Integer.parseInt(args[1]);
             } catch (IllegalArgumentException e) {
@@ -134,8 +133,7 @@ public class ManageQuote extends Command {
         }
 
         int quoteId;
-        int quotesCount;
-        quotesCount = QuoteData.getQuotesCount(receivedEvent.getGuild(), receivedEvent);
+        int quotesCount = QuoteData.getQuotesCount(receivedEvent.getGuild(), receivedEvent);
         try {
             quoteId = Integer.parseInt(args[1]);
         } catch (IllegalArgumentException e) {

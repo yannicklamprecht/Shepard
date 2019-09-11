@@ -30,15 +30,13 @@ public class ChangelogListener extends ListenerAdapter {
     }
 
     private void manageChangelog(User user, Guild guild, List<Role> roles, boolean add) {
-        String channelId;
-        channelId = ChangelogData.getChannel(guild, null);
+        String channelId = ChangelogData.getChannel(guild, null);
 
         if (channelId == null) return;
 
         TextChannel channelById = guild.getTextChannelById(channelId);
         if (channelById == null) return;
-        List<String> changelogRoles;
-        changelogRoles = ChangelogData.getRoles(guild, null);
+        List<String> changelogRoles = ChangelogData.getRoles(guild, null);
 
         List<String> observedRoles = new ArrayList<>();
 

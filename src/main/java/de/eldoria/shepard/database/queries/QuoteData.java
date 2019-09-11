@@ -26,7 +26,7 @@ public final class QuoteData {
      * @param event event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addQuote(Guild guild, String quote, MessageReceivedEvent event)  {
+    public static boolean addQuote(Guild guild, String quote, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_quote(?,?)")) {
             statement.setString(1, guild.getId());
@@ -48,7 +48,7 @@ public final class QuoteData {
      * @param event   event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean alterQuote(Guild guild, int quoteId, String quote, MessageReceivedEvent event)  {
+    public static boolean alterQuote(Guild guild, int quoteId, String quote, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.alter_quote(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -90,7 +90,7 @@ public final class QuoteData {
      * @param event event from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static List<QuoteElement> getQuotes(Guild guild, MessageReceivedEvent event)  {
+    public static List<QuoteElement> getQuotes(Guild guild, MessageReceivedEvent event) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_quotes(?)")) {
@@ -108,9 +108,9 @@ public final class QuoteData {
     /**
      * Gets all quotes from guild.
      *
-     * @param guild Guild object for lookup
+     * @param guild   Guild object for lookup
      * @param keyword Keyword for lookup. Not case sensitive
-     * @param event event from command sending for error handling. Can be null.
+     * @param event   event from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
     public static List<QuoteElement> getQuotesByKeyword(Guild guild, String keyword, MessageReceivedEvent event) {

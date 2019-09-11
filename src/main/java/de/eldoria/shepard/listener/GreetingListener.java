@@ -17,11 +17,9 @@ public class GreetingListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        List<DatabaseInvite> databaseInvites;
-        databaseInvites = InviteData.getInvites(event.getGuild(), null);
+        List<DatabaseInvite> databaseInvites = InviteData.getInvites(event.getGuild(), null);
 
-        GreetingSettings greeting;
-        greeting = GreetingData.getGreeting(event.getGuild());
+        GreetingSettings greeting = GreetingData.getGreeting(event.getGuild());
 
         if (greeting == null) return;
         MessageChannel channel = greeting.getChannel();

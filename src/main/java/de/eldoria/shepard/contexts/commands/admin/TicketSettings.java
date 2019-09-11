@@ -61,8 +61,7 @@ public class TicketSettings extends Command {
     protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
         String cmd = args[0];
         String type = args[1];
-        List<TicketType> tickets;
-        tickets = TicketData.getTypes(receivedEvent.getGuild(), receivedEvent);
+        List<TicketType> tickets = TicketData.getTypes(receivedEvent.getGuild(), receivedEvent);
         TicketType scopeTicket = null;
         for (TicketType ticket : tickets) {
             if (ticket.getKeyword().equalsIgnoreCase(type)) {
@@ -170,14 +169,13 @@ public class TicketSettings extends Command {
                         receivedEvent.getChannel());
             }
 
-        } else {
-            if (TicketData.setTypeSupportRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(),
-                    validRoles, receivedEvent)) {
-                MessageSender.sendSimpleTextBox("Set the following roles as owner roles for ticket "
-                                + scopeTicket.getKeyword(), String.join(lineSeparator() + "", roleMentions),
-                        receivedEvent.getChannel());
-            }
+        } else if (TicketData.setTypeSupportRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(),
+                validRoles, receivedEvent)) {
+            MessageSender.sendSimpleTextBox("Set the following roles as owner roles for ticket "
+                            + scopeTicket.getKeyword(), String.join(lineSeparator() + "", roleMentions),
+                    receivedEvent.getChannel());
         }
+
     }
 
     private void removeType(String[] args, MessageReceivedEvent receivedEvent, TicketType scopeTicket) {
@@ -186,25 +184,21 @@ public class TicketSettings extends Command {
             sendCommandUsage(receivedEvent.getChannel());
             return;
         }
-        List<String> channelIdsByType;
-        List<TextChannel> validTextChannels;
-        List<String> typeOwnerRoles;
-        channelIdsByType = TicketData.getChannelIdsByType(receivedEvent.getGuild(),
+        List<String> channelIdsByType = TicketData.getChannelIdsByType(receivedEvent.getGuild(),
                 scopeTicket.getKeyword(), receivedEvent);
 
-        validTextChannels = Verifier.getValidTextChannels(receivedEvent.getGuild(),
+        List<TextChannel> validTextChannels = Verifier.getValidTextChannels(receivedEvent.getGuild(),
                 channelIdsByType);
 
-        typeOwnerRoles = TicketData.getTypeOwnerRoles(receivedEvent.getGuild(),
+        List<String> typeOwnerRoles = TicketData.getTypeOwnerRoles(receivedEvent.getGuild(),
                 scopeTicket.getKeyword(), receivedEvent);
 
 
         Set<Member> members = new HashSet<>();
 
         for (TextChannel channel : validTextChannels) {
-            String channelOwnerId;
 
-            channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
+            String channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
 
             if (channelOwnerId == null) continue;
             Member memberById = receivedEvent.getGuild().getMemberById(channelOwnerId);

@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -72,8 +71,7 @@ public class Changelog extends Command {
     }
 
     private void showRoles(MessageReceivedEvent receivedEvent) {
-        List<String> roleIds;
-        roleIds = ChangelogData.getRoles(receivedEvent.getGuild(), receivedEvent);
+        List<String> roleIds = ChangelogData.getRoles(receivedEvent.getGuild(), receivedEvent);
 
         List<String> roleMentions = roleIds.stream()
                 .map(roleId -> receivedEvent.getGuild().getRoleById(getIdRaw(roleId)))
@@ -103,14 +101,11 @@ public class Changelog extends Command {
             return;
         }
 
-        try {
-            ChangelogData.setChannel(receivedEvent.getGuild(), textChannelById, receivedEvent);
-        } catch (SQLException e) {
-            return;
+        if (ChangelogData.setChannel(receivedEvent.getGuild(), textChannelById, receivedEvent)) {
+            MessageSender.sendMessage("Changelog is presented in channel" + textChannelById.getAsMention(),
+                    receivedEvent.getChannel());
         }
 
-        MessageSender.sendMessage("Changelog is presented in channel" + textChannelById.getAsMention(),
-                receivedEvent.getChannel());
     }
 
     private void modifyRoles(String[] args, MessageReceivedEvent receivedEvent, String cmd) {

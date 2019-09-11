@@ -15,8 +15,7 @@ import static de.eldoria.shepard.database.queries.TicketData.removeChannel;
 public class TicketCleanupListener extends ListenerAdapter {
     @Override
     public void onGuildMemberLeave(@Nonnull GuildMemberLeaveEvent event) {
-        List<String> channelIds;
-        channelIds = getChannelIdsByOwner(event.getGuild(), event.getUser(), null);
+        List<String> channelIds = getChannelIdsByOwner(event.getGuild(), event.getUser(), null);
 
 
         List<TextChannel> validTextChannels = Verifier.getValidTextChannels(event.getGuild(), channelIds);

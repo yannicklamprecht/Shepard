@@ -60,8 +60,7 @@ public class Invite extends Command {
     }
 
     private void showInvites(MessageReceivedEvent receivedEvent) {
-        List<DatabaseInvite> invites;
-        invites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
+        List<DatabaseInvite> invites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
 
         StringBuilder message = new StringBuilder();
         String code = "code      ";
@@ -94,8 +93,7 @@ public class Invite extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             return;
         }
-        List<DatabaseInvite> databaseInvites;
-        databaseInvites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
+        List<DatabaseInvite> databaseInvites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
 
         for (DatabaseInvite invite : databaseInvites) {
             if (invite.getCode().equals(args[1])) {

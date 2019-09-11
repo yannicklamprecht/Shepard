@@ -84,8 +84,7 @@ public class Ticket extends Command {
             return;
         }
 
-        String channelOwnerId;
-        channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
+        String channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
 
         if (channelOwnerId == null) {
             MessageSender.sendSimpleError(ErrorType.NOT_TICKET_CHANEL, receivedEvent.getChannel());
@@ -93,8 +92,7 @@ public class Ticket extends Command {
         }
 
         //Get the ticket type for caching.
-        TicketType type;
-        type = TicketData.getTypeByChannel(receivedEvent.getGuild(), channel, receivedEvent);
+        TicketType type = TicketData.getTypeByChannel(receivedEvent.getGuild(), channel, receivedEvent);
 
         //Removes channel from database. needed for further role checking.
         if (removeChannel(receivedEvent.getGuild(), channel, receivedEvent)) {
@@ -106,11 +104,11 @@ public class Ticket extends Command {
             //If Member is present remove roles for this ticket.
             if (member != null) {
                 //Get the owner roles of the current ticket. They should be removed.
-                assert type != null;
-                List<String> ownerRolesAsString;
-                ownerRolesAsString = getTypeOwnerRoles(receivedEvent.getGuild(),
-                        type.getKeyword(), receivedEvent);
-                TicketHelper.removeAndUpdateTicketRoles(receivedEvent, member, ownerRolesAsString);
+                if (type != null) {
+                    List<String> ownerRolesAsString = getTypeOwnerRoles(receivedEvent.getGuild(),
+                            type.getKeyword(), receivedEvent);
+                    TicketHelper.removeAndUpdateTicketRoles(receivedEvent, member, ownerRolesAsString);
+                }
             }
 
             //Finally delete the channel.
@@ -120,8 +118,7 @@ public class Ticket extends Command {
 
 
     private void typeInfo(String[] args, MessageReceivedEvent receivedEvent) {
-        List<TicketType> tickets;
-        tickets = TicketData.getTypes(receivedEvent.getGuild(), receivedEvent);
+        List<TicketType> tickets = TicketData.getTypes(receivedEvent.getGuild(), receivedEvent);
         if (tickets.size() == 0) {
             MessageSender.sendMessage("No ticket types defined", receivedEvent.getChannel());
             return;
@@ -163,8 +160,7 @@ public class Ticket extends Command {
             MessageSender.sendMessage(builder.toString(), receivedEvent.getChannel());
         } else if (args.length == 2) {
             //Return info for one ticket type.
-            TicketType type;
-            type = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
+            TicketType type = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
 
             if (type == null) {
                 MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, receivedEvent.getChannel());
@@ -172,12 +168,12 @@ public class Ticket extends Command {
             }
 
             List<String> ownerMentions = new ArrayList<>();
-            List<String> supporterMentions = new ArrayList<>();
 
             getValidRoles(receivedEvent.getGuild(),
                     getTypeOwnerRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent)
                             .toArray(String[]::new)).forEach(role -> ownerMentions.add(role.getAsMention()));
 
+            List<String> supporterMentions = new ArrayList<>();
             getValidRoles(receivedEvent.getGuild(),
                     getTypeSupportRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent)
                             .toArray(String[]::new)).forEach(role -> supporterMentions.add(role.getAsMention()));
@@ -209,8 +205,7 @@ public class Ticket extends Command {
             return;
         }
 
-        TicketType ticket;
-        ticket = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
+        TicketType ticket = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
 
         if (ticket == null) {
             MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, receivedEvent.getChannel());
@@ -218,8 +213,7 @@ public class Ticket extends Command {
         }
 
         //Set Channel Name
-        String channelName;
-        channelName = TicketData.getNextTicketCount(receivedEvent.getGuild(), receivedEvent)
+        String channelName = TicketData.getNextTicketCount(receivedEvent.getGuild(), receivedEvent)
                 + " " + member.getUser().getName();
 
         //Create channel and wait for creation
@@ -240,17 +234,14 @@ public class Ticket extends Command {
 
         //Saves channel in database
 
-        List<Role> supportRoles;
-        List<Role> ownerRoles;
-
         TicketData.createChannel(receivedEvent.getGuild(), channel,
                 member.getUser(), ticket.getKeyword(), receivedEvent);
 
         //Get ticket support and owner roles
-        supportRoles = getValidRoles(receivedEvent.getGuild(),
+        List<Role> supportRoles = getValidRoles(receivedEvent.getGuild(),
                 getTypeSupportRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
 
-        ownerRoles = getValidRoles(receivedEvent.getGuild(),
+        List<Role> ownerRoles = getValidRoles(receivedEvent.getGuild(),
                 getTypeOwnerRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
         //Assign ticket support and owner roles
         for (Role role : ownerRoles) {

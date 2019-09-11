@@ -94,8 +94,7 @@ public class Permission extends Command {
     }
 
     private void showMentions(MessageReceivedEvent receivedEvent, String contextName, String message) {
-        List<String> contextRolePermission;
-        contextRolePermission = ContextData.getContextRolePermission(receivedEvent.getGuild(),
+        List<String> contextRolePermission = ContextData.getContextRolePermission(receivedEvent.getGuild(),
                 contextName, receivedEvent);
         MessageSender.sendSimpleTextBox(message,
                 Verifier.getValidRoles(receivedEvent.getGuild(), contextRolePermission)

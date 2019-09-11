@@ -28,7 +28,7 @@ public final class PrefixData {
      * @param event  event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setPrefix(Guild guild, String prefix, MessageReceivedEvent event)  {
+    public static boolean setPrefix(Guild guild, String prefix, MessageReceivedEvent event) {
         cacheDirty = true;
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_prefix(?,?)")) {
@@ -51,7 +51,7 @@ public final class PrefixData {
      * @param event event from command sending for error handling. Can be null.
      * @return Prefix as string
      */
-    public static String getPrefix(Guild guild, MessageReceivedEvent event)  {
+    public static String getPrefix(Guild guild, MessageReceivedEvent event) {
         if (!cacheDirty) {
             return prefixes.get(guild.getId());
         }
@@ -61,7 +61,7 @@ public final class PrefixData {
         return getPrefix(guild, event);
     }
 
-    private static void refreshPrefixes(MessageReceivedEvent event)  {
+    private static void refreshPrefixes(MessageReceivedEvent event) {
         if (!cacheDirty) {
             return;
         }

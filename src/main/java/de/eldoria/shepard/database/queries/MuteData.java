@@ -30,12 +30,12 @@ public final class MuteData {
      * Sets a user as muted.
      *
      * @param guild    Guild on which the user should be muted
-     * @param user   user id
+     * @param user     user id
      * @param duration duration of the mute
      * @param event    event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setMuted(Guild guild, User user, String duration, MessageReceivedEvent event)  {
+    public static boolean setMuted(Guild guild, User user, String duration, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_muted(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -51,7 +51,7 @@ public final class MuteData {
         return true;
     }
 
-    private static boolean refreshGuildData(Guild guild, MessageReceivedEvent event)  {
+    private static boolean refreshGuildData(Guild guild, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_muted_users(?)")) {
             statement.setString(1, guild.getId());
@@ -70,12 +70,12 @@ public final class MuteData {
     /**
      * Remove a mute from a user.
      *
-     * @param guild  Guild object for lookup
-     * @param user id of the user
-     * @param event  event from command sending for error handling. Can be null.
+     * @param guild Guild object for lookup
+     * @param user  id of the user
+     * @param event event from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeMute(Guild guild, User user, MessageReceivedEvent event)  {
+    public static boolean removeMute(Guild guild, User user, MessageReceivedEvent event) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_mute(?,?)")) {
             statement.setString(1, guild.getId());
@@ -96,7 +96,7 @@ public final class MuteData {
      * @param event event from command sending for error handling. Can be null.
      * @return List of muted users on a server.
      */
-    public static List<String> getMutedUsers(Guild guild, MessageReceivedEvent event)  {
+    public static List<String> getMutedUsers(Guild guild, MessageReceivedEvent event) {
         if (lastRefresh.isBefore(LocalDateTime.now().minusMinutes(1))) {
 
 
