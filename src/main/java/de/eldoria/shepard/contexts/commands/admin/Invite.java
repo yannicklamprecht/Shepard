@@ -9,6 +9,7 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import org.apache.commons.lang.StringUtils;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 
@@ -81,11 +82,11 @@ public class Invite extends Command {
     }
 
     private void refreshInvites(MessageEventDataWrapper messageContext) {
-        if (InviteData.updateInvite(messageContext.getGuild(),
-                messageContext.getGuild().retrieveInvites().complete(), messageContext)) {
-            MessageSender.sendMessage("Removed non existent invites!", messageContext.getChannel());
-        }
-
+        messageContext.getGuild().retrieveInvites().queue(invites -> {
+            if (InviteData.updateInvite(messageContext.getGuild(), invites, messageContext)) {
+                MessageSender.sendMessage("Removed non existent invites!", messageContext.getChannel());
+            }
+        });
     }
 
     private void removeInvite(String[] args, MessageEventDataWrapper receivedEvent) {
@@ -112,18 +113,19 @@ public class Invite extends Command {
             MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
             return;
         }
-        List<net.dv8tion.jda.api.entities.Invite> invites = messageContext.getGuild().retrieveInvites().complete();
-        for (var invite : invites) {
-            if (invite.getCode().equals(args[1])) {
-                String name = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-                if (InviteData.addInvite(messageContext.getGuild(), invite.getCode(), name,
-                        invite.getUses(), messageContext)) {
-                    MessageSender.sendMessage("Added Invite \"" + name + " with code " + invite.getCode()
-                            + " to database with usage count of " + invite.getUses(), messageContext.getChannel());
+        messageContext.getGuild().retrieveInvites().queue(invites -> {
+            for (var invite : invites) {
+                if (invite.getCode().equals(args[1])) {
+                    String name = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+                    if (InviteData.addInvite(messageContext.getGuild(), invite.getCode(), name,
+                            invite.getUses(), messageContext)) {
+                        MessageSender.sendMessage("Added Invite \"" + name + " with code " + invite.getCode()
+                                + " to database with usage count of " + invite.getUses(), messageContext.getChannel());
+                    }
+                    return;
                 }
-                return;
             }
-        }
-        MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext.getChannel());
+        });
     }
 }
