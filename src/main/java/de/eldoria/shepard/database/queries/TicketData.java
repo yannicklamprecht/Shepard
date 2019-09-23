@@ -33,7 +33,7 @@ public final class TicketData {
      * @param category        channel category id
      * @param creationMessage creation message
      * @param keyword         type keyword
-     * @param messageContext           messageContext from command sending for error handling. Can be null.
+     * @param messageContext  messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean addType(Guild guild, Category category, String creationMessage,
@@ -59,8 +59,8 @@ public final class TicketData {
     /**
      * Removes a type by id.
      *
-     * @param guild Guild object for lookup
-     * @param id    id of the type
+     * @param guild          Guild object for lookup
+     * @param id             id of the type
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
@@ -80,9 +80,9 @@ public final class TicketData {
     /**
      * Removes a type by keyword.
      *
-     * @param guild   Guild object for lookup
-     * @param keyword keyword of the type
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param keyword        keyword of the type
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean removeTypeByKeyword(Guild guild, String keyword, MessageEventDataWrapper messageContext) {
@@ -101,9 +101,9 @@ public final class TicketData {
     /**
      * Gets a type by keyword.
      *
-     * @param guild   Guild object for lookup
-     * @param keyword keyword
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param keyword        keyword
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Ticket type object or null if no type was found for keyword.
      */
     public static TicketType getTypeByKeyword(Guild guild, String keyword, MessageEventDataWrapper messageContext) {
@@ -127,12 +127,13 @@ public final class TicketData {
     /**
      * Gets a type by channel.
      *
-     * @param guild   Guild object for lookup
-     * @param channel channel for lookup
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param channel        channel for lookup
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Ticket type object or null if no type was found for channel.
      */
-    public static TicketType getTypeByChannel(Guild guild, TextChannel channel, MessageEventDataWrapper messageContext) {
+    public static TicketType getTypeByChannel(Guild guild, TextChannel channel,
+                                              MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_ticket_type_by_channel(?,?)")) {
             statement.setString(1, guild.getId());
@@ -154,7 +155,7 @@ public final class TicketData {
     /**
      * Get all types of one guild.
      *
-     * @param guild Guild object for lookup
+     * @param guild          Guild object for lookup
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of ticket types.
      */
@@ -180,10 +181,10 @@ public final class TicketData {
     /**
      * Set creation message for a ticket type.
      *
-     * @param guild   Guild for which the message should be set
-     * @param keyword keyword of type
-     * @param message new message
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild for which the message should be set
+     * @param keyword        keyword of type
+     * @param message        new message
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean setCreationMessage(Guild guild, String keyword, String message,
@@ -204,11 +205,11 @@ public final class TicketData {
     /**
      * Creates a channel.
      *
-     * @param guild       Guild object for lookup
-     * @param channel     chanel object
-     * @param ticketOwner user object of the ticket owner
-     * @param keyword     keyword of the ticket type.
-     * @param messageContext       messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param channel        chanel object
+     * @param ticketOwner    user object of the ticket owner
+     * @param keyword        keyword of the ticket type.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean createChannel(Guild guild, TextChannel channel,
@@ -230,12 +231,13 @@ public final class TicketData {
     /**
      * Get all channel ids by owner on a guild.
      *
-     * @param guild        Guild object for lookup
-     * @param channelOwner owner of the channel.
-     * @param messageContext        messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param channelOwner   owner of the channel.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return list of channel ids
      */
-    public static List<String> getChannelIdsByOwner(Guild guild, User channelOwner, MessageEventDataWrapper messageContext) {
+    public static List<String> getChannelIdsByOwner(Guild guild, User channelOwner,
+                                                    MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_channel_ids_by_owner(?,?)")) {
             statement.setString(1, guild.getId());
@@ -253,8 +255,8 @@ public final class TicketData {
     /**
      * Get all channel ids by type on a guild.
      *
-     * @param guild Guild object for lookup
-     * @param type  owner of the channel.
+     * @param guild          Guild object for lookup
+     * @param type           owner of the channel.
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return list of channel ids
      */
@@ -276,9 +278,9 @@ public final class TicketData {
     /**
      * get user id of the channel owner of a channel.
      *
-     * @param guild   Guild object for lookup
-     * @param channel channel object
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param channel        channel object
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return id of the user.
      */
     public static String getChannelOwnerId(Guild guild, TextChannel channel, MessageEventDataWrapper messageContext) {
@@ -300,12 +302,13 @@ public final class TicketData {
     /**
      * Get the roles for the channel owner of a channel.
      *
-     * @param guild   Guild object for lookup
-     * @param channel channel id
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param channel        channel id
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of role ids
      */
-    public static List<String> getChannelOwnerRoles(Guild guild, TextChannel channel, MessageEventDataWrapper messageContext) {
+    public static List<String> getChannelOwnerRoles(Guild guild, TextChannel channel,
+                                                    MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_ticket_channel_owner_roles(?,?)")) {
             statement.setString(1, guild.getId());
@@ -323,9 +326,9 @@ public final class TicketData {
     /**
      * Remove a channel.
      *
-     * @param guild   Guild object for lookup
-     * @param channel channel object
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param channel        channel object
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean removeChannel(Guild guild, TextChannel channel, MessageEventDataWrapper messageContext) {
@@ -344,9 +347,9 @@ public final class TicketData {
     /**
      * Remove all channels where user is ticket owner.
      *
-     * @param guild       Guild object for lookup
-     * @param ticketOwner ticketOwner as user.
-     * @param messageContext       messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param ticketOwner    ticketOwner as user.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean removeChannelByUser(Guild guild, User ticketOwner, MessageEventDataWrapper messageContext) {
@@ -365,10 +368,10 @@ public final class TicketData {
     /**
      * set owner roles for a ticket type.
      *
-     * @param guild   Guild object for lookup
-     * @param keyword keyword of the type
-     * @param roles   one or more role ids.
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param keyword        keyword of the type
+     * @param roles          one or more role ids.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean setTypeOwnerRoles(Guild guild, String keyword, List<Role> roles,
@@ -391,10 +394,10 @@ public final class TicketData {
     /**
      * Set roles for ticket support.
      *
-     * @param guild   Guild object for lookup
-     * @param keyword keyword of ticket type
-     * @param roles   one or more role ids
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param keyword        keyword of ticket type
+     * @param roles          one or more role ids
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean setTypeSupportRoles(Guild guild, String keyword, List<Role> roles,
@@ -417,9 +420,9 @@ public final class TicketData {
     /**
      * get owner roles for one type.
      *
-     * @param guild   Guild object for lookup
-     * @param keyword keyword of type.
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param keyword        keyword of type.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Return list of role ids
      */
     public static List<String> getTypeOwnerRoles(Guild guild, String keyword, MessageEventDataWrapper messageContext) {
@@ -440,12 +443,13 @@ public final class TicketData {
     /**
      * Get support roles for ticket type.
      *
-     * @param guild   Guild object for lookup
-     * @param keyword keyword of ticket type
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param keyword        keyword of ticket type
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return list of role ids
      */
-    public static List<String> getTypeSupportRoles(Guild guild, String keyword, MessageEventDataWrapper messageContext) {
+    public static List<String> getTypeSupportRoles(Guild guild, String keyword,
+                                                   MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_ticket_support_roles(?,?)")) {
             statement.setString(1, guild.getId());
@@ -464,7 +468,7 @@ public final class TicketData {
      * Get the auto increment. Increment is per guild and goes from 1 to 999. After that starts at 1 again.
      * After usage of the method the number is used.
      *
-     * @param guild guild object
+     * @param guild          guild object
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return integer auto increment.
      */

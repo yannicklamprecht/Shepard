@@ -15,7 +15,7 @@ public class SomeoneKeyword extends Keyword {
     public void execute(MessageReceivedEvent event, String key) {
         Command someone = CommandCollection.getInstance().getCommand("someone");
         if (someone != null) {
-            someone.execute("", new String[0], new MessageEventDataWrapper<>(event));
+            someone.execute("", new String[0], new MessageEventDataWrapper(event));
 
         }
     }

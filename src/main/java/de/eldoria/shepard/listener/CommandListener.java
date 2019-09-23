@@ -29,13 +29,13 @@ public class CommandListener extends ListenerAdapter {
     @Override
     public void onMessageUpdate(@Nonnull MessageUpdateEvent event) {
         if (event.getMessage().getTimeCreated().isAfter(OffsetDateTime.now().minusMinutes(5))) {
-            onCommand(new MessageEventDataWrapper<>(event));
+            onCommand(new MessageEventDataWrapper(event));
         }
     }
 
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
-        onCommand(new MessageEventDataWrapper<>(event));
+        onCommand(new MessageEventDataWrapper(event));
     }
 
     private void onCommand(MessageEventDataWrapper wrapper) {

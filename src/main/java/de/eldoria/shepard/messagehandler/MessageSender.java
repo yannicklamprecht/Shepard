@@ -198,31 +198,33 @@ public class MessageSender {
     /**
      * Loggs a message in plain text.
      *
-     * @param messageContext   messageContext to log
-     * @param channel channel to log
+     * @param messageContext messageContext to log
+     * @param channel        channel to log
      */
     public static void logMessageAsPlainText(MessageEventDataWrapper messageContext, MessageChannel channel) {
-        channel.sendMessage(messageContext.getGuild().getName() + " | " + messageContext.getMessage().getCategory().getName()
-                + " | " + messageContext.getMessage().getChannel().getName() + " by " + messageContext.getAuthor().getName()
+        channel.sendMessage(messageContext.getGuild().getName() + " | "
+                + messageContext.getMessage().getCategory().getName()
+                + " | " + messageContext.getMessage().getChannel().getName() + " by "
+                + messageContext.getAuthor().getName()
                 + ": " + messageContext.getMessage().getContentRaw()).queue();
     }
 
     /**
      * Loggs a message es embed.
      *
-     * @param MessageContext   MessageContext to log
-     * @param channel channel to log
+     * @param messageContext messageContext to log
+     * @param channel        channel to log
      */
-    public static void logMessageAsEmbedded(MessageEventDataWrapper MessageContext, MessageChannel channel) {
+    public static void logMessageAsEmbedded(MessageEventDataWrapper messageContext, MessageChannel channel) {
         Instant instant = Instant.now(); // get The current time in instant object
         Timestamp t = java.sql.Timestamp.from(instant); // Convert instant to Timestamp
 
-        if (MessageContext.getChannel() instanceof TextChannel) {
+        if (messageContext.getChannel() instanceof TextChannel) {
             EmbedBuilder builder = new EmbedBuilder();
-            builder.setTitle(MessageContext.getGuild().getName() + " | " + MessageContext.getChannel().getName());
+            builder.setTitle(messageContext.getGuild().getName() + " | " + messageContext.getChannel().getName());
             builder.setTimestamp(t.toInstant());
-            builder.setAuthor(MessageContext.getAuthor().getAsTag(), null, MessageContext.getAuthor().getAvatarUrl());
-            builder.setDescription(MessageContext.getMessage().getContentRaw());
+            builder.setAuthor(messageContext.getAuthor().getAsTag(), null, messageContext.getAuthor().getAvatarUrl());
+            builder.setDescription(messageContext.getMessage().getContentRaw());
             channel.sendMessage(builder.build()).queue();
         }
     }

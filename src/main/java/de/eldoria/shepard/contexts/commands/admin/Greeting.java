@@ -75,7 +75,8 @@ public class Greeting extends Command {
 
     private void setChannel(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 1) {
-            if (GreetingData.setGreetingChannel(messageContext.getGuild(), messageContext.getChannel(), messageContext)) {
+            if (GreetingData.setGreetingChannel(messageContext.getGuild(),
+                    messageContext.getChannel(), messageContext)) {
                 MessageSender.sendMessage("Greeting Channel set to "
                         + ((TextChannel) messageContext.getChannel()).getAsMention(), messageContext.getChannel());
             }

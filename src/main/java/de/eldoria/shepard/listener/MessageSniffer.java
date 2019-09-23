@@ -12,7 +12,7 @@ public class MessageSniffer extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getAuthor().isBot()) return;
 
-        MessageSender.logMessageAsEmbedded(new MessageEventDataWrapper<>(event),
+        MessageSender.logMessageAsEmbedded(new MessageEventDataWrapper(event),
                 Normandy.getNormandy().getTextChannelById("538087076386832431"));
     }
 }

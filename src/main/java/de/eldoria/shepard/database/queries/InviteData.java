@@ -23,14 +23,15 @@ public final class InviteData {
     /**
      * Adds a invite to a guild.
      *
-     * @param guild Guild object for which the invite should be added
-     * @param code  Code of the Invite
-     * @param name  Name of the invite
-     * @param count How often the invite was used
+     * @param guild          Guild object for which the invite should be added
+     * @param code           Code of the Invite
+     * @param name           Name of the invite
+     * @param count          How often the invite was used
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addInvite(Guild guild, String code, String name, int count, MessageEventDataWrapper messageContext) {
+    public static boolean addInvite(Guild guild, String code, String name, int count,
+                                    MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = getConn()
                 .prepareStatement("SELECT shepard_func.add_invite(?,?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -48,7 +49,7 @@ public final class InviteData {
     /**
      * Gets the invites of a guild.
      *
-     * @param guild Guild object for lookup
+     * @param guild          Guild object for lookup
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return list of invite objects
      */
@@ -75,8 +76,8 @@ public final class InviteData {
     /**
      * Removes a invite of a guild.
      *
-     * @param guild Guild object for lookup
-     * @param code  Code of the invite to remove
+     * @param guild          Guild object for lookup
+     * @param code           Code of the invite to remove
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
@@ -96,8 +97,8 @@ public final class InviteData {
     /**
      * Sets the counter of a invite +1.
      *
-     * @param guild Guild object for lookup
-     * @param code  Code of the invite for upcount
+     * @param guild          Guild object for lookup
+     * @param code           Code of the invite for upcount
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
@@ -117,9 +118,9 @@ public final class InviteData {
     /**
      * Deletes all invites which are not present anymore.
      *
-     * @param guild   Guild object for lookup
-     * @param invites List of invites of a guild
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param invites        List of invites of a guild
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean updateInvite(Guild guild, List<Invite> invites, MessageEventDataWrapper messageContext) {

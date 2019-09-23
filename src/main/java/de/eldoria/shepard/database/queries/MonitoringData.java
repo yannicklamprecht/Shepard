@@ -51,7 +51,8 @@ public final class MonitoringData {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeMonitoringAddressByIndex(Guild guild, int index, MessageEventDataWrapper messageContext) {
+    public static boolean removeMonitoringAddressByIndex(Guild guild, int index,
+                                                         MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_monitoring_adress_by_index(?,?)")) {
             statement.setString(1, guild.getId());
@@ -72,7 +73,8 @@ public final class MonitoringData {
      * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setMonitoringChannel(Guild guild, TextChannel channel, MessageEventDataWrapper messageContext) {
+    public static boolean setMonitoringChannel(Guild guild, TextChannel channel,
+                                               MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_monitoring_channel(?,?)")) {
             statement.setString(1, guild.getId());

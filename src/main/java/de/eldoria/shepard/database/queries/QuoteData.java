@@ -113,7 +113,8 @@ public final class QuoteData {
      * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static List<QuoteElement> getQuotesByKeyword(Guild guild, String keyword, MessageEventDataWrapper messageContext) {
+    public static List<QuoteElement> getQuotesByKeyword(Guild guild, String keyword,
+                                                        MessageEventDataWrapper messageContext) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_quotes_by_keyword(?,?)")) {

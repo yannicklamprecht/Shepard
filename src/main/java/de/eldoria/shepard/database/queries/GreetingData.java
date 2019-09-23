@@ -20,12 +20,13 @@ public final class GreetingData {
     /**
      * Sets a greeting channel for a guild.
      *
-     * @param guild   Guild object for which the channel should be added
-     * @param channel channel which should be used for greetings
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for which the channel should be added
+     * @param channel        channel which should be used for greetings
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setGreetingChannel(Guild guild, MessageChannel channel, MessageEventDataWrapper messageContext) {
+    public static boolean setGreetingChannel(Guild guild, MessageChannel channel,
+                                             MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_greeting_channel(?,?)")) {
             statement.setString(1, guild.getId());
@@ -41,7 +42,7 @@ public final class GreetingData {
     /**
      * Remove a greeting channel from a guild.
      *
-     * @param guild Guild object for lookup
+     * @param guild          Guild object for lookup
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
@@ -60,8 +61,8 @@ public final class GreetingData {
     /**
      * Sets the greeting text for a guild.
      *
-     * @param guild Guild object for lookup
-     * @param text  text for greeting
+     * @param guild          Guild object for lookup
+     * @param text           text for greeting
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
