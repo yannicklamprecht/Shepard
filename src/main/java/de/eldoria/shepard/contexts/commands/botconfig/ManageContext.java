@@ -32,78 +32,78 @@ public class ManageContext extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
-        String contextName = getContextName(args[0], dataWrapper);
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
+        String contextName = getContextName(args[0], messageContext);
         String cmd = args[1];
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
-                    dataWrapper.getChannel());
+                    messageContext.getChannel());
             return;
         }
 
         if (cmd.equalsIgnoreCase("setNSFW") || cmd.equalsIgnoreCase("nsfw")) {
-            setNsfw(args, contextName, dataWrapper);
+            setNsfw(args, contextName, messageContext);
             return;
         }
 
         if (cmd.equalsIgnoreCase("setadminonly") || cmd.equalsIgnoreCase("admin")) {
-            setAdminOnly(args, contextName, dataWrapper);
+            setAdminOnly(args, contextName, messageContext);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
     }
 
-    private void setAdminOnly(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
+    private void setAdminOnly(String[] args, String contextName, MessageEventDataWrapper messageContext) {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
             MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN,
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
             return;
         }
 
         boolean state = bState == BooleanState.TRUE;
 
-        if (!ContextData.setContextAdmin(contextName, state, receivedEvent)) {
+        if (!ContextData.setContextAdmin(contextName, state, messageContext)) {
             return;
         }
 
         if (state) {
             MessageSender.sendMessage("**Activated admin and permission check for context \""
                             + contextName.toUpperCase() + "\"**",
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
 
         } else {
             MessageSender.sendMessage("**Deactivated admin and permission check for context \""
                             + contextName.toUpperCase() + "\"**",
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
         }
     }
 
-    private void setNsfw(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
+    private void setNsfw(String[] args, String contextName, MessageEventDataWrapper messageContext) {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
             MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN,
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
             return;
         }
 
         boolean state = bState == BooleanState.TRUE;
 
-        if (!ContextData.setContextNsfw(contextName, state, receivedEvent)) {
+        if (!ContextData.setContextNsfw(contextName, state, messageContext)) {
             return;
         }
 
         if (state) {
             MessageSender.sendMessage("**Activated NSFW check for context \"" + contextName.toUpperCase() + "\"**",
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
 
         } else {
             MessageSender.sendMessage("**Deactivated NSFW check for context \"" + contextName.toUpperCase() + "\"**",
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
         }
     }
 }

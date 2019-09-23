@@ -28,7 +28,7 @@ public class IsHaddeWorking extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         try {
             Calendar cal = Calendar.getInstance();
             Date currentDate = cal.getTime();
@@ -53,21 +53,21 @@ public class IsHaddeWorking extends Command {
                 if (currentDate.after(event.getStart()) && currentDate.before(event.getEnd())) {
                     fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?", "Ja, bis "
                             + getTime.format(event.getEnd()) + " Uhr " + endDate, false));
-                    MessageSender.sendTextBox(null, fields, dataWrapper.getChannel());
+                    MessageSender.sendTextBox(null, fields, messageContext.getChannel());
                 } else {
                     fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?", "Nein, er arbeitet "
                             + startDate + " von " + getTime.format(event.getStart()) + " Uhr bis "
                             + getTime.format(event.getEnd()) + " Uhr.", false));
-                    MessageSender.sendTextBox(null, fields, dataWrapper.getChannel());
+                    MessageSender.sendTextBox(null, fields, messageContext.getChannel());
                 }
             } else {
                 fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?",
                         "Ich hab derzeit leider keine Arbeitszeiten", false));
-                MessageSender.sendTextBox(null, fields, dataWrapper.getChannel());
+                MessageSender.sendTextBox(null, fields, messageContext.getChannel());
 
             }
         } catch (IOException | GeneralSecurityException e) {
-            dataWrapper.getChannel().sendMessage("**Exception** occurred :confused:").queue();
+            messageContext.getChannel().sendMessage("**Exception** occurred :confused:").queue();
         }
 
     }

@@ -35,38 +35,38 @@ public class UserInfo extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
 
         if (args.length == 0) {
 
             MessageSender.sendError(
                     new MessageEmbed.Field[] {
                             new MessageEmbed.Field("Too few arguments",
-                                    "Usage: " + PrefixData.getPrefix(dataWrapper.getGuild(),
-                                            dataWrapper) + "userInfo <id, name, tag>", false)},
-                    dataWrapper.getChannel());
+                                    "Usage: " + PrefixData.getPrefix(messageContext.getGuild(),
+                                            messageContext) + "userInfo <id, name, tag>", false)},
+                    messageContext.getChannel());
         }
 
-        InternUser internUser = new InternUser(args[0], dataWrapper).invoke();
+        InternUser internUser = new InternUser(args[0], messageContext).invoke();
         User searchedUser = internUser.getSearchedUser();
         String id = internUser.getId();
 
         if (searchedUser == null) {
-            MessageSender.sendMessage("Can't find this user (" + id + ")", dataWrapper.getChannel());
+            MessageSender.sendMessage("Can't find this user (" + id + ")", messageContext.getChannel());
             return;
         }
 
         EmbedBuilder builder = new EmbedBuilder()
                 .setThumbnail(searchedUser.getAvatarUrl())
                 .addField("ID", searchedUser.getId(), true)
-                .addField("Nickname", dataWrapper.getGuild()
+                .addField("Nickname", messageContext.getGuild()
                         .getMemberById(searchedUser.getId()).getNickname() + "", true)
-                .addField("Status", dataWrapper.getGuild()
+                .addField("Status", messageContext.getGuild()
                         .getMemberById(searchedUser.getId()).getOnlineStatus().toString() + "", true)
                 .addField("Minecraft Name", "Not implemented yet", true)
                 .addField("Mention", "<@" + searchedUser.getId() + ">", false)
                 .setAuthor(searchedUser.getAsTag(), searchedUser.getAvatarUrl(), searchedUser.getAvatarUrl());
-        OffsetDateTime time = dataWrapper.getGuild().getMemberById(searchedUser.getId()).getTimeJoined();
+        OffsetDateTime time = messageContext.getGuild().getMemberById(searchedUser.getId()).getTimeJoined();
         LocalDate date = time.toLocalDate();
         Period period = date.until(LocalDate.now());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("DD.MM.yyyy");
@@ -79,8 +79,8 @@ public class UserInfo extends Command {
         String year = years != 1 ? " Years, " : " Year, ";
         String day = days != 1 ? " Days" : " Day";
         builder.addField("Joined", years + year + months + " Month " + days + day + "\n(" + formatted + ")", false)
-                .setColor(dataWrapper.getGuild().getMemberById(searchedUser.getId()).getColor());
-        List<Role> roles = dataWrapper.getGuild().getMemberById(searchedUser.getId()).getRoles();
+                .setColor(messageContext.getGuild().getMemberById(searchedUser.getId()).getColor());
+        List<Role> roles = messageContext.getGuild().getMemberById(searchedUser.getId()).getRoles();
         String userRoles = "";
         for (Role role : roles) {
             userRoles = userRoles.concat(role.getName() + ", ");
@@ -90,7 +90,7 @@ public class UserInfo extends Command {
         builder.addField("Roles", userRoles, false);
 
         //builder.addField("Joined", time.)
-        dataWrapper.getChannel().sendMessage(builder.build()).queue();
+        messageContext.getChannel().sendMessage(builder.build()).queue();
 
     }
 

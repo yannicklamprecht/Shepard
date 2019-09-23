@@ -19,13 +19,13 @@ public class ShowKeyword extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         List<Keyword> keywords = KeyWordCollection.getInstance().getKeywords();
 
         int maxContextLength = "Context Name".length() + 1;
 
         for (Keyword k : keywords) {
-            if (k.isContextValid(dataWrapper)) {
+            if (k.isContextValid(messageContext)) {
                 if (k.getClass().getSimpleName().length() + 1 > maxContextLength) {
                     maxContextLength = k.getClass().getSimpleName().length() + 1;
                 }
@@ -38,13 +38,13 @@ public class ShowKeyword extends Command {
                 .append(System.lineSeparator());
 
         for (Keyword k : keywords) {
-            if (k.isContextValid(dataWrapper)) {
+            if (k.isContextValid(messageContext)) {
                 builder.append(StringUtils.rightPad(k.getClass().getSimpleName(), maxContextLength)).append(" -> ")
                         .append(k.toString()).append(System.lineSeparator());
             }
         }
         builder.append("```");
 
-        MessageSender.sendSimpleTextBox("Keywords", builder.toString(), dataWrapper.getChannel());
+        MessageSender.sendSimpleTextBox("Keywords", builder.toString(), messageContext.getChannel());
     }
 }

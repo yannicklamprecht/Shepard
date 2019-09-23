@@ -18,18 +18,18 @@ public class Someone extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
-        GuildChannel guildChannelById = dataWrapper.getGuild()
-                .getGuildChannelById(dataWrapper.getChannel().getId());
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
+        GuildChannel guildChannelById = messageContext.getGuild()
+                .getGuildChannelById(messageContext.getChannel().getId());
         if (guildChannelById != null) {
             List<Member> members = guildChannelById.getMembers().stream()
                     .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE
-                            && member.getIdLong() != dataWrapper.getAuthor().getIdLong()
+                            && member.getIdLong() != messageContext.getAuthor().getIdLong()
                             && !member.getUser().isBot())
                     .collect(Collectors.toList());
 
             if (members.size() == 0) {
-                MessageSender.sendMessage("No one is online :fearful:", dataWrapper.getChannel());
+                MessageSender.sendMessage("No one is online :fearful:", messageContext.getChannel());
                 return;
             }
 
@@ -37,7 +37,7 @@ public class Someone extends Command {
 
             Member member = members.get(rand.nextInt(members.size()));
 
-            MessageSender.sendMessage(member.getAsMention() + " is someone!", dataWrapper.getChannel());
+            MessageSender.sendMessage(member.getAsMention() + " is someone!", messageContext.getChannel());
 
         }
     }

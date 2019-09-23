@@ -51,24 +51,24 @@ public class Ticket extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
         if (cmd.equalsIgnoreCase("open") || cmd.equalsIgnoreCase("o")) {
-            openTicket(args, dataWrapper);
+            openTicket(args, messageContext);
             return;
         }
 
         if (cmd.equalsIgnoreCase("close") || cmd.equalsIgnoreCase("c")) {
-            close(args, dataWrapper);
+            close(args, messageContext);
             return;
         }
 
         if (cmd.equalsIgnoreCase("list") || cmd.equalsIgnoreCase("l")) {
-            typeInfo(args, dataWrapper);
+            typeInfo(args, messageContext);
             return;
         }
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
-        sendCommandUsage(dataWrapper.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        sendCommandUsage(messageContext.getChannel());
     }
 
     private void close(String[] args, MessageEventDataWrapper receivedEvent) {

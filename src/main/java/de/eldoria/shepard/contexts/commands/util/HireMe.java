@@ -23,7 +23,7 @@ public class HireMe extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         List<MessageEmbed.Field> fields;
         if (label.equalsIgnoreCase(commandName)) {
             fields = Collections.singletonList(
@@ -39,7 +39,7 @@ public class HireMe extends Command {
             fields = Collections.emptyList();
         }
 
-        MessageSender.sendTextBox(null, fields, dataWrapper.getChannel());
+        MessageSender.sendTextBox(null, fields, messageContext.getChannel());
 
     }
 }

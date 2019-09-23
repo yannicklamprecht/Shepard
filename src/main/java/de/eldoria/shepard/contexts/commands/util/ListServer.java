@@ -27,7 +27,7 @@ public class ListServer extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         List<Guild> guilds = ShepardBot.getJDA().getGuilds();
         String[][] text = new String[guilds.size()][3];
         int sizeName = 0;
@@ -62,7 +62,7 @@ public class ListServer extends Command {
         messagepart = messagepart.concat("```");
 
         String message = "I am currently serving " + guilds.size() + " server:\n";
-        MessageSender.sendMessage(message.concat(messagepart), dataWrapper.getChannel());
+        MessageSender.sendMessage(message.concat(messagepart), messageContext.getChannel());
     }
 
     private String fillString(String string, int fill) {

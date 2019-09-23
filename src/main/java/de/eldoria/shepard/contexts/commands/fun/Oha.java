@@ -17,11 +17,11 @@ public class Oha extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String oha = "oha";
         Random rand = new Random();
         int loops = rand.nextInt(30) + 10;
         oha = oha + "a".repeat(loops);
-        MessageSender.sendMessage(oha, dataWrapper.getChannel());
+        MessageSender.sendMessage(oha, messageContext.getChannel());
     }
 }

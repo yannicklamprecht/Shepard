@@ -26,7 +26,7 @@ public class MagicConch extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String word;
         Random rand = new Random();
         int type = rand.nextInt(3);
@@ -47,7 +47,7 @@ public class MagicConch extends Command {
 
         MessageSender.sendTextBox(null,
                 Collections.singletonList(new MessageEmbed.Field("The magic conch says:", word, false)),
-                dataWrapper.getChannel());
+                messageContext.getChannel());
 
     }
 }

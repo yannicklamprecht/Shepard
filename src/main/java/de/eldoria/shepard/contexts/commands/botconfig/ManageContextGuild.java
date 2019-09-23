@@ -46,47 +46,47 @@ public class ManageContextGuild extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[1];
-        String contextName = getContextName(args[0], dataWrapper);
+        String contextName = getContextName(args[0], messageContext);
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
-                    dataWrapper.getChannel());
+                    messageContext.getChannel());
             return;
         }
 
         if (cmd.equalsIgnoreCase("setActive") || cmd.equalsIgnoreCase("a")) {
-            setActive(args, contextName, dataWrapper);
+            setActive(args, contextName, messageContext);
             return;
         }
 
         if (cmd.equalsIgnoreCase("setListType") || cmd.equalsIgnoreCase("lt")) {
-            setListType(args, contextName, dataWrapper);
+            setListType(args, contextName, messageContext);
             return;
         }
 
         if (cmd.equalsIgnoreCase("addGuild") || cmd.equalsIgnoreCase("ag")) {
-            addGuild(args, contextName, dataWrapper);
+            addGuild(args, contextName, messageContext);
             return;
         }
 
         if (cmd.equalsIgnoreCase("removeGuild") || cmd.equalsIgnoreCase("rg")) {
-            removeGuild(args, contextName, dataWrapper);
+            removeGuild(args, contextName, messageContext);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
-        sendCommandArgHelp("action", dataWrapper.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        sendCommandArgHelp("action", messageContext.getChannel());
 
     }
 
-    private void addGuild(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
-        modifyGuild(args, contextName, ModifyType.ADD, receivedEvent);
+    private void addGuild(String[] args, String contextName, MessageEventDataWrapper messageContext) {
+        modifyGuild(args, contextName, ModifyType.ADD, messageContext);
     }
 
-    private void removeGuild(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
-        modifyGuild(args, contextName, ModifyType.REMOVE, receivedEvent);
+    private void removeGuild(String[] args, String contextName, MessageEventDataWrapper messageContext) {
+        modifyGuild(args, contextName, ModifyType.REMOVE, messageContext);
     }
 
     private void modifyGuild(String[] args, String contextName,
@@ -129,41 +129,41 @@ public class ManageContextGuild extends Command {
     }
 
 
-    private void setListType(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
+    private void setListType(String[] args, String contextName, MessageEventDataWrapper messageContext) {
         ListType type = ListType.getType(args[2]);
 
         if (type == null) {
             MessageSender.sendSimpleError(ErrorType.INVALID_LIST_TYPE,
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
             return;
         }
 
-        if (ContextData.setContextGuildListType(contextName, type, receivedEvent)) {
+        if (ContextData.setContextGuildListType(contextName, type, messageContext)) {
             MessageSender.sendMessage("**Changed guild list type of context \""
                             + contextName.toUpperCase() + "\" to " + type.toString() + "**",
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
         }
 
     }
 
-    private void setActive(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
+    private void setActive(String[] args, String contextName, MessageEventDataWrapper messageContext) {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
             MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN,
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
             return;
         }
 
         boolean state = bState == BooleanState.TRUE;
 
-        if (ContextData.setContextGuildCheckActive(contextName, state, receivedEvent)) {
+        if (ContextData.setContextGuildCheckActive(contextName, state, messageContext)) {
             if (state) {
                 MessageSender.sendMessage("**Activated guild check for context \""
-                        + contextName.toUpperCase() + "\"**", receivedEvent.getChannel());
+                        + contextName.toUpperCase() + "\"**", messageContext.getChannel());
             } else {
                 MessageSender.sendMessage("**Deactivated guild check for context \""
-                        + contextName.toUpperCase() + "\"**", receivedEvent.getChannel());
+                        + contextName.toUpperCase() + "\"**", messageContext.getChannel());
             }
         }
     }

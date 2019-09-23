@@ -25,10 +25,10 @@ public final class PrefixData {
      *
      * @param guild  Guild for which the prefix should be set
      * @param prefix prefix to set.
-     * @param event  event from command sending for error handling. Can be null.
+     * @param messageContext  messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setPrefix(Guild guild, String prefix, MessageEventDataWrapper event) {
+    public static boolean setPrefix(Guild guild, String prefix, MessageEventDataWrapper messageContext) {
         cacheDirty = true;
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_prefix(?,?)")) {
@@ -36,7 +36,7 @@ public final class PrefixData {
             statement.setString(2, prefix);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
 
@@ -48,20 +48,20 @@ public final class PrefixData {
      * Get the prefix for a guild.
      *
      * @param guild Guild object for lookup
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Prefix as string
      */
-    public static String getPrefix(Guild guild, MessageEventDataWrapper event) {
+    public static String getPrefix(Guild guild, MessageEventDataWrapper messageContext) {
         if (!cacheDirty) {
             return prefixes.get(guild.getId());
         }
 
-        refreshPrefixes(event);
+        refreshPrefixes(messageContext);
 
-        return getPrefix(guild, event);
+        return getPrefix(guild, messageContext);
     }
 
-    private static void refreshPrefixes(MessageEventDataWrapper event) {
+    private static void refreshPrefixes(MessageEventDataWrapper messageContext) {
         if (!cacheDirty) {
             return;
         }
@@ -79,7 +79,7 @@ public final class PrefixData {
             cacheDirty = false;
 
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
     }
 }

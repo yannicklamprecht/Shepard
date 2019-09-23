@@ -27,7 +27,7 @@ public class Meetings extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         try {
             java.util.Calendar cal = java.util.Calendar.getInstance();
             Date currentDate = cal.getTime();
@@ -44,9 +44,9 @@ public class Meetings extends Command {
                     + calendarEvent.get(1).getSummary() + " am " + getDate.format(calendarEvent.get(1).getStart())
                     + " von " + getTime.format(calendarEvent.get(1).getStart()) + " bis "
                             + getTime.format(calendarEvent.get(1).getEnd()), false));
-            MessageSender.sendTextBox(null, fields, dataWrapper.getChannel());
+            MessageSender.sendTextBox(null, fields, messageContext.getChannel());
         } catch (IOException | GeneralSecurityException e) {
-            dataWrapper.getChannel().sendMessage("**Exception** occurred :confused:").queue();
+            messageContext.getChannel().sendMessage("**Exception** occurred :confused:").queue();
         }
     }
 }

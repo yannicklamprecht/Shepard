@@ -32,33 +32,33 @@ public class Help extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
-        String prefix = PrefixData.getPrefix(dataWrapper.getGuild(), dataWrapper);
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
+        String prefix = PrefixData.getPrefix(messageContext.getGuild(), messageContext);
 
         //Command List
         if (args.length == 0) {
-            listCommands(dataWrapper);
+            listCommands(messageContext);
             return;
         }
 
         Command command = CommandCollection.getInstance().getCommand(args[0]);
-        if (command == null || !command.isContextValid(dataWrapper)) {
+        if (command == null || !command.isContextValid(messageContext)) {
             MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!",
                             "Type " + prefix + "help for a full list of available commands!", false)},
-                    dataWrapper.getChannel());
+                    messageContext.getChannel());
             return;
         }
 
         //Command Help
         if (args.length == 1) {
-            commandHelp(dataWrapper.getChannel(), command);
+            commandHelp(messageContext.getChannel(), command);
             return;
         }
 
 
         //Arg help
         if (args.length == 2) {
-            argumentHelp(args[1], dataWrapper.getChannel(), command);
+            argumentHelp(args[1], messageContext.getChannel(), command);
             return;
 
         }
@@ -67,7 +67,7 @@ public class Help extends Command {
                         + prefix + "help for a list of commands.\n"
                         + prefix + "help [command] for help for a specific command.\n"
                         + prefix + "help [command] [arg] for a description of the argument.", false)},
-                dataWrapper.getChannel());
+                messageContext.getChannel());
     }
 
     /* Sends help for a specific argument of a command.*/

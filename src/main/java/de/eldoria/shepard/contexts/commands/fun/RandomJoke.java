@@ -23,12 +23,12 @@ public class RandomJoke extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         try {
-            MessageSender.sendSimpleTextBox("Random Joke", getRandomJoke(), dataWrapper.getChannel());
+            MessageSender.sendSimpleTextBox("Random Joke", getRandomJoke(), messageContext.getChannel());
         } catch (IOException e) {
             MessageSender.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Error", e.getMessage(),
-                    false)}, dataWrapper.getChannel());
+                    false)}, messageContext.getChannel());
         }
     }
 

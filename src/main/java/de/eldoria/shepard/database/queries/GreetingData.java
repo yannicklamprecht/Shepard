@@ -22,17 +22,17 @@ public final class GreetingData {
      *
      * @param guild   Guild object for which the channel should be added
      * @param channel channel which should be used for greetings
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setGreetingChannel(Guild guild, MessageChannel channel, MessageEventDataWrapper event) {
+    public static boolean setGreetingChannel(Guild guild, MessageChannel channel, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_greeting_channel(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, channel.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -42,16 +42,16 @@ public final class GreetingData {
      * Remove a greeting channel from a guild.
      *
      * @param guild Guild object for lookup
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeGreetingChannel(Guild guild, MessageEventDataWrapper event) {
+    public static boolean removeGreetingChannel(Guild guild, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_greeting_channel(?)")) {
             statement.setString(1, guild.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -62,17 +62,17 @@ public final class GreetingData {
      *
      * @param guild Guild object for lookup
      * @param text  text for greeting
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setGreetingText(Guild guild, String text, MessageEventDataWrapper event) {
+    public static boolean setGreetingText(Guild guild, String text, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_greeting_text(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, text);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;

@@ -37,30 +37,30 @@ public class Invite extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
         if (cmd.equalsIgnoreCase("addInvite") || cmd.equalsIgnoreCase("ai")) {
-            addInvite(args, dataWrapper);
+            addInvite(args, messageContext);
             return;
         }
         if (cmd.equalsIgnoreCase("removeInvite") || cmd.equalsIgnoreCase("remi")) {
-            removeInvite(args, dataWrapper);
+            removeInvite(args, messageContext);
             return;
         }
         if (cmd.equalsIgnoreCase("refreshInvites") || cmd.equalsIgnoreCase("refi")) {
-            refreshInvites(dataWrapper);
+            refreshInvites(messageContext);
             return;
         }
         if (cmd.equalsIgnoreCase("showInvites") || cmd.equalsIgnoreCase("si")) {
-            showInvites(dataWrapper);
+            showInvites(messageContext);
             return;
         }
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
-        sendCommandUsage(dataWrapper.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        sendCommandUsage(messageContext.getChannel());
     }
 
-    private void showInvites(MessageEventDataWrapper receivedEvent) {
-        List<DatabaseInvite> invites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
+    private void showInvites(MessageEventDataWrapper messageContext) {
+        List<DatabaseInvite> invites = InviteData.getInvites(messageContext.getGuild(), messageContext);
 
         StringBuilder message = new StringBuilder();
         String code = "code      ";
@@ -77,13 +77,13 @@ public class Invite extends Command {
             message.append(invCode).append(invUsage).append(invName).append(lineSeparator());
         }
         message.append("```");
-        MessageSender.sendMessage(message.toString(), receivedEvent.getChannel());
+        MessageSender.sendMessage(message.toString(), messageContext.getChannel());
     }
 
-    private void refreshInvites(MessageEventDataWrapper receivedEvent) {
-        if (InviteData.updateInvite(receivedEvent.getGuild(),
-                receivedEvent.getGuild().retrieveInvites().complete(), receivedEvent)) {
-            MessageSender.sendMessage("Removed non existent invites!", receivedEvent.getChannel());
+    private void refreshInvites(MessageEventDataWrapper messageContext) {
+        if (InviteData.updateInvite(messageContext.getGuild(),
+                messageContext.getGuild().retrieveInvites().complete(), messageContext)) {
+            MessageSender.sendMessage("Removed non existent invites!", messageContext.getChannel());
         }
 
     }
@@ -107,23 +107,23 @@ public class Invite extends Command {
                 receivedEvent.getChannel());
     }
 
-    private void addInvite(String[] args, MessageEventDataWrapper receivedEvent) {
+    private void addInvite(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
             return;
         }
-        List<net.dv8tion.jda.api.entities.Invite> invites = receivedEvent.getGuild().retrieveInvites().complete();
+        List<net.dv8tion.jda.api.entities.Invite> invites = messageContext.getGuild().retrieveInvites().complete();
         for (var invite : invites) {
             if (invite.getCode().equals(args[1])) {
                 String name = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-                if (InviteData.addInvite(receivedEvent.getGuild(), invite.getCode(), name,
-                        invite.getUses(), receivedEvent)) {
+                if (InviteData.addInvite(messageContext.getGuild(), invite.getCode(), name,
+                        invite.getUses(), messageContext)) {
                     MessageSender.sendMessage("Added Invite \"" + name + " with code " + invite.getCode()
-                            + " to database with usage count of " + invite.getUses(), receivedEvent.getChannel());
+                            + " to database with usage count of " + invite.getUses(), messageContext.getChannel());
                 }
                 return;
             }
         }
-        MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext.getChannel());
     }
 }

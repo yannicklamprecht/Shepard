@@ -20,12 +20,12 @@ public class LargeEmote extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
-        List<Emote> emotes = dataWrapper.getMessage().getEmotes()
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
+        List<Emote> emotes = messageContext.getMessage().getEmotes()
                 .stream().distinct().collect(Collectors.toList());
 
         if (emotes.size() == 0) {
-            MessageSender.sendSimpleError(ErrorType.NO_EMOTE_FOUND, dataWrapper.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NO_EMOTE_FOUND, messageContext.getChannel());
             return;
         }
 
@@ -33,7 +33,7 @@ public class LargeEmote extends Command {
 
         for (Emote emote : emotes.subList(0, Math.min(emotes.size(), 5))) {
             builder.setImage(emote.getImageUrl());
-            dataWrapper.getChannel().sendMessage(builder.build()).queue();
+            messageContext.getChannel().sendMessage(builder.build()).queue();
         }
     }
 }

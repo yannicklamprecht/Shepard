@@ -51,14 +51,14 @@ public class Permission extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[1];
 
-        String contextName = getContextName(args[0], dataWrapper);
+        String contextName = getContextName(args[0], messageContext);
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
-                    dataWrapper.getChannel());
+                    messageContext.getChannel());
             return;
         }
 
@@ -67,12 +67,12 @@ public class Permission extends Command {
             ModifyType modifyType = cmd.equalsIgnoreCase("addUser") || cmd.equalsIgnoreCase("au")
                     ? ModifyType.ADD : ModifyType.REMOVE;
 
-            modifyUsers(args, dataWrapper, contextName, modifyType);
+            modifyUsers(args, messageContext, contextName, modifyType);
             return;
         }
 
         if (cmd.equalsIgnoreCase("showUser") || cmd.equalsIgnoreCase("su")) {
-            showMentions(dataWrapper, contextName, "Users with access to this context:");
+            showMentions(messageContext, contextName, "Users with access to this context:");
             return;
         }
 
@@ -81,25 +81,25 @@ public class Permission extends Command {
             ModifyType modifyType = cmd.equalsIgnoreCase("addRole") || cmd.equalsIgnoreCase("ar")
                     ? ModifyType.ADD : ModifyType.REMOVE;
 
-            modifyRoles(args, dataWrapper, contextName, modifyType);
+            modifyRoles(args, messageContext, contextName, modifyType);
             return;
         }
 
         if (cmd.equalsIgnoreCase("showRole") || cmd.equalsIgnoreCase("sr")) {
-            showMentions(dataWrapper, contextName, "Roles with access to this context:");
+            showMentions(messageContext, contextName, "Roles with access to this context:");
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
     }
 
-    private void showMentions(MessageEventDataWrapper receivedEvent, String contextName, String message) {
-        List<String> contextRolePermission = ContextData.getContextRolePermission(receivedEvent.getGuild(),
-                contextName, receivedEvent);
+    private void showMentions(MessageEventDataWrapper messageContext, String contextName, String message) {
+        List<String> contextRolePermission = ContextData.getContextRolePermission(messageContext.getGuild(),
+                contextName, messageContext);
         MessageSender.sendSimpleTextBox(message,
-                Verifier.getValidRoles(receivedEvent.getGuild(), contextRolePermission)
+                Verifier.getValidRoles(messageContext.getGuild(), contextRolePermission)
                         .stream().map(IMentionable::getAsMention).collect(Collectors.joining(lineSeparator())),
-                Color.blue, receivedEvent.getChannel());
+                Color.blue, messageContext.getChannel());
     }
 
     private void modifyUsers(String[] args, MessageEventDataWrapper receivedEvent,
@@ -139,25 +139,25 @@ public class Permission extends Command {
         }
     }
 
-    private void modifyRoles(String[] args, MessageEventDataWrapper receivedEvent,
+    private void modifyRoles(String[] args, MessageEventDataWrapper messageContext,
                              String contextName, ModifyType modifyType) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
             return;
         }
 
-        List<Role> validRoles = Verifier.getValidRoles(receivedEvent.getGuild(),
+        List<Role> validRoles = Verifier.getValidRoles(messageContext.getGuild(),
                 Arrays.copyOfRange(args, 2, args.length));
 
         for (Role role : validRoles) {
             if (modifyType == ModifyType.ADD) {
                 if (!ContextData.addContextRolePermission(contextName,
-                        receivedEvent.getGuild(), role, receivedEvent)) {
+                        messageContext.getGuild(), role, messageContext)) {
                     return;
                 }
             } else {
                 if (!ContextData.removeContextRolePermission(contextName,
-                        receivedEvent.getGuild(), role, receivedEvent)) {
+                        messageContext.getGuild(), role, messageContext)) {
                     return;
                 }
             }
@@ -168,11 +168,11 @@ public class Permission extends Command {
         if (modifyType == ModifyType.ADD) {
             MessageSender.sendSimpleTextBox("Granted following roles access to context \""
                             + contextName.toUpperCase() + "\"", names + "**",
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
         } else {
             MessageSender.sendSimpleTextBox("Revoked access from following roles for context \""
                             + contextName.toUpperCase() + "\"", names + "**",
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
         }
     }
 }

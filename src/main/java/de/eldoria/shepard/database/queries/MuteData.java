@@ -32,10 +32,10 @@ public final class MuteData {
      * @param guild    Guild on which the user should be muted
      * @param user     user id
      * @param duration duration of the mute
-     * @param event    event from command sending for error handling. Can be null.
+     * @param messageContext    messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setMuted(Guild guild, User user, String duration, MessageEventDataWrapper event) {
+    public static boolean setMuted(Guild guild, User user, String duration, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_muted(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -43,7 +43,7 @@ public final class MuteData {
             statement.setString(3, duration);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
 
@@ -51,7 +51,7 @@ public final class MuteData {
         return true;
     }
 
-    private static boolean refreshGuildData(Guild guild, MessageEventDataWrapper event) {
+    private static boolean refreshGuildData(Guild guild, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_muted_users(?)")) {
             statement.setString(1, guild.getId());
@@ -61,7 +61,7 @@ public final class MuteData {
                 mutedUsers.put(guild.getId(), Arrays.asList((String[]) result.getArray(1).getArray()));
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -72,17 +72,17 @@ public final class MuteData {
      *
      * @param guild Guild object for lookup
      * @param user  id of the user
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeMute(Guild guild, User user, MessageEventDataWrapper event) {
+    public static boolean removeMute(Guild guild, User user, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_mute(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, user.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         mutedUsersDirty.put(guild.getId(), true);
@@ -93,10 +93,10 @@ public final class MuteData {
      * Get the muted users on a guild.
      *
      * @param guild Guild object for lookup
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of muted users on a server.
      */
-    public static List<String> getMutedUsers(Guild guild, MessageEventDataWrapper event) {
+    public static List<String> getMutedUsers(Guild guild, MessageEventDataWrapper messageContext) {
         if (lastRefresh.isBefore(LocalDateTime.now().minusMinutes(1))) {
 
 
@@ -119,7 +119,7 @@ public final class MuteData {
                 mutedUsers = data;
 
             } catch (SQLException e) {
-                handleExceptionAndIgnore(e, event);
+                handleExceptionAndIgnore(e, messageContext);
             }
             lastRefresh = LocalDateTime.now();
 
@@ -128,7 +128,7 @@ public final class MuteData {
                 if (!mutedUsersDirty.get(guild.getId())) {
                     return mutedUsers.get(guild.getId());
                 } else {
-                    refreshGuildData(guild, event);
+                    refreshGuildData(guild, messageContext);
                 }
             }
 

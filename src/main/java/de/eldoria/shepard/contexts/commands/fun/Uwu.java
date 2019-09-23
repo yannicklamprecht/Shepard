@@ -16,8 +16,8 @@ public class Uwu extends Command {
 
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         MessageSender.sendMessage(":regional_indicator_u::regional_indicator_w::regional_indicator_u:",
-                dataWrapper.getChannel());
+                messageContext.getChannel());
     }
 }

@@ -46,43 +46,43 @@ public class ManageContextUsers extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
-        String contextName = getContextName(args[0], dataWrapper);
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
+        String contextName = getContextName(args[0], messageContext);
         String cmd = args[1];
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
-                    dataWrapper.getChannel());
+                    messageContext.getChannel());
             return;
         }
 
         if (cmd.equalsIgnoreCase("setActive") || cmd.equalsIgnoreCase("a")) {
-            setActive(args, contextName, dataWrapper);
+            setActive(args, contextName, messageContext);
             return;
         }
 
         if (cmd.equalsIgnoreCase("setListType") || cmd.equalsIgnoreCase("lt")) {
-            setListType(args, contextName, dataWrapper);
+            setListType(args, contextName, messageContext);
             return;
         }
 
         if (cmd.equalsIgnoreCase("addUser") || cmd.equalsIgnoreCase("au")) {
-            addUser(args, contextName, dataWrapper);
+            addUser(args, contextName, messageContext);
             return;
         }
 
         if (cmd.equalsIgnoreCase("removeUser") || cmd.equalsIgnoreCase("ru")) {
-            removeUser(args, contextName, dataWrapper);
+            removeUser(args, contextName, messageContext);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
-        sendCommandArgHelp("action", dataWrapper.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        sendCommandArgHelp("action", messageContext.getChannel());
 
     }
 
     private void manageUser(String[] args, String contextName,
-                            ModifyType modifyType, MessageEventDataWrapper receivedEvent) {
+                            ModifyType modifyType, MessageEventDataWrapper messageContext) {
         List<String> mentions = new ArrayList<>();
 
         for (String userId : Arrays.copyOfRange(args, 2, args.length)) {
@@ -90,11 +90,11 @@ public class ManageContextUsers extends Command {
                 User user = ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(userId));
                 if (user != null) {
                     if (modifyType == ModifyType.ADD) {
-                        if (!ContextData.addContextUser(contextName, user, receivedEvent)) {
+                        if (!ContextData.addContextUser(contextName, user, messageContext)) {
                             return;
                         }
                     } else {
-                        if (!ContextData.removeContextUser(contextName, user, receivedEvent)) {
+                        if (!ContextData.removeContextUser(contextName, user, messageContext)) {
                             return;
                         }
                     }
@@ -108,62 +108,62 @@ public class ManageContextUsers extends Command {
         if (modifyType == ModifyType.ADD) {
             MessageSender.sendSimpleTextBox("Added following users to context \""
                             + contextName.toUpperCase() + "\"", names + "**",
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
         } else {
             MessageSender.sendSimpleTextBox("Removed following users from context \""
                             + contextName.toUpperCase() + "\"", names + "**",
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
         }
     }
 
-    private void addUser(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
-        manageUser(args, contextName, ModifyType.ADD, receivedEvent);
+    private void addUser(String[] args, String contextName, MessageEventDataWrapper messageContext) {
+        manageUser(args, contextName, ModifyType.ADD, messageContext);
     }
 
-    private void removeUser(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
-        manageUser(args, contextName, ModifyType.REMOVE, receivedEvent);
+    private void removeUser(String[] args, String contextName, MessageEventDataWrapper messageContext) {
+        manageUser(args, contextName, ModifyType.REMOVE, messageContext);
     }
 
 
-    private void setListType(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
+    private void setListType(String[] args, String contextName, MessageEventDataWrapper messageContext) {
         ListType type = ListType.getType(args[2]);
 
         if (type == null) {
             MessageSender.sendSimpleError(ErrorType.INVALID_LIST_TYPE,
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
             return;
         }
 
-        if (ContextData.setContextUserListType(contextName, type, receivedEvent)) {
+        if (ContextData.setContextUserListType(contextName, type, messageContext)) {
             MessageSender.sendMessage("**Changed user list type of context \""
                             + contextName.toUpperCase() + "\" to " + type.toString() + "**",
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
         }
 
     }
 
-    private void setActive(String[] args, String contextName, MessageEventDataWrapper receivedEvent) {
+    private void setActive(String[] args, String contextName, MessageEventDataWrapper messageContext) {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
             MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN,
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
             return;
         }
 
         boolean state = bState == BooleanState.TRUE;
 
-        if (!ContextData.setContextUserCheckActive(contextName, state, receivedEvent)) {
+        if (!ContextData.setContextUserCheckActive(contextName, state, messageContext)) {
             return;
         }
 
         if (state) {
             MessageSender.sendMessage("**Activated user check for context \"" + contextName.toUpperCase() + "\"**",
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
 
         } else {
             MessageSender.sendMessage("**Deactivated user check for context \"" + contextName.toUpperCase() + "\"**",
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
 
         }
     }

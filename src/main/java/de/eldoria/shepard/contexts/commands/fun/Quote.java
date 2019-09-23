@@ -26,24 +26,24 @@ public class Quote extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         List<QuoteElement> quotes;
         if (args.length > 0) {
-            quotes = QuoteData.getQuotesByKeyword(dataWrapper.getGuild(),
-                    String.join(" ", Arrays.copyOfRange(args, 0, args.length)), dataWrapper);
+            quotes = QuoteData.getQuotesByKeyword(messageContext.getGuild(),
+                    String.join(" ", Arrays.copyOfRange(args, 0, args.length)), messageContext);
 
         } else {
-            quotes = QuoteData.getQuotes(dataWrapper.getGuild(), dataWrapper);
+            quotes = QuoteData.getQuotes(messageContext.getGuild(), messageContext);
         }
 
         if (quotes.size() == 0) {
-            MessageSender.sendMessage("No quote found!", dataWrapper.getChannel());
+            MessageSender.sendMessage("No quote found!", messageContext.getChannel());
             return;
         }
 
         Random rand = new Random();
         int i = rand.nextInt(quotes.size());
 
-        MessageSender.sendMessage(quotes.get(i).getQuote(), dataWrapper.getChannel());
+        MessageSender.sendMessage(quotes.get(i).getQuote(), messageContext.getChannel());
     }
 }

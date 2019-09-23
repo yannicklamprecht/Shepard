@@ -20,10 +20,10 @@ public final class MinecraftLinkData {
      * Get a Minecraft link by user.
      *
      * @param user  User object.
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Minecraft Link object or null if no link was found
      */
-    public static MinecraftLink getLinkByUserId(User user, MessageEventDataWrapper event) {
+    public static MinecraftLink getLinkByUserId(User user, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_minecraft_link_user_id(?)")) {
             statement.setString(1, getIdRaw(user.getId()));
@@ -32,7 +32,7 @@ public final class MinecraftLinkData {
                 return new MinecraftLink(user, result.getString("uuid"));
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return null;
     }
@@ -41,10 +41,10 @@ public final class MinecraftLinkData {
      * Get a Minecraft link by uuid of a minecraft account.
      *
      * @param uuid  uuid of a minecraft account
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Minecraft Link object or null if no link was found
      */
-    public static MinecraftLink getLinkByUUID(String uuid, MessageEventDataWrapper event) {
+    public static MinecraftLink getLinkByUUID(String uuid, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_minecraft_link_uuid(?)")) {
             statement.setString(1, getIdRaw(uuid));
@@ -53,7 +53,7 @@ public final class MinecraftLinkData {
                 return new MinecraftLink(result.getString("user_id"), uuid.replace("-", ""));
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return null;
     }
@@ -63,17 +63,17 @@ public final class MinecraftLinkData {
      *
      * @param code  Code to add
      * @param uuid  uuid of player
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addLinkCode(String code, String uuid, MessageEventDataWrapper event) {
+    public static boolean addLinkCode(String code, String uuid, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.add_minecraft_link_code(?,?)")) {
             statement.setString(1, code);
             statement.setString(2, uuid);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -83,10 +83,10 @@ public final class MinecraftLinkData {
      * Get a uuid by code.
      *
      * @param code  code for lookup
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return UUID as String.
      */
-    public static String getUUIDByCode(String code, MessageEventDataWrapper event) {
+    public static String getUUIDByCode(String code, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.add_minecraft_link_code(?)")) {
             statement.setString(1, code);
@@ -96,7 +96,7 @@ public final class MinecraftLinkData {
                 return result.getString(1);
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return null;
     }

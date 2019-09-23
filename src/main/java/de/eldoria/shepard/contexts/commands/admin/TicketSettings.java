@@ -58,10 +58,10 @@ public class TicketSettings extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
         String type = args[1];
-        List<TicketType> tickets = TicketData.getTypes(dataWrapper.getGuild(), dataWrapper);
+        List<TicketType> tickets = TicketData.getTypes(messageContext.getGuild(), messageContext);
         TicketType scopeTicket = null;
         for (TicketType ticket : tickets) {
             if (ticket.getKeyword().equalsIgnoreCase(type)) {
@@ -74,41 +74,41 @@ public class TicketSettings extends Command {
 
 
         if ((cmd.equalsIgnoreCase("createType") || cmd.equalsIgnoreCase("ct")) && scopeTicket != null) {
-            createType(args, dataWrapper, type);
+            createType(args, messageContext, type);
             return;
         } else if ((cmd.equalsIgnoreCase("createType") || cmd.equalsIgnoreCase("ct")) && scopeTicket == null) {
-            MessageSender.sendSimpleError(ErrorType.TYPE_ALREADY_DEFINED, dataWrapper.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TYPE_ALREADY_DEFINED, messageContext.getChannel());
             return;
         }
 
         if (scopeTicket == null) {
-            MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, dataWrapper.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, messageContext.getChannel());
             return;
         }
 
         if (cmd.equalsIgnoreCase("removeType") || cmd.equalsIgnoreCase("rt")) {
-            removeType(args, dataWrapper, scopeTicket);
+            removeType(args, messageContext, scopeTicket);
             return;
         }
 
         if (cmd.equalsIgnoreCase("setOwnerRoles") || cmd.equalsIgnoreCase("sor")
                 || cmd.equalsIgnoreCase("setSupportRoles") || cmd.equalsIgnoreCase("ssr")) {
-            setRoles(args, dataWrapper, cmd, scopeTicket);
+            setRoles(args, messageContext, cmd, scopeTicket);
             return;
         }
 
         if (cmd.equalsIgnoreCase("setChannelCategory") || cmd.equalsIgnoreCase("scc")) {
-            setChannelCategory(args, dataWrapper, scopeTicket);
+            setChannelCategory(args, messageContext, scopeTicket);
             return;
         }
 
         if (cmd.equalsIgnoreCase("setCreationMessage") || cmd.equalsIgnoreCase("scm")) {
-            setCreationMessage(args, dataWrapper, scopeTicket);
+            setCreationMessage(args, messageContext, scopeTicket);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, dataWrapper.getChannel());
-        sendCommandUsage(dataWrapper.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
+        sendCommandUsage(messageContext.getChannel());
     }
 
     private void setCreationMessage(String[] args, MessageEventDataWrapper receivedEvent, TicketType scopeTicket) {

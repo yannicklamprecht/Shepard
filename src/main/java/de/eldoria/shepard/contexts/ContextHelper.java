@@ -14,12 +14,12 @@ public final class ContextHelper {
      * Get the name of the context from a string.
      *
      * @param indicator for lookup
-     * @param event     event from command sending for error handling. Can be null.
+     * @param context     context from command sending for error handling. Can be null.
      * @return Name of the context or null if no context was found
      */
-    public static String getContextName(String indicator, MessageEventDataWrapper event) {
+    public static String getContextName(String indicator, MessageEventDataWrapper context) {
         Command command = CommandCollection.getInstance().getCommand(indicator);
-        Keyword keyword = KeyWordCollection.getInstance().getKeywordWithContextName(indicator, event);
+        Keyword keyword = KeyWordCollection.getInstance().getKeywordWithContextName(indicator, context);
 
         String contextName = null;
         if (keyword != null) {

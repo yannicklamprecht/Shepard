@@ -24,16 +24,16 @@ public class ContextInfo extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
-        String contextName = ContextHelper.getContextName(args[0], dataWrapper);
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
+        String contextName = ContextHelper.getContextName(args[0], messageContext);
         if (contextName != null) {
-            ContextSettings data = ContextData.getContextData(contextName, dataWrapper);
+            ContextSettings data = ContextData.getContextData(contextName, messageContext);
 
             MessageSender.sendMessage("Information about context " + contextName.toUpperCase() + lineSeparator()
                     + "```yaml" + lineSeparator()
-                    + data.toString() + lineSeparator() + "```", dataWrapper.getChannel());
+                    + data.toString() + lineSeparator() + "```", messageContext.getChannel());
         } else {
-            MessageSender.sendSimpleError(ErrorType.INVALID_CONTEXT, dataWrapper.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_CONTEXT, messageContext.getChannel());
         }
     }
 }

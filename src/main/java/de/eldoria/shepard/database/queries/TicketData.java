@@ -33,11 +33,11 @@ public final class TicketData {
      * @param category        channel category id
      * @param creationMessage creation message
      * @param keyword         type keyword
-     * @param event           event from command sending for error handling. Can be null.
+     * @param messageContext           messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean addType(Guild guild, Category category, String creationMessage,
-                                  String keyword, MessageEventDataWrapper event) {
+                                  String keyword, MessageEventDataWrapper messageContext) {
         String categoryId = null;
         if (category != null) {
             categoryId = category.getId();
@@ -50,7 +50,7 @@ public final class TicketData {
             statement.setString(4, keyword);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -61,17 +61,17 @@ public final class TicketData {
      *
      * @param guild Guild object for lookup
      * @param id    id of the type
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeTypeByIndex(Guild guild, int id, MessageEventDataWrapper event) {
+    public static boolean removeTypeByIndex(Guild guild, int id, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_ticket_type_by_index(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setInt(2, id);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -82,17 +82,17 @@ public final class TicketData {
      *
      * @param guild   Guild object for lookup
      * @param keyword keyword of the type
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeTypeByKeyword(Guild guild, String keyword, MessageEventDataWrapper event) {
+    public static boolean removeTypeByKeyword(Guild guild, String keyword, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_ticket_type_by_keyword(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, keyword);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -103,10 +103,10 @@ public final class TicketData {
      *
      * @param guild   Guild object for lookup
      * @param keyword keyword
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return Ticket type object or null if no type was found for keyword.
      */
-    public static TicketType getTypeByKeyword(Guild guild, String keyword, MessageEventDataWrapper event) {
+    public static TicketType getTypeByKeyword(Guild guild, String keyword, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_ticket_type_by_keyword(?,?)")) {
             statement.setString(1, guild.getId());
@@ -119,7 +119,7 @@ public final class TicketData {
                         result.getString("keyword"));
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return null;
     }
@@ -129,10 +129,10 @@ public final class TicketData {
      *
      * @param guild   Guild object for lookup
      * @param channel channel for lookup
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return Ticket type object or null if no type was found for channel.
      */
-    public static TicketType getTypeByChannel(Guild guild, TextChannel channel, MessageEventDataWrapper event) {
+    public static TicketType getTypeByChannel(Guild guild, TextChannel channel, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_ticket_type_by_channel(?,?)")) {
             statement.setString(1, guild.getId());
@@ -145,7 +145,7 @@ public final class TicketData {
                         result.getString("keyword"));
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return null;
     }
@@ -155,10 +155,10 @@ public final class TicketData {
      * Get all types of one guild.
      *
      * @param guild Guild object for lookup
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of ticket types.
      */
-    public static List<TicketType> getTypes(Guild guild, MessageEventDataWrapper event) {
+    public static List<TicketType> getTypes(Guild guild, MessageEventDataWrapper messageContext) {
         List<TicketType> types = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_ticket_types(?)")) {
@@ -172,7 +172,7 @@ public final class TicketData {
                         result.getString("keyword")));
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return types;
     }
@@ -183,11 +183,11 @@ public final class TicketData {
      * @param guild   Guild for which the message should be set
      * @param keyword keyword of type
      * @param message new message
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean setCreationMessage(Guild guild, String keyword, String message,
-                                             MessageEventDataWrapper event) {
+                                             MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_creation_message(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -195,7 +195,7 @@ public final class TicketData {
             statement.setString(3, message);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -208,11 +208,11 @@ public final class TicketData {
      * @param channel     chanel object
      * @param ticketOwner user object of the ticket owner
      * @param keyword     keyword of the ticket type.
-     * @param event       event from command sending for error handling. Can be null.
+     * @param messageContext       messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean createChannel(Guild guild, TextChannel channel,
-                                        User ticketOwner, String keyword, MessageEventDataWrapper event) {
+                                        User ticketOwner, String keyword, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.create_ticket_channel(?,?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -221,7 +221,7 @@ public final class TicketData {
             statement.setString(4, keyword);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -232,10 +232,10 @@ public final class TicketData {
      *
      * @param guild        Guild object for lookup
      * @param channelOwner owner of the channel.
-     * @param event        event from command sending for error handling. Can be null.
+     * @param messageContext        messageContext from command sending for error handling. Can be null.
      * @return list of channel ids
      */
-    public static List<String> getChannelIdsByOwner(Guild guild, User channelOwner, MessageEventDataWrapper event) {
+    public static List<String> getChannelIdsByOwner(Guild guild, User channelOwner, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_channel_ids_by_owner(?,?)")) {
             statement.setString(1, guild.getId());
@@ -245,7 +245,7 @@ public final class TicketData {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return Collections.emptyList();
     }
@@ -255,10 +255,10 @@ public final class TicketData {
      *
      * @param guild Guild object for lookup
      * @param type  owner of the channel.
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return list of channel ids
      */
-    public static List<String> getChannelIdsByType(Guild guild, String type, MessageEventDataWrapper event) {
+    public static List<String> getChannelIdsByType(Guild guild, String type, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_ticket_channel_by_keyword(?,?)")) {
             statement.setString(1, guild.getId());
@@ -268,7 +268,7 @@ public final class TicketData {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return Collections.emptyList();
     }
@@ -278,10 +278,10 @@ public final class TicketData {
      *
      * @param guild   Guild object for lookup
      * @param channel channel object
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return id of the user.
      */
-    public static String getChannelOwnerId(Guild guild, TextChannel channel, MessageEventDataWrapper event) {
+    public static String getChannelOwnerId(Guild guild, TextChannel channel, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_ticket_channel_owner(?,?)")) {
             statement.setString(1, guild.getId());
@@ -291,7 +291,7 @@ public final class TicketData {
                 return result.getString(1);
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return null;
     }
@@ -302,10 +302,10 @@ public final class TicketData {
      *
      * @param guild   Guild object for lookup
      * @param channel channel id
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return List of role ids
      */
-    public static List<String> getChannelOwnerRoles(Guild guild, TextChannel channel, MessageEventDataWrapper event) {
+    public static List<String> getChannelOwnerRoles(Guild guild, TextChannel channel, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_ticket_channel_owner_roles(?,?)")) {
             statement.setString(1, guild.getId());
@@ -325,17 +325,17 @@ public final class TicketData {
      *
      * @param guild   Guild object for lookup
      * @param channel channel object
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeChannel(Guild guild, TextChannel channel, MessageEventDataWrapper event) {
+    public static boolean removeChannel(Guild guild, TextChannel channel, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_ticket_channel(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, channel.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -346,17 +346,17 @@ public final class TicketData {
      *
      * @param guild       Guild object for lookup
      * @param ticketOwner ticketOwner as user.
-     * @param event       event from command sending for error handling. Can be null.
+     * @param messageContext       messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeChannelByUser(Guild guild, User ticketOwner, MessageEventDataWrapper event) {
+    public static boolean removeChannelByUser(Guild guild, User ticketOwner, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_ticket_channel_by_user(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, ticketOwner.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -368,11 +368,11 @@ public final class TicketData {
      * @param guild   Guild object for lookup
      * @param keyword keyword of the type
      * @param roles   one or more role ids.
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean setTypeOwnerRoles(Guild guild, String keyword, List<Role> roles,
-                                            MessageEventDataWrapper event) {
+                                            MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_ticket_owner_roles(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -382,7 +382,7 @@ public final class TicketData {
             statement.setArray(3, ids);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -394,11 +394,11 @@ public final class TicketData {
      * @param guild   Guild object for lookup
      * @param keyword keyword of ticket type
      * @param roles   one or more role ids
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean setTypeSupportRoles(Guild guild, String keyword, List<Role> roles,
-                                              MessageEventDataWrapper event) {
+                                              MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_ticket_support_roles(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -408,7 +408,7 @@ public final class TicketData {
             statement.setArray(3, ids);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -419,10 +419,10 @@ public final class TicketData {
      *
      * @param guild   Guild object for lookup
      * @param keyword keyword of type.
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return Return list of role ids
      */
-    public static List<String> getTypeOwnerRoles(Guild guild, String keyword, MessageEventDataWrapper event) {
+    public static List<String> getTypeOwnerRoles(Guild guild, String keyword, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_ticket_owner_roles(?,?)")) {
             statement.setString(1, guild.getId());
@@ -432,7 +432,7 @@ public final class TicketData {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return Collections.emptyList();
     }
@@ -442,10 +442,10 @@ public final class TicketData {
      *
      * @param guild   Guild object for lookup
      * @param keyword keyword of ticket type
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return list of role ids
      */
-    public static List<String> getTypeSupportRoles(Guild guild, String keyword, MessageEventDataWrapper event) {
+    public static List<String> getTypeSupportRoles(Guild guild, String keyword, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_ticket_support_roles(?,?)")) {
             statement.setString(1, guild.getId());
@@ -455,7 +455,7 @@ public final class TicketData {
                 return Arrays.asList((String[]) result.getArray(1).getArray());
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return Collections.emptyList();
     }
@@ -465,10 +465,10 @@ public final class TicketData {
      * After usage of the method the number is used.
      *
      * @param guild guild object
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return integer auto increment.
      */
-    public static int getNextTicketCount(Guild guild, MessageEventDataWrapper event) {
+    public static int getNextTicketCount(Guild guild, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_next_ticket_count(?)")) {
             statement.setString(1, guild.getId());
@@ -477,7 +477,7 @@ public final class TicketData {
                 return result.getInt(1);
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return 1;
     }

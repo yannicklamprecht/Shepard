@@ -20,28 +20,28 @@ public class Sayd extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         try {
             if (args.length == 0) {
                 MessageSender.sendError(
                         new MessageEmbed.Field[] {
                                 new MessageEmbed.Field("Too few arguments",
                                         "Use \"&help sayd\" for more information", false)},
-                        dataWrapper.getChannel());
+                        messageContext.getChannel());
             } else {
                 String message = "";
                 for (String arg : args) {
                     message = message.concat(arg + " ");
                 }
-                MessageSender.deleteMessage(dataWrapper);
-                MessageSender.sendMessage(message, dataWrapper.getChannel());
+                MessageSender.deleteMessage(messageContext);
+                MessageSender.sendMessage(message, messageContext.getChannel());
             }
 
         } catch (InsufficientPermissionException e) {
             MessageSender.sendError(
                     new MessageEmbed.Field[] {new MessageEmbed.Field("Lack of Permission",
                             "Missing permission: MESSAGE_MANAGE", false)},
-                    dataWrapper.getChannel());
+                    messageContext.getChannel());
         }
     }
 }

@@ -27,42 +27,42 @@ public class Prefix extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
         if (cmd.equalsIgnoreCase("set") || cmd.equalsIgnoreCase("s")) {
-            set(args, dataWrapper);
+            set(args, messageContext);
             return;
         }
         if (cmd.equalsIgnoreCase("reset") || cmd.equalsIgnoreCase("r")) {
-            reset(dataWrapper);
+            reset(messageContext);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, dataWrapper.getChannel());
-        sendCommandUsage(dataWrapper.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        sendCommandUsage(messageContext.getChannel());
     }
 
-    private void reset(MessageEventDataWrapper receivedEvent) {
-        if (setPrefix(receivedEvent.getGuild(), ShepardBot.getConfig().getPrefix(), receivedEvent)) {
+    private void reset(MessageEventDataWrapper messageContext) {
+        if (setPrefix(messageContext.getGuild(), ShepardBot.getConfig().getPrefix(), messageContext)) {
             MessageSender.sendMessage("Set Prefix to '" + ShepardBot.getConfig().getPrefix() + "'",
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
         }
     }
 
-    private void set(String[] args, MessageEventDataWrapper receivedEvent) {
+    private void set(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 1) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, receivedEvent.getChannel());
-            sendCommandUsage(receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
+            sendCommandUsage(messageContext.getChannel());
             return;
         }
 
         if (args[1].length() > 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_PREFIX_LENGTH, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_PREFIX_LENGTH, messageContext.getChannel());
             return;
         }
 
-        if (setPrefix(receivedEvent.getGuild(), args[1].trim(), receivedEvent)) {
-            MessageSender.sendMessage("Changed prefix to '" + args[1].trim() + "'", receivedEvent.getChannel());
+        if (setPrefix(messageContext.getGuild(), args[1].trim(), messageContext)) {
+            MessageSender.sendMessage("Changed prefix to '" + args[1].trim() + "'", messageContext.getChannel());
         }
     }
 }
