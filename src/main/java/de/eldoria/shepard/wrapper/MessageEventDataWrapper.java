@@ -7,12 +7,15 @@ import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 
-public class MessageEventDataWrapper<T extends GenericMessageEvent> extends GenericMessageEvent {
+public class MessageEventDataWrapper extends GenericMessageEvent {
     private MessageUpdateEvent updateEvent;
     private MessageReceivedEvent receivedEvent;
     private boolean isUpdate = false;
+    private Member member;
+    private User author;
+    private Message message;
 
-    public MessageEventDataWrapper(T event) {
+    public MessageEventDataWrapper(GenericMessageEvent event) {
         super(event.getJDA(), event.getResponseNumber(), event.getMessageIdLong(), event.getChannel());
 
         if (event instanceof MessageUpdateEvent) {
@@ -20,19 +23,25 @@ public class MessageEventDataWrapper<T extends GenericMessageEvent> extends Gene
             isUpdate = true;
         } else if (event instanceof MessageReceivedEvent) {
             receivedEvent = (MessageReceivedEvent) event;
+        } else {
+            return;
         }
+
+        member = isUpdate ? updateEvent.getMember() : receivedEvent.getMember();
+        author = isUpdate ? updateEvent.getAuthor() : receivedEvent.getAuthor();
+        message = isUpdate ? updateEvent.getMessage() : receivedEvent.getMessage();
     }
 
     public Member getMember() {
-        return isUpdate ? updateEvent.getMember() : receivedEvent.getMember();
+        return member;
     }
 
     public User getAuthor() {
-        return isUpdate ? updateEvent.getAuthor() : receivedEvent.getAuthor();
+        return author;
     }
 
     public Message getMessage() {
-        return isUpdate ? updateEvent.getMessage() : receivedEvent.getMessage();
+        return message;
     }
 
     @Override
