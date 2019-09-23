@@ -2,9 +2,9 @@ package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.database.types.GreetingSettings;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,19 +20,20 @@ public final class GreetingData {
     /**
      * Sets a greeting channel for a guild.
      *
-     * @param guild   Guild object for which the channel should be added
-     * @param channel channel which should be used for greetings
-     * @param event   event from command sending for error handling. Can be null.
+     * @param guild          Guild object for which the channel should be added
+     * @param channel        channel which should be used for greetings
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setGreetingChannel(Guild guild, MessageChannel channel, MessageReceivedEvent event) {
+    public static boolean setGreetingChannel(Guild guild, MessageChannel channel,
+                                             MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_greeting_channel(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, channel.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -41,17 +42,17 @@ public final class GreetingData {
     /**
      * Remove a greeting channel from a guild.
      *
-     * @param guild Guild object for lookup
-     * @param event event from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeGreetingChannel(Guild guild, MessageReceivedEvent event) {
+    public static boolean removeGreetingChannel(Guild guild, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_greeting_channel(?)")) {
             statement.setString(1, guild.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -60,19 +61,19 @@ public final class GreetingData {
     /**
      * Sets the greeting text for a guild.
      *
-     * @param guild Guild object for lookup
-     * @param text  text for greeting
-     * @param event event from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param text           text for greeting
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setGreetingText(Guild guild, String text, MessageReceivedEvent event) {
+    public static boolean setGreetingText(Guild guild, String text, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_greeting_text(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, text);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;

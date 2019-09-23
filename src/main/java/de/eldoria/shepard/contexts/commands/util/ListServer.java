@@ -1,10 +1,10 @@
 package de.eldoria.shepard.contexts.commands.util;
 
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.Command;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -27,7 +27,7 @@ public class ListServer extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         List<Guild> guilds = ShepardBot.getJDA().getGuilds();
         String[][] text = new String[guilds.size()][3];
         int sizeName = 0;
@@ -62,7 +62,7 @@ public class ListServer extends Command {
         messagepart = messagepart.concat("```");
 
         String message = "I am currently serving " + guilds.size() + " server:\n";
-        MessageSender.sendMessage(message.concat(messagepart), receivedEvent.getChannel());
+        MessageSender.sendMessage(message.concat(messagepart), messageContext.getChannel());
     }
 
     private String fillString(String string, int fill) {

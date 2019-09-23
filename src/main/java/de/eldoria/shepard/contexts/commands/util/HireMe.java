@@ -1,9 +1,9 @@
 package de.eldoria.shepard.contexts.commands.util;
 
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +23,7 @@ public class HireMe extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         List<MessageEmbed.Field> fields;
         if (label.equalsIgnoreCase(commandName)) {
             fields = Collections.singletonList(
@@ -39,7 +39,7 @@ public class HireMe extends Command {
             fields = Collections.emptyList();
         }
 
-        MessageSender.sendTextBox(null, fields, receivedEvent.getChannel());
+        MessageSender.sendTextBox(null, fields, messageContext.getChannel());
 
     }
 }

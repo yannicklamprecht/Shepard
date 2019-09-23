@@ -98,7 +98,11 @@ public enum ErrorType {
     /**
      * Used when a context is not found.
      */
-    CONTEXT_NOT_FOUND("Context not found. Please use the context name or an alias!");
+    CONTEXT_NOT_FOUND("Context not found. Please use the context name or an alias!"),
+    /**
+     * Used when no emote was found.
+     */
+    NO_EMOTE_FOUND("No emote was found.");
 
 
     /**
