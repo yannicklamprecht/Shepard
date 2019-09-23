@@ -1,10 +1,10 @@
 package de.eldoria.shepard.contexts.commands.exklusive;
 
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.calendar.CalendarEvent;
 import de.eldoria.shepard.contexts.commands.Command;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -27,7 +27,7 @@ public class Meetings extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         try {
             java.util.Calendar cal = java.util.Calendar.getInstance();
             Date currentDate = cal.getTime();
@@ -44,9 +44,9 @@ public class Meetings extends Command {
                     + calendarEvent.get(1).getSummary() + " am " + getDate.format(calendarEvent.get(1).getStart())
                     + " von " + getTime.format(calendarEvent.get(1).getStart()) + " bis "
                             + getTime.format(calendarEvent.get(1).getEnd()), false));
-            MessageSender.sendTextBox(null, fields, receivedEvent.getChannel());
+            MessageSender.sendTextBox(null, fields, messageContext.getChannel());
         } catch (IOException | GeneralSecurityException e) {
-            receivedEvent.getChannel().sendMessage("**Exception** occurred :confused:").queue();
+            messageContext.getChannel().sendMessage("**Exception** occurred :confused:").queue();
         }
     }
 }

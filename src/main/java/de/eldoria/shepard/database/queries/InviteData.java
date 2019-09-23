@@ -1,9 +1,9 @@
 package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.types.DatabaseInvite;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.Array;
 import java.sql.PreparedStatement;
@@ -23,14 +23,15 @@ public final class InviteData {
     /**
      * Adds a invite to a guild.
      *
-     * @param guild Guild object for which the invite should be added
-     * @param code  Code of the Invite
-     * @param name  Name of the invite
-     * @param count How often the invite was used
-     * @param event event from command sending for error handling. Can be null.
+     * @param guild          Guild object for which the invite should be added
+     * @param code           Code of the Invite
+     * @param name           Name of the invite
+     * @param count          How often the invite was used
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addInvite(Guild guild, String code, String name, int count, MessageReceivedEvent event) {
+    public static boolean addInvite(Guild guild, String code, String name, int count,
+                                    MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = getConn()
                 .prepareStatement("SELECT shepard_func.add_invite(?,?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -39,7 +40,7 @@ public final class InviteData {
             statement.setInt(4, count);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -48,11 +49,11 @@ public final class InviteData {
     /**
      * Gets the invites of a guild.
      *
-     * @param guild Guild object for lookup
-     * @param event event from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return list of invite objects
      */
-    public static List<DatabaseInvite> getInvites(Guild guild, MessageReceivedEvent event) {
+    public static List<DatabaseInvite> getInvites(Guild guild, MessageEventDataWrapper messageContext) {
         List<DatabaseInvite> invites = new ArrayList<>();
         try (PreparedStatement statement = getConn()
                 .prepareStatement("SELECT * from shepard_func.get_invites(?)")) {
@@ -67,7 +68,7 @@ public final class InviteData {
                 invites.add(new DatabaseInvite(code, used, name));
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return invites;
     }
@@ -75,19 +76,19 @@ public final class InviteData {
     /**
      * Removes a invite of a guild.
      *
-     * @param guild Guild object for lookup
-     * @param code  Code of the invite to remove
-     * @param event event from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param code           Code of the invite to remove
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeInvite(Guild guild, String code, MessageReceivedEvent event) {
+    public static boolean removeInvite(Guild guild, String code, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = getConn()
                 .prepareStatement("SELECT shepard_func.remove_invite(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, code);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -96,19 +97,19 @@ public final class InviteData {
     /**
      * Sets the counter of a invite +1.
      *
-     * @param guild Guild object for lookup
-     * @param code  Code of the invite for upcount
-     * @param event event from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param code           Code of the invite for upcount
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean upCountInvite(Guild guild, String code, MessageReceivedEvent event) {
+    public static boolean upCountInvite(Guild guild, String code, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = getConn()
                 .prepareStatement("SELECT shepard_func.upcount_invite(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, code);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -117,12 +118,12 @@ public final class InviteData {
     /**
      * Deletes all invites which are not present anymore.
      *
-     * @param guild   Guild object for lookup
-     * @param invites List of invites of a guild
-     * @param event   event from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param invites        List of invites of a guild
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean updateInvite(Guild guild, List<Invite> invites, MessageReceivedEvent event) {
+    public static boolean updateInvite(Guild guild, List<Invite> invites, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = getConn()
                 .prepareStatement("SELECT shepard_func.update_invites(?,?)")) {
             statement.setString(1, guild.getId());
@@ -135,7 +136,7 @@ public final class InviteData {
             statement.setArray(2, codes);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;

@@ -2,15 +2,16 @@ package de.eldoria.shepard.collections;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.Command;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class CommandCollection {
     private static CommandCollection instance;
     private final List<Command> commands = new ArrayList<>();
-
 
     private CommandCollection() {
     }
@@ -61,10 +62,27 @@ public final class CommandCollection {
             if (currentCommand.isCommand(command)) {
                 return currentCommand;
             }
-
-
         }
         return null;
+    }
+
+    /**
+     * Returns a command which have the most similar name or alias.
+     *
+     * @param command command entered.
+     * @return Command or null if no command was found which was similar enough.
+     */
+    public List<Command> getSimilarCommands(String command) {
+        List<RankedCommand> rankedCommands = new ArrayList<>();
+        for (Command currentCommand : commands) {
+            double similarityScore = currentCommand.getSimilarityScore(command);
+            if (similarityScore > 0.75) {
+                rankedCommands.add(new RankedCommand(similarityScore, currentCommand));
+            }
+        }
+
+        Collections.sort(rankedCommands);
+        return rankedCommands.stream().map(rankedCommand -> rankedCommand.command).collect(Collectors.toList());
     }
 
     /**
@@ -74,6 +92,28 @@ public final class CommandCollection {
         ShepardBot.getLogger().info("++++ DEBUG OF COMMANDS ++++");
         for (Command c : commands) {
             c.printDebugInfo();
+        }
+    }
+
+    static class RankedCommand implements Comparable<RankedCommand> {
+        /**
+         * Rank of the command.
+         */
+        double rank;
+        /**
+         * Command object which is ranked.
+         */
+        Command command;
+
+        RankedCommand(double rank, Command command) {
+            this.rank = rank;
+            this.command = command;
+        }
+
+
+        @Override
+        public int compareTo(@NotNull CommandCollection.RankedCommand cmd) {
+            return Double.compare(rank, cmd.rank);
         }
     }
 }

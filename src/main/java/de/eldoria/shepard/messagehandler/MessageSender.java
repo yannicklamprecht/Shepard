@@ -2,6 +2,7 @@ package de.eldoria.shepard.messagehandler;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.GreetingSettings;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -9,7 +10,6 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
@@ -186,7 +186,7 @@ public class MessageSender {
      *
      * @param receivedEvent Event of message receive
      */
-    public static void deleteMessage(MessageReceivedEvent receivedEvent) {
+    public static void deleteMessage(MessageEventDataWrapper receivedEvent) {
         try {
             receivedEvent.getMessage().delete().submit();
         } catch (InsufficientPermissionException e) {
@@ -198,31 +198,33 @@ public class MessageSender {
     /**
      * Loggs a message in plain text.
      *
-     * @param event   event to log
-     * @param channel channel to log
+     * @param messageContext messageContext to log
+     * @param channel        channel to log
      */
-    public static void logMessageAsPlainText(MessageReceivedEvent event, MessageChannel channel) {
-        channel.sendMessage(event.getGuild().getName() + " | " + event.getMessage().getCategory().getName()
-                + " | " + event.getMessage().getChannel().getName() + " by " + event.getAuthor().getName()
-                + ": " + event.getMessage().getContentRaw()).queue();
+    public static void logMessageAsPlainText(MessageEventDataWrapper messageContext, MessageChannel channel) {
+        channel.sendMessage(messageContext.getGuild().getName() + " | "
+                + messageContext.getMessage().getCategory().getName()
+                + " | " + messageContext.getMessage().getChannel().getName() + " by "
+                + messageContext.getAuthor().getName()
+                + ": " + messageContext.getMessage().getContentRaw()).queue();
     }
 
     /**
      * Loggs a message es embed.
      *
-     * @param event   event to log
-     * @param channel channel to log
+     * @param messageContext messageContext to log
+     * @param channel        channel to log
      */
-    public static void logMessageAsEmbedded(MessageReceivedEvent event, MessageChannel channel) {
+    public static void logMessageAsEmbedded(MessageEventDataWrapper messageContext, MessageChannel channel) {
         Instant instant = Instant.now(); // get The current time in instant object
         Timestamp t = java.sql.Timestamp.from(instant); // Convert instant to Timestamp
 
-        if (event.getChannel() instanceof TextChannel) {
+        if (messageContext.getChannel() instanceof TextChannel) {
             EmbedBuilder builder = new EmbedBuilder();
-            builder.setTitle(event.getGuild().getName() + " | " + event.getChannel().getName());
+            builder.setTitle(messageContext.getGuild().getName() + " | " + messageContext.getChannel().getName());
             builder.setTimestamp(t.toInstant());
-            builder.setAuthor(event.getAuthor().getAsTag(), null, event.getAuthor().getAvatarUrl());
-            builder.setDescription(event.getMessage().getContentRaw());
+            builder.setAuthor(messageContext.getAuthor().getAsTag(), null, messageContext.getAuthor().getAvatarUrl());
+            builder.setDescription(messageContext.getMessage().getContentRaw());
             channel.sendMessage(builder.build()).queue();
         }
     }
@@ -250,7 +252,7 @@ public class MessageSender {
         channel.sendMessage((builder.build())).queue();
     }
 
-    public static void logCommand(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    public static void logCommand(String label, String[] args, MessageEventDataWrapper receivedEvent) {
         String command = "Executed command \"" + label + " " + String.join(" ", args)
                 + "\" on  guild " + receivedEvent.getGuild().getName() + " ("
                 + receivedEvent.getGuild().getId() + ")";

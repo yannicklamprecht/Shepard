@@ -1,11 +1,11 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
 import java.util.Random;
@@ -18,18 +18,18 @@ public class Someone extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        GuildChannel guildChannelById = receivedEvent.getGuild()
-                .getGuildChannelById(receivedEvent.getChannel().getId());
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
+        GuildChannel guildChannelById = messageContext.getGuild()
+                .getGuildChannelById(messageContext.getChannel().getId());
         if (guildChannelById != null) {
             List<Member> members = guildChannelById.getMembers().stream()
                     .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE
-                            && member.getIdLong() != receivedEvent.getAuthor().getIdLong()
+                            && member.getIdLong() != messageContext.getAuthor().getIdLong()
                             && !member.getUser().isBot())
                     .collect(Collectors.toList());
 
             if (members.size() == 0) {
-                MessageSender.sendMessage("No one is online :fearful:", receivedEvent.getChannel());
+                MessageSender.sendMessage("No one is online :fearful:", messageContext.getChannel());
                 return;
             }
 
@@ -37,7 +37,7 @@ public class Someone extends Command {
 
             Member member = members.get(rand.nextInt(members.size()));
 
-            MessageSender.sendMessage(member.getAsMention() + " is someone!", receivedEvent.getChannel());
+            MessageSender.sendMessage(member.getAsMention() + " is someone!", messageContext.getChannel());
 
         }
     }

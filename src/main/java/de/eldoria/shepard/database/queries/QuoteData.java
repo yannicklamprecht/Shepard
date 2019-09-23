@@ -2,8 +2,8 @@ package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.database.types.QuoteElement;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,17 +23,17 @@ public final class QuoteData {
      *
      * @param guild Guild for which the quote should be added.
      * @param quote quote to add
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addQuote(Guild guild, String quote, MessageReceivedEvent event) {
+    public static boolean addQuote(Guild guild, String quote, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_quote(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, quote);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -45,10 +45,10 @@ public final class QuoteData {
      * @param guild   Guild object for lookup
      * @param quoteId id on guild.
      * @param quote   new quote
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean alterQuote(Guild guild, int quoteId, String quote, MessageReceivedEvent event) {
+    public static boolean alterQuote(Guild guild, int quoteId, String quote, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.alter_quote(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -56,7 +56,7 @@ public final class QuoteData {
             statement.setString(3, quote);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -67,17 +67,17 @@ public final class QuoteData {
      *
      * @param guild   Guild object for lookup
      * @param quoteId id on guild.
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeQuote(Guild guild, int quoteId, MessageReceivedEvent event) {
+    public static boolean removeQuote(Guild guild, int quoteId, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_quote(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setInt(2, quoteId);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
             return false;
         }
         return true;
@@ -87,10 +87,10 @@ public final class QuoteData {
      * Gets all quotes from guild.
      *
      * @param guild Guild object for lookup
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static List<QuoteElement> getQuotes(Guild guild, MessageReceivedEvent event) {
+    public static List<QuoteElement> getQuotes(Guild guild, MessageEventDataWrapper messageContext) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_quotes(?)")) {
@@ -100,7 +100,7 @@ public final class QuoteData {
                 quotes.add(new QuoteElement(result.getString("quote"), result.getInt("quote_id")));
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return quotes;
     }
@@ -110,10 +110,11 @@ public final class QuoteData {
      *
      * @param guild   Guild object for lookup
      * @param keyword Keyword for lookup. Not case sensitive
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static List<QuoteElement> getQuotesByKeyword(Guild guild, String keyword, MessageReceivedEvent event) {
+    public static List<QuoteElement> getQuotesByKeyword(Guild guild, String keyword,
+                                                        MessageEventDataWrapper messageContext) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_quotes_by_keyword(?,?)")) {
@@ -124,7 +125,7 @@ public final class QuoteData {
                 quotes.add(new QuoteElement(result.getString("quote"), result.getInt("quote_id")));
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return quotes;
     }
@@ -133,10 +134,10 @@ public final class QuoteData {
      * Gets the number of quotes for a guild.
      *
      * @param guild Guild object for lookup
-     * @param event event from command sending for error handling. Can be null.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static int getQuotesCount(Guild guild, MessageReceivedEvent event) {
+    public static int getQuotesCount(Guild guild, MessageEventDataWrapper messageContext) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_quote_count(?)")) {
@@ -146,7 +147,7 @@ public final class QuoteData {
                 return result.getInt(1);
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return 0;
     }
@@ -156,10 +157,10 @@ public final class QuoteData {
      *
      * @param guild   Guild object for lookup
      * @param keyword Keyword not case sensitive
-     * @param event   event from command sending for error handling. Can be null.
+     * @param messageContext   messageContext from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public static int getQuotesCountByKeyword(Guild guild, String keyword, MessageReceivedEvent event) {
+    public static int getQuotesCountByKeyword(Guild guild, String keyword, MessageEventDataWrapper messageContext) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_quote_count_by_keyword(?,?)")) {
@@ -170,7 +171,7 @@ public final class QuoteData {
                 return result.getInt(1);
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, event);
+            handleExceptionAndIgnore(e, messageContext);
         }
         return 0;
     }

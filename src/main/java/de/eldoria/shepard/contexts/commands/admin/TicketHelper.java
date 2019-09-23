@@ -1,10 +1,10 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.database.queries.TicketData;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,32 +20,32 @@ final class TicketHelper {
     /**
      * Removes the roles from a user, but secures, that he keeps all necessary roles for other tickets.
      *
-     * @param receivedEvent Received event of the message.
+     * @param messageContext Received event of the message.
      * @param member        member to change roles
      * @param rolesToRemove roles as string list
      */
-    static void removeAndUpdateTicketRoles(MessageReceivedEvent receivedEvent,
+    static void removeAndUpdateTicketRoles(MessageEventDataWrapper messageContext,
                                            Member member, List<String> rolesToRemove) {
         List<Role> removeRoles = new ArrayList<>();
 
         //Get the role objects if the role exists.
         for (String roleId : rolesToRemove) {
-            Role roleById = receivedEvent.getGuild().getRoleById(roleId);
+            Role roleById = messageContext.getGuild().getRoleById(roleId);
             if (roleById != null) {
                 removeRoles.add(roleById);
             }
         }
 
         //Get all other ticket channels of the owner
-        List<String> channelIdsByOwner = TicketData.getChannelIdsByOwner(receivedEvent.getGuild(),
-                member.getUser(), receivedEvent);
+        List<String> channelIdsByOwner = TicketData.getChannelIdsByOwner(messageContext.getGuild(),
+                member.getUser(), messageContext);
 
 
         List<TextChannel> channels = new ArrayList<>();
 
         //Get the channel objects
         for (String channelId : channelIdsByOwner) {
-            TextChannel textChannel = receivedEvent.getGuild().getTextChannelById(channelId);
+            TextChannel textChannel = messageContext.getGuild().getTextChannelById(channelId);
             if (textChannel != null) {
                 channels.add(textChannel);
             }
@@ -54,8 +54,8 @@ final class TicketHelper {
         //Create a set of all roles the player should keep.
         Set<Role> newRoleSet = new HashSet<>();
         for (TextChannel channel : channels) {
-            for (String s : getChannelOwnerRoles(receivedEvent.getGuild(), channel, receivedEvent)) {
-                Role role = receivedEvent.getGuild().getRoleById(s);
+            for (String s : getChannelOwnerRoles(messageContext.getGuild(), channel, messageContext)) {
+                Role role = messageContext.getGuild().getRoleById(s);
                 if (role != null) {
                     newRoleSet.add(role);
                 }
@@ -64,13 +64,13 @@ final class TicketHelper {
 
         //Removes all roles for the current ticket
         for (Role role : removeRoles) {
-            receivedEvent.getGuild().removeRoleFromMember(member, role).queue();
+            messageContext.getGuild().removeRoleFromMember(member, role).queue();
         }
 
         //Adds all roles for the other tickets. needed if two ticket types use the same role or
         // if there are more than one ticket channel with this type.
         for (Role role : newRoleSet) {
-            receivedEvent.getGuild().addRoleToMember(member, role).queue();
+            messageContext.getGuild().addRoleToMember(member, role).queue();
         }
     }
 

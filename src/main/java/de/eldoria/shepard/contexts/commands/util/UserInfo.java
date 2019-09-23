@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.util;
 
 import de.eldoria.shepard.database.queries.PrefixData;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
@@ -9,7 +10,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.time.Period;
 import java.time.LocalDate;
@@ -35,38 +35,38 @@ public class UserInfo extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
 
         if (args.length == 0) {
 
             MessageSender.sendError(
                     new MessageEmbed.Field[] {
                             new MessageEmbed.Field("Too few arguments",
-                                    "Usage: " + PrefixData.getPrefix(receivedEvent.getGuild(),
-                                            receivedEvent) + "userInfo <id, name, tag>", false)},
-                    receivedEvent.getChannel());
+                                    "Usage: " + PrefixData.getPrefix(messageContext.getGuild(),
+                                            messageContext) + "userInfo <id, name, tag>", false)},
+                    messageContext.getChannel());
         }
 
-        InternUser internUser = new InternUser(args[0], receivedEvent).invoke();
+        InternUser internUser = new InternUser(args[0], messageContext).invoke();
         User searchedUser = internUser.getSearchedUser();
         String id = internUser.getId();
 
         if (searchedUser == null) {
-            MessageSender.sendMessage("Can't find this user (" + id + ")", receivedEvent.getChannel());
+            MessageSender.sendMessage("Can't find this user (" + id + ")", messageContext.getChannel());
             return;
         }
 
         EmbedBuilder builder = new EmbedBuilder()
                 .setThumbnail(searchedUser.getAvatarUrl())
                 .addField("ID", searchedUser.getId(), true)
-                .addField("Nickname", receivedEvent.getGuild()
+                .addField("Nickname", messageContext.getGuild()
                         .getMemberById(searchedUser.getId()).getNickname() + "", true)
-                .addField("Status", receivedEvent.getGuild()
+                .addField("Status", messageContext.getGuild()
                         .getMemberById(searchedUser.getId()).getOnlineStatus().toString() + "", true)
                 .addField("Minecraft Name", "Not implemented yet", true)
                 .addField("Mention", "<@" + searchedUser.getId() + ">", false)
                 .setAuthor(searchedUser.getAsTag(), searchedUser.getAvatarUrl(), searchedUser.getAvatarUrl());
-        OffsetDateTime time = receivedEvent.getGuild().getMemberById(searchedUser.getId()).getTimeJoined();
+        OffsetDateTime time = messageContext.getGuild().getMemberById(searchedUser.getId()).getTimeJoined();
         LocalDate date = time.toLocalDate();
         Period period = date.until(LocalDate.now());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("DD.MM.yyyy");
@@ -79,8 +79,8 @@ public class UserInfo extends Command {
         String year = years != 1 ? " Years, " : " Year, ";
         String day = days != 1 ? " Days" : " Day";
         builder.addField("Joined", years + year + months + " Month " + days + day + "\n(" + formatted + ")", false)
-                .setColor(receivedEvent.getGuild().getMemberById(searchedUser.getId()).getColor());
-        List<Role> roles = receivedEvent.getGuild().getMemberById(searchedUser.getId()).getRoles();
+                .setColor(messageContext.getGuild().getMemberById(searchedUser.getId()).getColor());
+        List<Role> roles = messageContext.getGuild().getMemberById(searchedUser.getId()).getRoles();
         String userRoles = "";
         for (Role role : roles) {
             userRoles = userRoles.concat(role.getName() + ", ");
@@ -90,17 +90,17 @@ public class UserInfo extends Command {
         builder.addField("Roles", userRoles, false);
 
         //builder.addField("Joined", time.)
-        receivedEvent.getChannel().sendMessage(builder.build()).queue();
+        messageContext.getChannel().sendMessage(builder.build()).queue();
 
     }
 
     private static class InternUser {
         private final String arg;
-        private final MessageReceivedEvent receivedEvent;
+        private final MessageEventDataWrapper receivedEvent;
         private User searchedUser;
         private String id;
 
-        InternUser(String arg, MessageReceivedEvent receivedEvent) {
+        InternUser(String arg, MessageEventDataWrapper receivedEvent) {
             this.arg = arg;
             this.receivedEvent = receivedEvent;
             this.searchedUser = null;
