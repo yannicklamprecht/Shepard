@@ -8,9 +8,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 
 public class MessageEventDataWrapper extends GenericMessageEvent {
-    private MessageUpdateEvent updateEvent;
-    private MessageReceivedEvent receivedEvent;
-    private boolean isUpdate = false;
     private Member member;
     private User author;
     private Message message;
@@ -18,6 +15,9 @@ public class MessageEventDataWrapper extends GenericMessageEvent {
     public MessageEventDataWrapper(GenericMessageEvent event) {
         super(event.getJDA(), event.getResponseNumber(), event.getMessageIdLong(), event.getChannel());
 
+        MessageUpdateEvent updateEvent = null;
+        MessageReceivedEvent receivedEvent = null;
+        boolean isUpdate = false;
         if (event instanceof MessageUpdateEvent) {
             updateEvent = (MessageUpdateEvent) event;
             isUpdate = true;
@@ -42,10 +42,5 @@ public class MessageEventDataWrapper extends GenericMessageEvent {
 
     public Message getMessage() {
         return message;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return isUpdate ? updateEvent.equals(obj) : receivedEvent.equals(obj);
     }
 }
