@@ -79,10 +79,10 @@ public class ManageQuote extends Command {
 
             String quote = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
 
-            QuoteData.alterQuote(messageContext.getGuild(), quoteId, quote, messageContext);
-
-            MessageSender.sendSimpleTextBox("Changed text of quote with id **" + quoteId + "**",
-                    quote, Color.blue, messageContext.getChannel());
+            if (QuoteData.alterQuote(messageContext.getGuild(), quoteId, quote, messageContext)) {
+                MessageSender.sendSimpleTextBox("Changed text of quote with id **" + quoteId + "**",
+                        quote, Color.blue, messageContext.getChannel());
+            }
             return;
         }
 
@@ -145,9 +145,10 @@ public class ManageQuote extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getChannel());
         }
 
-        QuoteData.removeQuote(messageContext.getGuild(), quoteId, messageContext);
-        MessageSender.sendSimpleTextBox("Remove quote with id **" + quoteId + "**",
-                "", Color.red, messageContext.getChannel());
+        if (QuoteData.removeQuote(messageContext.getGuild(), quoteId, messageContext)) {
+            MessageSender.sendSimpleTextBox("Remove quote with id **" + quoteId + "**",
+                    "", Color.red, messageContext.getChannel());
+        }
     }
 
     private void addQuote(String[] args, MessageEventDataWrapper messageContext) {
@@ -158,7 +159,8 @@ public class ManageQuote extends Command {
 
         String quote = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
-        QuoteData.addQuote(messageContext.getGuild(), quote, messageContext);
-        MessageSender.sendSimpleTextBox("Saved Quote!", quote, Color.green, messageContext.getChannel());
+        if (QuoteData.addQuote(messageContext.getGuild(), quote, messageContext)) {
+            MessageSender.sendSimpleTextBox("Saved Quote!", quote, Color.green, messageContext.getChannel());
+        }
     }
 }

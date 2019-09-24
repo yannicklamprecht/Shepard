@@ -219,42 +219,44 @@ public class Ticket extends Command {
         //Create channel and wait for creation
         receivedEvent.getGuild()
                 .createTextChannel(channelName)
-                .setParent(ticket.getCategory()).queue(channel -> {
-            //Manage permissions for @everyone and deny read permission
-            Role everyone = receivedEvent.getGuild().getPublicRole();
-            ChannelManager manager = channel.getManager().getChannel().getManager();
+                .setParent(ticket.getCategory())
+                .queue(channel -> {
+                    //Manage permissions for @everyone and deny read permission
+                    Role everyone = receivedEvent.getGuild().getPublicRole();
+                    ChannelManager manager = channel.getManager().getChannel().getManager();
 
-            PermissionOverrideAction everyoneOverride = manager.getChannel().createPermissionOverride(everyone);
-            everyoneOverride.setDeny(Permission.MESSAGE_READ).queue();
+                    PermissionOverrideAction everyoneOverride = manager.getChannel().createPermissionOverride(everyone);
+                    everyoneOverride.setDeny(Permission.MESSAGE_READ).queue();
 
-            //Gives ticket owner read permission in channel
-            PermissionOverrideAction memberOverride = manager.getChannel().createPermissionOverride(member);
-            memberOverride.setAllow(Permission.MESSAGE_READ).queue();
+                    //Gives ticket owner read permission in channel
+                    PermissionOverrideAction memberOverride = manager.getChannel().createPermissionOverride(member);
+                    memberOverride.setAllow(Permission.MESSAGE_READ).queue();
 
-            //Saves channel in database
+                    //Saves channel in database
 
-            TicketData.createChannel(receivedEvent.getGuild(), channel,
-                    member.getUser(), ticket.getKeyword(), receivedEvent);
+                    TicketData.createChannel(receivedEvent.getGuild(), channel,
+                            member.getUser(), ticket.getKeyword(), receivedEvent);
 
-            //Get ticket support and owner roles
-            List<Role> supportRoles = getValidRoles(receivedEvent.getGuild(),
-                    getTypeSupportRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
+                    //Get ticket support and owner roles
+                    List<Role> supportRoles = getValidRoles(receivedEvent.getGuild(),
+                            getTypeSupportRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
 
-            List<Role> ownerRoles = getValidRoles(receivedEvent.getGuild(),
-                    getTypeOwnerRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
-            //Assign ticket support and owner roles
-            for (Role role : ownerRoles) {
-                receivedEvent.getGuild().addRoleToMember(member, role).queue();
-            }
+                    List<Role> ownerRoles = getValidRoles(receivedEvent.getGuild(),
+                            getTypeOwnerRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
+                    //Assign ticket support and owner roles
+                    for (Role role : ownerRoles) {
+                        receivedEvent.getGuild().addRoleToMember(member, role).queue();
+                    }
 
-            for (Role role : supportRoles) {
-                PermissionOverrideAction override = manager.getChannel().createPermissionOverride(role);
-                override.setAllow(Permission.MESSAGE_READ).queue();
-            }
+                    for (Role role : supportRoles) {
+                        PermissionOverrideAction override = manager.getChannel().createPermissionOverride(role);
+                        override.setAllow(Permission.MESSAGE_READ).queue();
+                    }
 
-            //Greet ticket owner in ticket channel
-            MessageSender.sendMessage(Replacer.applyUserPlaceholder(member.getUser(), ticket.getCreationMessage()),
-                    channel);
-        });
+                    //Greet ticket owner in ticket channel
+                    MessageSender.sendMessage(
+                            Replacer.applyUserPlaceholder(member.getUser(), ticket.getCreationMessage()),
+                            channel);
+                });
     }
 }
