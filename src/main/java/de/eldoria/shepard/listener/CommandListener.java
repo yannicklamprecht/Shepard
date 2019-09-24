@@ -5,10 +5,13 @@ import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.messagehandler.ErrorType;
+import de.eldoria.shepard.messagehandler.InteractableMessageSender;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.exceptions.CommandException;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
+import de.eldoria.shepard.reactionactions.ExecuteCommand;
+import de.eldoria.shepard.reactionactions.SendCommandHelp;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.PrivateChannel;
@@ -71,15 +74,14 @@ public class CommandListener extends ListenerAdapter {
             }
 
             //Command execution
-            Command command = CommandCollection.getInstance().getCommand(args[0]);
-            if (command != null && command.isContextValid(wrapper)) {
-                //TODO Check Arg length of command
+            Command command = CommandCollection.getInstance().getCommand(label);
 
-                if (args.length > 1) {
-                    args = Arrays.copyOfRange(args, 1, args.length);
-                } else {
-                    args = new String[0];
-                }
+            if (args.length > 1) {
+                args = Arrays.copyOfRange(args, 1, args.length);
+            } else {
+                args = new String[0];
+            }
+            if (command != null && command.isContextValid(wrapper)) {
                 if (command.checkArguments(args)) {
                     try {
                         command.execute(label, args, wrapper);
@@ -93,14 +95,16 @@ public class CommandListener extends ListenerAdapter {
                 return;
             }
 
-            List<Command> similarCommand = CommandCollection.getInstance().getSimilarCommands(args[0]);
+            List<Command> similarCommand = CommandCollection.getInstance().getSimilarCommands(label);
             if (similarCommand.size() != 0) {
                 for (Command cmd : similarCommand) {
                     if (cmd.isContextValid(wrapper)) {
-                        MessageSender.sendSimpleTextBox("Command not found!",
+                        InteractableMessageSender.sendSimpleTextBox("Command not found!",
                                 "I don't have a command with this name. Maybe you meant: "
                                         + System.lineSeparator() + "**" + cmd.getCommandName() + "**",
-                                Color.green, ShepardReactions.WINK, wrapper.getChannel());
+                                Color.green, ShepardReactions.WINK, wrapper.getTextChannel(),
+                                new ExecuteCommand(wrapper.getAuthor(),cmd,args,wrapper),
+                                new SendCommandHelp(cmd, wrapper));
                         return;
                     }
                 }
