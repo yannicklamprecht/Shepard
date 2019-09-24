@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 import static de.eldoria.shepard.ShepardBot.getJDA;
 
@@ -59,14 +60,15 @@ public class UserInfo extends Command {
         EmbedBuilder builder = new EmbedBuilder()
                 .setThumbnail(searchedUser.getAvatarUrl())
                 .addField("ID", searchedUser.getId(), true)
-                .addField("Nickname", messageContext.getGuild()
-                        .getMemberById(searchedUser.getId()).getNickname() + "", true)
-                .addField("Status", messageContext.getGuild()
-                        .getMemberById(searchedUser.getId()).getOnlineStatus().toString() + "", true)
+                .addField("Nickname", Objects.requireNonNull(messageContext.getGuild()
+                        .getMemberById(searchedUser.getId())).getNickname() + "", true)
+                .addField("Status", Objects.requireNonNull(messageContext.getGuild()
+                        .getMemberById(searchedUser.getId())).getOnlineStatus().toString() + "", true)
                 .addField("Minecraft Name", "Not implemented yet", true)
                 .addField("Mention", "<@" + searchedUser.getId() + ">", false)
                 .setAuthor(searchedUser.getAsTag(), searchedUser.getAvatarUrl(), searchedUser.getAvatarUrl());
-        OffsetDateTime time = messageContext.getGuild().getMemberById(searchedUser.getId()).getTimeJoined();
+        OffsetDateTime time = Objects.requireNonNull(messageContext.getGuild()
+                .getMemberById(searchedUser.getId())).getTimeJoined();
         LocalDate date = time.toLocalDate();
         Period period = date.until(LocalDate.now());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("DD.MM.yyyy");
@@ -79,8 +81,10 @@ public class UserInfo extends Command {
         String year = years != 1 ? " Years, " : " Year, ";
         String day = days != 1 ? " Days" : " Day";
         builder.addField("Joined", years + year + months + " Month " + days + day + "\n(" + formatted + ")", false)
-                .setColor(messageContext.getGuild().getMemberById(searchedUser.getId()).getColor());
-        List<Role> roles = messageContext.getGuild().getMemberById(searchedUser.getId()).getRoles();
+                .setColor(Objects.requireNonNull(messageContext.getGuild()
+                        .getMemberById(searchedUser.getId())).getColor());
+        List<Role> roles = Objects.requireNonNull(messageContext.getGuild()
+                .getMemberById(searchedUser.getId())).getRoles();
         String userRoles = "";
         for (Role role : roles) {
             userRoles = userRoles.concat(role.getName() + ", ");
@@ -139,7 +143,7 @@ public class UserInfo extends Command {
                     if (searchedUser == null) {
                         List<Member> members = receivedEvent.getGuild().getMembers();
                         for (Member member : members) {
-                            if (member.getNickname().equalsIgnoreCase(id)) {
+                            if (Objects.requireNonNull(member.getNickname()).equalsIgnoreCase(id)) {
                                 searchedUser = member.getUser();
                                 break;
                             }

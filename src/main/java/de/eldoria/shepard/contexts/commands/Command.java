@@ -36,7 +36,7 @@ public abstract class Command extends ContextSensitive {
      */
     protected CommandArg[] commandArgs = new CommandArg[0];
 
-    private JaroWinkler similarity = new JaroWinkler();
+    private final JaroWinkler similarity = new JaroWinkler();
 
     /**
      * Create a new command an register it to the {@link CommandCollection}.

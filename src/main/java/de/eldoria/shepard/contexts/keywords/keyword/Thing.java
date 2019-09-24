@@ -5,6 +5,8 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.keywords.Keyword;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.util.Objects;
+
 public class Thing extends Keyword {
 
     /**
@@ -17,6 +19,7 @@ public class Thing extends Keyword {
     @Override
     public void execute(MessageReceivedEvent event, String key) {
         MessageSender.sendMessage(event.getMessage().getContentRaw() + " by <@" + event.getAuthor().getId() + ">",
-                ShepardBot.getJDA().getGuildById("336473392863510538").getTextChannelById("538103926126280706"));
+                Objects.requireNonNull(ShepardBot.getJDA().getGuildById("336473392863510538"))
+                        .getTextChannelById("538103926126280706"));
     }
 }

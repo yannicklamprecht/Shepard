@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 import static java.lang.System.out;
 
@@ -82,7 +83,7 @@ public final class Loader {
             InputStream systemResource;
             try {
                 systemResource = getClass().getClassLoader().getResourceAsStream("config.yml");
-                out.println(systemResource.toString());
+                out.println(Objects.requireNonNull(systemResource).toString());
             } catch (NullPointerException e) {
                 logger.error(e);
                 return;
@@ -106,7 +107,7 @@ public final class Loader {
             } finally {
                 try {
                     is.close();
-                    os.close();
+                    Objects.requireNonNull(os).close();
 
                 } catch (NullPointerException | IOException e) {
                     logger.error(e);

@@ -99,11 +99,11 @@ public final class CommandCollection {
         /**
          * Rank of the command.
          */
-        double rank;
+        final double rank;
         /**
          * Command object which is ranked.
          */
-        Command command;
+        final Command command;
 
         RankedCommand(double rank, Command command) {
             this.rank = rank;

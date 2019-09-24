@@ -9,13 +9,17 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import org.apache.commons.lang.StringUtils;
 
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.lang.System.lineSeparator;
 
 public class Invite extends Command {
+
+    private final Pattern pattern;
+
     /**
      * Creates a new Invite command object.
      */
@@ -35,6 +39,8 @@ public class Invite extends Command {
                                 + "**removeInvite** -> [codeOfInvite]" + lineSeparator()
                                 + "**refreshInvites** -> leave empty" + lineSeparator()
                                 + "**showInvites** -> leave empty", false)};
+
+        pattern = Pattern.compile("([a-zA-Z0-9]{6})$");
     }
 
     @Override
@@ -113,14 +119,25 @@ public class Invite extends Command {
             MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
             return;
         }
+
+        Matcher matcher = pattern.matcher(args[1]);
+        String code;
+        if (!matcher.find()) {
+            MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext.getChannel());
+        }
+        code = matcher.group(1);
+
+
         messageContext.getGuild().retrieveInvites().queue(invites -> {
             for (var invite : invites) {
-                if (invite.getCode().equals(args[1])) {
+                if (invite.getCode().equals(code)) {
                     String name = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
                     if (InviteData.addInvite(messageContext.getGuild(), invite.getCode(), name,
                             invite.getUses(), messageContext)) {
-                        MessageSender.sendMessage("Added Invite \"" + name + " with code " + invite.getCode()
-                                + " to database with usage count of " + invite.getUses(), messageContext.getChannel());
+                        MessageSender.sendMessage("Added Invite **\"" + name + "\"** with code **"
+                                        + invite.getCode() + "** to database with usage count of **"
+                                        + invite.getUses() + "**",
+                                messageContext.getChannel());
                     }
                     return;
                 }
