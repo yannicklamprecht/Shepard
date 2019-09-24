@@ -109,7 +109,7 @@ public final class MuteData {
                 while (result.next()) {
                     String user = result.getString("user_id");
 
-                    if (data.containsKey(guild)) {
+                    if (data.containsKey(guild.getId())) {
                         data.get(guild.getId()).add(user);
                     } else {
                         data.put(guild.getId(), List.of(user));
