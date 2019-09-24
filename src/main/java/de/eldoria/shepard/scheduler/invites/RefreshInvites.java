@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class RefreshInvites implements Runnable {
@@ -26,13 +27,16 @@ class RefreshInvites implements Runnable {
         int guildCount = jda.getGuilds().size();
         while (iterator.hasNext()) {
             Guild guild = iterator.next();
-            if (!guild.getMember(ShepardBot.getJDA().getSelfUser()).hasPermission(Permission.MANAGE_SERVER)) {
+            if (!Objects.requireNonNull(guild.getMember(ShepardBot.getJDA().getSelfUser()))
+                    .hasPermission(Permission.MANAGE_SERVER)) {
                 continue;
             }
             guild.retrieveInvites().queue(invites -> {
                 if (InviteData.updateInvite(guild, invites, null)) {
-                    ShepardBot.getLogger().info("Update Invites for guild " + guild.getName()
-                            + "(" + guild.getId() + ")");
+                    if (ShepardBot.getConfig().debugActive()) {
+                        ShepardBot.getLogger().info("Update Invites for guild " + guild.getName()
+                                + "(" + guild.getId() + ")");
+                    }
                 }
                 // will run when the last guild was updated successfully
                 if (counter.incrementAndGet() == guildCount) {
