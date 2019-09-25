@@ -15,9 +15,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
-
-import static java.lang.System.out;
 
 public final class Loader {
     private static Loader loader;
@@ -80,25 +77,19 @@ public final class Loader {
             } catch (IOException e) {
                 logger.error("Could not create config file", e);
             }
-            InputStream systemResource;
-            try {
-                systemResource = getClass().getClassLoader().getResourceAsStream("config.yml");
-                out.println(Objects.requireNonNull(systemResource).toString());
-            } catch (NullPointerException e) {
-                logger.error(e);
+            InputStream systemResource = getClass().getClassLoader().getResourceAsStream("config.yml");
+            if (systemResource == null) {
                 return;
             }
 
             logger.info("Loading config template!");
 
-            InputStream is = null;
             OutputStream os = null;
             try {
-                is = systemResource;
                 os = new FileOutputStream(configFile.toFile());
                 byte[] buffer = new byte[1024];
                 int length;
-                while ((length = is.read(buffer)) > 0) {
+                while ((length = systemResource.read(buffer)) > 0) {
                     os.write(buffer, 0, length);
                 }
 
@@ -106,18 +97,17 @@ public final class Loader {
                 logger.error(e);
             } finally {
                 try {
-                    is.close();
-                    Objects.requireNonNull(os).close();
+                    systemResource.close();
+                    if (os != null) {
+                        os.close();
+                    }
 
-                } catch (NullPointerException | IOException e) {
+                } catch (IOException e) {
                     logger.error(e);
-                    return;
                 }
             }
 
             logger.info("Config file created!");
-
-
         }
 
         InputStream inputStream;

@@ -9,7 +9,7 @@ public class UniqueMessageIdentifier {
     private final long channelId;
     private final long messageId;
 
-    public UniqueMessageIdentifier(TextChannel channel, Long message) {
+    UniqueMessageIdentifier(TextChannel channel, long message) {
         guildId = channel.getGuild().getOwnerIdLong();
         channelId = channel.getIdLong();
         messageId = message;

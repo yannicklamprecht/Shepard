@@ -121,11 +121,10 @@ public class Invite extends Command {
         }
 
         Matcher matcher = pattern.matcher(args[1]);
-        String code;
         if (!matcher.find()) {
             MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext.getChannel());
         }
-        code = matcher.group(1);
+        String code = matcher.group(1);
 
 
         messageContext.getGuild().retrieveInvites().queue(invites -> {
