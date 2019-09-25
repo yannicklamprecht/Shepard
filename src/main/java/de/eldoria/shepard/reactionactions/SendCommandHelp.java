@@ -7,21 +7,16 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 public class SendCommandHelp extends Action {
 
     private final Command command;
-    private final MessageEventDataWrapper wrapper;
+    private final MessageEventDataWrapper messageContext;
 
-    public SendCommandHelp(Command command, MessageEventDataWrapper wrapper) {
-        super("U+2753", null, false);
+    public SendCommandHelp(Command command, MessageEventDataWrapper messageContext) {
+        super("U+2753", null, 60,false);
         this.command = command;
-        this.wrapper = wrapper;
+        this.messageContext = messageContext;
     }
 
     @Override
     protected void internalExecute(GuildMessageReactionAddEvent event) {
-        wrapper.getAuthor().openPrivateChannel().queue(privateChannel -> command.sendCommandUsage(privateChannel));
-        event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(message -> {
-            if (message != null) {
-                message.delete().queue();
-            }
-        });
+        messageContext.getAuthor().openPrivateChannel().queue(command::sendCommandUsage);
     }
 }
