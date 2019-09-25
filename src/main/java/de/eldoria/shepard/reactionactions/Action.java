@@ -7,24 +7,22 @@ import java.util.Objects;
 
 public abstract class Action {
     private final String reaction;
-    private long userId = 0;
-    private int secondsValid = 3600;
     private final boolean oneTime;
+    private long userId;
+    private int secondsValid;
     private boolean used;
 
-    Action(String reaction, User exclusiveUser, boolean oneTime) {
+    Action(String reaction, User exclusiveUser, int secondsValid, boolean oneTime) {
         this.reaction = reaction;
         if (exclusiveUser != null) {
             this.userId = exclusiveUser.getIdLong();
         }
-        final int seconds = Math.max(Math.min(this.secondsValid, 60), 0);
-        this.secondsValid = seconds == 0 ? this.secondsValid : seconds;
+        //TODO seconds should be set by constructor.
+        this.secondsValid = Math.max(60, Math.min(3600, secondsValid));
         this.oneTime = oneTime;
-
-        //Start Scheduler to remove the action when time is over.
     }
 
-    public final void tryExecute(GuildMessageReactionAddEvent event) {
+    public final void execute(GuildMessageReactionAddEvent event) {
         if (!event.getReactionEmote().isEmoji()) {
             return;
         }

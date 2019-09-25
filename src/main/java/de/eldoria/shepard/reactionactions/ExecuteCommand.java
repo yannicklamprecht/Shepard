@@ -13,7 +13,7 @@ public class ExecuteCommand extends Action {
 
     public ExecuteCommand(User exclusiveUser, Command command,
                           String[] args, MessageEventDataWrapper messageContext) {
-        super("U+2705", exclusiveUser, true);
+        super("U+2705", exclusiveUser, 60,true);
         this.command = command;
         this.args = args;
         this.messageContext = messageContext;
@@ -22,7 +22,6 @@ public class ExecuteCommand extends Action {
     @Override
     protected void internalExecute(GuildMessageReactionAddEvent event) {
         command.execute(command.getCommandName(), args, messageContext);
-
         event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(message -> {
             if (message != null) {
                 message.delete().queue();
