@@ -16,11 +16,7 @@ import java.util.concurrent.TimeUnit;
 public final class ReactionActionCollection {
     private static ReactionActionCollection instance;
     private final Map<UniqueMessageIdentifier, List<Action>> reactionActions = new HashMap<>();
-    private final ScheduledExecutorService executorService;
-
-    private ReactionActionCollection() {
-        executorService = new ScheduledThreadPoolExecutor(10);
-    }
+    private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(10);
 
     public static ReactionActionCollection getInstance() {
         if (instance == null) {
@@ -30,27 +26,25 @@ public final class ReactionActionCollection {
     }
 
     public void invokeReactionAction(GuildMessageReactionAddEvent event) {
-        final UniqueMessageIdentifier umi = new UniqueMessageIdentifier(event.getChannel(), event.getMessageIdLong());
+        UniqueMessageIdentifier umi = new UniqueMessageIdentifier(event.getChannel(), event.getMessageIdLong());
         if (reactionActions.containsKey(umi)) {
-            final List<Action> actions = reactionActions.get(umi);
+            List<Action> actions = reactionActions.get(umi);
             actions.removeIf(Action::isUsed);
             if (actions.isEmpty()) {
                 reactionActions.remove(umi);
             } else {
-                actions.forEach(action -> action.tryExecute(event));
+                actions.forEach(action -> action.execute(event));
             }
         }
     }
 
     public void addReactionAction(TextChannel channel, Message message, Action action) {
-        final UniqueMessageIdentifier umi = new UniqueMessageIdentifier(channel, message.getIdLong());
-        if (reactionActions.containsKey(umi)) {
-            reactionActions.get(umi).add(action);
-        } else {
-            final ArrayList<Action> actions = new ArrayList<>();
-            actions.add(action);
-            reactionActions.put(umi, actions);
+        UniqueMessageIdentifier umi = new UniqueMessageIdentifier(channel, message.getIdLong());
+        if (!reactionActions.containsKey(umi)) {
+            reactionActions.put(umi, new ArrayList<>());
         }
+        reactionActions.get(umi).add(action);
+
         executorService.schedule(new ActionRemover(umi, action), action.getSecondsValid(), TimeUnit.SECONDS);
     }
 
