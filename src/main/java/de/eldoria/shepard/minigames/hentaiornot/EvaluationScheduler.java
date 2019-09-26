@@ -17,7 +17,8 @@ public class EvaluationScheduler {
     private ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(5);
 
     public static void scheduleEvaluation(Message message, HentaiImage image) {
-        getInstance().executor.schedule(new Evaluator(message, image), 30, TimeUnit.SECONDS);
+        getInstance().executor.schedule(new Evaluator(message, image), 5, TimeUnit.SECONDS);
+        getInstance().evaluationChannel.add(message.getChannel().getIdLong());
     }
 
     private static EvaluationScheduler getInstance() {
