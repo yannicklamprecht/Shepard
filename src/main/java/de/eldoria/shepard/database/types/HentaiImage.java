@@ -1,5 +1,7 @@
 package de.eldoria.shepard.database.types;
 
+import org.jetbrains.annotations.NotNull;
+
 public class HentaiImage {
     private String croppedImage;
     private String fullImage;
@@ -11,10 +13,12 @@ public class HentaiImage {
         this.hentai = hentai;
     }
 
+    @NotNull
     public String getCroppedImage() {
         return croppedImage;
     }
 
+    @NotNull
     public String getFullImage() {
         return fullImage;
     }
