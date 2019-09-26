@@ -68,9 +68,10 @@ public class Greeting extends Command {
     }
 
     private void removeChannel(MessageEventDataWrapper messageContext) {
-        GreetingData.removeGreetingChannel(messageContext.getGuild(), messageContext);
+        if (GreetingData.removeGreetingChannel(messageContext.getGuild(), messageContext)) {
+            MessageSender.sendMessage("Removed greeting channel.", messageContext.getChannel());
+        }
 
-        MessageSender.sendMessage("Removed greeting channel.", messageContext.getChannel());
     }
 
     private void setChannel(String[] args, MessageEventDataWrapper messageContext) {

@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -30,10 +31,13 @@ class RegisterInvites implements Runnable {
             return;
         }
 
-        ShepardBot.getLogger().info("Looking for unregistered invites.");
+        if (ShepardBot.getConfig().debugActive()) {
+            ShepardBot.getLogger().info("Looking for unregistered invites.");
+        }
 
         for (Guild guild : guilds) {
-            if (!guild.getMember(ShepardBot.getJDA().getSelfUser()).hasPermission(Permission.MANAGE_SERVER)) {
+            if (!Objects.requireNonNull(guild.getMember(ShepardBot.getJDA()
+                    .getSelfUser())).hasPermission(Permission.MANAGE_SERVER)) {
                 continue;
             }
             if (invites.containsKey(guild.getIdLong())) {

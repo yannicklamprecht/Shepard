@@ -87,7 +87,7 @@ public final class ShepardBot {
      */
     public static void main(String[] args) {
         // Note: It is important to register your ReadyListener before building
-        // org.apache.log4j.BasicConfigurator.configure();
+        org.apache.log4j.BasicConfigurator.configure();
 
         instance = new ShepardBot();
 

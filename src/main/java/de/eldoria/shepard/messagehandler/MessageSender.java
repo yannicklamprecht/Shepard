@@ -17,8 +17,9 @@ import java.awt.Color;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
-public class MessageSender {
+public final class MessageSender {
 
     /**
      * send a simple Message to a channel.
@@ -203,7 +204,7 @@ public class MessageSender {
      */
     public static void logMessageAsPlainText(MessageEventDataWrapper messageContext, MessageChannel channel) {
         channel.sendMessage(messageContext.getGuild().getName() + " | "
-                + messageContext.getMessage().getCategory().getName()
+                + Objects.requireNonNull(messageContext.getMessage().getCategory()).getName()
                 + " | " + messageContext.getMessage().getChannel().getName() + " by "
                 + messageContext.getAuthor().getName()
                 + ": " + messageContext.getMessage().getContentRaw()).queue();
@@ -225,7 +226,11 @@ public class MessageSender {
             builder.setTimestamp(t.toInstant());
             builder.setAuthor(messageContext.getAuthor().getAsTag(), null, messageContext.getAuthor().getAvatarUrl());
             builder.setDescription(messageContext.getMessage().getContentRaw());
-            channel.sendMessage(builder.build()).queue();
+            try {
+                channel.sendMessage(builder.build()).queue();
+            } catch (InsufficientPermissionException e) {
+                //Only when beta bot is running.
+            }
         }
     }
 
