@@ -1,9 +1,9 @@
 package de.eldoria.shepard.util;
 
 public enum Emoji {
-    CHECK_MARK_BUTTON("U+2705"),
-    QUESTION_MARK("U+2753"),
-    CROSS_MARK("U+274C");
+    CHECK_MARK_BUTTON("\u2705"),
+    QUESTION_MARK("\u2753"),
+    CROSS_MARK("\u274C");
 
     /**
      * Returns the unicode of the emoji.
