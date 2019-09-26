@@ -1,5 +1,6 @@
 package de.eldoria.shepard.reactionactions;
 
+import de.eldoria.shepard.util.Emoji;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
@@ -12,8 +13,8 @@ public abstract class Action {
     private int secondsValid;
     private boolean used;
 
-    Action(String reaction, User exclusiveUser, int secondsValid, boolean oneTime) {
-        this.reaction = reaction;
+    Action(Emoji reaction, User exclusiveUser, int secondsValid, boolean oneTime) {
+        this.reaction = reaction.unicode;
         if (exclusiveUser != null) {
             this.userId = exclusiveUser.getIdLong();
         }

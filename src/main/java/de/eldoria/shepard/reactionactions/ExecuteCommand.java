@@ -1,6 +1,7 @@
 package de.eldoria.shepard.reactionactions;
 
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.util.Emoji;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -13,7 +14,7 @@ public class ExecuteCommand extends Action {
 
     public ExecuteCommand(User exclusiveUser, Command command,
                           String[] args, MessageEventDataWrapper messageContext) {
-        super("U+2705", exclusiveUser, 60,true);
+        super(Emoji.CHECK_MARK_BUTTON, exclusiveUser, 60,true);
         this.command = command;
         this.args = args;
         this.messageContext = messageContext;
