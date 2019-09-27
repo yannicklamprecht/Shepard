@@ -19,7 +19,7 @@ public class GreetingSettings {
         this.text = text;
 
         Guild guild = ShepardBot.getJDA().getGuildById(guildId);
-        channel = guild != null ? guild.getTextChannelById(channelId) : null;
+        channel = guild != null && channelId != null && !channelId.isEmpty() ? guild.getTextChannelById(channelId) : null;
     }
 
     /**
