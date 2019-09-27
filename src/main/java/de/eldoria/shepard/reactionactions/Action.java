@@ -36,7 +36,7 @@ public abstract class Action {
                 return;
             }
 
-            if (event.getReactionEmote().getAsCodepoints().equals(reaction)) {
+            if (event.getReactionEmote().getEmoji().equals(reaction)) {
                 internalExecute(event);
                 if (oneTime) {
                     used = true;
