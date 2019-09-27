@@ -1,4 +1,4 @@
-package de.eldoria.shepard.minigames.hentaiornot;
+package de.eldoria.shepard.minigames.guessgame;
 
 import net.dv8tion.jda.api.entities.User;
 

@@ -41,22 +41,22 @@ public class CommandListener extends ListenerAdapter {
         onCommand(new MessageEventDataWrapper(event));
     }
 
-    private void onCommand(MessageEventDataWrapper wrapper) {
-        if (wrapper.getChannel() instanceof PrivateChannel) {
-            if (wrapper.getAuthor().isBot()) return;
-            wrapper.getChannel().sendMessage("I'm too shy. Please speak to me on a public Server.").queue();
+    private void onCommand(MessageEventDataWrapper messageContext) {
+        if (messageContext.getChannel() instanceof PrivateChannel) {
+            if (messageContext.getAuthor().isBot()) return;
+            messageContext.getChannel().sendMessage("I'm too shy. Please speak to me on a public Server.").queue();
             return;
         }
 
 
-        String receivedMessage = wrapper.getMessage().getContentRaw();
+        String receivedMessage = messageContext.getMessage().getContentRaw();
         String[] args = receivedMessage.split(" ");
 
         boolean isCommand = false;
 
-        if (checkPrefix(receivedMessage, wrapper)) {
+        if (checkPrefix(receivedMessage, messageContext)) {
             isCommand = true;
-            args[0] = args[0].replaceFirst(PrefixData.getPrefix(wrapper.getGuild(), wrapper), "");
+            args[0] = args[0].replaceFirst(PrefixData.getPrefix(messageContext.getGuild(), messageContext), "");
 
         } else if (DbUtil.getIdRaw(args[0]).contentEquals(ShepardBot.getJDA().getSelfUser().getId())) {
             args = Arrays.copyOfRange(args, 1, args.length);
@@ -67,9 +67,9 @@ public class CommandListener extends ListenerAdapter {
 
         if (isCommand) {
             //BotCheck
-            if (wrapper.getAuthor().isBot()) {
-                MessageSender.sendMessage("I'm not allowed to talk to you " + wrapper.getAuthor().getName()
-                        + ". Please leave me alone ._.", wrapper.getChannel());
+            if (messageContext.getAuthor().isBot()) {
+                MessageSender.sendMessage("I'm not allowed to talk to you " + messageContext.getAuthor().getName()
+                        + ". Please leave me alone ._.", messageContext.getChannel());
                 return;
             }
 

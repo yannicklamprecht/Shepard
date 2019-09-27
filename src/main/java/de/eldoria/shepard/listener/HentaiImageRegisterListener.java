@@ -1,9 +1,9 @@
 package de.eldoria.shepard.listener;
 
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.minigames.hentaiornot.ConfigurationType;
-import de.eldoria.shepard.minigames.hentaiornot.ImageConfiguration;
-import de.eldoria.shepard.minigames.hentaiornot.ImageRegister;
+import de.eldoria.shepard.minigames.guessgame.ConfigurationType;
+import de.eldoria.shepard.minigames.guessgame.ImageConfiguration;
+import de.eldoria.shepard.minigames.guessgame.ImageRegister;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

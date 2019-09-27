@@ -109,8 +109,7 @@ public class Permission extends Command {
             return;
         }
 
-        List<User> validUser = Verifier.getValidUser(receivedEvent.getGuild(),
-                Arrays.copyOfRange(args, 2, args.length));
+        List<User> validUser = Verifier.getValidUserByString(Arrays.copyOfRange(args, 2, args.length));
 
         for (User user : validUser) {
             if (modifyType == ModifyType.ADD) {

@@ -1,4 +1,4 @@
-package de.eldoria.shepard.minigames.hentaiornot;
+package de.eldoria.shepard.minigames.guessgame;
 
 import de.eldoria.shepard.database.queries.HentaiOrNotData;
 
