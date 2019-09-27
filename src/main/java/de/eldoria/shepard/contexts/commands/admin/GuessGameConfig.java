@@ -1,22 +1,22 @@
-package de.eldoria.shepard.contexts.commands.fun;
+package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.HentaiOrNotData;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.minigames.hentaiornot.ImageRegister;
+import de.eldoria.shepard.minigames.guessgame.ImageRegister;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import static java.lang.System.lineSeparator;
 
-public class HentaiOrNotConfig extends Command {
+public class GuessGameConfig extends Command {
 
-    public HentaiOrNotConfig() {
-        commandName = "hentaiOrNotConfig";
-        commandAliases = new String[] {"honc", "hentaiconfig"};
+    public GuessGameConfig() {
+        commandName = "guessGameConfig";
+        commandAliases = new String[] {"ggc", "hentaiconfig"};
         commandDesc = "Manage Hentai Images";
         commandArgs = new CommandArg[] {
                 new CommandArg("action",
@@ -24,7 +24,7 @@ public class HentaiOrNotConfig extends Command {
                                 + "**__r__emoveImage** -> Remove image from database" + lineSeparator()
                                 + "**__c__ancelRegistration** -> Cancel registration of image", true),
                 new CommandArg("values",
-                        "**addImage** -> [true if hentai | false if not]" + lineSeparator()
+                        "**addImage** -> [`true` or `nsfw` if hentai | `false` or `sfw` if not]"  + lineSeparator()
                                 + "**removeImage** -> [url of cropped or full image]" + lineSeparator()
                                 + "**cancelRegistration** -> leave empty", false)
         };
@@ -64,7 +64,8 @@ public class HentaiOrNotConfig extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             return;
         }
-        BooleanState booleanState = Verifier.checkAndGetBoolean(args[1]);
+        String replace = args[1].replace("sfw", "false").replace("nsfw", "true");
+        BooleanState booleanState = Verifier.checkAndGetBoolean(replace);
         if (booleanState == BooleanState.UNDEFINED) {
             MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getChannel());
             return;
