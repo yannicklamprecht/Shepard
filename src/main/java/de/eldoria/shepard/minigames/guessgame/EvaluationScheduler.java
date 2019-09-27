@@ -40,6 +40,6 @@ public class EvaluationScheduler {
 
     @Nullable
     public static Evaluator getChannelEvaluator(TextChannel channel) {
-        return getInstance().evaluationChannel.getOrDefault(channel.getIdLong(), null);
+        return getInstance().evaluationChannel.get(channel.getIdLong());
     }
 }

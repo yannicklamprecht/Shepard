@@ -130,7 +130,8 @@ public class GuessGame extends Command {
 
         builder.setTitle(title)
                 .setDescription(description)
-                .setImage(hentaiImage.getCroppedImage());
+                .setImage(hentaiImage.getCroppedImage())
+                .setFooter("Hint: Everything which isn't clearly NSFW is sfw!");
 
         messageContext.getChannel().sendMessage(builder.build())
                 .queue(message -> {

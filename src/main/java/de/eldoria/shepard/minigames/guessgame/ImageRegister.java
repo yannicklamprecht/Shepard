@@ -61,6 +61,6 @@ public final class ImageRegister {
     }
 
     public ImageConfiguration getConfiguration(User user) {
-        return configurations.getOrDefault(user.getId(), null);
+        return configurations.get(user.getId());
     }
 }

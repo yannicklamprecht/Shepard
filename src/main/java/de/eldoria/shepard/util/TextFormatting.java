@@ -1,6 +1,9 @@
 package de.eldoria.shepard.util;
 
-public class TextFormatting {
+public final class TextFormatting {
+    private TextFormatting() {
+    }
+
     /**
      * Appends white spaces to a string to match the given length.
      *

@@ -45,8 +45,8 @@ public class Evaluator implements Runnable {
         List<User> looser = image.isHentai() ? falseVotes : trueVotes;
 
 
-        int votePoints = 1;
-        if (winners.size() != 0) {
+        int votePoints = 0;
+        if (!winners.isEmpty()) {
             float extraPoints = looser.size();
             float sharedPoints = extraPoints / winners.size();
             votePoints = Math.round(1 + sharedPoints);
@@ -60,7 +60,7 @@ public class Evaluator implements Runnable {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("It's " + (image.isHentai() ? "" : "not") + " a hentai image!");
         int totalPlayer = looser.size() + winners.size();
-        if (totalPlayer != 0) {
+        if (totalPlayer != 0 && !winners.isEmpty()) {
 
             List<User> firstWinner = winners.subList(0, Math.min(winners.size(), 5));
 

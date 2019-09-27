@@ -15,8 +15,6 @@ public class ReactionListener extends ListenerAdapter {
         ReactionActionCollection.getInstance().invokeReactionAction(event);
 
         if (EvaluationScheduler.evaluationInProgress(event.getChannel())) {
-
-
             Evaluator channelEvaluator = EvaluationScheduler.getChannelEvaluator(event.getChannel());
 
             if (!event.getReaction().isSelf()
