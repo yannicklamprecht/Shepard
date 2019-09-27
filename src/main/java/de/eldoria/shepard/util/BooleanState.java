@@ -17,10 +17,10 @@ public enum BooleanState {
     /**
      * state of the boolean.
      */
-    public final boolean stateABoolean;
+    public final boolean stateAsBoolean;
 
     BooleanState(boolean state) {
-        this.stateABoolean = state;
+        this.stateAsBoolean = state;
     }
 
 }

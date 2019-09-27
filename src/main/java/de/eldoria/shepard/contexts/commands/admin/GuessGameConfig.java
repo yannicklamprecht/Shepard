@@ -64,14 +64,14 @@ public class GuessGameConfig extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             return;
         }
-        String replace = args[1].replace("sfw", "false").replace("nsfw", "true");
+        String replace = args[1].replace("nsfw", "true").replace("sfw", "false");
         BooleanState booleanState = Verifier.checkAndGetBoolean(replace);
         if (booleanState == BooleanState.UNDEFINED) {
             MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getChannel());
             return;
         }
         ImageRegister.getInstance().startConfiguration(messageContext.getAuthor(),
-                booleanState.stateABoolean);
+                booleanState.stateAsBoolean);
         MessageSender.sendMessage("Started registration of new image set." + lineSeparator()
                 + "Please send the cropped image.", messageContext.getChannel());
     }

@@ -37,7 +37,7 @@ public class HentaiImageRegisterListener extends ListenerAdapter {
                                 + " image set.")
                         .setThumbnail(configuration.getCroppedImage())
                         .setImage(configuration.getFullImage())
-                        .setDescription("Registered mit thumbnail and full image.")
+                        .setDescription("Registered with thumbnail and full image.")
                         .setColor(Color.green);
 
                 event.getChannel().sendMessage(builder.build()).queue();
