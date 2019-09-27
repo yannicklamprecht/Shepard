@@ -28,7 +28,10 @@ public class GreetingListener extends ListenerAdapter {
             invites.forEach(invite -> {
                 Optional<DatabaseInvite> dInvite = databaseInvites.stream()
                         .filter(inv -> inv.getCode().equals(invite.getCode())).findAny();
-                if (dInvite.isEmpty()) return;
+                if (dInvite.isEmpty()) {
+                    MessageSender.sendGreeting(event, greeting, null, channel);
+                    return;
+                }
                 if (invite.getUses() != dInvite.get().getUsedCount()) {
                     for (int i = dInvite.get().getUsedCount(); i < invite.getUses(); i++) {
                         InviteData.upCountInvite(event.getGuild(), invite.getCode(), null);
@@ -36,7 +39,6 @@ public class GreetingListener extends ListenerAdapter {
                     MessageSender.sendGreeting(event, greeting, dInvite.get().getSource(), channel);
                 }
             });
-            MessageSender.sendGreeting(event, greeting, null, channel);
         });
     }
 }
