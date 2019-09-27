@@ -9,8 +9,6 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.guessgame.EvaluationScheduler;
 import de.eldoria.shepard.util.Emoji;
-import de.eldoria.shepard.util.TextFormatting;
-import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 

@@ -1,6 +1,5 @@
 package de.eldoria.shepard.contexts.commands.util;
 
-import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.ShepardBot;

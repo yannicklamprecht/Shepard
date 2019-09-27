@@ -34,6 +34,8 @@ public final class ImageRegister {
                 break;
             case CONFIGURED:
                 break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + getConfigurationState(user));
         }
     }
 

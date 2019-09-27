@@ -3,14 +3,12 @@ package de.eldoria.shepard.minigames.guessgame;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.HentaiOrNotData;
 import de.eldoria.shepard.database.types.HentaiImage;
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import org.antlr.tool.BuildDependencyGenerator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,13 +36,14 @@ public class Evaluator implements Runnable {
             return;
         }
 
-        List<User> trueVotes = Verifier.getValidUserByLong(votes.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).collect(Collectors.toList()));
-        List<User> falseVotes = Verifier.getValidUserByLong(votes.entrySet().stream().filter(set -> !set.getValue()).map(Map.Entry::getKey).collect(Collectors.toList()));
+        List<User> trueVotes = Verifier.getValidUserByLong(votes.entrySet()
+                .stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).collect(Collectors.toList()));
+        List<User> falseVotes = Verifier.getValidUserByLong(votes.entrySet()
+                .stream().filter(set -> !set.getValue()).map(Map.Entry::getKey).collect(Collectors.toList()));
 
         List<User> winners = image.isHentai() ? trueVotes : falseVotes;
         List<User> looser = image.isHentai() ? falseVotes : trueVotes;
 
-        int totalPlayer = looser.size() + winners.size();
 
         int votePoints = 1;
         if (winners.size() != 0) {
@@ -60,6 +59,7 @@ public class Evaluator implements Runnable {
 
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("It's " + (image.isHentai() ? "" : "not") + " a hentai image!");
+        int totalPlayer = looser.size() + winners.size();
         if (totalPlayer != 0) {
 
             List<User> firstWinner = winners.subList(0, Math.min(winners.size(), 5));
