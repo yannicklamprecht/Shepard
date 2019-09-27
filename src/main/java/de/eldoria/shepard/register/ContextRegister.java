@@ -20,6 +20,7 @@ import de.eldoria.shepard.contexts.commands.fun.GuessGame;
 import de.eldoria.shepard.contexts.commands.admin.GuessGameConfig;
 import de.eldoria.shepard.contexts.commands.fun.LargeEmote;
 import de.eldoria.shepard.contexts.commands.fun.MagicConch;
+import de.eldoria.shepard.contexts.commands.fun.MockingSpongebob;
 import de.eldoria.shepard.contexts.commands.fun.Oha;
 import de.eldoria.shepard.contexts.commands.fun.Owo;
 import de.eldoria.shepard.contexts.commands.fun.Owod;
@@ -90,6 +91,7 @@ public final class ContextRegister {
 
     private void registerFunCommands() {
         contextSensitives.add(new MagicConch());
+        contextSensitives.add(new MockingSpongebob());
         contextSensitives.add(new Oha());
         contextSensitives.add(new Owo());
         contextSensitives.add(new Owod());
