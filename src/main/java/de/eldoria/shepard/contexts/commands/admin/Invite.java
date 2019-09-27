@@ -40,7 +40,7 @@ public class Invite extends Command {
                                 + "**refreshInvites** -> leave empty" + lineSeparator()
                                 + "**showInvites** -> leave empty", false)};
 
-        pattern = Pattern.compile("([a-zA-Z0-9]{6})$");
+        pattern = Pattern.compile("([a-zA-Z0-9]{6,7})$");
     }
 
     @Override

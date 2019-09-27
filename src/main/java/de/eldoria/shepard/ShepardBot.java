@@ -37,6 +37,11 @@ public final class ShepardBot {
 
             logger.info("Initialising JDA");
 
+            // Note: It is important to register your ReadyListener before building
+            if (config.debugActive()) {
+                org.apache.log4j.BasicConfigurator.configure();
+            }
+
             try {
                 initiateJda();
             } catch (LoginException | InterruptedException e) {
@@ -86,10 +91,8 @@ public final class ShepardBot {
      * @param args Arguments.
      */
     public static void main(String[] args) {
-        // Note: It is important to register your ReadyListener before building
-        org.apache.log4j.BasicConfigurator.configure();
-
         instance = new ShepardBot();
+
 
         instance.setup();
     }

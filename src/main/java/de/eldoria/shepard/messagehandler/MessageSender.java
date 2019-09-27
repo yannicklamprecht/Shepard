@@ -245,16 +245,18 @@ public final class MessageSender {
     public static void sendGreeting(GuildMemberJoinEvent event, GreetingSettings greeting,
                                     String source, MessageChannel channel) {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setThumbnail(event.getUser().getAvatarUrl());
         if (source != null) {
             builder.setFooter("Joined via " + source);
-
         }
         User user = event.getUser();
         String message = Replacer.applyUserPlaceholder(user, greeting.getText());
-        builder.addField(event.getMember().getUser().getAsTag(),
-                message, true);
-        channel.sendMessage((builder.build())).queue();
+        builder.addField(event.getUser().getAsTag(),
+                message, true)
+                .setColor(Color.green)
+                .setThumbnail(event.getUser().getAvatarUrl() == null
+                        ? ShepardReactions.EXCITED.thumbnail
+                        : event.getUser().getAvatarUrl());
+        channel.sendMessage(builder.build()).queue();
     }
 
     public static void logCommand(String label, String[] args, MessageEventDataWrapper receivedEvent) {

@@ -12,6 +12,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
+import static de.eldoria.shepard.util.TextFormatting.fillString;
+
 /**
  * A command to list all servers the bot is a member of.
  */
@@ -65,8 +67,4 @@ public class ListServer extends Command {
         MessageSender.sendMessage(message.concat(messagepart), messageContext.getChannel());
     }
 
-    private String fillString(String string, int fill) {
-        int charsToFill = fill - string.length();
-        return  string + " ".repeat(charsToFill);
-    }
 }

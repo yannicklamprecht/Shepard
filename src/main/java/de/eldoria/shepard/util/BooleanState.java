@@ -4,30 +4,23 @@ public enum BooleanState {
     /**
      * State for a true boolean.
      */
-    TRUE {
-        /**
-         * returns the value as boolean.
-         * @return true
-         */
-        public boolean getAsBoolean() {
-            return true;
-        }
-    },
+    TRUE(true),
     /**
      * State for a false boolean.
      */
-    FALSE {
-        /**
-         * returns the value as boolean.
-         * @return false
-         */
-        public boolean getAsBoolean() {
-            return false;
-        }
-    },
+    FALSE(false),
     /**
-     * State for a undefined or not valid boolean.
+     * State for a undefined or not valid boolean. False if parsed.
      */
-    UNDEFINED
+    UNDEFINED(false);
+
+    /**
+     * state of the boolean.
+     */
+    public final boolean stateAsBoolean;
+
+    BooleanState(boolean state) {
+        this.stateAsBoolean = state;
+    }
 
 }

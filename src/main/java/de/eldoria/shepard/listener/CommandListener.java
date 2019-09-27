@@ -41,22 +41,22 @@ public class CommandListener extends ListenerAdapter {
         onCommand(new MessageEventDataWrapper(event));
     }
 
-    private void onCommand(MessageEventDataWrapper wrapper) {
-        if (wrapper.getChannel() instanceof PrivateChannel) {
-            if (wrapper.getAuthor().isBot()) return;
-            wrapper.getChannel().sendMessage("I'm too shy. Please speak to me on a public Server.").queue();
+    private void onCommand(MessageEventDataWrapper messageContext) {
+        if (messageContext.getChannel() instanceof PrivateChannel) {
+            if (messageContext.getAuthor().isBot()) return;
+            messageContext.getChannel().sendMessage("I'm too shy. Please speak to me on a public Server.").queue();
             return;
         }
 
 
-        String receivedMessage = wrapper.getMessage().getContentRaw();
+        String receivedMessage = messageContext.getMessage().getContentRaw();
         String[] args = receivedMessage.split(" ");
 
         boolean isCommand = false;
 
-        if (checkPrefix(receivedMessage, wrapper)) {
+        if (checkPrefix(receivedMessage, messageContext)) {
             isCommand = true;
-            args[0] = args[0].replaceFirst(PrefixData.getPrefix(wrapper.getGuild(), wrapper), "");
+            args[0] = args[0].replaceFirst(PrefixData.getPrefix(messageContext.getGuild(), messageContext), "");
 
         } else if (DbUtil.getIdRaw(args[0]).contentEquals(ShepardBot.getJDA().getSelfUser().getId())) {
             args = Arrays.copyOfRange(args, 1, args.length);
@@ -67,9 +67,9 @@ public class CommandListener extends ListenerAdapter {
 
         if (isCommand) {
             //BotCheck
-            if (wrapper.getAuthor().isBot()) {
-                MessageSender.sendMessage("I'm not allowed to talk to you " + wrapper.getAuthor().getName()
-                        + ". Please leave me alone ._.", wrapper.getChannel());
+            if (messageContext.getAuthor().isBot()) {
+                MessageSender.sendMessage("I'm not allowed to talk to you " + messageContext.getAuthor().getName()
+                        + ". Please leave me alone ._.", messageContext.getChannel());
                 return;
             }
 
@@ -81,16 +81,27 @@ public class CommandListener extends ListenerAdapter {
             } else {
                 args = new String[0];
             }
-            if (command != null && command.isContextValid(wrapper)) {
+            if (command != null && command.isContextValid(messageContext)) {
                 if (command.checkArguments(args)) {
                     try {
-                        command.execute(label, args, wrapper);
+                        command.execute(label, args, messageContext);
                     } catch (CommandException | InsufficientPermissionException e) {
-                        MessageSender.sendSimpleError(e.getMessage(), wrapper.getChannel());
+                        try {
+                            MessageSender.sendSimpleError(e.getMessage(), messageContext.getChannel());
+                        } catch (InsufficientPermissionException ex) {
+                            messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
+                                    MessageSender.sendSimpleError(ex.getMessage(), privateChannel));
+                        }
                     }
                 } else {
-                    MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, wrapper.getChannel());
-                    command.sendCommandUsage(wrapper.getChannel());
+                    try {
+                        MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
+                        command.sendCommandUsage(messageContext.getChannel());
+                    } catch (InsufficientPermissionException ex) {
+                        messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
+                                MessageSender.sendSimpleError(ex.getMessage(), privateChannel));
+                    }
+
                 }
                 return;
             }
@@ -98,21 +109,21 @@ public class CommandListener extends ListenerAdapter {
             List<Command> similarCommand = CommandCollection.getInstance().getSimilarCommands(label);
             if (similarCommand.size() != 0) {
                 for (Command cmd : similarCommand) {
-                    if (cmd.isContextValid(wrapper)) {
+                    if (cmd.isContextValid(messageContext)) {
                         InteractableMessageSender.sendSimpleTextBox("Command not found!",
                                 "I don't have a command with this name. Maybe you meant: "
                                         + System.lineSeparator() + "**" + cmd.getCommandName() + "**",
-                                Color.green, ShepardReactions.WINK, wrapper.getTextChannel(),
-                                new ExecuteCommand(wrapper.getAuthor(),cmd,args,wrapper),
-                                new SendCommandHelp(cmd, wrapper));
+                                Color.green, ShepardReactions.WINK, messageContext.getTextChannel(),
+                                new ExecuteCommand(messageContext.getAuthor(), cmd, args, messageContext),
+                                new SendCommandHelp(cmd, messageContext));
                         return;
                     }
                 }
             }
 
             MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!", "Type "
-                    + PrefixData.getPrefix(wrapper.getGuild(), wrapper)
-                    + "help for a full list of available commands!", false)}, wrapper.getChannel());
+                    + PrefixData.getPrefix(messageContext.getGuild(), messageContext)
+                    + "help for a full list of available commands!", false)}, messageContext.getChannel());
 
         }
 

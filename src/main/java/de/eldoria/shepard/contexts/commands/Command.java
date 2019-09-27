@@ -51,11 +51,11 @@ public abstract class Command extends ContextSensitive {
      *
      * @param label       Label/Alias which was used for command execution
      * @param args        Arguments of the command.
-     * @param dataWrapper Message Received Event of the command execution
+     * @param messageContext Message Received Event of the command execution
      */
-    public void execute(String label, String[] args, MessageEventDataWrapper dataWrapper) {
-        internalExecute(label, args, dataWrapper);
-        MessageSender.logCommand(label, args, dataWrapper);
+    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+        internalExecute(label, args, messageContext);
+        MessageSender.logCommand(label, args, messageContext);
     }
 
     /**
@@ -63,9 +63,9 @@ public abstract class Command extends ContextSensitive {
      *
      * @param label       Label/Alias which was used for command execution
      * @param args        Arguments of the command.
-     * @param dataWrapper Message Received Event of the command execution
+     * @param messageContext Message Received Event of the command execution
      */
-    protected abstract void internalExecute(String label, String[] args, MessageEventDataWrapper dataWrapper);
+    protected abstract void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext);
 
     /**
      * Get the name of the command.
