@@ -198,20 +198,6 @@ public final class MessageSender {
     }
 
     /**
-     * Loggs a message in plain text.
-     *
-     * @param messageContext messageContext to log
-     * @param channel        channel to log
-     */
-    public static void logMessageAsPlainText(MessageEventDataWrapper messageContext, MessageChannel channel) {
-        channel.sendMessage(messageContext.getGuild().getName() + " | "
-                + Objects.requireNonNull(messageContext.getMessage().getCategory()).getName()
-                + " | " + messageContext.getMessage().getChannel().getName() + " by "
-                + messageContext.getAuthor().getName()
-                + ": " + messageContext.getMessage().getContentRaw()).queue();
-    }
-
-    /**
      * Loggs a message es embed.
      *
      * @param messageContext messageContext to log
