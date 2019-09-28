@@ -57,7 +57,7 @@ public class GuessGame extends Command {
             return;
         }
         if (args.length != 1) {
-            MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext.getChannel());
+            MessageSender.sendSimpleErrorEmbed(ErrorType.TOO_MANY_ARGUMENTS, messageContext.getChannel());
             return;
         }
 

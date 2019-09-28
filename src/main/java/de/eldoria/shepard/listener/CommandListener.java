@@ -87,19 +87,19 @@ public class CommandListener extends ListenerAdapter {
                         command.execute(label, args, messageContext);
                     } catch (CommandException | InsufficientPermissionException e) {
                         try {
-                            MessageSender.sendSimpleError(e.getMessage(), messageContext.getChannel());
+                            MessageSender.sendSimpleErrorEmbed(e.getMessage(), messageContext.getChannel());
                         } catch (InsufficientPermissionException ex) {
                             messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
-                                    MessageSender.sendSimpleError(ex.getMessage(), privateChannel));
+                                    MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));
                         }
                     }
                 } else {
                     try {
-                        MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
+                        MessageSender.sendSimpleErrorEmbed(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
                         command.sendCommandUsage(messageContext.getChannel());
                     } catch (InsufficientPermissionException ex) {
                         messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
-                                MessageSender.sendSimpleError(ex.getMessage(), privateChannel));
+                                MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));
                     }
 
                 }

@@ -51,7 +51,7 @@ public class ManageContextGuild extends Command {
         String contextName = getContextName(args[0], messageContext);
 
         if (contextName == null) {
-            MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
+            MessageSender.sendSimpleErrorEmbed(ErrorType.CONTEXT_NOT_FOUND,
                     messageContext.getChannel());
             return;
         }
@@ -76,7 +76,7 @@ public class ManageContextGuild extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ACTION, messageContext.getChannel());
         sendCommandArgHelp("action", messageContext.getChannel());
 
     }
@@ -133,7 +133,7 @@ public class ManageContextGuild extends Command {
         ListType type = ListType.getType(args[2]);
 
         if (type == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_LIST_TYPE,
+            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_LIST_TYPE,
                     messageContext.getChannel());
             return;
         }
@@ -150,7 +150,7 @@ public class ManageContextGuild extends Command {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN,
+            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_BOOLEAN,
                     messageContext.getChannel());
             return;
         }

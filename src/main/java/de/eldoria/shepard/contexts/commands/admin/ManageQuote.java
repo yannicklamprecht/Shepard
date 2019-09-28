@@ -61,7 +61,7 @@ public class ManageQuote extends Command {
 
         if (cmd.equalsIgnoreCase("alter") || cmd.equalsIgnoreCase("alt")) {
             if (args.length < 3) {
-                MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
+                MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             }
 
             int quoteId;
@@ -69,12 +69,12 @@ public class ManageQuote extends Command {
             try {
                 quoteId = Integer.parseInt(args[1]);
             } catch (IllegalArgumentException e) {
-                MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getChannel());
+                MessageSender.sendSimpleErrorEmbed(ErrorType.NOT_A_NUMBER, messageContext.getChannel());
                 return;
             }
 
             if (quoteId > quotesCount) {
-                MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getChannel());
+                MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ID, messageContext.getChannel());
             }
 
             String quote = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
@@ -86,7 +86,7 @@ public class ManageQuote extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ACTION, messageContext.getChannel());
     }
 
     private void showQuotes(String[] args, MessageEventDataWrapper messageContext) {
@@ -129,7 +129,7 @@ public class ManageQuote extends Command {
 
     private void removeQuote(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
+            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
         }
 
         int quoteId;
@@ -137,12 +137,12 @@ public class ManageQuote extends Command {
         try {
             quoteId = Integer.parseInt(args[1]);
         } catch (IllegalArgumentException e) {
-            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getChannel());
+            MessageSender.sendSimpleErrorEmbed(ErrorType.NOT_A_NUMBER, messageContext.getChannel());
             return;
         }
 
         if (quoteId > quotesCount) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getChannel());
+            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ID, messageContext.getChannel());
         }
 
         if (QuoteData.removeQuote(messageContext.getGuild(), quoteId, messageContext)) {
@@ -153,7 +153,7 @@ public class ManageQuote extends Command {
 
     private void addQuote(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 1) {
-            MessageSender.sendSimpleError(ErrorType.NO_QUOTE_FOUND, messageContext.getChannel());
+            MessageSender.sendSimpleErrorEmbed(ErrorType.NO_QUOTE_FOUND, messageContext.getChannel());
             return;
         }
 

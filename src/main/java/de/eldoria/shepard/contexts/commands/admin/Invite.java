@@ -62,7 +62,7 @@ public class Invite extends Command {
             showInvites(messageContext);
             return;
         }
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ACTION, messageContext.getChannel());
         sendCommandUsage(messageContext.getChannel());
     }
 
@@ -97,7 +97,7 @@ public class Invite extends Command {
 
     private void removeInvite(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             return;
         }
         List<DatabaseInvite> databaseInvites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
@@ -110,19 +110,19 @@ public class Invite extends Command {
                 }
             }
         }
-        MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND,
+        MessageSender.sendSimpleErrorEmbed(ErrorType.NO_INVITE_FOUND,
                 receivedEvent.getChannel());
     }
 
     private void addInvite(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
+            MessageSender.sendSimpleErrorEmbed(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
             return;
         }
 
         Matcher matcher = pattern.matcher(args[1]);
         if (!matcher.find()) {
-            MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext.getChannel());
+            MessageSender.sendSimpleErrorEmbed(ErrorType.NO_INVITE_FOUND, messageContext.getChannel());
         }
         String code = matcher.group(1);
 
@@ -141,7 +141,7 @@ public class Invite extends Command {
                     return;
                 }
             }
-            MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext.getChannel());
+            MessageSender.sendSimpleErrorEmbed(ErrorType.NO_INVITE_FOUND, messageContext.getChannel());
         });
     }
 }

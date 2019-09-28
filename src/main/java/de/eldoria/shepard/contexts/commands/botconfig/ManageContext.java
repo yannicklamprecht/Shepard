@@ -37,7 +37,7 @@ public class ManageContext extends Command {
         String cmd = args[1];
 
         if (contextName == null) {
-            MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
+            MessageSender.sendSimpleErrorEmbed(ErrorType.CONTEXT_NOT_FOUND,
                     messageContext.getChannel());
             return;
         }
@@ -52,14 +52,14 @@ public class ManageContext extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ACTION, messageContext.getChannel());
     }
 
     private void setAdminOnly(String[] args, String contextName, MessageEventDataWrapper messageContext) {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN,
+            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_BOOLEAN,
                     messageContext.getChannel());
             return;
         }
@@ -86,7 +86,7 @@ public class ManageContext extends Command {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN,
+            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_BOOLEAN,
                     messageContext.getChannel());
             return;
         }

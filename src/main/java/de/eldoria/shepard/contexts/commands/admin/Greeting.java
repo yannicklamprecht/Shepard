@@ -51,7 +51,7 @@ public class Greeting extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ACTION, messageContext.getChannel());
         sendCommandUsage(messageContext.getChannel());
     }
 
@@ -64,7 +64,7 @@ public class Greeting extends Command {
             }
             return;
         }
-        MessageSender.sendSimpleError(ErrorType.NO_MESSAGE_FOUND, messageContext.getChannel());
+        MessageSender.sendSimpleErrorEmbed(ErrorType.NO_MESSAGE_FOUND, messageContext.getChannel());
     }
 
     private void removeChannel(MessageEventDataWrapper messageContext) {
@@ -93,7 +93,7 @@ public class Greeting extends Command {
                 return;
             }
         }
-        MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext.getChannel());
+        MessageSender.sendSimpleErrorEmbed(ErrorType.TOO_MANY_ARGUMENTS, messageContext.getChannel());
         sendCommandUsage(messageContext.getChannel());
     }
 }

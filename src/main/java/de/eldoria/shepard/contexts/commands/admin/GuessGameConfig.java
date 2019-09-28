@@ -48,12 +48,12 @@ public class GuessGameConfig extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ACTION, messageContext.getChannel());
     }
 
     private void removeImage(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
+            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             return;
         }
         HentaiOrNotData.removeHentaiImage(args[1], messageContext);
@@ -61,13 +61,13 @@ public class GuessGameConfig extends Command {
 
     private void addImage(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
+            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             return;
         }
         String replace = args[1].replace("nsfw", "true").replace("sfw", "false");
         BooleanState booleanState = Verifier.checkAndGetBoolean(replace);
         if (booleanState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getChannel());
+            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_BOOLEAN, messageContext.getChannel());
             return;
         }
         ImageRegister.getInstance().startConfiguration(messageContext.getAuthor(),

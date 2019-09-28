@@ -158,8 +158,13 @@ public final class MessageSender {
      * @param type    error type
      * @param channel channel to send
      */
-    public static void sendSimpleError(ErrorType type, MessageChannel channel) {
-        sendSimpleError(type.message, channel);
+    public static void sendSimpleErrorEmbed(ErrorType type, MessageChannel channel) {
+        if (type.isEmbed) {
+            sendSimpleErrorEmbed(type.message, channel);
+        } else {
+            sendMessage(type.message, channel);
+        }
+
     }
 
     /**
@@ -168,7 +173,7 @@ public final class MessageSender {
      * @param error   Error message
      * @param channel channel to send
      */
-    public static void sendSimpleError(String error, MessageChannel channel) {
+    public static void sendSimpleErrorEmbed(String error, MessageChannel channel) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("ERROR!")
                 .setDescription(error)
