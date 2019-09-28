@@ -65,14 +65,13 @@ public final class MessageSender {
      * @param color   Color of the text box
      */
     public static void sendTextBox(String title, List<MessageEmbed.Field> fields, MessageChannel channel, Color color) {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setDescription("test");
-        builder.setTitle(title);
-        builder.setColor(color);
+        EmbedBuilder builder = new EmbedBuilder()
+                .setDescription("test")
+                .setTitle(title)
+                .setColor(color);
         for (MessageEmbed.Field field : fields) {
             builder.addField(field);
         }
-        builder.setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
         channel.sendMessage(builder.build()).queue();
     }
 
@@ -123,11 +122,10 @@ public final class MessageSender {
      */
     public static void sendSimpleTextBox(String title, String description, Color color,
                                          ShepardReactions reaction, MessageChannel channel) {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle(title)
+        EmbedBuilder builder = new EmbedBuilder()
+                .setTitle(title)
                 .setColor(color)
-                .setDescription(description)
-                .setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
+                .setDescription(description);
         if (reaction != ShepardReactions.NONE) {
             builder.setThumbnail(reaction.thumbnail);
         }
@@ -141,13 +139,12 @@ public final class MessageSender {
      * @param channel channel to send.
      */
     public static void sendError(MessageEmbed.Field[] fields, MessageChannel channel) {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("ERROR!")
+        EmbedBuilder builder = new EmbedBuilder()
+                .setTitle("ERROR!")
                 .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
         for (MessageEmbed.Field field : fields) {
-            builder.addField(field);
-            builder.setColor(Color.red);
-            builder.setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
+            builder.addField(field)
+                    .setColor(Color.red);
             channel.sendMessage(builder.build()).queue();
         }
     }
