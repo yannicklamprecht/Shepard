@@ -173,8 +173,7 @@ public final class MessageSender {
                 .setTitle("ERROR!")
                 .setDescription(error)
                 .setColor(Color.red)
-                .setThumbnail(ShepardReactions.CONFUSED.thumbnail)
-                .setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
+                .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
         try {
             channel.sendMessage(builder.build()).queue();
         } catch (ErrorResponseException e) {

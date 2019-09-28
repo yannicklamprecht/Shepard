@@ -104,6 +104,11 @@ public class CommandListener extends ListenerAdapter {
 
                 }
                 return;
+            } else if (command != null && command.canBeExecutedHere(messageContext)) {
+                MessageSender.sendMessage("Insufficient permission for context **"
+                        + command.getClass().getSimpleName().toUpperCase()
+                        + "**. Ask a Server Administrator for permission.", messageContext.getChannel());
+                return;
             }
 
             List<Command> similarCommand = CommandCollection.getInstance().getSimilarCommands(label);

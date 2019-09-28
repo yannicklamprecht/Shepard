@@ -46,10 +46,20 @@ public abstract class ContextSensitive {
             }
         }
 
-        if (canExecutedByUser(context) && canExecutedOnGuild(context)) {
+        if (canBeExecutedHere(context)) {
             return hasPermission(context);
         }
         return false;
+    }
+
+    /**
+     * Returns if the context can be executed on this guild by this user, if he has the permission.
+     *
+     * @param context the context of the command.
+     * @return {@code true} if the context can be executed on guild by user with permissions.
+     */
+    public boolean canBeExecutedHere(MessageEventDataWrapper context) {
+        return canExecutedByUser(context) && canExecutedOnGuild(context);
     }
 
     private boolean canExecutedOnGuild(MessageEventDataWrapper context) {
