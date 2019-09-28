@@ -5,6 +5,7 @@ import de.eldoria.shepard.database.types.GreetingSettings;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -17,7 +18,6 @@ import java.awt.Color;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 
 public final class MessageSender {
 
@@ -208,11 +208,16 @@ public final class MessageSender {
         Timestamp t = java.sql.Timestamp.from(instant); // Convert instant to Timestamp
 
         if (messageContext.getChannel() instanceof TextChannel) {
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.setTitle(messageContext.getGuild().getName() + " | " + messageContext.getChannel().getName());
-            builder.setTimestamp(t.toInstant());
-            builder.setAuthor(messageContext.getAuthor().getAsTag(), null, messageContext.getAuthor().getAvatarUrl());
-            builder.setDescription(messageContext.getMessage().getContentRaw());
+            EmbedBuilder builder = new EmbedBuilder()
+                    .setTitle(messageContext.getGuild().getName() + " | " + messageContext.getChannel().getName())
+                    .setTimestamp(t.toInstant())
+                    .setAuthor(messageContext.getAuthor().getAsTag(), null, messageContext.getAuthor().getAvatarUrl())
+                    .setDescription(messageContext.getMessage().getContentRaw());
+            List<Message.Attachment> attachments = messageContext.getMessage().getAttachments();
+            if (!attachments.isEmpty() && attachments.get(0).isImage()) {
+                builder.setImage(attachments.get(0).getUrl());
+            }
+
             try {
                 channel.sendMessage(builder.build()).queue();
             } catch (InsufficientPermissionException e) {
