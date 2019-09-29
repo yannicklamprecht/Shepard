@@ -77,12 +77,12 @@ public class TicketSettings extends Command {
             createType(args, messageContext, type);
             return;
         } else if ((cmd.equalsIgnoreCase("createType") || cmd.equalsIgnoreCase("ct")) && scopeTicket == null) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.TYPE_ALREADY_DEFINED, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TYPE_ALREADY_DEFINED, messageContext.getChannel());
             return;
         }
 
         if (scopeTicket == null) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.TYPE_NOT_FOUND, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, messageContext.getChannel());
             return;
         }
 
@@ -107,13 +107,13 @@ public class TicketSettings extends Command {
             return;
         }
 
-        MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
         sendCommandUsage(messageContext.getChannel());
     }
 
     private void setCreationMessage(String[] args, MessageEventDataWrapper receivedEvent, TicketType scopeTicket) {
         if (args.length < 3) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             sendCommandUsage(receivedEvent.getChannel());
             return;
         }
@@ -129,7 +129,7 @@ public class TicketSettings extends Command {
 
     private void setChannelCategory(String[] args, MessageEventDataWrapper receivedEvent, TicketType scopeTicket) {
         if (args.length != 3) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             sendCommandUsage(receivedEvent.getChannel());
             return;
         }
@@ -137,7 +137,7 @@ public class TicketSettings extends Command {
         Category category = receivedEvent.getGuild().getCategoryById(args[2]);
 
         if (category == null) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_CATEGORY, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_CATEGORY, receivedEvent.getChannel());
             return;
         }
 
@@ -150,7 +150,7 @@ public class TicketSettings extends Command {
 
     private void setRoles(String[] args, MessageEventDataWrapper receivedEvent, String cmd, TicketType scopeTicket) {
         if (args.length < 3) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             sendCommandUsage(receivedEvent.getChannel());
             return;
         }
@@ -180,7 +180,7 @@ public class TicketSettings extends Command {
 
     private void removeType(String[] args, MessageEventDataWrapper receivedEvent, TicketType scopeTicket) {
         if (args.length != 2) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             sendCommandUsage(receivedEvent.getChannel());
             return;
         }
@@ -221,7 +221,7 @@ public class TicketSettings extends Command {
 
     private void createType(String[] args, MessageEventDataWrapper receivedEvent, String type) {
         if (args.length != 3) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             sendCommandUsage(receivedEvent.getChannel());
             return;
         }
@@ -230,7 +230,7 @@ public class TicketSettings extends Command {
         Category category = receivedEvent.getGuild().getCategoryById(args[2]);
 
         if (category == null) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_CATEGORY, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_CATEGORY, receivedEvent.getChannel());
             return;
         }
 

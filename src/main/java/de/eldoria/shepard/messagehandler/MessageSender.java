@@ -155,7 +155,7 @@ public final class MessageSender {
      * @param type    error type
      * @param channel channel to send
      */
-    public static void sendSimpleErrorEmbed(ErrorType type, MessageChannel channel) {
+    public static void sendSimpleError(ErrorType type, MessageChannel channel) {
         if (type.isEmbed) {
             sendSimpleErrorEmbed(type.message, channel);
         } else {

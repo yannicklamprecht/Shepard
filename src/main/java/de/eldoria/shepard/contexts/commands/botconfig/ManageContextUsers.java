@@ -51,7 +51,7 @@ public class ManageContextUsers extends Command {
         String cmd = args[1];
 
         if (contextName == null) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.CONTEXT_NOT_FOUND,
+            MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
                     messageContext.getChannel());
             return;
         }
@@ -76,7 +76,7 @@ public class ManageContextUsers extends Command {
             return;
         }
 
-        MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
         sendCommandArgHelp("action", messageContext.getChannel());
 
     }
@@ -129,7 +129,7 @@ public class ManageContextUsers extends Command {
         ListType type = ListType.getType(args[2]);
 
         if (type == null) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_LIST_TYPE,
+            MessageSender.sendSimpleError(ErrorType.INVALID_LIST_TYPE,
                     messageContext.getChannel());
             return;
         }
@@ -146,7 +146,7 @@ public class ManageContextUsers extends Command {
         BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_BOOLEAN,
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN,
                     messageContext.getChannel());
             return;
         }

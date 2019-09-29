@@ -66,7 +66,7 @@ public class Changelog extends Command {
             return;
         }
 
-        MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
         sendCommandUsage(messageContext.getChannel());
     }
 
@@ -90,14 +90,14 @@ public class Changelog extends Command {
 
     private void activate(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 2) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             return;
         }
 
         TextChannel textChannelById = messageContext.getGuild().getTextChannelById(getIdRaw(args[1]));
 
         if (textChannelById == null) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_CHANNEL, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, messageContext.getChannel());
             return;
         }
 
@@ -110,13 +110,13 @@ public class Changelog extends Command {
 
     private void modifyRoles(String[] args, MessageEventDataWrapper messageContext, String cmd) {
         if (args.length != 2) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             return;
         }
 
         Role roleById = messageContext.getGuild().getRoleById(getIdRaw(args[1]));
         if (roleById == null) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ROLE, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ROLE, messageContext.getChannel());
             return;
         }
 
