@@ -119,7 +119,7 @@ public enum ErrorType {
         if (embed) {
             this.message = message;
         } else {
-            this.message = "**ERROR**" + System.lineSeparator();
+            this.message = "**ERROR**" + System.lineSeparator() + message;
         }
         this.isEmbed = embed;
     }
