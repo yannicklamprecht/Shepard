@@ -2,6 +2,8 @@ package de.eldoria.shepard.util;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.DbUtil;
+import de.eldoria.shepard.database.queries.PrefixData;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -119,8 +121,9 @@ public class Verifier {
 
     /**
      * Returns true if on of the arguments matches the argument. Not case sensitive.
+     *
      * @param argument argument to match against.
-     * @param args one or more arguments to check.
+     * @param args     one or more arguments to check.
      * @return true if one argument matches.
      */
     public static boolean isArgument(String argument, String... args) {
@@ -131,4 +134,16 @@ public class Verifier {
         }
         return false;
     }
+
+    /**
+     * Check if the message is a command.
+     *
+     * @param message
+     * @param event
+     * @return
+     */
+    public static boolean checkPrefix(String message, MessageEventDataWrapper event) {
+        return message.startsWith(PrefixData.getPrefix(event.getGuild(), event));
+    }
+
 }
