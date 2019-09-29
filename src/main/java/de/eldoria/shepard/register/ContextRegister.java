@@ -1,6 +1,7 @@
 package de.eldoria.shepard.register;
 
 import de.eldoria.shepard.contexts.ContextSensitive;
+import de.eldoria.shepard.contexts.commands.admin.BotPresence;
 import de.eldoria.shepard.contexts.commands.admin.Changelog;
 import de.eldoria.shepard.contexts.commands.admin.Greeting;
 import de.eldoria.shepard.contexts.commands.admin.Invite;
@@ -126,6 +127,7 @@ public final class ContextRegister {
         contextSensitives.add(new ManageQuote());
         contextSensitives.add(new Permission());
         contextSensitives.add(new GuessGameConfig());
+        contextSensitives.add(new BotPresence());
 
     }
 
