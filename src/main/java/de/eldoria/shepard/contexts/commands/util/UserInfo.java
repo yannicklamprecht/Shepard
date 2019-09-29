@@ -60,7 +60,7 @@ public class UserInfo extends Command {
 
         Member memberById = messageContext.getGuild().getMemberById(searchedUser.getId());
         if (memberById == null) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_USER, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext.getChannel());
             return;
         }
 

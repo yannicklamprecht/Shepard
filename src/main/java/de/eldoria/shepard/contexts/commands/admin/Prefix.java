@@ -38,7 +38,7 @@ public class Prefix extends Command {
             return;
         }
 
-        MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
         sendCommandUsage(messageContext.getChannel());
     }
 
@@ -51,13 +51,13 @@ public class Prefix extends Command {
 
     private void set(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 1) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
             sendCommandUsage(messageContext.getChannel());
             return;
         }
 
         if (args[1].length() > 2) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_PREFIX_LENGTH, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_PREFIX_LENGTH, messageContext.getChannel());
             return;
         }
 

@@ -25,7 +25,7 @@ public class LargeEmote extends Command {
                 .stream().distinct().collect(Collectors.toList());
 
         if (emotes.size() == 0) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.NO_EMOTE_FOUND, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NO_EMOTE_FOUND, messageContext.getChannel());
             return;
         }
 

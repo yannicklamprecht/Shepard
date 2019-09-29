@@ -57,7 +57,7 @@ public class Permission extends Command {
         String contextName = getContextName(args[0], messageContext);
 
         if (contextName == null) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.CONTEXT_NOT_FOUND,
+            MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
                     messageContext.getChannel());
             return;
         }
@@ -90,7 +90,7 @@ public class Permission extends Command {
             return;
         }
 
-        MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
     }
 
     private void showMentions(MessageEventDataWrapper messageContext, String contextName, String message) {
@@ -105,7 +105,7 @@ public class Permission extends Command {
     private void modifyUsers(String[] args, MessageEventDataWrapper receivedEvent,
                              String contextName, ModifyType modifyType) {
         if (args.length < 3) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.TOO_FEW_ARGUMENTS, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, receivedEvent.getChannel());
             return;
         }
 
@@ -141,7 +141,7 @@ public class Permission extends Command {
     private void modifyRoles(String[] args, MessageEventDataWrapper messageContext,
                              String contextName, ModifyType modifyType) {
         if (args.length < 3) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
             return;
         }
 

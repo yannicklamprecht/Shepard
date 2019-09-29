@@ -33,7 +33,7 @@ public class ContextInfo extends Command {
                     + "```yaml" + lineSeparator()
                     + data.toString() + lineSeparator() + "```", messageContext.getChannel());
         } else {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_CONTEXT, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_CONTEXT, messageContext.getChannel());
         }
     }
 }

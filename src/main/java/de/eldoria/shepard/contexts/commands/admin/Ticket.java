@@ -67,27 +67,27 @@ public class Ticket extends Command {
             typeInfo(args, messageContext);
             return;
         }
-        MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
         sendCommandUsage(messageContext.getChannel());
     }
 
     private void close(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length != 1) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
             return;
         }
 
 
         TextChannel channel = receivedEvent.getGuild().getTextChannelById(receivedEvent.getChannel().getIdLong());
         if (channel == null) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.NOT_GUILD_TEXT_CHANNEL, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_GUILD_TEXT_CHANNEL, receivedEvent.getChannel());
             return;
         }
 
         String channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
 
         if (channelOwnerId == null) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.NOT_TICKET_CHANEL, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_TICKET_CHANEL, receivedEvent.getChannel());
             return;
         }
 
@@ -163,7 +163,7 @@ public class Ticket extends Command {
             TicketType type = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
 
             if (type == null) {
-                MessageSender.sendSimpleErrorEmbed(ErrorType.TYPE_NOT_FOUND, receivedEvent.getChannel());
+                MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, receivedEvent.getChannel());
                 return;
             }
 
@@ -193,22 +193,22 @@ public class Ticket extends Command {
 
     private void openTicket(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length != 3) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
         }
         Member member = receivedEvent.getGuild().getMemberById(DbUtil.getIdRaw(args[2]));
         if (member == null) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.INVALID_USER, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_USER, receivedEvent.getChannel());
             return;
         }
         if (member.getIdLong() == receivedEvent.getAuthor().getIdLong()) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.TICKET_SELF_ASSIGNMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TICKET_SELF_ASSIGNMENT, receivedEvent.getChannel());
             return;
         }
 
         TicketType ticket = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
 
         if (ticket == null) {
-            MessageSender.sendSimpleErrorEmbed(ErrorType.TYPE_NOT_FOUND, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, receivedEvent.getChannel());
             return;
         }
 
