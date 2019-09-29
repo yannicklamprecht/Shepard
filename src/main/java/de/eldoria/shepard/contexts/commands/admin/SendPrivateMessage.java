@@ -4,9 +4,11 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
+import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.Emoji;
+import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
 
@@ -33,7 +35,13 @@ public class SendPrivateMessage extends Command {
             return;
         }
 
-        User user = ShepardBot.getJDA().getUserByTag(args[0]);
+        User user;
+        try {
+            user = ShepardBot.getJDA().getUserByTag(args[0]);
+        } catch (IllegalArgumentException e) {
+            user = ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(args[0]));
+
+        }
 
         if (user == null) {
             MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext.getChannel());
