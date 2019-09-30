@@ -22,19 +22,20 @@ public final class MonitoringData {
     /**
      * Adds a address for monitoring.
      *
-     * @param guild   Guild object for lookup
-     * @param address address to add
-     * @param name    name of the address
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param address        address to add
+     * @param name           name of the address
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addMonitoringAddress(Guild guild, String address, String name,
+    public static boolean addMonitoringAddress(Guild guild, String address, String name, boolean minecraftIp,
                                                MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT shepard_func.add_monitoring_adress(?,?,?)")) {
+                .prepareStatement("SELECT shepard_func.add_monitoring_address(?,?,?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, address);
             statement.setString(3, name);
+            statement.setBoolean(4, minecraftIp);
             statement.execute();
         } catch (SQLException e) {
             handleExceptionAndIgnore(e, messageContext);
@@ -46,15 +47,15 @@ public final class MonitoringData {
     /**
      * Removes a monitoring address by index.
      *
-     * @param guild Guild object for lookup
-     * @param index address index
+     * @param guild          Guild object for lookup
+     * @param index          address index
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean removeMonitoringAddressByIndex(Guild guild, int index,
                                                          MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT shepard_func.remove_monitoring_adress_by_index(?,?)")) {
+                .prepareStatement("SELECT shepard_func.remove_monitoring_address_by_index(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setInt(2, index);
             statement.execute();
@@ -68,9 +69,9 @@ public final class MonitoringData {
     /**
      * Sets the monitoring channel of the guild.
      *
-     * @param guild   Guild object for which the channel should be set
-     * @param channel iod of the channel
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for which the channel should be set
+     * @param channel        iod of the channel
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean setMonitoringChannel(Guild guild, TextChannel channel,
@@ -90,7 +91,7 @@ public final class MonitoringData {
     /**
      * Remove monitoring channel from a guild.
      *
-     * @param guild Guild object for lookup
+     * @param guild          Guild object for lookup
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
@@ -109,20 +110,21 @@ public final class MonitoringData {
     /**
      * Get monitoring addresses for a guild.
      *
-     * @param guild Guild object for lookup
+     * @param guild          Guild object for lookup
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return list of address object
      */
     public static List<Address> getMonitoringAddresses(Guild guild, MessageEventDataWrapper messageContext) {
         List<Address> addresses = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT shepard_func.get_monitoring_adresses(?)")) {
+                .prepareStatement("SELECT shepard_func.get_monitoring_addresses(?)")) {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                addresses.add(new Address(result.getInt("adress_id"),
+                addresses.add(new Address(result.getInt("address_id"),
                         result.getString("name"),
-                        result.getString("adress")));
+                        result.getString("address"),
+                        result.getBoolean("mcip")));
             }
         } catch (SQLException e) {
             handleExceptionAndIgnore(e, messageContext);
@@ -133,7 +135,7 @@ public final class MonitoringData {
     /**
      * Get the monitoring channel of a guild.
      *
-     * @param guild Id of the guild
+     * @param guild          Id of the guild
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Channel id as string
      */
