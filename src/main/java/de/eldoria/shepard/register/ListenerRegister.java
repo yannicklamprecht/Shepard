@@ -1,6 +1,7 @@
 package de.eldoria.shepard.register;
 
 import de.eldoria.shepard.listener.HentaiImageRegisterListener;
+import de.eldoria.shepard.listener.PrivateMessageListener;
 import de.eldoria.shepard.listener.ReactionListener;
 import de.eldoria.shepard.scheduler.invites.InviteScheduler;
 import de.eldoria.shepard.ShepardBot;
@@ -31,6 +32,7 @@ public final class ListenerRegister {
         listener.add(new TicketCleanupListener());
         listener.add(new ReactionListener());
         listener.add(new HentaiImageRegisterListener());
+        listener.add(new PrivateMessageListener());
         InviteScheduler.initialize();
     }
 

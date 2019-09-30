@@ -49,6 +49,12 @@ public final class ShepardBot {
     }
 
     private void setup() {
+        try {
+            initiateJda();
+        } catch (LoginException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
         ContextRegister.registerContexts();
         ListenerRegister.registerListener();
         logger.info("Registered " + CommandCollection.getInstance().getCommands().size() + " Commands");
@@ -60,11 +66,6 @@ public final class ShepardBot {
             KeyWordCollection.getInstance().debug();
         }
 
-        try {
-            initiateJda();
-        } catch (LoginException | InterruptedException e) {
-            e.printStackTrace();
-        }
 
         MessageSender.sendSimpleTextBox("Shepard meldet sich zum Dienst! Erwarte ihre Befehle!",
                 "Registered " + CommandCollection.getInstance().getCommands().size() + " Commands!"

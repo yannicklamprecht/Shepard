@@ -1,12 +1,15 @@
 package de.eldoria.shepard.register;
 
 import de.eldoria.shepard.contexts.ContextSensitive;
+import de.eldoria.shepard.contexts.commands.admin.BotPresence;
 import de.eldoria.shepard.contexts.commands.admin.Changelog;
 import de.eldoria.shepard.contexts.commands.admin.Greeting;
 import de.eldoria.shepard.contexts.commands.admin.Invite;
 import de.eldoria.shepard.contexts.commands.admin.ManageQuote;
 import de.eldoria.shepard.contexts.commands.admin.Permission;
 import de.eldoria.shepard.contexts.commands.admin.Prefix;
+import de.eldoria.shepard.contexts.commands.admin.PrivateAnswer;
+import de.eldoria.shepard.contexts.commands.admin.SendPrivateMessage;
 import de.eldoria.shepard.contexts.commands.admin.ShowKeyword;
 import de.eldoria.shepard.contexts.commands.admin.Ticket;
 import de.eldoria.shepard.contexts.commands.admin.TicketSettings;
@@ -126,6 +129,9 @@ public final class ContextRegister {
         contextSensitives.add(new ManageQuote());
         contextSensitives.add(new Permission());
         contextSensitives.add(new GuessGameConfig());
+        contextSensitives.add(new BotPresence());
+        contextSensitives.add(new PrivateAnswer());
+        contextSensitives.add(new SendPrivateMessage());
 
     }
 

@@ -25,14 +25,14 @@ public class BotPresence extends Command {
                 new CommandArg("action",
                         "**__p__laying** -> set the playing status" + lineSeparator()
                                 + "**__s__treaming** -> set the streaming status" + lineSeparator()
-                                + "**__l__istening** -> set the listening status", /* + lineSeparator()
-                                + "**__c__lear** -> set the normal online status."*/
+                                + "**__l__istening** -> set the listening status" + lineSeparator()
+                                + "**__c__lear** -> set the normal online status.",
                         true),
                 new CommandArg("values",
                         "**__p__laying** -> [title]" + lineSeparator()
                                 + "**__s__treaming** -> [title] [twitch url]" + lineSeparator()
-                                + "**__l__istening** -> [title]", /* + lineSeparator()
-                                + "**__c__lear** -> leave empty." */
+                                + "**__l__istening** -> [title]" + lineSeparator()
+                                + "**__c__lear** -> leave empty.",
                         false
                 )
         };
@@ -48,11 +48,10 @@ public class BotPresence extends Command {
 
         String activity = args[0];
 
-        //Not possible wth
-        /*if (isArgument(activity, "clear", "c")) {
-            presence.setIdle(true);
+        if (isArgument(activity, "clear", "c")) {
+            presence.setActivity(null);
             return;
-        }*/
+        }
 
         if (args.length < 2) {
             MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());

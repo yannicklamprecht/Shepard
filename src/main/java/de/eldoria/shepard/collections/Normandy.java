@@ -5,10 +5,11 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class Normandy {
-    private static Guild normandy = null;
-    private static TextChannel errorChannel = null;
-    private static TextChannel generalLogChannel = null;
-    private static TextChannel commandLogChannel = null;
+    private static final long normandy = 538084337984208906L;
+    private static final long errorChannel = 616986329447792661L;
+    private static final long generalLogChannel = 538094461381640192L;
+    private static final long commandLogChannel = 538087478960324630L;
+    private static final long privateAnswerChannel = 627891573430157334L;
 
     /**
      * Get the normandy instance.
@@ -16,10 +17,7 @@ public class Normandy {
      * @return normandy guild.
      */
     public static Guild getNormandy() {
-        if (normandy == null) {
-            normandy = ShepardBot.getJDA().getGuildById("538084337984208906");
-        }
-        return normandy;
+        return ShepardBot.getJDA().getGuildById(normandy);
     }
 
     /**
@@ -28,23 +26,37 @@ public class Normandy {
      * @return error text channel
      */
     public static TextChannel getErrorChannel() {
-        if (errorChannel == null) {
-            errorChannel = getNormandy().getTextChannelById("616986329447792661");
-        }
-        return errorChannel;
+        return getNormandy().getTextChannelById(errorChannel);
     }
 
+    /**
+     * Get the private answer channel.
+     *
+     * @return general log channel
+     */
     public static TextChannel getGeneralLogChannel() {
-        if (generalLogChannel == null) {
-            generalLogChannel = getNormandy().getTextChannelById("538094461381640192");
-        }
-        return generalLogChannel;
+        return getNormandy().getTextChannelById(generalLogChannel);
+
     }
+
+    /**
+     * Get the private answer channel.
+     *
+     * @return command log channel
+     */
 
     public static TextChannel getCommandLogChannel() {
-        if (commandLogChannel == null) {
-            commandLogChannel = getNormandy().getTextChannelById("538087478960324630");
-        }
-        return commandLogChannel;
+        return getNormandy().getTextChannelById(commandLogChannel);
     }
+
+    /**
+     * Get the private answer channel.
+     *
+     * @return private answer channel
+     */
+    public static TextChannel getPrivateAnswerChannel() {
+        return getNormandy().getTextChannelById(privateAnswerChannel);
+    }
+
+
 }

@@ -2,7 +2,7 @@ package de.eldoria.shepard.contexts.keywords.keyword;
 
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.keywords.Keyword;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 public class DariYes extends Keyword {
 
@@ -14,7 +14,7 @@ public class DariYes extends Keyword {
     }
 
     @Override
-    public void execute(MessageReceivedEvent event, String key) {
+    public void execute(GuildMessageReceivedEvent event, String key) {
         if (event.getAuthor().getId().equalsIgnoreCase("223192558468202496")) {
             MessageSender.sendMessage("Doch " + event.getAuthor().getAsMention(), event.getChannel());
 

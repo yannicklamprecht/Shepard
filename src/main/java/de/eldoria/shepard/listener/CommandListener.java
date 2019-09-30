@@ -12,11 +12,14 @@ import de.eldoria.shepard.contexts.commands.exceptions.CommandException;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.reactionactions.ExecuteCommand;
 import de.eldoria.shepard.reactionactions.SendCommandHelp;
+import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -30,31 +33,24 @@ import java.util.List;
 public class CommandListener extends ListenerAdapter {
 
     @Override
-    public void onMessageUpdate(@Nonnull MessageUpdateEvent event) {
+    public void onGuildMessageUpdate(@Nonnull GuildMessageUpdateEvent event) {
         if (event.getMessage().getTimeCreated().isAfter(OffsetDateTime.now().minusMinutes(5))) {
             onCommand(new MessageEventDataWrapper(event));
         }
     }
 
     @Override
-    public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
+    public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
         onCommand(new MessageEventDataWrapper(event));
     }
 
     private void onCommand(MessageEventDataWrapper messageContext) {
-        if (messageContext.getChannel() instanceof PrivateChannel) {
-            if (messageContext.getAuthor().isBot()) return;
-            messageContext.getChannel().sendMessage("I'm too shy. Please speak to me on a public Server.").queue();
-            return;
-        }
-
-
         String receivedMessage = messageContext.getMessage().getContentRaw();
         String[] args = receivedMessage.split(" ");
 
         boolean isCommand = false;
 
-        if (checkPrefix(receivedMessage, messageContext)) {
+        if (Verifier.checkPrefix(receivedMessage, messageContext)) {
             isCommand = true;
             args[0] = args[0].replaceFirst(PrefixData.getPrefix(messageContext.getGuild(), messageContext), "");
 
@@ -134,9 +130,5 @@ public class CommandListener extends ListenerAdapter {
 
     }
 
-    private boolean checkPrefix(String message, MessageEventDataWrapper event) {
-        return message.startsWith(PrefixData.getPrefix(event.getGuild(), event));
-
-    }
 }
 

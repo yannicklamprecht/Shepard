@@ -1,7 +1,9 @@
 package de.eldoria.shepard.messagehandler;
 
+import com.google.api.client.util.IOUtils;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.GreetingSettings;
+import de.eldoria.shepard.util.Emoji;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -15,8 +17,14 @@ import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.Color;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 
 public final class MessageSender {
@@ -256,5 +264,38 @@ public final class MessageSender {
                 + "\" on  guild " + receivedEvent.getGuild().getName() + " ("
                 + receivedEvent.getGuild().getId() + ")";
         ShepardBot.getLogger().command(command);
+    }
+
+    /**
+     * Sends a message to a user.
+     *
+     * @param user User to send
+     * @param attachments Attachments to send
+     * @param text Text to send
+     * @param messageContext message informations.
+     */
+    public static void sendMessage(User user, List<Message.Attachment> attachments, String text,
+                                   MessageEventDataWrapper messageContext) {
+        user.openPrivateChannel().queue(privateChannel -> {
+            privateChannel.sendMessage(text).queue();
+            if (!attachments.isEmpty()) {
+                try {
+                    InputStream url = new URL(attachments.get(0).getUrl()).openStream();
+                    String[] split = attachments.get(0).getProxyUrl().split("\\.");
+                    String suffix = split[split.length - 1];
+                    String[] urlSplitted = split[split.length - 2].split("\\\\");
+                    String name = urlSplitted[urlSplitted.length - 1];
+                    File tempFile = File.createTempFile(name, "." + suffix);
+                    FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
+                    IOUtils.copy(url, fileOutputStream);
+
+                    privateChannel.sendFile(tempFile).queue();
+                    tempFile.delete();
+                } catch (IOException e) {
+                    MessageSender.sendSimpleErrorEmbed("File could not be loaded", messageContext.getChannel());
+                    ShepardBot.getLogger().error(e);
+                }
+            }
+        });
     }
 }
