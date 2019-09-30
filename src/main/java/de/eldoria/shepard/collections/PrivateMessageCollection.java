@@ -50,7 +50,7 @@ public class PrivateMessageCollection {
      */
     public User getUser(String name) {
         List<MessageUser> matchedUsers = lastMessageUsers.stream()
-                .filter(messageUser -> messageUser.getName().startsWith(name.toLowerCase()))
+                .filter(messageUser -> messageUser.hasSimilarName(name))
                 .collect(Collectors.toList());
         if (!matchedUsers.isEmpty()) {
             return ShepardBot.getJDA().getUserById(matchedUsers.get(0).getId());
@@ -75,6 +75,10 @@ public class PrivateMessageCollection {
 
         public long getId() {
             return id;
+        }
+
+        public boolean hasSimilarName(String name) {
+            return this.name.startsWith(name.toLowerCase());
         }
     }
 }
