@@ -87,10 +87,10 @@ public class CommandListener extends ListenerAdapter {
                         command.execute(label, args, messageContext);
                     } catch (CommandException | InsufficientPermissionException e) {
                         try {
-                            MessageSender.sendSimpleError(e.getMessage(), messageContext.getChannel());
+                            MessageSender.sendSimpleErrorEmbed(e.getMessage(), messageContext.getChannel());
                         } catch (InsufficientPermissionException ex) {
                             messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
-                                    MessageSender.sendSimpleError(ex.getMessage(), privateChannel));
+                                    MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));
                         }
                     }
                 } else {
@@ -99,10 +99,15 @@ public class CommandListener extends ListenerAdapter {
                         command.sendCommandUsage(messageContext.getChannel());
                     } catch (InsufficientPermissionException ex) {
                         messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
-                                MessageSender.sendSimpleError(ex.getMessage(), privateChannel));
+                                MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));
                     }
 
                 }
+                return;
+            } else if (command != null && command.canBeExecutedHere(messageContext)) {
+                MessageSender.sendMessage("Insufficient permission for context **"
+                        + command.getClass().getSimpleName().toUpperCase()
+                        + "**. Ask a Server Administrator for permission.", messageContext.getChannel());
                 return;
             }
 
