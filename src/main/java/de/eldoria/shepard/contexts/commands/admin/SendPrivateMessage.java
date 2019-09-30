@@ -8,7 +8,7 @@ import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.Emoji;
-import de.eldoria.shepard.util.Verifier;
+import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
 
@@ -48,7 +48,7 @@ public class SendPrivateMessage extends Command {
             return;
         }
 
-        String text = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+        String text = TextFormatting.getRangeAsString(" ", args, 1, args.length);
 
         MessageSender.sendMessage(user, messageContext.getMessage().getAttachments(), text, messageContext);
 
