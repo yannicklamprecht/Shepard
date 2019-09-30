@@ -2,10 +2,13 @@ package de.eldoria.shepard;
 
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.KeyWordCollection;
+import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.configuration.Config;
 import de.eldoria.shepard.configuration.Loader;
 import de.eldoria.shepard.io.ConsoleReader;
 import de.eldoria.shepard.io.Logger;
+import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.register.ContextRegister;
 import de.eldoria.shepard.register.ListenerRegister;
 import net.dv8tion.jda.api.JDA;
@@ -13,6 +16,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.security.auth.login.LoginException;
+import java.awt.Color;
 import java.util.List;
 
 public final class ShepardBot {
@@ -33,11 +37,11 @@ public final class ShepardBot {
 
             logger.info("Initialising JDA");
 
-            try {
-                initiateJda();
-            } catch (LoginException | InterruptedException e) {
-                e.printStackTrace();
+            // Note: It is important to register your ReadyListener before building
+            if (config.debugActive()) {
+                org.apache.log4j.BasicConfigurator.configure();
             }
+
         } catch (InterruptedException e) {
             System.out.println("Startup interrupted");
         }
@@ -45,15 +49,33 @@ public final class ShepardBot {
     }
 
     private void setup() {
+        try {
+            initiateJda();
+        } catch (LoginException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
         ContextRegister.registerContexts();
         ListenerRegister.registerListener();
         logger.info("Registered " + CommandCollection.getInstance().getCommands().size() + " Commands");
         logger.info("Registered " + KeyWordCollection.getInstance().getKeywords().size() + " Keywords");
+        logger.info("Registered on " + jda.getGuilds().size() + " Guilds!");
 
         if (config.debugActive()) {
             CommandCollection.getInstance().debug();
             KeyWordCollection.getInstance().debug();
         }
+
+
+        MessageSender.sendSimpleTextBox("Shepard meldet sich zum Dienst! Erwarte ihre Befehle!",
+                "Registered " + CommandCollection.getInstance().getCommands().size() + " Commands!"
+                        + System.lineSeparator()
+                        + "Registered " + KeyWordCollection.getInstance().getKeywords().size() + " Keywords!"
+                        + System.lineSeparator()
+                        + "Serving " + jda.getGuilds().size() + " Guilds!",
+                Color.GREEN, ShepardReactions.EXCITED, Normandy.getGeneralLogChannel());
+
+        logger.info("Setup complete!");
     }
 
     /**
@@ -71,17 +93,15 @@ public final class ShepardBot {
      * @param args Arguments.
      */
     public static void main(String[] args) {
-        // Note: It is important to register your ReadyListener before building
-        org.apache.log4j.BasicConfigurator.configure();
-
         instance = new ShepardBot();
+
 
         instance.setup();
 
     }
 
     private void initiateJda() throws LoginException, InterruptedException {
-        jda = new JDABuilder(config.getToken()).build();
+        jda = new JDABuilder(config.getToken()).setMaxReconnectDelay(60).build();
 
         // optionally block until JDA is ready
         jda.awaitReady();
@@ -91,6 +111,8 @@ public final class ShepardBot {
         } catch (Exception e) {
             ShepardBot.getLogger().error(e.getMessage());
         }
+
+        logger.info("JDA initialized");
     }
 
     /**
@@ -126,8 +148,15 @@ public final class ShepardBot {
      * Close the shepard application.
      */
     public void shutdown() {
-        jda.shutdown();
-        ShepardBot.getLogger().info("JDA shut down. Closing Application in 5 Seconds!");
+        MessageSender.sendSimpleTextBox("Shepard verlässt die Brücke!!",
+                "",
+                Color.RED, ShepardReactions.ASLEEP, Normandy.getGeneralLogChannel());
+
+        if (jda != null) {
+            jda.shutdown();
+            ShepardBot.getLogger().info("JDA shut down. Closing Application in 5 Seconds!");
+        }
+        jda = null;
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {

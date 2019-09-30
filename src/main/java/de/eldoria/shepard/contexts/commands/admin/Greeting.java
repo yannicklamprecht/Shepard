@@ -4,10 +4,10 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.GreetingData;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.Arrays;
 
@@ -34,61 +34,66 @@ public class Greeting extends Command {
 
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
         if (cmd.equalsIgnoreCase("setChannel") || cmd.equalsIgnoreCase("sc")) {
-            setChannel(args, receivedEvent);
+            setChannel(args, messageContext);
             return;
         }
 
         if (cmd.equalsIgnoreCase("removeChannel") || cmd.equalsIgnoreCase(("rc"))) {
-            removeChannel(receivedEvent);
+            removeChannel(messageContext);
             return;
         }
 
         if (cmd.equalsIgnoreCase("setMessage") || cmd.equalsIgnoreCase("sm")) {
-            setMessage(args, receivedEvent);
+            setMessage(args, messageContext);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
-        sendCommandUsage(receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        sendCommandUsage(messageContext.getChannel());
     }
 
-    private void setMessage(String[] args, MessageReceivedEvent receivedEvent) {
+    private void setMessage(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length > 1) {
             String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
-            GreetingData.setGreetingText(receivedEvent.getGuild(), message, receivedEvent);
-
-            MessageSender.sendMessage("Changed greeting message to " + lineSeparator()
-                    + message, receivedEvent.getChannel());
+            if (GreetingData.setGreetingText(messageContext.getGuild(), message, messageContext)) {
+                MessageSender.sendMessage("Changed greeting message to " + lineSeparator()
+                        + message, messageContext.getChannel());
+            }
             return;
         }
-        MessageSender.sendSimpleError(ErrorType.NO_MESSAGE_FOUND, receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.NO_MESSAGE_FOUND, messageContext.getChannel());
     }
 
-    private void removeChannel(MessageReceivedEvent receivedEvent) {
-        GreetingData.removeGreetingChannel(receivedEvent.getGuild(), receivedEvent);
-        MessageSender.sendMessage("Removed greeting channel.", receivedEvent.getChannel());
+    private void removeChannel(MessageEventDataWrapper messageContext) {
+        if (GreetingData.removeGreetingChannel(messageContext.getGuild(), messageContext)) {
+            MessageSender.sendMessage("Removed greeting channel.", messageContext.getChannel());
+        }
+
     }
 
-    private void setChannel(String[] args, MessageReceivedEvent receivedEvent) {
+    private void setChannel(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 1) {
-            GreetingData.setGreetingChannel(receivedEvent.getGuild(),
-                    receivedEvent.getChannel(), receivedEvent);
-            MessageSender.sendMessage("Greeting Channel set to "
-                    + ((TextChannel) receivedEvent.getChannel()).getAsMention(), receivedEvent.getChannel());
+            if (GreetingData.setGreetingChannel(messageContext.getGuild(),
+                    messageContext.getChannel(), messageContext)) {
+                MessageSender.sendMessage("Greeting Channel set to "
+                        + ((TextChannel) messageContext.getChannel()).getAsMention(), messageContext.getChannel());
+            }
             return;
         } else if (args.length == 2) {
-            TextChannel channel = receivedEvent.getGuild().getTextChannelById(DbUtil.getIdRaw(args[1]));
+            TextChannel channel = messageContext.getGuild().getTextChannelById(DbUtil.getIdRaw(args[1]));
             if (channel != null) {
-                GreetingData.setGreetingChannel(receivedEvent.getGuild(), channel, receivedEvent);
-                MessageSender.sendMessage("Greeting channel set to "
-                        + channel.getAsMention(), receivedEvent.getChannel());
+                if (GreetingData.setGreetingChannel(messageContext.getGuild(), channel, messageContext)) {
+                    MessageSender.sendMessage("Greeting channel set to "
+                            + channel.getAsMention(), messageContext.getChannel());
+                }
+
                 return;
             }
         }
-        MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, receivedEvent.getChannel());
-        sendCommandUsage(receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext.getChannel());
+        sendCommandUsage(messageContext.getChannel());
     }
 }

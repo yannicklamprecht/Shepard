@@ -4,7 +4,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.keywords.Keyword;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.kodehawa.lib.imageboards.DefaultImageBoards;
 import net.kodehawa.lib.imageboards.entities.BoardImage;
 
@@ -21,7 +21,7 @@ public class Nudes extends Keyword {
     }
 
     @Override
-    public void execute(MessageReceivedEvent event, String key) {
+    public void execute(GuildMessageReceivedEvent event, String key) {
         if (event.getChannel().getType() == ChannelType.TEXT) {
             TextChannel channel = (TextChannel) event.getChannel();
             if (channel.isNSFW()) {

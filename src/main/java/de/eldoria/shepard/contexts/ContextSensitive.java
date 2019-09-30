@@ -4,6 +4,7 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.database.types.ContextSettings;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -11,7 +12,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.Collections;
@@ -35,27 +35,37 @@ public abstract class ContextSensitive {
      * A command is valid if it is not excluded to use on a specific guild
      * or if the author is restricted to use it.
      *
-     * @param event the event of the command.
+     * @param context the context of the command.
      * @return {@code true} if the command is valid, {@code false} otherwise.
      */
-    public boolean isContextValid(MessageReceivedEvent event) {
-        if (event.getChannel() instanceof TextChannel) {
-            TextChannel textChannel = (TextChannel) event.getChannel();
-            if (getContextData(event).isNsfw() && !textChannel.isNSFW()) {
+    public boolean isContextValid(MessageEventDataWrapper context) {
+        if (context.getChannel() instanceof TextChannel) {
+            TextChannel textChannel = (TextChannel) context.getChannel();
+            if (getContextData(context).isNsfw() && !textChannel.isNSFW()) {
                 return false;
             }
         }
 
-        if (canExecutedByUser(event) && canExecutedOnGuild(event)) {
-            return hasPermission(event);
+        if (canBeExecutedHere(context)) {
+            return hasPermission(context);
         }
         return false;
     }
 
-    private boolean canExecutedOnGuild(MessageReceivedEvent event) {
-        ContextSettings data = getContextData(event);
+    /**
+     * Returns if the context can be executed on this guild by this user, if he has the permission.
+     *
+     * @param context the context of the command.
+     * @return {@code true} if the context can be executed on guild by user with permissions.
+     */
+    public boolean canBeExecutedHere(MessageEventDataWrapper context) {
+        return canExecutedByUser(context) && canExecutedOnGuild(context);
+    }
+
+    private boolean canExecutedOnGuild(MessageEventDataWrapper context) {
+        ContextSettings data = getContextData(context);
         if (data.isGuildCheckActive()) {
-            if (data.getGuildList().contains(event.getGuild().getId())) {
+            if (data.getGuildList().contains(context.getGuild().getId())) {
                 return data.getGuildListType() == ListType.WHITELIST;
             }
             return data.getGuildListType() != ListType.WHITELIST;
@@ -63,10 +73,10 @@ public abstract class ContextSensitive {
         return true;
     }
 
-    private boolean canExecutedByUser(MessageReceivedEvent event) {
-        ContextSettings data = getContextData(event);
+    private boolean canExecutedByUser(MessageEventDataWrapper context) {
+        ContextSettings data = getContextData(context);
         if (data.isUserCheckActive()) {
-            if (data.getUserList().contains(event.getAuthor().getId())) {
+            if (data.getUserList().contains(context.getAuthor().getId())) {
                 return data.getUserListType() == ListType.WHITELIST;
             }
             return data.getUserListType() != ListType.WHITELIST;
@@ -75,9 +85,9 @@ public abstract class ContextSensitive {
     }
 
 
-    private boolean hasPermission(MessageReceivedEvent event) {
-        Member member = event.getMember();
-        if (!getContextData(event).isAdminOnly()
+    private boolean hasPermission(MessageEventDataWrapper context) {
+        Member member = context.getMember();
+        if (!getContextData(context).isAdminOnly()
                 || (member != null && member.hasPermission(Permission.ADMINISTRATOR))) {
             return true;
         }
@@ -85,7 +95,7 @@ public abstract class ContextSensitive {
 
         List<Role> memberRoles = member != null ? member.getRoles() : Collections.emptyList();
 
-        List<String> allowedRoles = getRolePermissions(event).get(event.getGuild().getId());
+        List<String> allowedRoles = getRolePermissions(context).get(context.getGuild().getId());
 
         if (allowedRoles == null) {
             allowedRoles = Collections.emptyList();
@@ -97,12 +107,12 @@ public abstract class ContextSensitive {
             }
         }
 
-        List<String> allowedUsers = getUserPermissions(event).get(event.getGuild().getId());
+        List<String> allowedUsers = getUserPermissions(context).get(context.getGuild().getId());
         if (allowedUsers == null) {
             allowedUsers = Collections.emptyList();
         }
 
-        return allowedUsers.contains(event.getAuthor().getId());
+        return allowedUsers.contains(context.getAuthor().getId());
     }
 
     private void loadCache() {
@@ -167,15 +177,15 @@ public abstract class ContextSensitive {
         ShepardBot.getLogger().info(getDebugInfo());
     }
 
-    private ContextSettings getContextData(MessageReceivedEvent event) {
-        return ContextData.getContextData(getClass().getSimpleName(), event);
+    private ContextSettings getContextData(MessageEventDataWrapper context) {
+        return ContextData.getContextData(getClass().getSimpleName(), context);
     }
 
-    private Map<String, List<String>> getRolePermissions(MessageReceivedEvent event) {
-        return ContextData.getContextRolePermissions(getClass().getSimpleName(), event);
+    private Map<String, List<String>> getRolePermissions(MessageEventDataWrapper context) {
+        return ContextData.getContextRolePermissions(getClass().getSimpleName(), context);
     }
 
-    private Map<String, List<String>> getUserPermissions(MessageReceivedEvent event) {
-        return ContextData.getContextUserPermissions(getClass().getSimpleName(), event);
+    private Map<String, List<String>> getUserPermissions(MessageEventDataWrapper context) {
+        return ContextData.getContextUserPermissions(getClass().getSimpleName(), context);
     }
 }

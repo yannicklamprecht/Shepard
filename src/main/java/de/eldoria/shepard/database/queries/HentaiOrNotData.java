@@ -1,0 +1,212 @@
+package de.eldoria.shepard.database.queries;
+
+import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.database.DatabaseConnector;
+import de.eldoria.shepard.database.types.HentaiImage;
+import de.eldoria.shepard.database.types.Rank;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.ISnowflake;
+import net.dv8tion.jda.api.entities.User;
+
+import java.sql.Array;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
+
+public final class HentaiOrNotData {
+
+    private HentaiOrNotData() {
+    }
+
+    /**
+     * Saves a image set to database.
+     *
+     * @param croppedImage   link of cropped image
+     * @param fullImage      link of full image
+     * @param hentai         true if its a hentai image
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
+     */
+    public static boolean addHentaiImage(String croppedImage, String fullImage, boolean hentai,
+                                         MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.add_hentai_image(?,?,?)")) {
+            statement.setString(1, croppedImage);
+            statement.setString(2, fullImage);
+            statement.setBoolean(3, hentai);
+            statement.execute();
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Get a random hentai image set from database.
+     *
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return hentai image object
+     */
+    public static HentaiImage getHentaiImage(MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_hentai_image_data()")) {
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return new HentaiImage(result.getString("cropped_image"),
+                        result.getString("full_image"),
+                        result.getBoolean("hentai"));
+            }
+
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+        }
+        return null;
+    }
+
+    /**
+     * Removes a hentai image set from database.
+     *
+     * @param imageUrl       url of cropped ir full image.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
+     */
+    public static boolean removeHentaiImage(String imageUrl, MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.remove_hentai_image(?)")) {
+            statement.setString(1, imageUrl);
+            statement.execute();
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Add the score to the score in the database. Negative score subtracts from score.
+     *
+     * @param guild          Guild where the score should be applied
+     * @param users          List of users where the score should be applied
+     * @param score          The score which should be applied
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
+     */
+    public static boolean addVoteScore(Guild guild, List<User> users, int score,
+                                       MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.add_vote_score(?,?,?)")) {
+            statement.setString(1, guild.getId());
+            Array ids = DatabaseConnector.getConn().createArrayOf("varchar",
+                    users.stream().map(ISnowflake::getId).toArray());
+            statement.setArray(2, ids);
+            statement.setInt(3, score);
+            statement.execute();
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Get the top x on a guild.
+     *
+     * @param guild          Guild where you want to have the top x
+     * @param scoreAmount    Amount of entries. For the top 10 enter a 10.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return sorted list of ranks in descending order.
+     */
+    public static List<Rank> getTopScore(Guild guild, int scoreAmount, MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_top_score(?,?)")) {
+            statement.setString(1, guild.getId());
+            statement.setInt(2, scoreAmount);
+            return getScoreListFromResult(statement.executeQuery());
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * Get the global top x. The score of all guilds is accumulated for each user.
+     *
+     * @param scoreAmount    Amount of entries. For the top 10 enter a 10.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return sorted list of ranks in descending order.
+     */
+    public static List<Rank> getGlobalTopScore(int scoreAmount, MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_global_top_score(?)")) {
+            statement.setInt(1, scoreAmount);
+            return getScoreListFromResult(statement.executeQuery());
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * Get the score of a user on a guild.
+     *
+     * @param guild          Guild for lookup
+     * @param user           User for lookup
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return score of user.
+     */
+    public static int getUserScore(Guild guild, User user, MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_user_score(?,?)")) {
+            statement.setString(1, guild.getId());
+            statement.setString(2, user.getId());
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return result.getInt(1);
+            }
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+        }
+        return -1;
+    }
+
+    /**
+     * Get the sum of all scores of a user.
+     *
+     * @param user           User for lookup.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return global score of user
+     */
+    public static int getGlobalUserScore(User user, MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_global_user_score(?)")) {
+            statement.setString(1, user.getId());
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return result.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+        }
+        return -1;
+    }
+
+    private static List<Rank> getScoreListFromResult(ResultSet result) throws SQLException {
+        List<Rank> ranks = new ArrayList<>();
+
+        while (result.next()) {
+            User user = ShepardBot.getJDA().getUserById(result.getString("user_id"));
+            if (user != null) {
+                ranks.add(new Rank(user, result.getInt("score")));
+            }
+        }
+        return ranks;
+    }
+}

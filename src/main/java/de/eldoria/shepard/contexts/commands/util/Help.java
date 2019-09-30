@@ -2,13 +2,12 @@ package de.eldoria.shepard.contexts.commands.util;
 
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.database.queries.PrefixData;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.PrivateChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -32,33 +31,33 @@ public class Help extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        String prefix = PrefixData.getPrefix(receivedEvent.getGuild(), receivedEvent);
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
+        String prefix = PrefixData.getPrefix(messageContext.getGuild(), messageContext);
 
         //Command List
         if (args.length == 0) {
-            listCommands(receivedEvent);
+            listCommands(messageContext);
             return;
         }
 
         Command command = CommandCollection.getInstance().getCommand(args[0]);
-        if (command == null || !command.isContextValid(receivedEvent)) {
+        if (command == null || !command.isContextValid(messageContext)) {
             MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!",
                             "Type " + prefix + "help for a full list of available commands!", false)},
-                    receivedEvent.getChannel());
+                    messageContext.getChannel());
             return;
         }
 
         //Command Help
         if (args.length == 1) {
-            commandHelp(receivedEvent.getChannel(), command);
+            commandHelp(messageContext.getChannel(), command);
             return;
         }
 
 
         //Arg help
         if (args.length == 2) {
-            argumentHelp(args[1], receivedEvent.getChannel(), command);
+            argumentHelp(args[1], messageContext.getChannel(), command);
             return;
 
         }
@@ -67,7 +66,7 @@ public class Help extends Command {
                         + prefix + "help for a list of commands.\n"
                         + prefix + "help [command] for help for a specific command.\n"
                         + prefix + "help [command] [arg] for a description of the argument.", false)},
-                receivedEvent.getChannel());
+                messageContext.getChannel());
     }
 
     /* Sends help for a specific argument of a command.*/
@@ -81,7 +80,7 @@ public class Help extends Command {
     }
 
     /* Sends a list of all commands with description */
-    private void listCommands(MessageReceivedEvent event) {
+    private void listCommands(MessageEventDataWrapper event) {
         List<Command> commands = CommandCollection.getInstance().getCommands();
 
         List<MessageEmbed.Field> fields = new ArrayList<>();
@@ -100,18 +99,13 @@ public class Help extends Command {
             inline++;
         }
 
-        PrivateChannel complete = event.getAuthor().openPrivateChannel().complete();
-        if (complete != null && event.getAuthor().hasPrivateChannel()) {
-            MessageSender.sendTextBox("__**COMMANDS**__", fields, complete, Color.green);
-            MessageSender.sendMessage("I send you a direct message with a list of commands.", event.getChannel());
-        } else {
-            MessageSender.sendTextBox("__**COMMANDS**__", fields, event.getChannel(), Color.green);
-        }
-
-
-        //fields.add(new MessageEmbed.Field("help", output, false));
-        //MessageSender.sendMessage("**__HELP__**" + System.lineSeparator() + output, event.getChannel());
-
-
+        event.getAuthor().openPrivateChannel().queue(privateChannel -> {
+            if (privateChannel != null && event.getAuthor().hasPrivateChannel()) {
+                MessageSender.sendTextBox("__**COMMANDS**__", fields, privateChannel, Color.green);
+                MessageSender.sendMessage("I send you a direct message with a list of commands.", event.getChannel());
+            } else {
+                MessageSender.sendTextBox("__**COMMANDS**__", fields, event.getChannel(), Color.green);
+            }
+        });
     }
 }

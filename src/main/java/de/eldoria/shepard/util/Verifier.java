@@ -1,8 +1,10 @@
 package de.eldoria.shepard.util;
 
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.DbUtil;
+import de.eldoria.shepard.database.queries.PrefixData;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -89,24 +91,59 @@ public class Verifier {
     /**
      * Returns from a list of text user ids all valid user.
      *
-     * @param guild guild for role lookup
-     * @param args  array of role id
+     * @param args array of role id
      * @return list of valid roles
      */
-    public static List<User> getValidUser(Guild guild, List<String> args) {
-        return getValidUser(guild, args.toArray(String[]::new));
+    public static List<User> getValidUserByString(List<String> args) {
+        return getValidUserByString(args.toArray(String[]::new));
     }
 
     /**
      * Returns from a list of user ids all valid user.
      *
-     * @param guild guild for channel lookup
-     * @param args  array of channel ids
+     * @param args array of channel ids
      * @return list of valid channels
      */
-    public static List<User> getValidUser(Guild guild, String[] args) {
-        return Arrays.stream(args).map(channelId -> guild.getMemberById(DbUtil.getIdRaw(channelId)))
-                .filter(Objects::nonNull).map(Member::getUser)
+    public static List<User> getValidUserByString(String[] args) {
+        return Arrays.stream(args)
+                .map(channelId -> ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(channelId)))
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
+
+    public static List<User> getValidUserByLong(List<Long> collect) {
+        return collect.stream()
+                .map(id -> ShepardBot.getJDA().getUserById(id))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+
+    /**
+     * Returns true if on of the arguments matches the argument. Not case sensitive.
+     *
+     * @param argument argument to match against.
+     * @param args     one or more arguments to check.
+     * @return true if one argument matches.
+     */
+    public static boolean isArgument(String argument, String... args) {
+        for (String arg : args) {
+            if (argument.equalsIgnoreCase(arg)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if the message is a command.
+     *
+     * @param message
+     * @param event
+     * @return
+     */
+    public static boolean checkPrefix(String message, MessageEventDataWrapper event) {
+        return message.startsWith(PrefixData.getPrefix(event.getGuild(), event));
+    }
+
 }

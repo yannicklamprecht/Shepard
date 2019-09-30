@@ -6,7 +6,7 @@ public enum ErrorType {
      */
     DATABASE_ERROR("Ups. Looks like my Database has a small hickup." + System.lineSeparator()
             + "Can you give me another try, pls?" + System.lineSeparator()
-            + "IF error persists contact Bot Support"),
+            + "IF error persists contact Bot Support", true),
     /**
      * Used when a command argument is not valid.
      */
@@ -98,7 +98,11 @@ public enum ErrorType {
     /**
      * Used when a context is not found.
      */
-    CONTEXT_NOT_FOUND("Context not found. Please use the context name or an alias!");
+    CONTEXT_NOT_FOUND("Context not found. Please use the context name or an alias!", false),
+    /**
+     * Used when no emote was found.
+     */
+    NO_EMOTE_FOUND("No emote was found.");
 
 
     /**
@@ -106,7 +110,21 @@ public enum ErrorType {
      */
     public final String message;
 
-    private ErrorType(String message) {
-        this.message = message;
+    /**
+     * True if the error should be send as an embed.
+     */
+    public final boolean isEmbed;
+
+    ErrorType(String message, boolean embed) {
+        if (embed) {
+            this.message = message;
+        } else {
+            this.message = "**ERROR**" + System.lineSeparator() + message;
+        }
+        this.isEmbed = embed;
+    }
+
+    ErrorType(String message) {
+        this(message, false);
     }
 }

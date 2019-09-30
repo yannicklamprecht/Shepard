@@ -5,9 +5,9 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.database.types.ContextSettings;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import static java.lang.System.lineSeparator;
 
@@ -24,15 +24,16 @@ public class ContextInfo extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        String contextName = ContextHelper.getContextName(args[0], receivedEvent);
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
+        String contextName = ContextHelper.getContextName(args[0], messageContext);
         if (contextName != null) {
-            ContextSettings data = ContextData.getContextData(contextName, receivedEvent);
+            ContextSettings data = ContextData.getContextData(contextName, messageContext);
+
             MessageSender.sendMessage("Information about context " + contextName.toUpperCase() + lineSeparator()
                     + "```yaml" + lineSeparator()
-                    + data.toString() + lineSeparator() + "```", receivedEvent.getChannel());
+                    + data.toString() + lineSeparator() + "```", messageContext.getChannel());
         } else {
-            MessageSender.sendSimpleError(ErrorType.INVALID_CONTEXT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_CONTEXT, messageContext.getChannel());
         }
     }
 }

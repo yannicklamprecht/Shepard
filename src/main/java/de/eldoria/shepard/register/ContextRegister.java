@@ -1,12 +1,15 @@
 package de.eldoria.shepard.register;
 
 import de.eldoria.shepard.contexts.ContextSensitive;
+import de.eldoria.shepard.contexts.commands.admin.BotPresence;
 import de.eldoria.shepard.contexts.commands.admin.Changelog;
 import de.eldoria.shepard.contexts.commands.admin.Greeting;
 import de.eldoria.shepard.contexts.commands.admin.Invite;
 import de.eldoria.shepard.contexts.commands.admin.ManageQuote;
 import de.eldoria.shepard.contexts.commands.admin.Permission;
 import de.eldoria.shepard.contexts.commands.admin.Prefix;
+import de.eldoria.shepard.contexts.commands.admin.PrivateAnswer;
+import de.eldoria.shepard.contexts.commands.admin.SendPrivateMessage;
 import de.eldoria.shepard.contexts.commands.admin.ShowKeyword;
 import de.eldoria.shepard.contexts.commands.admin.Ticket;
 import de.eldoria.shepard.contexts.commands.admin.TicketSettings;
@@ -16,6 +19,9 @@ import de.eldoria.shepard.contexts.commands.botconfig.ManageContextGuild;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContextUsers;
 import de.eldoria.shepard.contexts.commands.exklusive.IsHaddeWorking;
 import de.eldoria.shepard.contexts.commands.exklusive.Meetings;
+import de.eldoria.shepard.contexts.commands.fun.GuessGame;
+import de.eldoria.shepard.contexts.commands.admin.GuessGameConfig;
+import de.eldoria.shepard.contexts.commands.fun.LargeEmote;
 import de.eldoria.shepard.contexts.commands.fun.MagicConch;
 import de.eldoria.shepard.contexts.commands.fun.Oha;
 import de.eldoria.shepard.contexts.commands.fun.Owo;
@@ -29,6 +35,7 @@ import de.eldoria.shepard.contexts.commands.fun.Uwud;
 import de.eldoria.shepard.contexts.commands.util.GetRaw;
 import de.eldoria.shepard.contexts.commands.util.Help;
 import de.eldoria.shepard.contexts.commands.util.HireMe;
+import de.eldoria.shepard.contexts.commands.util.Home;
 import de.eldoria.shepard.contexts.commands.util.ListServer;
 import de.eldoria.shepard.contexts.commands.util.Test;
 import de.eldoria.shepard.contexts.commands.util.UserInfo;
@@ -81,6 +88,7 @@ public final class ContextRegister {
         contextSensitives.add(new ListServer());
         contextSensitives.add(new Test());
         contextSensitives.add(new UserInfo());
+        contextSensitives.add(new Home());
     }
 
     private void registerFunCommands() {
@@ -94,6 +102,8 @@ public final class ContextRegister {
         contextSensitives.add(new Uwud());
         contextSensitives.add(new Quote());
         contextSensitives.add(new Someone());
+        contextSensitives.add(new LargeEmote());
+        contextSensitives.add(new GuessGame());
     }
 
     private void registerExclusiveCommands() {
@@ -118,6 +128,11 @@ public final class ContextRegister {
         contextSensitives.add(new Changelog());
         contextSensitives.add(new ManageQuote());
         contextSensitives.add(new Permission());
+        contextSensitives.add(new GuessGameConfig());
+        contextSensitives.add(new BotPresence());
+        contextSensitives.add(new PrivateAnswer());
+        contextSensitives.add(new SendPrivateMessage());
+
     }
 
     private static void getInstance() {

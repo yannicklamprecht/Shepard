@@ -3,7 +3,9 @@ package de.eldoria.shepard.collections;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.keywords.KeywordArgs;
 import de.eldoria.shepard.contexts.keywords.Keyword;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,7 +48,7 @@ public final class KeyWordCollection {
      * @param event message received event.
      * @return KeyWordArgs object or null if no keyword was found.
      */
-    public KeywordArgs getKeyword(MessageReceivedEvent event) {
+    public KeywordArgs getKeyword(GuildMessageReceivedEvent event) {
         for (Keyword keyword : keywords) {
             if (keyword.hasKeyword(event)) {
                 return keyword.getKeyWordArgs(event);
@@ -69,7 +71,7 @@ public final class KeyWordCollection {
      * @param event event for permission check
      * @return Keyword object
      */
-    public Keyword getKeywordWithContextName(String contextName, MessageReceivedEvent event) {
+    public Keyword getKeywordWithContextName(String contextName, MessageEventDataWrapper event) {
         for (Keyword k : keywords) {
             if (k.getClass().getSimpleName().equalsIgnoreCase(contextName) && k.isContextValid(event)) {
                 return k;

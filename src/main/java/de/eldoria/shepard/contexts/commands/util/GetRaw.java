@@ -1,8 +1,8 @@
 package de.eldoria.shepard.contexts.commands.util;
 
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 /**
  * A command for echoing messages in a raw format.
@@ -18,7 +18,7 @@ public class GetRaw extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
-        MessageSender.sendMessage("`" + receivedEvent.getMessage().getContentRaw() + "`", receivedEvent.getChannel());
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
+        MessageSender.sendMessage("`" + messageContext.getMessage().getContentRaw() + "`", messageContext.getChannel());
     }
 }

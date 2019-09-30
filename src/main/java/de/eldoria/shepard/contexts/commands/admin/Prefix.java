@@ -3,9 +3,9 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import static de.eldoria.shepard.database.queries.PrefixData.setPrefix;
 import static java.lang.System.lineSeparator;
@@ -27,38 +27,42 @@ public class Prefix extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
         if (cmd.equalsIgnoreCase("set") || cmd.equalsIgnoreCase("s")) {
-            set(args, receivedEvent);
+            set(args, messageContext);
             return;
         }
         if (cmd.equalsIgnoreCase("reset") || cmd.equalsIgnoreCase("r")) {
-            reset(receivedEvent);
+            reset(messageContext);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
-        sendCommandUsage(receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        sendCommandUsage(messageContext.getChannel());
     }
 
-    private void reset(MessageReceivedEvent receivedEvent) {
-        setPrefix(receivedEvent.getGuild(), ShepardBot.getConfig().getPrefix(), receivedEvent);
+    private void reset(MessageEventDataWrapper messageContext) {
+        if (setPrefix(messageContext.getGuild(), ShepardBot.getConfig().getPrefix(), messageContext)) {
+            MessageSender.sendMessage("Set Prefix to '" + ShepardBot.getConfig().getPrefix() + "'",
+                    messageContext.getChannel());
+        }
     }
 
-    private void set(String[] args, MessageReceivedEvent receivedEvent) {
+    private void set(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 1) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, receivedEvent.getChannel());
-            sendCommandUsage(receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
+            sendCommandUsage(messageContext.getChannel());
             return;
         }
 
         if (args[1].length() > 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_PREFIX_LENGTH, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_PREFIX_LENGTH, messageContext.getChannel());
             return;
         }
 
-        setPrefix(receivedEvent.getGuild(), args[1].trim(), receivedEvent);
-        MessageSender.sendMessage("Changed prefix to '" + args[1].trim() + "'", receivedEvent.getChannel());
+        if (setPrefix(messageContext.getGuild(), args[1].trim(), messageContext)) {
+            MessageSender.sendMessage("Changed prefix to '" + args[1].trim() + "'", messageContext.getChannel());
+        }
     }
 }

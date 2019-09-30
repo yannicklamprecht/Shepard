@@ -3,12 +3,12 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.ChangelogData;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.util.List;
 import java.util.Objects;
@@ -43,34 +43,34 @@ public class Changelog extends Command {
     }
 
     @Override
-    protected void internalExecute(String label, String[] args, MessageReceivedEvent receivedEvent) {
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
         if (cmd.equalsIgnoreCase("addRole") || cmd.equalsIgnoreCase("ar")
                 || cmd.equalsIgnoreCase("removeRole") || cmd.equalsIgnoreCase("rr")) {
-            modifyRoles(args, receivedEvent, cmd);
+            modifyRoles(args, messageContext, cmd);
             return;
         }
 
         if (cmd.equalsIgnoreCase("activate") || cmd.equalsIgnoreCase("a")) {
-            activate(args, receivedEvent);
+            activate(args, messageContext);
             return;
         }
 
         if (cmd.equalsIgnoreCase("deactivate") || cmd.equalsIgnoreCase("d")) {
-            deactivate(receivedEvent);
+            deactivate(messageContext);
             return;
         }
 
         if (cmd.equalsIgnoreCase("roles") || cmd.equalsIgnoreCase("r")) {
-            showRoles(receivedEvent);
+            showRoles(messageContext);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, receivedEvent.getChannel());
-        sendCommandUsage(receivedEvent.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        sendCommandUsage(messageContext.getChannel());
     }
 
-    private void showRoles(MessageReceivedEvent receivedEvent) {
+    private void showRoles(MessageEventDataWrapper receivedEvent) {
         List<String> roleIds = ChangelogData.getRoles(receivedEvent.getGuild(), receivedEvent);
 
         List<String> roleMentions = roleIds.stream()
@@ -82,51 +82,54 @@ public class Changelog extends Command {
                 String.join(lineSeparator(), roleMentions), receivedEvent.getChannel());
     }
 
-    private void deactivate(MessageReceivedEvent receivedEvent) {
-        ChangelogData.removeChannel(receivedEvent.getGuild(), receivedEvent);
-
-        MessageSender.sendMessage("Changelog is deactivated", receivedEvent.getChannel());
+    private void deactivate(MessageEventDataWrapper receivedEvent) {
+        if (ChangelogData.removeChannel(receivedEvent.getGuild(), receivedEvent)) {
+            MessageSender.sendMessage("Changelog is deactivated", receivedEvent.getChannel());
+        }
     }
 
-    private void activate(String[] args, MessageReceivedEvent receivedEvent) {
+    private void activate(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             return;
         }
 
-        TextChannel textChannelById = receivedEvent.getGuild().getTextChannelById(getIdRaw(args[1]));
+        TextChannel textChannelById = messageContext.getGuild().getTextChannelById(getIdRaw(args[1]));
 
         if (textChannelById == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, messageContext.getChannel());
             return;
         }
 
-        ChangelogData.setChannel(receivedEvent.getGuild(), textChannelById, receivedEvent);
+        if (ChangelogData.setChannel(messageContext.getGuild(), textChannelById, messageContext)) {
+            MessageSender.sendMessage("Changelog is presented in channel" + textChannelById.getAsMention(),
+                    messageContext.getChannel());
+        }
 
-        MessageSender.sendMessage("Changelog is presented in channel" + textChannelById.getAsMention(),
-                receivedEvent.getChannel());
     }
 
-    private void modifyRoles(String[] args, MessageReceivedEvent receivedEvent, String cmd) {
+    private void modifyRoles(String[] args, MessageEventDataWrapper messageContext, String cmd) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             return;
         }
 
-        Role roleById = receivedEvent.getGuild().getRoleById(getIdRaw(args[1]));
+        Role roleById = messageContext.getGuild().getRoleById(getIdRaw(args[1]));
         if (roleById == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ROLE, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ROLE, messageContext.getChannel());
             return;
         }
 
         if (cmd.equalsIgnoreCase("addRole") || cmd.equalsIgnoreCase("ar")) {
-            ChangelogData.addRole(receivedEvent.getGuild(), roleById, receivedEvent);
-            MessageSender.sendMessage("Added role **" + roleById.getName() + "** to changelog.",
-                    receivedEvent.getChannel());
+            if (ChangelogData.addRole(messageContext.getGuild(), roleById, messageContext)) {
+                MessageSender.sendMessage("Added role **" + roleById.getName() + "** to changelog.",
+                        messageContext.getChannel());
+            }
         } else {
-            ChangelogData.removeRole(receivedEvent.getGuild(), roleById, receivedEvent);
-            MessageSender.sendMessage("Removed role **" + roleById.getName() + "** from changelog.",
-                    receivedEvent.getChannel());
+            if (ChangelogData.removeRole(messageContext.getGuild(), roleById, messageContext)) {
+                MessageSender.sendMessage("Removed role **" + roleById.getName() + "** from changelog.",
+                        messageContext.getChannel());
+            }
         }
     }
 }
