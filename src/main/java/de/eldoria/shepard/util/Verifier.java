@@ -12,9 +12,16 @@ import net.dv8tion.jda.api.entities.User;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Verifier {
+    private static Pattern ipv4 = Pattern.compile("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}(:[0-9]{1,5})?$");
+    private static Pattern ipv6 = Pattern.compile("^\\[?([a-fA-F0-9:]{8,40})(]:[0-9]{1,5})?$");
+    private static Pattern domain = Pattern.compile("^(?!://)([a-zA-Z0-9-_]+\\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\\.[a-zA-Z]{2,11}?(:[0-9]{1,5})?$");
+
+
     /**
      * Returns true if the id is a valid id.
      *
@@ -144,6 +151,24 @@ public class Verifier {
      */
     public static boolean checkPrefix(String message, MessageEventDataWrapper event) {
         return message.startsWith(PrefixData.getPrefix(event.getGuild(), event));
+    }
+
+    /**
+     * Check if the address matches the pattern of opv4/6 or a domain with or without port.
+     * @param address address to check
+     * @return true if it is a valid address
+     */
+    public static boolean isAddress(String address) {
+        Matcher matcher = ipv4.matcher(address);
+        if (matcher.find()) {
+            return true;
+        }
+        matcher = ipv6.matcher(address);
+        if (matcher.find()) {
+            return true;
+        }
+        matcher = domain.matcher(address);
+        return matcher.find();
     }
 
 }
