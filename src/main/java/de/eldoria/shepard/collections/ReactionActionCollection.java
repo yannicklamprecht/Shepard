@@ -40,9 +40,7 @@ public final class ReactionActionCollection {
 
     public void addReactionAction(TextChannel channel, Message message, Action action) {
         UniqueMessageIdentifier umi = new UniqueMessageIdentifier(channel, message.getIdLong());
-        if (!reactionActions.containsKey(umi)) {
-            reactionActions.put(umi, new ArrayList<>());
-        }
+        reactionActions.putIfAbsent(umi, new ArrayList<>());
         reactionActions.get(umi).add(action);
 
         executorService.schedule(new ActionRemover(umi, action), action.getSecondsValid(), TimeUnit.SECONDS);
