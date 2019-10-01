@@ -1,6 +1,8 @@
 package de.eldoria.shepard.reactionactions;
 
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.messagehandler.ErrorType;
+import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.Emoji;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
@@ -14,7 +16,7 @@ public class ExecuteCommand extends Action {
 
     public ExecuteCommand(User exclusiveUser, Command command,
                           String[] args, MessageEventDataWrapper messageContext) {
-        super(Emoji.CHECK_MARK_BUTTON, exclusiveUser, 60,true);
+        super(Emoji.CHECK_MARK_BUTTON, exclusiveUser, 60, true);
         this.command = command;
         this.args = args;
         this.messageContext = messageContext;
@@ -22,11 +24,16 @@ public class ExecuteCommand extends Action {
 
     @Override
     protected void internalExecute(GuildMessageReactionAddEvent event) {
-        command.execute(command.getCommandName(), args, messageContext);
-        event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(message -> {
-            if (message != null) {
-                message.delete().queue();
-            }
-        });
+
+        if (command.checkArguments(args)) {
+            command.execute(command.getCommandName(), args, messageContext);
+            event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(message -> {
+                if (message != null) {
+                    message.delete().queue();
+                }
+            });
+        } else {
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
+        }
     }
 }
