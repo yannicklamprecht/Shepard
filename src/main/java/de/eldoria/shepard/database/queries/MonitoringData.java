@@ -10,11 +10,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public final class MonitoringData {
+
+    private static Map<Long, List<Address>> addresses = new HashMap<>();
+    private static Map<Long, Boolean> addressesDirty = new HashMap<>();
 
     private MonitoringData() {
     }
@@ -26,6 +31,7 @@ public final class MonitoringData {
      * @param address        address to add
      * @param name           name of the address
      * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param minecraftIp    true when the ip is the ip of a  minecraft server
      * @return true if the query execution was successful
      */
     public static boolean addMonitoringAddress(Guild guild, String address, String name, boolean minecraftIp,
@@ -41,6 +47,7 @@ public final class MonitoringData {
             handleExceptionAndIgnore(e, messageContext);
             return false;
         }
+        addressesDirty.put(guild.getIdLong(), true);
         return true;
     }
 
@@ -63,6 +70,7 @@ public final class MonitoringData {
             handleExceptionAndIgnore(e, messageContext);
             return false;
         }
+        addressesDirty.put(guild.getIdLong(), true);
         return true;
     }
 
@@ -114,21 +122,47 @@ public final class MonitoringData {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return list of address object
      */
-    public static List<Address> getMonitoringAddresses(Guild guild, MessageEventDataWrapper messageContext) {
-        List<Address> addresses = new ArrayList<>();
-        try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT shepard_func.get_monitoring_addresses(?)")) {
-            statement.setString(1, guild.getId());
-            ResultSet result = statement.executeQuery();
-            while (result.next()) {
-                addresses.add(new Address(result.getInt("address_id"),
-                        result.getString("name"),
-                        result.getString("address"),
-                        result.getBoolean("mcip")));
+    public static List<Address> getMonitoringAddressesForGuild(Guild guild, MessageEventDataWrapper messageContext) {
+        return getMonitoringAddressesForGuild(guild.getIdLong(), messageContext);
+    }
+
+    private static List<Address> getMonitoringAddressesForGuild(long guild, MessageEventDataWrapper messageContext) {
+        if (addressesDirty.getOrDefault(guild, true)) {
+            try (PreparedStatement statement = DatabaseConnector.getConn()
+                    .prepareStatement("SELECT * from shepard_func.get_monitoring_addresses_for_guild(?)")) {
+                statement.setString(1, guild + "");
+                ResultSet result = statement.executeQuery();
+
+                addresses.put(guild, new ArrayList<>());
+                while (result.next()) {
+                    addresses.get(guild)
+                            .add(new Address(result.getInt("address_id"),
+                                    result.getString("name"),
+                                    result.getString("address"),
+                                    result.getBoolean("mcip")));
+                }
+                addressesDirty.put(guild, false);
+            } catch (SQLException e) {
+                handleExceptionAndIgnore(e, messageContext);
             }
-        } catch (SQLException e) {
-            handleExceptionAndIgnore(e, messageContext);
         }
+        return addresses.get(guild);
+
+    }
+
+    /**
+     * Get monitoring addresses for all guilds.
+     *
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return map of lists with a list for each guild
+     */
+    public static Map<Long, List<Address>> getMonitoringAddresses(MessageEventDataWrapper messageContext) {
+        for (Map.Entry<Long, Boolean> set : addressesDirty.entrySet()) {
+            if (set.getValue()) {
+                getMonitoringAddressesForGuild(set.getKey(), null);
+            }
+        }
+
         return addresses;
     }
 
