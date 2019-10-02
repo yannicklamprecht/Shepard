@@ -53,18 +53,18 @@ public final class TextFormatting {
      */
     public static String getAsTable(String[][] tableAsArray, int padding) {
         int[] length = new int[tableAsArray[0].length];
-        for (int i = 0; i < tableAsArray.length; i++) {
+        for (int column = 0; column < length.length; column++) {
             int max = 0;
-            for (int j = 0; j < tableAsArray[i].length; j++) {
-                max = Math.max(max, tableAsArray[i][j].length());
+            for (int row = 0; row < tableAsArray.length; row++) {
+                max = Math.max(max, tableAsArray[row][column].length());
             }
-            length[i] = max;
+            length[column] = max;
         }
 
 
-        for (int i = 0; i < tableAsArray.length; i++) {
-            for (int j = 0; j < tableAsArray[i].length; j++) {
-                tableAsArray[i][j] = fillString(tableAsArray[i][j], length[i] + padding);
+        for (int col = 0; col < length.length; col++) {
+            for (int row = 0; row < tableAsArray.length; row++) {
+                tableAsArray[row][col] = fillString(tableAsArray[row][col], length[col] + padding);
             }
         }
 
@@ -74,7 +74,9 @@ public final class TextFormatting {
             rows.add(String.join("", strings));
         }
 
-        return String.join(System.lineSeparator(), rows);
+        return "```" + System.lineSeparator()
+                + String.join(System.lineSeparator(), rows)
+                + System.lineSeparator() + "```";
     }
 
     /**
