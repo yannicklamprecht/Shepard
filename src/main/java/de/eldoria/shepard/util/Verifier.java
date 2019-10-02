@@ -145,30 +145,33 @@ public class Verifier {
     /**
      * Check if the message is a command.
      *
-     * @param message
-     * @param event
-     * @return
+     * @param message message which should be checked
+     * @param event event for check
+     * @return true if the prefix is present and valid
      */
     public static boolean checkPrefix(String message, MessageEventDataWrapper event) {
         return message.startsWith(PrefixData.getPrefix(event.getGuild(), event));
     }
 
     /**
-     * Check if the address matches the pattern of opv4/6 or a domain with or without port.
+     * Check if the address matches the pattern of ipv4/6 or a domain with or without port.
+     *
      * @param address address to check
-     * @return true if it is a valid address
+     * @return The type of the address or none if it is not a valid address
      */
-    public static boolean isAddress(String address) {
+    public static AddressType getAddressType(String address) {
         Matcher matcher = ipv4.matcher(address);
         if (matcher.find()) {
-            return true;
+            return AddressType.IPV4;
         }
         matcher = ipv6.matcher(address);
         if (matcher.find()) {
-            return true;
+            return AddressType.IPV6;
         }
         matcher = domain.matcher(address);
-        return matcher.find();
+        if (matcher.find()) {
+            return AddressType.DOMAIN;
+        }
+        return AddressType.NONE;
     }
-
 }
