@@ -12,8 +12,6 @@ import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
 
-import java.util.Arrays;
-
 public class SendPrivateMessage extends Command {
     public SendPrivateMessage() {
         commandName = "privateMessage";
