@@ -14,6 +14,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MonitoringCoordinator implements Runnable {
     private ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(10);
+    private int counts;
+    private int broadcastCount;
+
+    MonitoringCoordinator(int broadcastCount) {
+        this.broadcastCount = broadcastCount;
+    }
 
     @Override
     public void run() {
@@ -28,12 +34,19 @@ public class MonitoringCoordinator implements Runnable {
                 List<Address> addresses = MonitoringData.getMonitoringAddressesForGuild(guild, null);
                 addresses.forEach(address -> {
                     if (address.isMinecraftIp()) {
-                        executor.schedule(new Analyzer(address, channel), delay.getAndAdd(5), TimeUnit.SECONDS);
+                        executor.schedule(new Analyzer(address, channel, onlyError()), delay.getAndAdd(5), TimeUnit.SECONDS);
                     } else {
-                        executor.schedule(new Analyzer(address, channel), 0, TimeUnit.SECONDS);
+                        executor.schedule(new Analyzer(address, channel, onlyError()), 0, TimeUnit.SECONDS);
                     }
                 });
             }
         }
+        counts++;
+    }
+
+
+    private boolean onlyError() {
+        counts = counts % broadcastCount;
+        return counts != 0;
     }
 }

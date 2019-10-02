@@ -18,7 +18,7 @@ public final class MonitoringScheduler {
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 
     private MonitoringScheduler() {
-        executor.scheduleAtFixedRate(new MonitoringCoordinator(), 0, 10, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(new MonitoringCoordinator(), 0, 5, TimeUnit.MINUTES);
         executor.scheduleAtFixedRate(new ReconnectCoordinator(), 0, 1, TimeUnit.MINUTES);
     }
 

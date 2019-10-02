@@ -9,7 +9,7 @@ import java.awt.Color;
 
 public class ReconnectAnalyzer extends Analyzer {
     ReconnectAnalyzer(Address address, TextChannel channel) {
-        super(address, channel);
+        super(address, channel, false);
     }
 
     @Override
