@@ -43,7 +43,7 @@ public class GuessGameConfig extends Command {
             return;
         }
         if (cmd.equalsIgnoreCase("cancelRegistration") || cmd.equalsIgnoreCase("c")) {
-            ImageRegister.getInstance().cancelConfiguration(messageContext.getAuthor());
+            ImageRegister.getInstance().cancelConfiguration(messageContext);
             MessageSender.sendMessage("Registration canceled.", messageContext.getChannel());
             return;
         }
@@ -70,7 +70,7 @@ public class GuessGameConfig extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getChannel());
             return;
         }
-        ImageRegister.getInstance().startConfiguration(messageContext.getAuthor(),
+        ImageRegister.getInstance().startConfiguration(messageContext,
                 booleanState.stateAsBoolean);
         MessageSender.sendMessage("Started registration of new image set." + lineSeparator()
                 + "Please send the cropped image.", messageContext.getChannel());
