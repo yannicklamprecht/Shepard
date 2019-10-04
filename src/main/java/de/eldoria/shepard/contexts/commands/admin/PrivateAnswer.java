@@ -11,8 +11,6 @@ import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
 
-import java.util.Arrays;
-
 import static java.lang.System.lineSeparator;
 
 public class PrivateAnswer extends Command {

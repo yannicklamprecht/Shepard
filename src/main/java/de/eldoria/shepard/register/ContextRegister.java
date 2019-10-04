@@ -6,6 +6,7 @@ import de.eldoria.shepard.contexts.commands.admin.Changelog;
 import de.eldoria.shepard.contexts.commands.admin.Greeting;
 import de.eldoria.shepard.contexts.commands.admin.Invite;
 import de.eldoria.shepard.contexts.commands.admin.ManageQuote;
+import de.eldoria.shepard.contexts.commands.admin.Monitoring;
 import de.eldoria.shepard.contexts.commands.admin.Permission;
 import de.eldoria.shepard.contexts.commands.admin.Prefix;
 import de.eldoria.shepard.contexts.commands.admin.PrivateAnswer;
@@ -132,7 +133,7 @@ public final class ContextRegister {
         contextSensitives.add(new BotPresence());
         contextSensitives.add(new PrivateAnswer());
         contextSensitives.add(new SendPrivateMessage());
-
+        contextSensitives.add(new Monitoring());
     }
 
     private static void getInstance() {

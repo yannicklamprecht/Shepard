@@ -3,8 +3,6 @@ package de.eldoria.shepard.messagehandler;
 import com.google.api.client.util.IOUtils;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.GreetingSettings;
-import de.eldoria.shepard.util.Emoji;
-import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -25,34 +23,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 
 public final class MessageSender {
 
-    /**
-     * send a simple Message to a channel.
-     *
-     * @param message Message to send.
-     * @param channel channel to send
-     */
-    public static void sendMessage(String message, MessageChannel channel) {
-        if (message.isEmpty()) return;
-
-        String[] messageParts = message.split(System.lineSeparator());
-        StringBuilder messagePart = new StringBuilder();
-        for (int i = 0; i < messageParts.length; i++) {
-            if (messagePart.length() + messageParts[i].length() < 1024) {
-                messagePart.append(messageParts[i]).append(System.lineSeparator());
-            } else {
-                channel.sendMessage(messagePart.toString()).queue();
-                messagePart = new StringBuilder();
-                i--;
-            }
-        }
-
-        channel.sendMessage(messagePart.toString()).queue();
-    }
 
     /**
      * Sends a textbox to a channel.
@@ -265,6 +239,30 @@ public final class MessageSender {
                 + "\" on  guild " + receivedEvent.getGuild().getName() + " ("
                 + receivedEvent.getGuild().getId() + ")";
         ShepardBot.getLogger().command(command);
+    }
+
+    /**
+     * send a simple Message to a channel.
+     *
+     * @param message Message to send.
+     * @param channel channel to send
+     */
+    public static void sendMessage(String message, MessageChannel channel) {
+        if (message.isEmpty()) return;
+
+        String[] messageParts = message.split(System.lineSeparator());
+        StringBuilder messagePart = new StringBuilder();
+        for (int i = 0; i < messageParts.length; i++) {
+            if (messagePart.length() + messageParts[i].length() < 1024) {
+                messagePart.append(messageParts[i]).append(System.lineSeparator());
+            } else {
+                channel.sendMessage(messagePart.toString()).queue();
+                messagePart = new StringBuilder();
+                i--;
+            }
+        }
+
+        channel.sendMessage(messagePart.toString()).queue();
     }
 
     /**

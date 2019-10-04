@@ -12,9 +12,16 @@ import net.dv8tion.jda.api.entities.User;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Verifier {
+    private static final Pattern IPV_4 = Pattern.compile("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}(:[0-9]{1,5})?$");
+    private static final Pattern IPV_6 = Pattern.compile("^\\[?([a-fA-F0-9:]{8,40})(]:[0-9]{1,5})?$");
+    private static final Pattern DOMAIN = Pattern.compile("^(?!://)([a-zA-Z0-9-_]+\\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\\.[a-zA-Z]{2,11}?(:[0-9]{1,5})?$");
+
+
     /**
      * Returns true if the id is a valid id.
      *
@@ -138,12 +145,33 @@ public class Verifier {
     /**
      * Check if the message is a command.
      *
-     * @param message
-     * @param event
-     * @return
+     * @param message message which should be checked
+     * @param event event for check
+     * @return true if the prefix is present and valid
      */
     public static boolean checkPrefix(String message, MessageEventDataWrapper event) {
         return message.startsWith(PrefixData.getPrefix(event.getGuild(), event));
     }
 
+    /**
+     * Check if the address matches the pattern of ipv4/6 or a domain with or without port.
+     *
+     * @param address address to check
+     * @return The type of the address or none if it is not a valid address
+     */
+    public static AddressType getAddressType(String address) {
+        Matcher matcher = IPV_4.matcher(address);
+        if (matcher.find()) {
+            return AddressType.IPV4;
+        }
+        matcher = IPV_6.matcher(address);
+        if (matcher.find()) {
+            return AddressType.IPV6;
+        }
+        matcher = DOMAIN.matcher(address);
+        if (matcher.find()) {
+            return AddressType.DOMAIN;
+        }
+        return AddressType.NONE;
+    }
 }

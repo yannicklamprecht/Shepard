@@ -4,10 +4,10 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
+import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -70,20 +70,17 @@ public class Invite extends Command {
         List<DatabaseInvite> invites = InviteData.getInvites(messageContext.getGuild(), messageContext);
 
         StringBuilder message = new StringBuilder();
-        String code = "code      ";
-        String usages = "Usage Count ";
-        String name = "Name";
-        message.append("Registered Invites: ").append(lineSeparator())
-                .append("```yaml").append(lineSeparator())
-                .append(code).append(usages).append(name).append(lineSeparator());
+        message.append("Registered Invites: ").append(lineSeparator());
 
-        for (DatabaseInvite invite : invites) {
-            String invCode = StringUtils.rightPad(invite.getCode(), code.length(), " ");
-            String invUsage = StringUtils.rightPad(invite.getUsedCount() + "", usages.length(), " ");
-            String invName = invite.getSource();
-            message.append(invCode).append(invUsage).append(invName).append(lineSeparator());
+        String[][] preparedStringTable = TextFormatting.getPreparedStringTable(
+                invites, "Code", "Usage Count", "Invite Name");
+        for (int i = 1; i < preparedStringTable.length; i++) {
+            DatabaseInvite inv = invites.get(i - 1);
+            preparedStringTable[i] = new String[] {inv.getCode(), inv.getUsedCount() + "", inv.getSource()};
         }
-        message.append("```");
+        String asTable = TextFormatting.getAsTable(preparedStringTable);
+
+        message.append(asTable);
         MessageSender.sendMessage(message.toString(), messageContext.getChannel());
     }
 

@@ -68,6 +68,10 @@ public enum ErrorType {
      */
     INVALID_LIST_TYPE("Invalid Input. Only 'blacklist' or 'whitelist are valid inputs"),
     /**
+     * Used when the list type could not be parsed.
+     */
+    INVALID_ADDRESS("Invalid Input. The Address must be a ipv4/6 or a domain."),
+    /**
      * Used when no message was found.
      */
     NO_MESSAGE_FOUND("No message found!"),
