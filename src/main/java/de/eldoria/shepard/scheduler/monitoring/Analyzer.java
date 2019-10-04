@@ -12,10 +12,6 @@ import java.net.Socket;
 public class Analyzer implements Runnable {
 
     /**
-     * Only Report Errors.
-     */
-    private final boolean onlyError;
-    /**
      * Address object to store address information.
      */
     protected Address address;
@@ -23,6 +19,10 @@ public class Analyzer implements Runnable {
      * Text channel for monitoring feedback.
      */
     protected TextChannel channel;
+    /**
+     * Only Report Errors.
+     */
+    private final boolean onlyError;
 
     Analyzer(Address address, TextChannel channel, boolean onlyError) {
         this.address = address;
@@ -58,7 +58,7 @@ public class Analyzer implements Runnable {
                             + "", false)
                     .setColor(Color.green);
             channel.sendMessage(builder.build()).queue();
-        } else if(!minecraftPing.isOnline()) {
+        } else if (!minecraftPing.isOnline()) {
             EmbedBuilder builder = new EmbedBuilder()
                     .setTitle("WARNING: SERVER DOWN")
                     .setDescription("Server **" + address.getName() + "** under IP " + address.getFullAddress()
