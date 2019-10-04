@@ -18,7 +18,7 @@ public final class MonitoringScheduler {
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
 
     private MonitoringScheduler() {
-        executor.scheduleAtFixedRate(new MonitoringCoordinator(), 0, 5, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(new MonitoringCoordinator(24), 0, 5, TimeUnit.MINUTES);
         executor.scheduleAtFixedRate(new ReconnectCoordinator(), 0, 1, TimeUnit.MINUTES);
     }
 
@@ -33,24 +33,24 @@ public final class MonitoringScheduler {
         return instance;
     }
 
-    public Map<Long, List<Address>> getUnreachable() {
+    Map<Long, List<Address>> getUnreachable() {
         return Collections.unmodifiableMap(unreachable);
     }
 
-    public void markAsUnreachable(long guildId, Address address) {
+    void markAsUnreachable(long guildId, Address address) {
         unreachable.putIfAbsent(guildId, new ArrayList<>());
         if (!unreachable.get(guildId).contains(address)) {
             unreachable.get(guildId).add(address);
         }
     }
 
-    public void markAsReachable(long guildId, Address address) {
+    void markAsReachable(long guildId, Address address) {
         if (unreachable.containsKey(guildId)) {
             unreachable.get(guildId).remove(address);
         }
     }
 
-    public boolean markedAsUnreachable(long guild, Address address) {
+    boolean markedAsUnreachable(long guild, Address address) {
         if (unreachable.containsKey(guild)) {
             return unreachable.get(guild).contains(address);
         }

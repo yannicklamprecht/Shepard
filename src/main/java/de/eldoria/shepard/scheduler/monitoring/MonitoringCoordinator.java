@@ -18,6 +18,10 @@ public class MonitoringCoordinator implements Runnable {
     private int counts;
     private int broadcastCount;
 
+    /**
+     * Initiates a monitoring coordinator with broadcast settings
+     * @param broadcastCount the x. message which should be printed.
+     */
     MonitoringCoordinator(int broadcastCount) {
         this.broadcastCount = broadcastCount;
     }
