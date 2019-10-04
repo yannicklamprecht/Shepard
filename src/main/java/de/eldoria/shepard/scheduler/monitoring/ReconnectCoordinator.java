@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReconnectCoordinator implements Runnable {
+    private final int API_REQUEST_DELAY = 5;
     private ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(10);
 
     @Override
@@ -34,7 +35,7 @@ public class ReconnectCoordinator implements Runnable {
                 set.getValue().forEach(address -> {
                     if (address.isMinecraftIp()) {
                         executor.schedule(new ReconnectAnalyzer(address, channel),
-                                delay.getAndAdd(5), TimeUnit.SECONDS);
+                                delay.getAndAdd(API_REQUEST_DELAY), TimeUnit.SECONDS);
                     } else {
                         executor.schedule(new ReconnectAnalyzer(address, channel),
                                 0, TimeUnit.SECONDS);

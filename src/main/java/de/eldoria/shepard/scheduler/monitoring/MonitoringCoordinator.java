@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MonitoringCoordinator implements Runnable {
+    private final int API_REQUEST_DELAY = 5;
     private ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(10);
     private int counts;
     private int broadcastCount;
@@ -34,9 +35,11 @@ public class MonitoringCoordinator implements Runnable {
                 List<Address> addresses = MonitoringData.getMonitoringAddressesForGuild(guild, null);
                 addresses.forEach(address -> {
                     if (address.isMinecraftIp()) {
-                        executor.schedule(new Analyzer(address, channel, onlyError()), delay.getAndAdd(5), TimeUnit.SECONDS);
+                        executor.schedule(new Analyzer(address, channel, onlyError()),
+                                delay.getAndAdd(API_REQUEST_DELAY), TimeUnit.SECONDS);
                     } else {
-                        executor.schedule(new Analyzer(address, channel, onlyError()), 0, TimeUnit.SECONDS);
+                        executor.schedule(new Analyzer(address, channel, onlyError()),
+                                0, TimeUnit.SECONDS);
                     }
                 });
             }
