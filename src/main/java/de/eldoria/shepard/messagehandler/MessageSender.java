@@ -268,9 +268,9 @@ public final class MessageSender {
     /**
      * Sends a message to a user.
      *
-     * @param user User to send
-     * @param attachments Attachments to send
-     * @param text Text to send
+     * @param user           User to send
+     * @param attachments    Attachments to send
+     * @param text           Text to send
      * @param messageContext message informations.
      */
     public static void sendMessage(User user, List<Message.Attachment> attachments, String text,
@@ -278,21 +278,14 @@ public final class MessageSender {
         user.openPrivateChannel().queue(privateChannel -> {
             privateChannel.sendMessage(text).queue();
             if (!attachments.isEmpty()) {
-                try {
-                    InputStream url = new URL(attachments.get(0).getUrl()).openStream();
-                    String[] split = attachments.get(0).getProxyUrl().split("\\.");
-                    String suffix = split[split.length - 1];
-                    String[] urlSplitted = split[split.length - 2].split("\\\\");
-                    String name = urlSplitted[urlSplitted.length - 1];
-                    File tempFile = File.createTempFile(name, "." + suffix);
-                    FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
-                    IOUtils.copy(url, fileOutputStream);
+                for (Message.Attachment attachment : attachments) {
 
-                    privateChannel.sendFile(tempFile).queue();
-                    tempFile.delete();
-                } catch (IOException e) {
-                    MessageSender.sendSimpleErrorEmbed("File could not be loaded", messageContext.getChannel());
-                    ShepardBot.getLogger().error(e);
+                    File fileFromURL = FileHelper.getFileFromURL(attachments.get(0).getUrl());
+                    if (fileFromURL != null) {
+                        privateChannel.sendFile(fileFromURL).queue();
+                    } else {
+                        MessageSender.sendSimpleErrorEmbed("File could not be loaded", messageContext.getChannel());
+                    }
                 }
             }
         });

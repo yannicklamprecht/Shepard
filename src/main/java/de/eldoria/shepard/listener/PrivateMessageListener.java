@@ -23,7 +23,7 @@ public class PrivateMessageListener extends ListenerAdapter {
         String receivedMessage = messageContext.getMessage().getContentRaw();
         String[] args = receivedMessage.split(" ");
 
-        if (CommandCollection.getInstance().getCommand(args[0].substring(1)) != null) {
+        if (!args[0].isEmpty() && CommandCollection.getInstance().getCommand(args[0].substring(1)) != null) {
             MessageSender.sendMessage(
                     "I'm sorry, but I'm not your personal assistant. I am only available to the public.",
                     messageContext.getChannel());
@@ -32,8 +32,11 @@ public class PrivateMessageListener extends ListenerAdapter {
             TextChannel privateAnswerChannel = Normandy.getPrivateAnswerChannel();
 
             EmbedBuilder builder = new EmbedBuilder()
-                    .setAuthor(author.getAsTag(), author.getEffectiveAvatarUrl(), author.getEffectiveAvatarUrl())
-                    .setDescription(messageContext.getMessage().getContentDisplay());
+                    .setAuthor(author.getAsTag(), author.getEffectiveAvatarUrl(), author.getEffectiveAvatarUrl());
+            if (!messageContext.getMessage().getContentDisplay().isEmpty()) {
+                builder.setDescription(messageContext.getMessage().getContentDisplay());
+
+            }
             List<Message.Attachment> attachments = messageContext.getMessage().getAttachments();
             if (!attachments.isEmpty() && attachments.get(0).isImage()) {
                 builder.setImage(attachments.get(0).getUrl());

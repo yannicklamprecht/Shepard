@@ -2,12 +2,14 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
+import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emote;
 
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,11 +31,11 @@ public class LargeEmote extends Command {
             return;
         }
 
-        EmbedBuilder builder = new EmbedBuilder();
-
         for (Emote emote : emotes.subList(0, Math.min(emotes.size(), 5))) {
-            builder.setImage(emote.getImageUrl());
-            messageContext.getChannel().sendMessage(builder.build()).queue();
+            File fileFromURL = FileHelper.getFileFromURL(emote.getImageUrl());
+            if (fileFromURL != null) {
+                messageContext.getChannel().sendFile(fileFromURL).queue();
+            }
         }
     }
 }
