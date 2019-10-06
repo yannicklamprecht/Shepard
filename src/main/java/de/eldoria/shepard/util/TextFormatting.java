@@ -76,6 +76,7 @@ public final class TextFormatting {
 
         /**
          * Set the current row. To go a row forward user next().
+         *
          * @param columnEntries Entries for the columns in the current row
          */
         public void setRow(String... columnEntries) {
@@ -90,9 +91,10 @@ public final class TextFormatting {
         }
 
         /**
-         * @return true when there is one more row and the pointer moved forward.
          * The pointer starts at 0. Row zero can only be set on object creation.
          * use next() before you set the first row.
+         *
+         * @return true when there is one more row and the pointer moved forward.
          */
         public boolean next() {
             rowPointer++;
@@ -100,16 +102,16 @@ public final class TextFormatting {
         }
 
         /**
-         * Set the markdown for the table code block
+         * Set the markdown for the table code block.
          *
          * @param markdown Markdown code (i.e. java, md, csharp)
          */
-        public void setMarkdown(@NotNull String markdown) {
+        public void setHighlighting(@NotNull String markdown) {
             this.markdown = markdown;
         }
 
         /**
-         * Set the space between the columns
+         * Set the space between the columns.
          *
          * @param padding number between 1 and 10
          */
