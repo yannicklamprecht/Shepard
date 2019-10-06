@@ -7,7 +7,11 @@ import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
 
-class PrivateMessageHelper {
+public final class PrivateMessageHelper {
+
+    private PrivateMessageHelper(){
+    }
+
     static void sendPrivateMessage(String[] args, MessageEventDataWrapper messageContext, User user) {
         if (user == null) {
             MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext.getChannel());
