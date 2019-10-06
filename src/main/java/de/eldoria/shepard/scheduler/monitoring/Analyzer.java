@@ -9,7 +9,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.net.Socket;
 
-public class Analyzer implements Runnable {
+class Analyzer implements Runnable {
 
     /**
      * Address object to store address information.
@@ -66,7 +66,7 @@ public class Analyzer implements Runnable {
                     .setColor(Color.red);
 
             channel.sendMessage(builder.build()).queue();
-            if (!MonitoringScheduler.getInstance().markedAsUnreachable(channel.getGuild().getIdLong(), address)) {
+            if (MonitoringScheduler.getInstance().markedAsUnreachable(channel.getGuild().getIdLong(), address)) {
                 channel.sendMessage("@here").queue();
             }
             MonitoringScheduler.getInstance().markAsUnreachable(channel.getGuild().getIdLong(), address);
@@ -78,7 +78,7 @@ public class Analyzer implements Runnable {
         if (!isAddressReachable()) {
             channel.sendMessage("Service under " + address.getFullAddress() + " is currently unavailable!").queue();
             MonitoringScheduler.getInstance().markAsUnreachable(channel.getGuild().getIdLong(), address);
-            if (!MonitoringScheduler.getInstance().markedAsUnreachable(channel.getGuild().getIdLong(), address)) {
+            if (MonitoringScheduler.getInstance().markedAsUnreachable(channel.getGuild().getIdLong(), address)) {
                 channel.sendMessage("@here").queue();
             }
         }

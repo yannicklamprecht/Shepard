@@ -89,7 +89,7 @@ public class Verifier {
      * @param args  array of channel ids
      * @return list of valid channels
      */
-    public static List<TextChannel> getValidTextChannels(Guild guild, String[] args) {
+    private static List<TextChannel> getValidTextChannels(Guild guild, String[] args) {
         return Arrays.stream(args).map(channelId -> guild.getTextChannelById(DbUtil.getIdRaw(channelId)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());

@@ -13,7 +13,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ReconnectCoordinator implements Runnable {
+class ReconnectCoordinator implements Runnable {
     private final int API_REQUEST_DELAY = 5;
     private ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(10);
 

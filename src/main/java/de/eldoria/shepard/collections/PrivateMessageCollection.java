@@ -73,11 +73,11 @@ public final class PrivateMessageCollection {
             return name;
         }
 
-        public long getId() {
+        long getId() {
             return id;
         }
 
-        public boolean hasSimilarName(String name) {
+        boolean hasSimilarName(String name) {
             return this.name.startsWith(name.toLowerCase());
         }
     }

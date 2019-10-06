@@ -39,7 +39,7 @@ public final class DbUtil {
      * @param event Event for error sending to channel to inform user.
      * @throws SQLException when the query was not executed successful
      */
-    public static void handleException(SQLException ex, MessageEventDataWrapper event) throws SQLException {
+    private static void handleException(SQLException ex, MessageEventDataWrapper event) throws SQLException {
         StringBuilder builder = new StringBuilder();
 
         builder.append("SQLException: ").append(ex.getMessage()).append(lineSeparator())
