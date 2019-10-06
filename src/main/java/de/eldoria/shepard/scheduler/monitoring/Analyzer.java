@@ -66,7 +66,7 @@ class Analyzer implements Runnable {
                     .setColor(Color.red);
 
             channel.sendMessage(builder.build()).queue();
-            if (MonitoringScheduler.getInstance().markedAsUnreachable(channel.getGuild().getIdLong(), address)) {
+            if (!MonitoringScheduler.getInstance().markedAsUnreachable(channel.getGuild().getIdLong(), address)) {
                 channel.sendMessage("@here").queue();
             }
             MonitoringScheduler.getInstance().markAsUnreachable(channel.getGuild().getIdLong(), address);
@@ -78,7 +78,7 @@ class Analyzer implements Runnable {
         if (!isAddressReachable()) {
             channel.sendMessage("Service under " + address.getFullAddress() + " is currently unavailable!").queue();
             MonitoringScheduler.getInstance().markAsUnreachable(channel.getGuild().getIdLong(), address);
-            if (MonitoringScheduler.getInstance().markedAsUnreachable(channel.getGuild().getIdLong(), address)) {
+            if (!MonitoringScheduler.getInstance().markedAsUnreachable(channel.getGuild().getIdLong(), address)) {
                 channel.sendMessage("@here").queue();
             }
         }
