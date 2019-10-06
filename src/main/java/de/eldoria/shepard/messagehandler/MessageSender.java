@@ -1,8 +1,8 @@
 package de.eldoria.shepard.messagehandler;
 
-import com.google.api.client.util.IOUtils;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.GreetingSettings;
+import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -17,10 +17,6 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.Color;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
