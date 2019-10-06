@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class MonitoringCoordinator implements Runnable {
-    private final int API_REQUEST_DELAY = 5;
+    private static final int API_REQUEST_DELAY = 5;
     private ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(10);
     private int counts;
     private int broadcastCount;
