@@ -170,6 +170,7 @@ public class ManageQuote extends Command {
 
         if (quoteId > quotesCount || quoteId < 0) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getChannel());
+            return -1;
         }
         return quoteId;
     }
