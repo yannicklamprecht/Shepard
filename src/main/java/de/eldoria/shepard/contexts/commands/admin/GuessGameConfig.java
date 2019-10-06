@@ -24,7 +24,7 @@ public class GuessGameConfig extends Command {
                                 + "**__r__emoveImage** -> Remove image from database" + lineSeparator()
                                 + "**__c__ancelRegistration** -> Cancel registration of image", true),
                 new CommandArg("values",
-                        "**addImage** -> [`true` or `nsfw` if hentai | `false` or `sfw` if not]"  + lineSeparator()
+                        "**addImage** -> [`true` or `nsfw` if hentai | `false` or `sfw` if not]" + lineSeparator()
                                 + "**removeImage** -> [url of cropped or full image]" + lineSeparator()
                                 + "**cancelRegistration** -> leave empty", false)
         };
@@ -56,7 +56,9 @@ public class GuessGameConfig extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             return;
         }
-        HentaiOrNotData.removeHentaiImage(args[1], messageContext);
+        if (HentaiOrNotData.removeHentaiImage(args[1], messageContext)) {
+            MessageSender.sendMessage("Removed Image!", messageContext.getChannel());
+        }
     }
 
     private void addImage(String[] args, MessageEventDataWrapper messageContext) {
