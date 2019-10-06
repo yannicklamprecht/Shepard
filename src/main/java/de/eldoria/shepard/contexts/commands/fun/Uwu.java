@@ -11,7 +11,8 @@ public class Uwu extends Command {
      */
     public Uwu() {
         commandName = "uwu";
-        commandDesc = "UWU";
+        commandDesc = "UWU - Use \"uwud\" to delete your command afterwards.";
+        commandAliases = new String[] {"uwud"};
     }
 
 
@@ -19,5 +20,8 @@ public class Uwu extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         MessageSender.sendMessage(":regional_indicator_u::regional_indicator_w::regional_indicator_u:",
                 messageContext.getChannel());
+        if (label.equalsIgnoreCase("uwud")) {
+            messageContext.getMessage().delete().queue();
+        }
     }
 }
