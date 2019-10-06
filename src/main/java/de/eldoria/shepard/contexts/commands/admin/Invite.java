@@ -5,7 +5,6 @@ import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
 import de.eldoria.shepard.util.TextFormatting;
-import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -74,15 +73,12 @@ public class Invite extends Command {
         StringBuilder message = new StringBuilder();
         message.append("Registered Invites: ").append(lineSeparator());
 
-        String[][] preparedStringTable = TextFormatting.getPreparedStringTable(
-                invites, "Code", "Usage Count", "Invite Name");
-        for (int i = 1; i < preparedStringTable.length; i++) {
-            DatabaseInvite inv = invites.get(i - 1);
-            preparedStringTable[i] = new String[] {inv.getCode(), inv.getUsedCount() + "", inv.getSource()};
+        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(invites, "Code", "Usage Count", "Invite Name");
+        for (DatabaseInvite invite : invites) {
+            tableBuilder.next();
+            tableBuilder.setRow(invite.getCode(), invite.getUsedCount() + "", invite.getSource());
         }
-        String asTable = TextFormatting.getAsTable(preparedStringTable);
-
-        message.append(asTable);
+        message.append(tableBuilder);
         MessageSender.sendMessage(message.toString(), messageContext.getChannel());
     }
 

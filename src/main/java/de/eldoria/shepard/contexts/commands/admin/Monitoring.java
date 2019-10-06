@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.List;
 
+import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class Monitoring extends Command {
@@ -167,21 +168,20 @@ public class Monitoring extends Command {
         List<Address> monitoringAddresses = MonitoringData.getMonitoringAddressesForGuild(
                 messageContext.getGuild(), messageContext);
 
-        String[][] preparedStringTable = TextFormatting.getPreparedStringTable(monitoringAddresses,
+        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(monitoringAddresses,
                 "Index", "Name", "Address", "Minecraft");
 
-        for (int i = 1; i < preparedStringTable.length; i++) {
-            Address address = monitoringAddresses.get(i - 1);
-            preparedStringTable[i] = new String[] {
-                    address.getId() + "",
+        for (Address address : monitoringAddresses) {
+            tableBuilder.next();
+            tableBuilder.setRow(address.getId() + "",
                     address.getName(),
                     address.getAddress(),
-                    TextFormatting.mapBooleanTo(address.isMinecraftIp(), "yes", "no")};
+                    TextFormatting.mapBooleanTo(address.isMinecraftIp(), "yes", "no"));
         }
 
-        String asTable = TextFormatting.getAsTable(preparedStringTable);
+        MessageSender.sendMessage("Registered for Monitoring: " +
 
-        MessageSender.sendMessage("Registered for Monitoring: " + lineSeparator() + asTable,
+                        lineSeparator() + tableBuilder,
                 messageContext.getChannel());
     }
 }

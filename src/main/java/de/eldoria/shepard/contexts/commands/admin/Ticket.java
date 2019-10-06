@@ -5,6 +5,7 @@ import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
+import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -16,7 +17,6 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.managers.ChannelManager;
 import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +25,7 @@ import static de.eldoria.shepard.database.queries.TicketData.getTypeOwnerRoles;
 import static de.eldoria.shepard.database.queries.TicketData.getTypeSupportRoles;
 import static de.eldoria.shepard.database.queries.TicketData.removeChannel;
 import static de.eldoria.shepard.util.Verifier.getValidRoles;
+import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class Ticket extends Command {
@@ -119,45 +120,23 @@ public class Ticket extends Command {
 
     private void typeInfo(String[] args, MessageEventDataWrapper receivedEvent) {
         List<TicketType> tickets = TicketData.getTypes(receivedEvent.getGuild(), receivedEvent);
-        if (tickets.size() == 0) {
+        if (tickets.isEmpty()) {
             MessageSender.sendMessage("No ticket types defined", receivedEvent.getChannel());
             return;
         }
+
         //Return list fo available ticket types
         if (args.length == 1) {
 
-
-            String categoryName = "Category Name";
-            int categoryNameSize = categoryName.length();
-            String typeKeyword = "Type/Keyword ";
-            int typeKeywordSize = typeKeyword.length();
+            TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(tickets, "Keyword", "", "Category");
 
             for (TicketType type : tickets) {
-                if (type.getCategory() == null) {
-                    continue;
-                }
-                int categoryLength = type.getCategory().getName().length();
-                if (categoryLength > categoryNameSize) {
-                    categoryNameSize = categoryLength;
-                }
-
-                if (type.getKeyword().length() + 1 > typeKeywordSize) {
-                    typeKeywordSize = type.getKeyword().length();
-                }
+                tableBuilder.next();
+                tableBuilder.setRow(type.getKeyword(), ":", type.getCategory().getName());
             }
 
-            StringBuilder builder = new StringBuilder();
-            builder.append("**__Ticket Types with Categories:__**").append(lineSeparator())
-                    .append("```yaml").append(lineSeparator())
-                    .append(StringUtils.rightPad(typeKeyword, typeKeywordSize, " "))
-                    .append(categoryName).append(lineSeparator());
-            for (TicketType type : tickets) {
-                builder.append(StringUtils.rightPad(type.getKeyword() + ":", typeKeywordSize, " "))
-                        .append(type.getCategory().getName()).append(lineSeparator());
-            }
-            builder.append("```");
-
-            MessageSender.sendMessage(builder.toString(), receivedEvent.getChannel());
+            MessageSender.sendMessage("**__Ticket Types with Categories:__**" + lineSeparator()
+                    + tableBuilder, receivedEvent.getChannel());
         } else if (args.length == 2) {
             //Return info for one ticket type.
             TicketType type = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
