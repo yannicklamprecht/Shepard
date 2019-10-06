@@ -2,7 +2,6 @@ package de.eldoria.shepard.util;
 
 import com.google.api.client.util.IOUtils;
 import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.messagehandler.MessageSender;
 
 import java.io.File;
 import java.io.FileOutputStream;

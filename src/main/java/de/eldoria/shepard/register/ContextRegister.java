@@ -28,7 +28,7 @@ import de.eldoria.shepard.contexts.commands.fun.Oha;
 import de.eldoria.shepard.contexts.commands.fun.Owo;
 import de.eldoria.shepard.contexts.commands.fun.Quote;
 import de.eldoria.shepard.contexts.commands.fun.RandomJoke;
-import de.eldoria.shepard.contexts.commands.fun.Sayd;
+import de.eldoria.shepard.contexts.commands.fun.Say;
 import de.eldoria.shepard.contexts.commands.fun.Someone;
 import de.eldoria.shepard.contexts.commands.fun.Uwu;
 import de.eldoria.shepard.contexts.commands.util.GetRaw;
@@ -95,7 +95,7 @@ public final class ContextRegister {
         contextSensitives.add(new Oha());
         contextSensitives.add(new Owo());
         contextSensitives.add(new RandomJoke());
-        contextSensitives.add(new Sayd());
+        contextSensitives.add(new Say());
         contextSensitives.add(new Uwu());
         contextSensitives.add(new Quote());
         contextSensitives.add(new Someone());
