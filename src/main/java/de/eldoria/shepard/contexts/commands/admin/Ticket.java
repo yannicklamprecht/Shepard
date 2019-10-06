@@ -53,17 +53,17 @@ public class Ticket extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        if (cmd.equalsIgnoreCase("open") || cmd.equalsIgnoreCase("o")) {
+        if (isArgument(cmd, "open", "o")) {
             openTicket(args, messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("close") || cmd.equalsIgnoreCase("c")) {
+        if (isArgument(cmd, "close", "c")) {
             close(args, messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("list") || cmd.equalsIgnoreCase("l")) {
+        if (isArgument(cmd, "list", "l")) {
             typeInfo(args, messageContext);
             return;
         }

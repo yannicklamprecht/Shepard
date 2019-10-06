@@ -3,11 +3,13 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
+import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 
 import static de.eldoria.shepard.database.queries.PrefixData.setPrefix;
+import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class Prefix extends Command {
@@ -29,11 +31,11 @@ public class Prefix extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        if (cmd.equalsIgnoreCase("set") || cmd.equalsIgnoreCase("s")) {
+        if (isArgument(cmd, "set", "s")) {
             set(args, messageContext);
             return;
         }
-        if (cmd.equalsIgnoreCase("reset") || cmd.equalsIgnoreCase("r")) {
+        if (isArgument(cmd, "reset", "r")) {
             reset(messageContext);
             return;
         }

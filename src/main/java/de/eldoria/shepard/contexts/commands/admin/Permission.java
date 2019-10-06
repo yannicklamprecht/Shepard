@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.eldoria.shepard.contexts.ContextHelper.getContextName;
+import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class Permission extends Command {
@@ -62,8 +63,7 @@ public class Permission extends Command {
             return;
         }
 
-        if (cmd.equalsIgnoreCase("addUser") || cmd.equalsIgnoreCase("au")
-                || cmd.equalsIgnoreCase("removeUser") || cmd.equalsIgnoreCase("ru")) {
+        if (isArgument(cmd, "addUser", "au", "removeUser", "ru")) {
             ModifyType modifyType = cmd.equalsIgnoreCase("addUser") || cmd.equalsIgnoreCase("au")
                     ? ModifyType.ADD : ModifyType.REMOVE;
 
@@ -71,13 +71,12 @@ public class Permission extends Command {
             return;
         }
 
-        if (cmd.equalsIgnoreCase("showUser") || cmd.equalsIgnoreCase("su")) {
+        if (isArgument(cmd, "showUser", "su")) {
             showMentions(messageContext, contextName, "Users with access to this context:");
             return;
         }
 
-        if (cmd.equalsIgnoreCase("addRole") || cmd.equalsIgnoreCase("ar")
-                || cmd.equalsIgnoreCase("removeRole") || cmd.equalsIgnoreCase("rr")) {
+        if (isArgument(cmd, "addRole", "ar", "removeRole", "rr")) {
             ModifyType modifyType = cmd.equalsIgnoreCase("addRole") || cmd.equalsIgnoreCase("ar")
                     ? ModifyType.ADD : ModifyType.REMOVE;
 
@@ -85,7 +84,7 @@ public class Permission extends Command {
             return;
         }
 
-        if (cmd.equalsIgnoreCase("showRole") || cmd.equalsIgnoreCase("sr")) {
+        if (isArgument(cmd, "showRole", "sr")) {
             showMentions(messageContext, contextName, "Roles with access to this context:");
             return;
         }

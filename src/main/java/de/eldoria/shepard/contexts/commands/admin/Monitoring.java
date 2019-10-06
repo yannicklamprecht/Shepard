@@ -53,17 +53,17 @@ public class Monitoring extends Command {
 
         String cmd = args[0];
 
-        if (Verifier.isArgument(cmd, "disable", "d")) {
+        if (isArgument(cmd, "disable", "d")) {
             disable(messageContext);
             return;
         }
 
-        if (Verifier.isArgument(cmd, "show", "s")) {
+        if (isArgument(cmd, "show", "s")) {
             show(messageContext);
             return;
         }
 
-        if (Verifier.isArgument(cmd, "enable", "e")) {
+        if (isArgument(cmd, "enable", "e")) {
             if (easyEnable(messageContext)) return;
         }
 
@@ -72,17 +72,17 @@ public class Monitoring extends Command {
             return;
         }
 
-        if (Verifier.isArgument(cmd, "remove", "r")) {
+        if (isArgument(cmd, "remove", "r")) {
             remove(args[1], messageContext);
             return;
         }
 
-        if (Verifier.isArgument(cmd, "enable", "e")) {
+        if (isArgument(cmd, "enable", "e")) {
             if (enable(args[1], messageContext)) return;
             return;
         }
 
-        if (Verifier.isArgument(cmd, "add", "a")) {
+        if (isArgument(cmd, "add", "a")) {
             add(args, messageContext);
             return;
         }

@@ -44,22 +44,22 @@ public class ManageQuote extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
 
-        if (cmd.equalsIgnoreCase("add") || cmd.equalsIgnoreCase("a")) {
+        if (isArgument(cmd, "add", "a")) {
             addQuote(args, messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("remove") || cmd.equalsIgnoreCase("r")) {
+        if (isArgument(cmd, "remove", "r")) {
             removeQuote(args, messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("list") || cmd.equalsIgnoreCase("l")) {
+        if (isArgument(cmd, "list", "l")) {
             showQuotes(args, messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("alter") || cmd.equalsIgnoreCase("alt")) {
+        if (isArgument(cmd, "alter", "alt")) {
             if (args.length < 3) {
                 MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             }

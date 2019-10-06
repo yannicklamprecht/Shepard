@@ -4,6 +4,7 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.GreetingData;
+import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.Arrays;
 
+import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class Greeting extends Command {
@@ -36,17 +38,17 @@ public class Greeting extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        if (cmd.equalsIgnoreCase("setChannel") || cmd.equalsIgnoreCase("sc")) {
+        if (isArgument(cmd, "setChannel", "sc")) {
             setChannel(args, messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("removeChannel") || cmd.equalsIgnoreCase(("rc"))) {
+        if (isArgument(cmd, "removeChannel", "rc")) {
             removeChannel(messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("setMessage") || cmd.equalsIgnoreCase("sm")) {
+        if (isArgument(cmd, "setMessage", "sm")) {
             setMessage(args, messageContext);
             return;
         }

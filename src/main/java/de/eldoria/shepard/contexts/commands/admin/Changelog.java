@@ -3,6 +3,7 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.ChangelogData;
+import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -15,6 +16,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static de.eldoria.shepard.database.DbUtil.getIdRaw;
+import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class Changelog extends Command {
@@ -45,23 +47,22 @@ public class Changelog extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        if (cmd.equalsIgnoreCase("addRole") || cmd.equalsIgnoreCase("ar")
-                || cmd.equalsIgnoreCase("removeRole") || cmd.equalsIgnoreCase("rr")) {
+        if (isArgument(cmd, "addrole", "ar", "removeRole", "rr")) {
             modifyRoles(args, messageContext, cmd);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("activate") || cmd.equalsIgnoreCase("a")) {
+        if (isArgument(cmd, "activate, a")) {
             activate(args, messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("deactivate") || cmd.equalsIgnoreCase("d")) {
+        if (isArgument(cmd, "deactivate", "d")) {
             deactivate(messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("roles") || cmd.equalsIgnoreCase("r")) {
+        if (isArgument(cmd, "roles", "r")) {
             showRoles(messageContext);
             return;
         }
@@ -120,7 +121,7 @@ public class Changelog extends Command {
             return;
         }
 
-        if (cmd.equalsIgnoreCase("addRole") || cmd.equalsIgnoreCase("ar")) {
+        if (isArgument(cmd, "addRole", "ar")) {
             if (ChangelogData.addRole(messageContext.getGuild(), roleById, messageContext)) {
                 MessageSender.sendMessage("Added role **" + roleById.getName() + "** to changelog.",
                         messageContext.getChannel());
