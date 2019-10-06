@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class ManageQuote extends Command {
@@ -64,17 +65,10 @@ public class ManageQuote extends Command {
                 MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             }
 
-            int quoteId;
-            int quotesCount = QuoteData.getQuotesCount(messageContext.getGuild(), messageContext);
-            try {
-                quoteId = Integer.parseInt(args[1]);
-            } catch (IllegalArgumentException e) {
-                MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getChannel());
-                return;
-            }
+            int quoteId = verifyId(args[1], messageContext);
 
-            if (quoteId > quotesCount) {
-                MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getChannel());
+            if(quoteId == -1){
+                return;
             }
 
             String quote = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
@@ -132,17 +126,10 @@ public class ManageQuote extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
         }
 
-        int quoteId;
-        int quotesCount = QuoteData.getQuotesCount(messageContext.getGuild(), messageContext);
-        try {
-            quoteId = Integer.parseInt(args[1]);
-        } catch (IllegalArgumentException e) {
-            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getChannel());
-            return;
-        }
+        int quoteId = verifyId(args[1], messageContext);
 
-        if (quoteId > quotesCount) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getChannel());
+        if(quoteId == -1){
+            return;
         }
 
         if (QuoteData.removeQuote(messageContext.getGuild(), quoteId, messageContext)) {
@@ -162,5 +149,27 @@ public class ManageQuote extends Command {
         if (QuoteData.addQuote(messageContext.getGuild(), quote, messageContext)) {
             MessageSender.sendSimpleTextBox("Saved Quote!", quote, Color.green, messageContext.getChannel());
         }
+    }
+
+    /**
+     * Returns the id from a string.
+     * @param number string to parse
+     * @param messageContext message context for error logging
+     * @return -1 when the string is not a number or the number is <0 or larger than the amount of quotes.
+     */
+    private int verifyId(String number, MessageEventDataWrapper messageContext) {
+        int quotesCount = QuoteData.getQuotesCount(messageContext.getGuild(), messageContext);
+        int quoteId = -1;
+        try {
+            quoteId = Integer.parseInt(number);
+        } catch (IllegalArgumentException e) {
+            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getChannel());
+            return quoteId;
+        }
+
+        if (quoteId > quotesCount || quoteId < 0) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getChannel());
+        }
+        return quoteId;
     }
 }
