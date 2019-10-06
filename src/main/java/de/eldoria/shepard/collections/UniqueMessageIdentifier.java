@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.Objects;
 
-class UniqueMessageIdentifier {
+public class UniqueMessageIdentifier {
     private final long guildId;
     private final long channelId;
     private final long messageId;

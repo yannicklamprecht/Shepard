@@ -17,8 +17,6 @@ public class DariYes extends Keyword {
     public void execute(GuildMessageReceivedEvent event, String key) {
         if (event.getAuthor().getId().equalsIgnoreCase("223192558468202496")) {
             MessageSender.sendMessage("Doch " + event.getAuthor().getAsMention(), event.getChannel());
-
         }
     }
-
 }
