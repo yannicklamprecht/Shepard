@@ -55,17 +55,18 @@ public final class TextFormatting {
      * Create a new TableBuilder.
      *
      * @param collection  Collection to determine the row size.
-     * @param columnNames Determines the name of the columns. Empty column names are possible
+     * @param columnNames Determines the name and amount of the columns. Empty column names are possible
+     * @return new Table builder object.
      */
-    public static TableBuilder getTableBuilder(Collection collection, String... columnNames) {
+    public static TableBuilder getTableBuilder(Collection collection, @NotNull String... columnNames) {
         return new TableBuilder(collection, columnNames);
     }
 
     public static class TableBuilder {
-        final String[][] table;
-        String markdown = "";
-        int padding;
-        int rowPointer = 0;
+        private final String[][] table;
+        private String markdown = "";
+        private int padding;
+        private int rowPointer = 0;
 
         TableBuilder(Collection collection, String... columnNames) {
             table = new String[collection.size() + 1][columnNames.length];
@@ -75,6 +76,7 @@ public final class TextFormatting {
 
         /**
          * Set the current row. To go a row forward user next().
+         * @param columnEntries Entries for the columns in the current row
          */
         public void setRow(String... columnEntries) {
             if (rowPointer == 0) {
@@ -89,6 +91,8 @@ public final class TextFormatting {
 
         /**
          * @return true when there is one more row and the pointer moved forward.
+         * The pointer starts at 0. Row zero can only be set on object creation.
+         * use next() before you set the first row.
          */
         public boolean next() {
             rowPointer++;

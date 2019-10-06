@@ -179,9 +179,7 @@ public class Monitoring extends Command {
                     TextFormatting.mapBooleanTo(address.isMinecraftIp(), "yes", "no"));
         }
 
-        MessageSender.sendMessage("Registered for Monitoring: " +
-
-                        lineSeparator() + tableBuilder,
+        MessageSender.sendMessage("Registered for Monitoring: " + lineSeparator() + tableBuilder,
                 messageContext.getChannel());
     }
 }

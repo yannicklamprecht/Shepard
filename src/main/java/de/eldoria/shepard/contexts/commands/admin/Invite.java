@@ -73,7 +73,8 @@ public class Invite extends Command {
         StringBuilder message = new StringBuilder();
         message.append("Registered Invites: ").append(lineSeparator());
 
-        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(invites, "Code", "Usage Count", "Invite Name");
+        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
+                invites, "Code", "Usage Count", "Invite Name");
         for (DatabaseInvite invite : invites) {
             tableBuilder.next();
             tableBuilder.setRow(invite.getCode(), invite.getUsedCount() + "", invite.getSource());

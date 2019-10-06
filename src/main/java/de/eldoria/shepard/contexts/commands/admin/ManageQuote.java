@@ -67,7 +67,7 @@ public class ManageQuote extends Command {
 
             int quoteId = verifyId(args[1], messageContext);
 
-            if(quoteId == -1){
+            if (quoteId == -1) {
                 return;
             }
 
@@ -128,7 +128,7 @@ public class ManageQuote extends Command {
 
         int quoteId = verifyId(args[1], messageContext);
 
-        if(quoteId == -1){
+        if (quoteId == -1) {
             return;
         }
 
@@ -153,7 +153,8 @@ public class ManageQuote extends Command {
 
     /**
      * Returns the id from a string.
-     * @param number string to parse
+     *
+     * @param number         string to parse
      * @param messageContext message context for error logging
      * @return -1 when the string is not a number or the number is <0 or larger than the amount of quotes.
      */

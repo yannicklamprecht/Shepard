@@ -22,7 +22,8 @@ public class ShowKeyword extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         List<Keyword> keywords = KeyWordCollection.getInstance().getKeywords();
 
-        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(keywords, "ContextName", "", "Keywords");
+        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
+                keywords, "ContextName", "", "Keywords");
 
         for (Keyword kw : keywords) {
             tableBuilder.next();

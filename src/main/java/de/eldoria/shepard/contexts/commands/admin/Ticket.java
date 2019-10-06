@@ -128,7 +128,8 @@ public class Ticket extends Command {
         //Return list fo available ticket types
         if (args.length == 1) {
 
-            TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(tickets, "Keyword", "", "Category");
+            TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
+                    tickets, "Keyword", "", "Category");
 
             for (TicketType type : tickets) {
                 tableBuilder.next();
