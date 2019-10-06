@@ -2,7 +2,7 @@ package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.DatabaseConnector;
-import de.eldoria.shepard.database.types.HentaiImage;
+import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.database.types.Rank;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
@@ -19,9 +19,9 @@ import java.util.List;
 
 import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
-public final class HentaiOrNotData {
+public final class GuessGameData {
 
-    private HentaiOrNotData() {
+    private GuessGameData() {
     }
 
     /**
@@ -36,7 +36,7 @@ public final class HentaiOrNotData {
     public static boolean addHentaiImage(String croppedImage, String fullImage, boolean hentai,
                                          MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT shepard_func.add_hentai_image(?,?,?)")) {
+                .prepareStatement("SELECT shepard_func.add_guess_game_image(?,?,?)")) {
             statement.setString(1, croppedImage);
             statement.setString(2, fullImage);
             statement.setBoolean(3, hentai);
@@ -54,12 +54,12 @@ public final class HentaiOrNotData {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return hentai image object
      */
-    public static HentaiImage getHentaiImage(MessageEventDataWrapper messageContext) {
+    public static GuessGameImage getHentaiImage(MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_hentai_image_data()")) {
             ResultSet result = statement.executeQuery();
             if (result.next()) {
-                return new HentaiImage(result.getString("cropped_image"),
+                return new GuessGameImage(result.getString("cropped_image"),
                         result.getString("full_image"),
                         result.getBoolean("hentai"));
             }
@@ -101,7 +101,7 @@ public final class HentaiOrNotData {
     public static boolean addVoteScore(Guild guild, List<User> users, int score,
                                        MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT shepard_func.add_vote_score(?,?,?)")) {
+                .prepareStatement("SELECT shepard_func.add_guess_game_score(?,?,?)")) {
             statement.setString(1, guild.getId());
             Array ids = DatabaseConnector.getConn().createArrayOf("varchar",
                     users.stream().map(ISnowflake::getId).toArray());
@@ -125,7 +125,7 @@ public final class HentaiOrNotData {
      */
     public static List<Rank> getTopScore(Guild guild, int scoreAmount, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT * from shepard_func.get_top_score(?,?)")) {
+                .prepareStatement("SELECT * from shepard_func.get_guess_game_top_score(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setInt(2, scoreAmount);
             return getScoreListFromResult(statement.executeQuery());
@@ -144,7 +144,7 @@ public final class HentaiOrNotData {
      */
     public static List<Rank> getGlobalTopScore(int scoreAmount, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT * from shepard_func.get_global_top_score(?)")) {
+                .prepareStatement("SELECT * from shepard_func.get_guess_game_global_top_score(?)")) {
             statement.setInt(1, scoreAmount);
             return getScoreListFromResult(statement.executeQuery());
         } catch (SQLException e) {
@@ -163,7 +163,7 @@ public final class HentaiOrNotData {
      */
     public static int getUserScore(Guild guild, User user, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT * from shepard_func.get_user_score(?,?)")) {
+                .prepareStatement("SELECT * from shepard_func.get_guess_game_user_score(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, user.getId());
             ResultSet result = statement.executeQuery();
@@ -185,7 +185,7 @@ public final class HentaiOrNotData {
      */
     public static int getGlobalUserScore(User user, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT * from shepard_func.get_global_user_score(?)")) {
+                .prepareStatement("SELECT * from shepard_func.get_guess_game_global_user_score(?)")) {
             statement.setString(1, user.getId());
             ResultSet result = statement.executeQuery();
             if (result.next()) {

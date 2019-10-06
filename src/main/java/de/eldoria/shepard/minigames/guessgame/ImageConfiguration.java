@@ -1,6 +1,6 @@
 package de.eldoria.shepard.minigames.guessgame;
 
-import de.eldoria.shepard.database.queries.HentaiOrNotData;
+import de.eldoria.shepard.database.queries.GuessGameData;
 
 public class ImageConfiguration {
     private boolean hentai;
@@ -23,7 +23,7 @@ public class ImageConfiguration {
 
 
     boolean registerAtDatabase() {
-        return HentaiOrNotData.addHentaiImage(croppedImage, fullImage, hentai,null);
+        return GuessGameData.addHentaiImage(croppedImage, fullImage, hentai,null);
     }
 
     ConfigurationType getConfigurationState() {

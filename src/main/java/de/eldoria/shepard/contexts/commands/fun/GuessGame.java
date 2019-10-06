@@ -2,8 +2,8 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
-import de.eldoria.shepard.database.queries.HentaiOrNotData;
-import de.eldoria.shepard.database.types.HentaiImage;
+import de.eldoria.shepard.database.queries.GuessGameData;
+import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.database.types.Rank;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -64,14 +64,14 @@ public class GuessGame extends Command {
         String cmd = args[0];
 
         if (isArgument(cmd, "score", "s")) {
-            int userScore = HentaiOrNotData.getUserScore(messageContext.getGuild(),
+            int userScore = GuessGameData.getUserScore(messageContext.getGuild(),
                     messageContext.getAuthor(), messageContext);
             MessageSender.sendMessage("Your score is: " + userScore, messageContext.getChannel());
             return;
         }
 
         if (isArgument(cmd, "globalScore", "gs")) {
-            int userScore = HentaiOrNotData.getGlobalUserScore(messageContext.getAuthor(), messageContext);
+            int userScore = GuessGameData.getGlobalUserScore(messageContext.getAuthor(), messageContext);
             MessageSender.sendMessage("Your global score is: " + userScore, messageContext.getChannel());
             return;
         }
@@ -86,8 +86,8 @@ public class GuessGame extends Command {
 
     private void sendTopScores(boolean global, MessageEventDataWrapper messageContext) {
         List<Rank> ranks = global
-                ? HentaiOrNotData.getGlobalTopScore(10, messageContext)
-                : HentaiOrNotData.getTopScore(messageContext.getGuild(), 10, messageContext);
+                ? GuessGameData.getGlobalTopScore(10, messageContext)
+                : GuessGameData.getTopScore(messageContext.getGuild(), 10, messageContext);
 
         int nameLength = 5;
 
@@ -122,7 +122,7 @@ public class GuessGame extends Command {
             return;
         }
 
-        HentaiImage hentaiImage = HentaiOrNotData.getHentaiImage(messageContext);
+        GuessGameImage hentaiImage = GuessGameData.getHentaiImage(messageContext);
         if (hentaiImage == null) {
             return;
         }

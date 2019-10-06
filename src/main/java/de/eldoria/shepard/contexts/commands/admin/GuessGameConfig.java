@@ -2,7 +2,7 @@ package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
-import de.eldoria.shepard.database.queries.HentaiOrNotData;
+import de.eldoria.shepard.database.queries.GuessGameData;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.guessgame.ImageRegister;
@@ -56,7 +56,7 @@ public class GuessGameConfig extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             return;
         }
-        if (HentaiOrNotData.removeHentaiImage(args[1], messageContext)) {
+        if (GuessGameData.removeHentaiImage(args[1], messageContext)) {
             MessageSender.sendMessage("Removed Image!", messageContext.getChannel());
         }
     }

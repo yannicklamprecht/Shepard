@@ -2,12 +2,12 @@ package de.eldoria.shepard.database.types;
 
 import org.jetbrains.annotations.NotNull;
 
-public class HentaiImage {
+public class GuessGameImage {
     private String croppedImage;
     private String fullImage;
     private boolean hentai;
 
-    public HentaiImage(String croppedImage, String fullImage, boolean hentai) {
+    public GuessGameImage(String croppedImage, String fullImage, boolean hentai) {
         this.croppedImage = croppedImage;
         this.fullImage = fullImage;
         this.hentai = hentai;
