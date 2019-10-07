@@ -1,6 +1,5 @@
 package de.eldoria.shepard.database.queries;
 
-import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.database.types.Rank;
@@ -13,10 +12,10 @@ import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static de.eldoria.shepard.database.DbUtil.getScoreListFromResult;
 import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public final class GuessGameData {
@@ -196,17 +195,5 @@ public final class GuessGameData {
             handleExceptionAndIgnore(e, messageContext);
         }
         return -1;
-    }
-
-    private static List<Rank> getScoreListFromResult(ResultSet result) throws SQLException {
-        List<Rank> ranks = new ArrayList<>();
-
-        while (result.next()) {
-            User user = ShepardBot.getJDA().getUserById(result.getString("user_id"));
-            if (user != null) {
-                ranks.add(new Rank(user, result.getInt("score")));
-            }
-        }
-        return ranks;
     }
 }
