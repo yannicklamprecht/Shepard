@@ -3,13 +3,10 @@ package de.eldoria.shepard.contexts.commands.fun;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.entities.MessageChannel;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.File;
 import java.util.UUID;
 
 public class MockingSpongebob extends Command {
@@ -27,17 +24,11 @@ public class MockingSpongebob extends Command {
             MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
             return;
         }
-        try {
-            sendImage(String.join("%20", args), messageContext.getChannel());
-        } catch (IOException e) {
+        File image = FileHelper.getFileFromURL(BASE_URL + String.join("%20", args) + ".jpg");
+        if (image == null) {
             MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, messageContext.getChannel());
+        } else {
+            messageContext.getChannel().sendFile(image, "mock" + UUID.randomUUID() + ".jpg").queue();
         }
-    }
-
-    private void sendImage(String text, MessageChannel channel) throws IOException {
-        String urlString = BASE_URL + text;
-        HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
-        InputStream inputStream = connection.getInputStream();
-        channel.sendFile(inputStream, "mock" + UUID.randomUUID() + ".jpg").queue();
     }
 }
