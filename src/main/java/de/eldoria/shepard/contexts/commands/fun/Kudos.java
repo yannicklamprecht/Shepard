@@ -65,7 +65,7 @@ public class Kudos extends Command {
                         messageContext.getChannel());
             } else {
                 MessageSender.sendMessage(
-                        "Du hast **" + freePoints + "/100** " + pointType + " zu vergeben! (Du erhälst 1 "
+                        "Du hast **" + freePoints + "/100** " + pointType + " zu vergeben! (Du erhältst 1 "
                                 + pointType.substring(0, pointType.length() - 1) + " alle 30 Minuten)" + lineSeparator()
                                 + "Du hast **" + userPoints + " " + pointType + "** auf diesem Server erhalten!" + lineSeparator()
                                 + (userPoints != globalUserPoints ?
