@@ -30,7 +30,7 @@ public class MockingSpongebob extends Command {
         try {
             sendImage(String.join("%20", args), messageContext.getChannel());
         } catch (IOException e) {
-            e.printStackTrace();
+            MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, messageContext.getChannel());
         }
     }
 
