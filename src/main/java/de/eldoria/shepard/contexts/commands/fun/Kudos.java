@@ -26,8 +26,8 @@ public class Kudos extends Command {
                 new CommandArg("action",
                         "leave empty -> Show your free rubber points and how much you earned!" + lineSeparator()
                                 + "**__g__ive** -> Give a user rubber points." + lineSeparator()
-                                + "**__t__op** -> Show you the top 10 user on this server." + lineSeparator()
-                                + "**__t__op__G__lobal** -> Show you the top 10 user!",
+                                + "**__t__op** -> Show you the top 25 user on this server." + lineSeparator()
+                                + "**__t__op__G__lobal** -> Show you the top 25 user!",
                         false),
                 new CommandArg("values",
                         "**__g__ive** -> [user] [points]." + lineSeparator()
@@ -153,8 +153,8 @@ public class Kudos extends Command {
 
     private void sendTopScores(String pointType, boolean global, MessageEventDataWrapper messageContext) {
         List<Rank> ranks = global
-                ? RubberPointsData.getGlobalTopScore(10, messageContext)
-                : RubberPointsData.getTopScore(messageContext.getGuild(), 10, messageContext);
+                ? RubberPointsData.getGlobalTopScore(25, messageContext)
+                : RubberPointsData.getTopScore(messageContext.getGuild(), 25, messageContext);
 
         String rankTable = TextFormatting.getRankTable(ranks);
 
