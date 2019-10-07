@@ -43,9 +43,7 @@ public class CommandListener extends ListenerAdapter {
 
     private void onCommand(MessageEventDataWrapper messageContext) {
         String receivedMessage = messageContext.getMessage().getContentRaw();
-        while (receivedMessage.contains("  ")) {
-            receivedMessage = receivedMessage.replace("  ", " ");
-        }
+        receivedMessage = receivedMessage.replaceAll("\\s\\s+", " ");
         String[] args = receivedMessage.split(" ");
 
         boolean isCommand = false;
