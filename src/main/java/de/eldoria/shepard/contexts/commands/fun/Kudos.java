@@ -27,11 +27,13 @@ public class Kudos extends Command {
                         "leave empty -> Show your free rubber points and how much you earned!" + lineSeparator()
                                 + "**__g__ive** -> Give a user rubber points." + lineSeparator()
                                 + "**__t__op** -> Show you the top 10 user on this server." + lineSeparator()
-                                + "**__t__op__G__lobal** -> Show you the top 10 user!", false),
+                                + "**__t__op__G__lobal** -> Show you the top 10 user!",
+                        false),
                 new CommandArg("values",
                         "**__g__ive** -> [user] [points]." + lineSeparator()
                                 + "**__t__op** -> leave empty." + lineSeparator()
-                                + "**__t__op__G__lobal** -> leave empty.", false)
+                                + "**__t__op__G__lobal** -> leave empty.",
+                        false)
         };
     }
 
@@ -157,5 +159,4 @@ public class Kudos extends Command {
                         + lineSeparator() + rankTable,
                 messageContext.getChannel());
     }
-
 }
