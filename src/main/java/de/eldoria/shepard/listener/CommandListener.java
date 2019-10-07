@@ -75,6 +75,10 @@ public class CommandListener extends ListenerAdapter {
                 args = new String[0];
             }
             if (command != null && command.isContextValid(messageContext)) {
+                if(args.length > 0 && args[0].equalsIgnoreCase("help")){
+                    command.sendCommandUsage(messageContext.getChannel());
+                    return;
+                }
                 if (command.checkArguments(args)) {
                     try {
                         command.execute(label, args, messageContext);
