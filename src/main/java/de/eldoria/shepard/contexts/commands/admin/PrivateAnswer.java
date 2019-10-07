@@ -4,10 +4,7 @@ import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.collections.PrivateMessageCollection;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
-import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.util.Emoji;
-import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
 
@@ -38,15 +35,7 @@ public class PrivateAnswer extends Command {
 
         User user = PrivateMessageCollection.getInstance().getUser(args[0]);
 
-        if (user == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext.getChannel());
-            return;
-        }
-
-        String text = TextFormatting.getRangeAsString(" ", args, 1, args.length);
-
-        MessageSender.sendMessage(user, messageContext.getMessage().getAttachments(), text, messageContext);
-
-        messageContext.getMessage().addReaction(Emoji.CHECK_MARK_BUTTON.unicode).queue();
+        PrivateMessageHelper.sendPrivateMessage(args, messageContext, user);
     }
+
 }

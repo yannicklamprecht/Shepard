@@ -34,8 +34,8 @@ public final class InteractableMessageSender {
      * @param color   Color of the text box
      * @param actions one ore more reaction actions linked with this message.
      */
-    public static void sendTextBox(String title, List<MessageEmbed.Field> fields, TextChannel channel, Color color,
-                                   Action... actions) {
+    private static void sendTextBox(String title, List<MessageEmbed.Field> fields, TextChannel channel, Color color,
+                                    Action... actions) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle(title)
                 .setColor(color);

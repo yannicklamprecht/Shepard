@@ -1,9 +1,13 @@
 package de.eldoria.shepard.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import static java.lang.System.lineSeparator;
 
 public final class TextFormatting {
     private TextFormatting() {
@@ -34,64 +38,6 @@ public final class TextFormatting {
         return String.join(delimiter, Arrays.copyOfRange(source, from, to));
     }
 
-    /**
-     * Creates a formatted table from a two dimensional array.
-     *
-     * @param tableAsArray the table as array.
-     * @return String.
-     */
-    public static String getAsTable(String[][] tableAsArray) {
-        return getAsTable(tableAsArray, 1);
-    }
-
-    /**
-     * Creates a formatted table from a two dimensional array.
-     *
-     * @param tableAsArray the table as array.
-     * @param padding      padding between columns.
-     * @return String.
-     */
-    public static String getAsTable(String[][] tableAsArray, int padding) {
-        int[] length = new int[tableAsArray[0].length];
-        for (int column = 0; column < length.length; column++) {
-            int max = 0;
-            for (int row = 0; row < tableAsArray.length; row++) {
-                max = Math.max(max, tableAsArray[row][column].length());
-            }
-            length[column] = max;
-        }
-
-
-        for (int col = 0; col < length.length; col++) {
-            for (int row = 0; row < tableAsArray.length; row++) {
-                tableAsArray[row][col] = fillString(tableAsArray[row][col], length[col] + padding);
-            }
-        }
-
-        List<String> rows = new ArrayList<>();
-
-        for (String[] strings : tableAsArray) {
-            rows.add(String.join("", strings));
-        }
-
-        return "```" + System.lineSeparator()
-                + String.join(System.lineSeparator(), rows)
-                + System.lineSeparator() + "```";
-    }
-
-    /**
-     * Returns a two dimensional string array. the first row are the column names.
-     *
-     * @param collection  collection for row size
-     * @param columnNames names of the columns
-     * @return two dimensional string array. Index 0 is used for column names.
-     */
-    public static String[][] getPreparedStringTable(Collection collection, String... columnNames) {
-        String[][] result = new String[collection.size() + 1][columnNames.length];
-        result[0] = columnNames;
-
-        return result;
-    }
 
     /**
      * Changes the boolean in to a specified String.
@@ -103,5 +49,114 @@ public final class TextFormatting {
      */
     public static String mapBooleanTo(boolean bool, String trueTo, String falseTo) {
         return bool ? trueTo : falseTo;
+    }
+
+    /**
+     * Create a new TableBuilder.
+     *
+     * @param collection  Collection to determine the row size.
+     * @param columnNames Determines the name and amount of the columns. Empty column names are possible
+     * @return new Table builder object.
+     */
+    public static TableBuilder getTableBuilder(Collection collection, @NotNull String... columnNames) {
+        return new TableBuilder(collection, columnNames);
+    }
+
+    public static class TableBuilder {
+        private final String[][] table;
+        private String markdown = "";
+        private int padding;
+        private int rowPointer = 0;
+
+        TableBuilder(Collection collection, String... columnNames) {
+            table = new String[collection.size() + 1][columnNames.length];
+            table[0] = columnNames;
+        }
+
+
+        /**
+         * Set the current row. To go a row forward user next().
+         *
+         * @param columnEntries Entries for the columns in the current row
+         */
+        public void setRow(String... columnEntries) {
+            if (rowPointer == 0) {
+                return;
+            }
+            if (columnEntries.length <= table[0].length) {
+                table[rowPointer] = columnEntries;
+            } else {
+                table[rowPointer] = Arrays.copyOfRange(columnEntries, 0, table[0].length);
+            }
+        }
+
+        /**
+         * The pointer starts at 0. Row zero can only be set on object creation.
+         * use next() before you set the first row.
+         *
+         * @return true when there is one more row and the pointer moved forward.
+         */
+        public boolean next() {
+            rowPointer++;
+            return table.length > rowPointer;
+        }
+
+        /**
+         * Set the markdown for the table code block.
+         *
+         * @param markdown Markdown code (i.e. java, md, csharp)
+         */
+        public void setHighlighting(@NotNull String markdown) {
+            this.markdown = markdown;
+        }
+
+        /**
+         * Set the space between the columns.
+         *
+         * @param padding number between 1 and 10
+         */
+        public void setPadding(int padding) {
+            this.padding = Math.min(10, Math.max(1, padding));
+        }
+
+        /**
+         * Returns the formatted table in block code style.
+         *
+         * @return Table as string.
+         */
+        @Override
+        public String toString() {
+            int[] length = new int[table[0].length];
+            for (int column = 0; column < length.length; column++) {
+                int max = 0;
+                for (int row = 0; row < table.length; row++) {
+                    max = Math.max(max, table[row][column].length());
+                }
+                length[column] = max;
+            }
+
+
+            for (int col = 0; col < length.length; col++) {
+                for (int row = 0; row < table.length; row++) {
+                    table[row][col] = fillString(table[row][col], length[col] + padding);
+                }
+            }
+
+            List<String> rows = new ArrayList<>();
+
+            for (String[] strings : table) {
+                rows.add(String.join("", strings));
+            }
+
+            StringBuilder builder = new StringBuilder("```");
+            if (!markdown.isBlank()) {
+                builder.append(markdown.trim());
+            }
+            builder.append(lineSeparator())
+                    .append(String.join(lineSeparator(), rows))
+                    .append(lineSeparator())
+                    .append("```");
+            return builder.toString();
+        }
     }
 }

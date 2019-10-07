@@ -16,5 +16,5 @@ public enum AddressType {
     /**
      * Used when an address match the domain pattern.
      */
-    DOMAIN;
+    DOMAIN
 }

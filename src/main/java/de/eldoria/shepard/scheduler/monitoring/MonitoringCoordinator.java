@@ -12,14 +12,14 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MonitoringCoordinator implements Runnable {
-    private final int API_REQUEST_DELAY = 5;
+class MonitoringCoordinator implements Runnable {
+    private static final int API_REQUEST_DELAY = 5;
     private ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(10);
     private int counts;
     private int broadcastCount;
 
     /**
-     * Initiates a monitoring coordinator with broadcast settings
+     * Initiates a monitoring coordinator with broadcast settings.
      * @param broadcastCount the x. message which should be printed.
      */
     MonitoringCoordinator(int broadcastCount) {

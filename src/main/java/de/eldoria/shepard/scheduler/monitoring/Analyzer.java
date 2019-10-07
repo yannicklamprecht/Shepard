@@ -9,7 +9,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.net.Socket;
 
-public class Analyzer implements Runnable {
+class Analyzer implements Runnable {
 
     /**
      * Address object to store address information.

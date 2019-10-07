@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class Invite extends Command {
@@ -46,19 +47,19 @@ public class Invite extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        if (cmd.equalsIgnoreCase("addInvite") || cmd.equalsIgnoreCase("ai")) {
+        if (isArgument(cmd, "addInvite", "ai")) {
             addInvite(args, messageContext);
             return;
         }
-        if (cmd.equalsIgnoreCase("removeInvite") || cmd.equalsIgnoreCase("remi")) {
+        if (isArgument(cmd, "removeInvite", "remi")) {
             removeInvite(args, messageContext);
             return;
         }
-        if (cmd.equalsIgnoreCase("refreshInvites") || cmd.equalsIgnoreCase("refi")) {
+        if (isArgument(cmd, "refreshInvites", "refi")) {
             refreshInvites(messageContext);
             return;
         }
-        if (cmd.equalsIgnoreCase("showInvites") || cmd.equalsIgnoreCase("si")) {
+        if (isArgument(cmd, "showInvites", "si")) {
             showInvites(messageContext);
             return;
         }
@@ -72,15 +73,13 @@ public class Invite extends Command {
         StringBuilder message = new StringBuilder();
         message.append("Registered Invites: ").append(lineSeparator());
 
-        String[][] preparedStringTable = TextFormatting.getPreparedStringTable(
+        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
                 invites, "Code", "Usage Count", "Invite Name");
-        for (int i = 1; i < preparedStringTable.length; i++) {
-            DatabaseInvite inv = invites.get(i - 1);
-            preparedStringTable[i] = new String[] {inv.getCode(), inv.getUsedCount() + "", inv.getSource()};
+        for (DatabaseInvite invite : invites) {
+            tableBuilder.next();
+            tableBuilder.setRow(invite.getCode(), invite.getUsedCount() + "", invite.getSource());
         }
-        String asTable = TextFormatting.getAsTable(preparedStringTable);
-
-        message.append(asTable);
+        message.append(tableBuilder);
         MessageSender.sendMessage(message.toString(), messageContext.getChannel());
     }
 

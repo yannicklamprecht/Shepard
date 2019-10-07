@@ -13,7 +13,8 @@ public class Oha extends Command {
      */
     public Oha() {
         commandName = "oha";
-        commandDesc = "Ohaaaaaa";
+        commandDesc = "Ohaaaaaa - Use \"ohad\" to delete your command afterwards.";
+        commandAliases = new String[] {"ohad"};
     }
 
     @Override
@@ -23,5 +24,9 @@ public class Oha extends Command {
         int loops = rand.nextInt(30) + 10;
         oha = oha + "a".repeat(loops);
         MessageSender.sendMessage(oha, messageContext.getChannel());
+
+        if (label.equalsIgnoreCase("ohad")) {
+            messageContext.getMessage().delete().queue();
+        }
     }
 }

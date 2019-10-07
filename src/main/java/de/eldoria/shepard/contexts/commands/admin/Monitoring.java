@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.List;
 
+import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class Monitoring extends Command {
@@ -53,17 +54,17 @@ public class Monitoring extends Command {
 
         String cmd = args[0];
 
-        if (Verifier.isArgument(cmd, "disable", "d")) {
+        if (isArgument(cmd, "disable", "d")) {
             disable(messageContext);
             return;
         }
 
-        if (Verifier.isArgument(cmd, "show", "s")) {
+        if (isArgument(cmd, "show", "s")) {
             show(messageContext);
             return;
         }
 
-        if (Verifier.isArgument(cmd, "enable", "e")) {
+        if (isArgument(cmd, "enable", "e")) {
             if (easyEnable(messageContext)) return;
         }
 
@@ -72,17 +73,17 @@ public class Monitoring extends Command {
             return;
         }
 
-        if (Verifier.isArgument(cmd, "remove", "r")) {
+        if (isArgument(cmd, "remove", "r")) {
             remove(args[1], messageContext);
             return;
         }
 
-        if (Verifier.isArgument(cmd, "enable", "e")) {
+        if (isArgument(cmd, "enable", "e")) {
             if (enable(args[1], messageContext)) return;
             return;
         }
 
-        if (Verifier.isArgument(cmd, "add", "a")) {
+        if (isArgument(cmd, "add", "a")) {
             add(args, messageContext);
             return;
         }
@@ -167,21 +168,18 @@ public class Monitoring extends Command {
         List<Address> monitoringAddresses = MonitoringData.getMonitoringAddressesForGuild(
                 messageContext.getGuild(), messageContext);
 
-        String[][] preparedStringTable = TextFormatting.getPreparedStringTable(monitoringAddresses,
+        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(monitoringAddresses,
                 "Index", "Name", "Address", "Minecraft");
 
-        for (int i = 1; i < preparedStringTable.length; i++) {
-            Address address = monitoringAddresses.get(i - 1);
-            preparedStringTable[i] = new String[] {
-                    address.getId() + "",
+        for (Address address : monitoringAddresses) {
+            tableBuilder.next();
+            tableBuilder.setRow(address.getId() + "",
                     address.getName(),
                     address.getAddress(),
-                    TextFormatting.mapBooleanTo(address.isMinecraftIp(), "yes", "no")};
+                    TextFormatting.mapBooleanTo(address.isMinecraftIp(), "yes", "no"));
         }
 
-        String asTable = TextFormatting.getAsTable(preparedStringTable);
-
-        MessageSender.sendMessage("Registered for Monitoring: " + lineSeparator() + asTable,
+        MessageSender.sendMessage("Registered for Monitoring: " + lineSeparator() + tableBuilder,
                 messageContext.getChannel());
     }
 }

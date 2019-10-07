@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 public class Verifier {
     private static final Pattern IPV_4 = Pattern.compile("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}(:[0-9]{1,5})?$");
     private static final Pattern IPV_6 = Pattern.compile("^\\[?([a-fA-F0-9:]{8,40})(]:[0-9]{1,5})?$");
-    private static final Pattern DOMAIN = Pattern.compile("^(?!://)([a-zA-Z0-9-_]+\\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\\.[a-zA-Z]{2,11}?(:[0-9]{1,5})?$");
+    private static final Pattern DOMAIN = Pattern.compile("^(?!://)([a-zA-Z0-9-_]+\\.)*[a-zA-Z0-9][a-zA-Z0-9-_]"
+            + "+\\.[a-zA-Z]{2,11}?(:[0-9]{1,5})?$");
 
 
     /**
@@ -89,7 +90,7 @@ public class Verifier {
      * @param args  array of channel ids
      * @return list of valid channels
      */
-    public static List<TextChannel> getValidTextChannels(Guild guild, String[] args) {
+    private static List<TextChannel> getValidTextChannels(Guild guild, String[] args) {
         return Arrays.stream(args).map(channelId -> guild.getTextChannelById(DbUtil.getIdRaw(channelId)))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
@@ -146,7 +147,7 @@ public class Verifier {
      * Check if the message is a command.
      *
      * @param message message which should be checked
-     * @param event event for check
+     * @param event   event for check
      * @return true if the prefix is present and valid
      */
     public static boolean checkPrefix(String message, MessageEventDataWrapper event) {
