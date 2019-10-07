@@ -17,11 +17,11 @@ import java.util.List;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
-public class RubberPoints extends Command {
-    public RubberPoints() {
-        commandName = "rubberpoints";
-        commandAliases = new String[] {"gummipunkte", "kudos"};
-        commandDesc = "Give rubber points to others, when they do good things. You earn one point every 30 minutes.";
+public class Kudos extends Command {
+    public Kudos() {
+        commandName = "kudos";
+        commandAliases = new String[] {"gummipunkte", "rubberpoints"};
+        commandDesc = "Give kudos to others, when they do good things. You earn one point every 30 minutes.";
         commandArgs = new CommandArg[] {
                 new CommandArg("action",
                         "leave empty -> Show your free rubber points and how much you earned!" + lineSeparator()
@@ -37,6 +37,15 @@ public class RubberPoints extends Command {
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
+        String pointType = "";
+        if (label.equalsIgnoreCase("gummipunkte")) {
+            pointType = "Gummipunkte";
+        } else if (label.equalsIgnoreCase("kudos")) {
+            pointType = "Kudos";
+        } else if (label.equalsIgnoreCase("rubberpoints")) {
+            pointType = "Rubber Points";
+        }
+
         if (args.length == 0) {
             int freePoints = RubberPointsData.getFreePoints(
                     messageContext.getGuild(), messageContext.getAuthor(), messageContext);
@@ -44,24 +53,36 @@ public class RubberPoints extends Command {
                     messageContext.getGuild(), messageContext.getAuthor(), messageContext);
             int globalUserPoints = RubberPointsData.getGlobalUserScore(messageContext.getAuthor(), messageContext);
 
-            MessageSender.sendMessage(
-                    "You have **" + freePoints + "/100** free points to give! (You get 1 Point every 30 minutes)" + lineSeparator()
-                            + "You have earned **" + userPoints + "** on this Server!" + lineSeparator()
-                            + (userPoints != globalUserPoints ?
-                            "You have earned **" + globalUserPoints + "** on all Servers!" : "")
-                    , messageContext.getChannel());
+            if (isArgument(label, "rubberpoints", "kudos")) {
+                MessageSender.sendMessage(
+                        "You have **" + freePoints + "/100** free " + pointType + " to give! (You get 1 "
+                                + pointType.substring(0, pointType.length() - 1) + " every 30 minutes)" + lineSeparator()
+                                + "You have earned **" + userPoints + " " + pointType + "** on this Server!" + lineSeparator()
+                                + (userPoints != globalUserPoints ?
+                                "You have earned **" + globalUserPoints + " " + pointType + "** on all Servers!" : ""),
+                        messageContext.getChannel());
+            } else {
+                MessageSender.sendMessage(
+                        "Du hast **" + freePoints + "/100** " + pointType + " zu vergeben! (Du erhälst 1 "
+                                + pointType.substring(0, pointType.length() - 1) + " alle 30 Minuten)" + lineSeparator()
+                                + "Du hast **" + userPoints + " " + pointType + "** auf diesem Server erhalten!" + lineSeparator()
+                                + (userPoints != globalUserPoints ?
+                                "Du hast **" + globalUserPoints + " " + pointType + "** insgesamt erhalten!" : ""),
+                        messageContext.getChannel());
+            }
             return;
         }
 
         String cmd = args[0];
 
         if (isArgument(cmd, "top", "t")) {
-            sendTopScores(false, messageContext);
+            sendTopScores(pointType, false, messageContext);
+
             return;
         }
 
         if (isArgument(cmd, "topGlobal", "tg")) {
-            sendTopScores(true, messageContext);
+            sendTopScores(pointType, true, messageContext);
             return;
         }
 
@@ -109,6 +130,11 @@ public class RubberPoints extends Command {
                                 + "** rubber points from " + messageContext.getAuthor().getAsMention() + "!"
                         , messageContext.getChannel());
             }
+            if (label.equalsIgnoreCase("kudos")) {
+                MessageSender.sendMessage(memberById.getAsMention() + " recieved **" + points
+                                + "** Kudos from " + messageContext.getAuthor().getAsMention() + "!"
+                        , messageContext.getChannel());
+            }
             if (label.equalsIgnoreCase("gummipunkte")) {
                 MessageSender.sendMessage(memberById.getAsMention() + " erhält **" + points
                                 + "** Gummipunkte von " + messageContext.getAuthor().getAsMention() + "!",
@@ -119,14 +145,15 @@ public class RubberPoints extends Command {
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
     }
 
-    private void sendTopScores(boolean global, MessageEventDataWrapper messageContext) {
+    private void sendTopScores(String pointType, boolean global, MessageEventDataWrapper messageContext) {
         List<Rank> ranks = global
                 ? RubberPointsData.getGlobalTopScore(10, messageContext)
                 : RubberPointsData.getTopScore(messageContext.getGuild(), 10, messageContext);
 
         String rankTable = TextFormatting.getRankTable(ranks);
 
-        MessageSender.sendMessage((global ? "**GLOBAL RUBBER POINT RANKING**" : "**SERVER RUBBER POINT RANKING**")
+        MessageSender.sendMessage((global ? "**GLOBAL " + pointType.toUpperCase() + " RANKING**"
+                        : "**SERVER " + pointType.toUpperCase() + " RANKING**")
                         + lineSeparator() + rankTable,
                 messageContext.getChannel());
     }

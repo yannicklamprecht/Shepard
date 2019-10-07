@@ -28,7 +28,7 @@ import de.eldoria.shepard.contexts.commands.fun.Oha;
 import de.eldoria.shepard.contexts.commands.fun.Owo;
 import de.eldoria.shepard.contexts.commands.fun.Quote;
 import de.eldoria.shepard.contexts.commands.fun.RandomJoke;
-import de.eldoria.shepard.contexts.commands.fun.RubberPoints;
+import de.eldoria.shepard.contexts.commands.fun.Kudos;
 import de.eldoria.shepard.contexts.commands.fun.Say;
 import de.eldoria.shepard.contexts.commands.fun.Someone;
 import de.eldoria.shepard.contexts.commands.fun.Uwu;
@@ -102,7 +102,7 @@ public final class ContextRegister {
         contextSensitives.add(new Someone());
         contextSensitives.add(new LargeEmote());
         contextSensitives.add(new GuessGame());
-        contextSensitives.add(new RubberPoints());
+        contextSensitives.add(new Kudos());
     }
 
     private void registerExclusiveCommands() {
