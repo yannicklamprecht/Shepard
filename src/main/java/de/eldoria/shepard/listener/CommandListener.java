@@ -43,6 +43,7 @@ public class CommandListener extends ListenerAdapter {
 
     private void onCommand(MessageEventDataWrapper messageContext) {
         String receivedMessage = messageContext.getMessage().getContentRaw();
+        receivedMessage = receivedMessage.replaceAll("\\s\\s+", " ");
         String[] args = receivedMessage.split(" ");
 
         boolean isCommand = false;
@@ -60,6 +61,9 @@ public class CommandListener extends ListenerAdapter {
 
         if (isCommand) {
             //BotCheck
+            if (messageContext.getAuthor().getIdLong() == ShepardBot.getJDA().getSelfUser().getIdLong()) {
+                return;
+            }
             if (messageContext.getAuthor().isBot()) {
                 MessageSender.sendMessage("I'm not allowed to talk to you " + messageContext.getAuthor().getName()
                         + ". Please leave me alone ._.", messageContext.getChannel());
@@ -75,6 +79,10 @@ public class CommandListener extends ListenerAdapter {
                 args = new String[0];
             }
             if (command != null && command.isContextValid(messageContext)) {
+                if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
+                    command.sendCommandUsage(messageContext.getChannel());
+                    return;
+                }
                 if (command.checkArguments(args)) {
                     try {
                         command.execute(label, args, messageContext);
@@ -94,7 +102,6 @@ public class CommandListener extends ListenerAdapter {
                         messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
                                 MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));
                     }
-
                 }
                 return;
             } else if (command != null && command.canBeExecutedHere(messageContext)) {
@@ -124,8 +131,6 @@ public class CommandListener extends ListenerAdapter {
                     + "help for a full list of available commands!", false)}, messageContext.getChannel());
 
         }
-
     }
-
 }
 

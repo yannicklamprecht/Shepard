@@ -28,6 +28,10 @@ public enum ErrorType {
      */
     NOT_A_NUMBER("This is not a number!"),
     /**
+     * Used when the user has not enough rubber points.
+     */
+    NOT_ENOUGH_POINTS("You dont have enough points!"),
+    /**
      * Used when a channel is not a guild text channel.
      */
     NOT_GUILD_TEXT_CHANNEL("This is not a guild text channel!"),
@@ -106,7 +110,11 @@ public enum ErrorType {
     /**
      * Used when no emote was found.
      */
-    NO_EMOTE_FOUND("No emote was found.");
+    NO_EMOTE_FOUND("No emote was found."),
+    /**
+     * Used when a user executes a command on himself, when he is not allowed to do it!
+     */
+    SELF_ASSIGNMENT("You can't do this to yourself!");
 
 
     /**

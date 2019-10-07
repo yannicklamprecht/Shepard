@@ -45,7 +45,6 @@ public final class MessageSender {
      */
     public static void sendTextBox(String title, List<MessageEmbed.Field> fields, MessageChannel channel, Color color) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setDescription("test")
                 .setTitle(title)
                 .setColor(color);
         for (MessageEmbed.Field field : fields) {
