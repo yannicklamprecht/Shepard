@@ -1,5 +1,6 @@
 package de.eldoria.shepard.scheduler.monitoring;
 
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.Address;
 import de.eldoria.shepard.util.PingMinecraftServer;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -14,6 +15,11 @@ public class ReconnectAnalyzer extends Analyzer {
 
     @Override
     public void run() {
+
+        if (ShepardBot.getConfig().debugActive()) {
+            ShepardBot.getLogger().info("Checking Address " + address.getFullAddress());
+        }
+
         if (address.isMinecraftIp()) {
             PingMinecraftServer.MinecraftPing minecraftPing = checkMinecraftServer();
             if (minecraftPing != null && minecraftPing.isOnline()) {
@@ -31,12 +37,27 @@ public class ReconnectAnalyzer extends Analyzer {
                         .setColor(Color.green);
                 channel.sendMessage(builder.build()).queue();
                 MonitoringScheduler.getInstance().markAsReachable(channel.getGuild().getIdLong(), address);
+                if (ShepardBot.getConfig().debugActive()) {
+                    ShepardBot.getLogger().info("Service is reachable again: " + address.getFullAddress());
+                }
+            } else {
+                if (ShepardBot.getConfig().debugActive()) {
+                    ShepardBot.getLogger().info("Service is still down: " + address.getFullAddress());
+                }
             }
         } else {
             boolean addressReachable = isAddressReachable();
             if (addressReachable) {
                 channel.sendMessage("Service on " + address.getFullAddress() + " is back again!").queue();
                 MonitoringScheduler.getInstance().markAsReachable(channel.getGuild().getIdLong(), address);
+                if (ShepardBot.getConfig().debugActive()) {
+                    ShepardBot.getLogger().info("Service is reachable again: " + address.getFullAddress());
+                }
+            } else {
+                if (ShepardBot.getConfig().debugActive()) {
+                    ShepardBot.getLogger().info("Service is still down: " + address.getFullAddress());
+                }
+
             }
         }
 
