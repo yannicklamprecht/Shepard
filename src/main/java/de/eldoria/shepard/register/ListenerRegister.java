@@ -3,6 +3,7 @@ package de.eldoria.shepard.register;
 import de.eldoria.shepard.listener.HentaiImageRegisterListener;
 import de.eldoria.shepard.listener.PrivateMessageListener;
 import de.eldoria.shepard.listener.ReactionListener;
+import de.eldoria.shepard.scheduler.KudoCounter;
 import de.eldoria.shepard.scheduler.invites.InviteScheduler;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.listener.CommandListener;
@@ -36,6 +37,7 @@ public final class ListenerRegister {
         listener.add(new PrivateMessageListener());
         InviteScheduler.initialize();
         MonitoringScheduler.initialize();
+        new KudoCounter().initialize();
     }
 
     private static ListenerRegister getInstance() {
