@@ -89,62 +89,66 @@ public class Kudos extends Command {
         }
 
         if (isArgument(cmd, "give", "g")) {
-            if (args.length != 3) {
-                MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
-            }
-            String idRaw = DbUtil.getIdRaw(args[1]);
-            if (!Verifier.isValidId(idRaw)) {
-                MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext.getChannel());
-                return;
-            }
-
-            Member memberById = messageContext.getGuild().getMemberById(idRaw);
-            if (memberById == null) {
-                MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext.getChannel());
-                return;
-            }
-
-            if (memberById.getUser().getIdLong() == messageContext.getAuthor().getIdLong()) {
-                MessageSender.sendSimpleError(ErrorType.SELF_ASSIGNMENT, messageContext.getChannel());
-                return;
-            }
-
-            int points;
-
-            try {
-                points = Integer.parseInt(args[2]);
-            } catch (NumberFormatException e) {
-                MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getChannel());
-                return;
-            }
-
-            if (!RubberPointsData.tryTakePoints(
-                    messageContext.getGuild(), messageContext.getAuthor(), points, messageContext)) {
-                MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_POINTS, messageContext.getChannel());
-                return;
-            }
-            if (!RubberPointsData.addRubberPoints(
-                    messageContext.getGuild(), memberById.getUser(), points, messageContext)) {
-                return;
-            }
-            if (label.equalsIgnoreCase("rubberpoints")) {
-                MessageSender.sendMessage(memberById.getAsMention() + " recieved **" + points
-                                + "** rubber points from " + messageContext.getAuthor().getAsMention() + "!"
-                        , messageContext.getChannel());
-            }
-            if (label.equalsIgnoreCase("kudos")) {
-                MessageSender.sendMessage(memberById.getAsMention() + " recieved **" + points
-                                + "** Kudos from " + messageContext.getAuthor().getAsMention() + "!"
-                        , messageContext.getChannel());
-            }
-            if (label.equalsIgnoreCase("gummipunkte")) {
-                MessageSender.sendMessage(memberById.getAsMention() + " erhält **" + points
-                                + "** Gummipunkte von " + messageContext.getAuthor().getAsMention() + "!",
-                        messageContext.getChannel());
-            }
+            give(label, args, messageContext);
             return;
         }
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+    }
+
+    private void give(String label, String[] args, MessageEventDataWrapper messageContext) {
+        if (args.length != 3) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
+        }
+        String idRaw = DbUtil.getIdRaw(args[1]);
+        if (!Verifier.isValidId(idRaw)) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext.getChannel());
+            return;
+        }
+
+        Member memberById = messageContext.getGuild().getMemberById(idRaw);
+        if (memberById == null) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext.getChannel());
+            return;
+        }
+
+        if (memberById.getUser().getIdLong() == messageContext.getAuthor().getIdLong()) {
+            MessageSender.sendSimpleError(ErrorType.SELF_ASSIGNMENT, messageContext.getChannel());
+            return;
+        }
+
+        int points;
+
+        try {
+            points = Integer.parseInt(args[2]);
+        } catch (NumberFormatException e) {
+            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getChannel());
+            return;
+        }
+
+        if (!RubberPointsData.tryTakePoints(
+                messageContext.getGuild(), messageContext.getAuthor(), points, messageContext)) {
+            MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_POINTS, messageContext.getChannel());
+            return;
+        }
+        if (!RubberPointsData.addRubberPoints(
+                messageContext.getGuild(), memberById.getUser(), points, messageContext)) {
+            return;
+        }
+        if (label.equalsIgnoreCase("rubberpoints")) {
+            MessageSender.sendMessage(memberById.getAsMention() + " recieved **" + points
+                            + "** rubber points from " + messageContext.getAuthor().getAsMention() + "!"
+                    , messageContext.getChannel());
+        }
+        if (label.equalsIgnoreCase("kudos")) {
+            MessageSender.sendMessage(memberById.getAsMention() + " recieved **" + points
+                            + "** Kudos from " + messageContext.getAuthor().getAsMention() + "!"
+                    , messageContext.getChannel());
+        }
+        if (label.equalsIgnoreCase("gummipunkte")) {
+            MessageSender.sendMessage(memberById.getAsMention() + " erhält **" + points
+                            + "** Gummipunkte von " + messageContext.getAuthor().getAsMention() + "!",
+                    messageContext.getChannel());
+        }
     }
 
     private void sendTopScores(String pointType, boolean global, MessageEventDataWrapper messageContext) {
