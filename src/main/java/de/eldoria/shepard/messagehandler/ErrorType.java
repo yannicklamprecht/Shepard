@@ -8,6 +8,10 @@ public enum ErrorType {
             + "Can you give me another try, pls?" + System.lineSeparator()
             + "IF error persists contact Bot Support", true),
     /**
+     * Used when a (web) service isn't available at the moment, e.g. http response code 4xx or 5xx.
+     */
+    SERVICE_UNAVAILABLE("Oh. This doesn't work right now. Try again later."),
+    /**
      * Used when a command argument is not valid.
      */
     INVALID_ARGUMENT("Invalid argument!"),
