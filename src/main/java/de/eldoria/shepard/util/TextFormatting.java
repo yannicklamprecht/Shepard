@@ -1,5 +1,6 @@
 package de.eldoria.shepard.util;
 
+import de.eldoria.shepard.database.types.Rank;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -62,10 +63,22 @@ public final class TextFormatting {
         return new TableBuilder(collection, columnNames);
     }
 
+    public static String getRankTable(List<Rank> ranks) {
+        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(ranks, "Rank", "User", "Score");
+
+        int ranking = 1;
+        for (Rank rank : ranks) {
+            tableBuilder.next();
+            tableBuilder.setRow(ranking + "", rank.getUser().getAsTag(), rank.getScore() + "");
+            ranking++;
+        }
+        return tableBuilder.toString();
+    }
+
     public static class TableBuilder {
         private final String[][] table;
         private String markdown = "";
-        private int padding;
+        private int padding = 1;
         private int rowPointer = 0;
 
         TableBuilder(Collection collection, String... columnNames) {
@@ -76,6 +89,7 @@ public final class TextFormatting {
 
         /**
          * Set the current row. To go a row forward user next().
+         *
          * @param columnEntries Entries for the columns in the current row
          */
         public void setRow(String... columnEntries) {
