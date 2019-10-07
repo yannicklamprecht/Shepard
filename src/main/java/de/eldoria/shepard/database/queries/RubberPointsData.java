@@ -26,11 +26,12 @@ public final class RubberPointsData {
      * @param user  user from who the points should be taken.
      * @return true if the points where taken.
      */
-    public static boolean tryTakePoints(Guild guild, User user, MessageEventDataWrapper messageContext) {
+    public static boolean tryTakePoints(Guild guild, User user, int points, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT * from shepard_func.get_rubber_points_user_score(?,?)")) {
+                .prepareStatement("SELECT * from shepard_func.try_take_rubber_points(?,?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, user.getId());
+            statement.setInt(3, points);
             ResultSet result = statement.executeQuery();
             if (result.next()) {
                 return result.getBoolean(1);
@@ -45,17 +46,17 @@ public final class RubberPointsData {
      * Add the score to the score in the database. Negative score subtracts from score.
      *
      * @param guild          Guild where the score should be applied
-     * @param users          List of users where the score should be applied
+     * @param user           user where the score should be applied
      * @param score          The score which should be applied
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addVoteScore(Guild guild, User users, int score,
-                                       MessageEventDataWrapper messageContext) {
+    public static boolean addRubberPoints(Guild guild, User user, int score,
+                                          MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_rubber_points(?,?,?)")) {
             statement.setString(1, guild.getId());
-            statement.setString(2, users.getId());
+            statement.setString(2, user.getId());
             statement.setInt(3, score);
             statement.execute();
         } catch (SQLException e) {
@@ -137,6 +138,29 @@ public final class RubberPointsData {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_rubber_points_global_user_score(?)")) {
             statement.setString(1, user.getId());
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return result.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+        }
+        return -1;
+    }
+
+    /**
+     * Get the sum of all scores of a user.
+     *
+     * @param user           User for lookup.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return global score of user
+     */
+    public static int getFreePoints(Guild guild, User user, MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_free_rubber_points(?,?)")) {
+            statement.setString(1, guild.getId());
+            statement.setString(2, user.getId());
             ResultSet result = statement.executeQuery();
             if (result.next()) {
                 return result.getInt(1);
