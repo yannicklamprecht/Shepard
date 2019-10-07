@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static de.eldoria.shepard.contexts.ContextHelper.getContextName;
+import static de.eldoria.shepard.util.Verifier.isArgument;
 
 public class ManageContextGuild extends Command {
     /**
@@ -56,22 +57,22 @@ public class ManageContextGuild extends Command {
             return;
         }
 
-        if (cmd.equalsIgnoreCase("setActive") || cmd.equalsIgnoreCase("a")) {
+        if (isArgument(cmd, "setActive", "a")) {
             setActive(args, contextName, messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("setListType") || cmd.equalsIgnoreCase("lt")) {
+        if (isArgument(cmd, "setListType", "lt")) {
             setListType(args, contextName, messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("addGuild") || cmd.equalsIgnoreCase("ag")) {
+        if (isArgument(cmd, "addGuild", "ag")) {
             addGuild(args, contextName, messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("removeGuild") || cmd.equalsIgnoreCase("rg")) {
+        if (isArgument(cmd, "removeGuild", "rg")) {
             removeGuild(args, contextName, messageContext);
             return;
         }

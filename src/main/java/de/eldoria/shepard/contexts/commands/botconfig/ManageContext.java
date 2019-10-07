@@ -10,6 +10,7 @@ import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.Verifier;
 
 import static de.eldoria.shepard.contexts.ContextHelper.getContextName;
+import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class ManageContext extends Command {
@@ -42,12 +43,12 @@ public class ManageContext extends Command {
             return;
         }
 
-        if (cmd.equalsIgnoreCase("setNSFW") || cmd.equalsIgnoreCase("nsfw")) {
+        if (isArgument(cmd, "setNSFW", "nsfw")) {
             setNsfw(args, contextName, messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("setadminonly") || cmd.equalsIgnoreCase("admin")) {
+        if (isArgument(cmd, "setAdminOnly", "admin")) {
             setAdminOnly(args, contextName, messageContext);
             return;
         }

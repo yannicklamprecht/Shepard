@@ -1,6 +1,5 @@
 package de.eldoria.shepard.messagehandler;
 
-import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.ReactionActionCollection;
 import de.eldoria.shepard.reactionactions.Action;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -35,16 +34,14 @@ public final class InteractableMessageSender {
      * @param color   Color of the text box
      * @param actions one ore more reaction actions linked with this message.
      */
-    public static void sendTextBox(String title, List<MessageEmbed.Field> fields, TextChannel channel, Color color,
-                                   Action... actions) {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setDescription("test");
-        builder.setTitle(title);
-        builder.setColor(color);
+    private static void sendTextBox(String title, List<MessageEmbed.Field> fields, TextChannel channel, Color color,
+                                    Action... actions) {
+        EmbedBuilder builder = new EmbedBuilder()
+                .setTitle(title)
+                .setColor(color);
         for (MessageEmbed.Field field : fields) {
             builder.addField(field);
         }
-        builder.setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
         channel.sendMessage(builder.build()).queue(message -> registerActions(channel, message, actions));
     }
 
@@ -103,11 +100,10 @@ public final class InteractableMessageSender {
     public static void sendSimpleTextBox(String title, String description, Color color,
                                          ShepardReactions reaction, TextChannel channel,
                                          Action... actions) {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle(title)
+        EmbedBuilder builder = new EmbedBuilder()
+                .setTitle(title)
                 .setColor(color)
-                .setDescription(description)
-                .setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
+                .setDescription(description);
         if (reaction != ShepardReactions.NONE) {
             builder.setThumbnail(reaction.thumbnail);
         }

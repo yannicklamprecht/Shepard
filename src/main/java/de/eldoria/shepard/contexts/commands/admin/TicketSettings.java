@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import static de.eldoria.shepard.util.Verifier.getValidRoles;
+import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class TicketSettings extends Command {
@@ -73,11 +74,12 @@ public class TicketSettings extends Command {
         //All validation operations are inside the method except when they are needed for more than one method.
 
 
-        if ((cmd.equalsIgnoreCase("createType") || cmd.equalsIgnoreCase("ct")) && scopeTicket != null) {
-            createType(args, messageContext, type);
-            return;
-        } else if ((cmd.equalsIgnoreCase("createType") || cmd.equalsIgnoreCase("ct")) && scopeTicket == null) {
-            MessageSender.sendSimpleError(ErrorType.TYPE_ALREADY_DEFINED, messageContext.getChannel());
+        if (isArgument(cmd, "createType", "ct")) {
+            if (scopeTicket == null) {
+                createType(args, messageContext, type);
+            } else {
+                MessageSender.sendSimpleError(ErrorType.TYPE_ALREADY_DEFINED, messageContext.getChannel());
+            }
             return;
         }
 
@@ -86,23 +88,22 @@ public class TicketSettings extends Command {
             return;
         }
 
-        if (cmd.equalsIgnoreCase("removeType") || cmd.equalsIgnoreCase("rt")) {
+        if (isArgument(cmd, "removeType", "rt")) {
             removeType(args, messageContext, scopeTicket);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("setOwnerRoles") || cmd.equalsIgnoreCase("sor")
-                || cmd.equalsIgnoreCase("setSupportRoles") || cmd.equalsIgnoreCase("ssr")) {
+        if (isArgument(cmd, "setOwnerRoles", "sor", "setSupportRoles", "ssr")) {
             setRoles(args, messageContext, cmd, scopeTicket);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("setChannelCategory") || cmd.equalsIgnoreCase("scc")) {
+        if (isArgument("setChannelCategory") || cmd.equalsIgnoreCase("scc")) {
             setChannelCategory(args, messageContext, scopeTicket);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("setCreationMessage") || cmd.equalsIgnoreCase("scm")) {
+        if (isArgument(cmd, "setCreationMessage", "scm")) {
             setCreationMessage(args, messageContext, scopeTicket);
             return;
         }

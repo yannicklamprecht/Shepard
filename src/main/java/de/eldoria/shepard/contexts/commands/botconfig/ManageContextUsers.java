@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static de.eldoria.shepard.contexts.ContextHelper.getContextName;
+import static de.eldoria.shepard.util.Verifier.isArgument;
 
 public class ManageContextUsers extends Command {
     /**
@@ -56,22 +57,22 @@ public class ManageContextUsers extends Command {
             return;
         }
 
-        if (cmd.equalsIgnoreCase("setActive") || cmd.equalsIgnoreCase("a")) {
+        if (isArgument(cmd, "setActive", "a")) {
             setActive(args, contextName, messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("setListType") || cmd.equalsIgnoreCase("lt")) {
+        if (isArgument(cmd, "setListType", "lt")) {
             setListType(args, contextName, messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("addUser") || cmd.equalsIgnoreCase("au")) {
+        if (isArgument(cmd, "addUser", "au")) {
             addUser(args, contextName, messageContext);
             return;
         }
 
-        if (cmd.equalsIgnoreCase("removeUser") || cmd.equalsIgnoreCase("ru")) {
+        if (isArgument("removeUser", "ru")) {
             removeUser(args, contextName, messageContext);
             return;
         }

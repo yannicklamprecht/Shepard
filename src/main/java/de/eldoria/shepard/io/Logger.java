@@ -54,7 +54,7 @@ public class Logger {
             out.println("Trying to create log File");
             logFile = Files.createFile(logFilePath);
         } catch (IOException e) {
-            MessageSender.sendSimpleError("Couldn't create log file!", Normandy.getErrorChannel());
+            MessageSender.sendSimpleErrorEmbed("Couldn't create log file!", Normandy.getErrorChannel());
             out.println("Couldn't create log file!");
             return;
         }

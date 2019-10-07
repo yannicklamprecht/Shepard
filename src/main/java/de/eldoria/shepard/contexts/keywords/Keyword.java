@@ -2,7 +2,7 @@ package de.eldoria.shepard.contexts.keywords;
 
 import de.eldoria.shepard.collections.KeyWordCollection;
 import de.eldoria.shepard.contexts.ContextSensitive;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.Arrays;
 
@@ -30,11 +30,10 @@ public abstract class Keyword extends ContextSensitive {
 
     /**
      * Performs an action if a keyword was found.
-     *
-     * @param event the event in which the keyword was found.
+     *  @param event the event in which the keyword was found.
      * @param key   the key found in the event.
      */
-    public abstract void execute(MessageReceivedEvent event, String key);
+    public abstract void execute(GuildMessageReceivedEvent event, String key);
 
     /**
      * Get a word if the message contains one of the keywords.
@@ -42,7 +41,7 @@ public abstract class Keyword extends ContextSensitive {
      * @param event the event of the message.
      * @return the keyword if something was found.
      */
-    public boolean hasKeyword(MessageReceivedEvent event) {
+    public boolean hasKeyword(GuildMessageReceivedEvent event) {
         return getKey(event) != null;
     }
 
@@ -51,7 +50,7 @@ public abstract class Keyword extends ContextSensitive {
         return Arrays.toString(keywords);
     }
 
-    private String getKey(MessageReceivedEvent event) {
+    private String getKey(GuildMessageReceivedEvent event) {
         for (String key : keywords) {
             if (event.getMessage().getContentRaw().toLowerCase().contains(key)) {
                 return key;
@@ -65,7 +64,7 @@ public abstract class Keyword extends ContextSensitive {
      * @param event to search on.
      * @return Keywordargs containing keyword and the key which matched.
      */
-    public KeywordArgs getKeyWordArgs(MessageReceivedEvent event) {
+    public KeywordArgs getKeyWordArgs(GuildMessageReceivedEvent event) {
         String key = getKey(event);
         if (key != null) {
             return new KeywordArgs(key, this);

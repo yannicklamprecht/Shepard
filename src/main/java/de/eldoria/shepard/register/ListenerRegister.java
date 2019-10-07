@@ -1,6 +1,7 @@
 package de.eldoria.shepard.register;
 
 import de.eldoria.shepard.listener.HentaiImageRegisterListener;
+import de.eldoria.shepard.listener.PrivateMessageListener;
 import de.eldoria.shepard.listener.ReactionListener;
 import de.eldoria.shepard.scheduler.invites.InviteScheduler;
 import de.eldoria.shepard.ShepardBot;
@@ -11,6 +12,7 @@ import de.eldoria.shepard.listener.KeywordListener;
 import de.eldoria.shepard.listener.LogListener;
 import de.eldoria.shepard.listener.MessageSniffer;
 import de.eldoria.shepard.listener.TicketCleanupListener;
+import de.eldoria.shepard.scheduler.monitoring.MonitoringScheduler;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
@@ -31,7 +33,9 @@ public final class ListenerRegister {
         listener.add(new TicketCleanupListener());
         listener.add(new ReactionListener());
         listener.add(new HentaiImageRegisterListener());
+        listener.add(new PrivateMessageListener());
         InviteScheduler.initialize();
+        MonitoringScheduler.initialize();
     }
 
     private static ListenerRegister getInstance() {

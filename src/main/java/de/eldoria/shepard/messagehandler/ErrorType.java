@@ -6,7 +6,7 @@ public enum ErrorType {
      */
     DATABASE_ERROR("Ups. Looks like my Database has a small hickup." + System.lineSeparator()
             + "Can you give me another try, pls?" + System.lineSeparator()
-            + "IF error persists contact Bot Support"),
+            + "IF error persists contact Bot Support", true),
     /**
      * Used when a command argument is not valid.
      */
@@ -27,6 +27,10 @@ public enum ErrorType {
      * Used when a number parse failed.
      */
     NOT_A_NUMBER("This is not a number!"),
+    /**
+     * Used when the user has not enough rubber points.
+     */
+    NOT_ENOUGH_POINTS("You dont have enough points!"),
     /**
      * Used when a channel is not a guild text channel.
      */
@@ -68,6 +72,10 @@ public enum ErrorType {
      */
     INVALID_LIST_TYPE("Invalid Input. Only 'blacklist' or 'whitelist are valid inputs"),
     /**
+     * Used when the list type could not be parsed.
+     */
+    INVALID_ADDRESS("Invalid Input. The Address must be a ipv4/6 or a domain."),
+    /**
      * Used when no message was found.
      */
     NO_MESSAGE_FOUND("No message found!"),
@@ -98,11 +106,15 @@ public enum ErrorType {
     /**
      * Used when a context is not found.
      */
-    CONTEXT_NOT_FOUND("Context not found. Please use the context name or an alias!"),
+    CONTEXT_NOT_FOUND("Context not found. Please use the context name or an alias!", false),
     /**
      * Used when no emote was found.
      */
-    NO_EMOTE_FOUND("No emote was found.");
+    NO_EMOTE_FOUND("No emote was found."),
+    /**
+     * Used when a user executes a command on himself, when he is not allowed to do it!
+     */
+    SELF_ASSIGNMENT("You can't do this to yourself!");
 
 
     /**
@@ -110,7 +122,21 @@ public enum ErrorType {
      */
     public final String message;
 
+    /**
+     * True if the error should be send as an embed.
+     */
+    public final boolean isEmbed;
+
+    ErrorType(String message, boolean embed) {
+        if (embed) {
+            this.message = message;
+        } else {
+            this.message = "**ERROR**" + System.lineSeparator() + message;
+        }
+        this.isEmbed = embed;
+    }
+
     ErrorType(String message) {
-        this.message = message;
+        this(message, false);
     }
 }

@@ -2,9 +2,11 @@ package de.eldoria.shepard.messagehandler;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.GreetingSettings;
+import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -14,36 +16,13 @@ import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.Color;
+import java.io.File;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 
 public final class MessageSender {
 
-    /**
-     * send a simple Message to a channel.
-     *
-     * @param message Message to send.
-     * @param channel channel to send
-     */
-    public static void sendMessage(String message, MessageChannel channel) {
-        if (message.isEmpty()) return;
-
-        String[] messageParts = message.split(System.lineSeparator());
-        StringBuilder messagePart = new StringBuilder();
-        for (int i = 0; i < messageParts.length; i++) {
-            if (messagePart.length() + messageParts[i].length() < 1024) {
-                messagePart.append(messageParts[i]).append(System.lineSeparator());
-            } else {
-                channel.sendMessage(messagePart.toString()).queue();
-                messagePart = new StringBuilder();
-                i--;
-            }
-        }
-
-        channel.sendMessage(messagePart.toString()).queue();
-    }
 
     /**
      * Sends a textbox to a channel.
@@ -65,14 +44,12 @@ public final class MessageSender {
      * @param color   Color of the text box
      */
     public static void sendTextBox(String title, List<MessageEmbed.Field> fields, MessageChannel channel, Color color) {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setDescription("test");
-        builder.setTitle(title);
-        builder.setColor(color);
+        EmbedBuilder builder = new EmbedBuilder()
+                .setTitle(title)
+                .setColor(color);
         for (MessageEmbed.Field field : fields) {
             builder.addField(field);
         }
-        builder.setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
         channel.sendMessage(builder.build()).queue();
     }
 
@@ -123,11 +100,10 @@ public final class MessageSender {
      */
     public static void sendSimpleTextBox(String title, String description, Color color,
                                          ShepardReactions reaction, MessageChannel channel) {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle(title)
+        EmbedBuilder builder = new EmbedBuilder()
+                .setTitle(title)
                 .setColor(color)
-                .setDescription(description)
-                .setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
+                .setDescription(description);
         if (reaction != ShepardReactions.NONE) {
             builder.setThumbnail(reaction.thumbnail);
         }
@@ -141,13 +117,12 @@ public final class MessageSender {
      * @param channel channel to send.
      */
     public static void sendError(MessageEmbed.Field[] fields, MessageChannel channel) {
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTitle("ERROR!")
+        EmbedBuilder builder = new EmbedBuilder()
+                .setTitle("ERROR!")
                 .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
         for (MessageEmbed.Field field : fields) {
-            builder.addField(field);
-            builder.setColor(Color.red);
-            builder.setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
+            builder.addField(field)
+                    .setColor(Color.red);
             channel.sendMessage(builder.build()).queue();
         }
     }
@@ -159,7 +134,12 @@ public final class MessageSender {
      * @param channel channel to send
      */
     public static void sendSimpleError(ErrorType type, MessageChannel channel) {
-        sendSimpleError(type.message, channel);
+        if (type.isEmbed) {
+            sendSimpleErrorEmbed(type.message, channel);
+        } else {
+            sendMessage(type.message, channel);
+        }
+
     }
 
     /**
@@ -168,13 +148,12 @@ public final class MessageSender {
      * @param error   Error message
      * @param channel channel to send
      */
-    public static void sendSimpleError(String error, MessageChannel channel) {
+    public static void sendSimpleErrorEmbed(String error, MessageChannel channel) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("ERROR!")
                 .setDescription(error)
                 .setColor(Color.red)
-                .setThumbnail(ShepardReactions.CONFUSED.thumbnail)
-                .setFooter("by Shepard", ShepardBot.getJDA().getSelfUser().getAvatarUrl());
+                .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
         try {
             channel.sendMessage(builder.build()).queue();
         } catch (ErrorResponseException e) {
@@ -197,20 +176,6 @@ public final class MessageSender {
     }
 
     /**
-     * Loggs a message in plain text.
-     *
-     * @param messageContext messageContext to log
-     * @param channel        channel to log
-     */
-    public static void logMessageAsPlainText(MessageEventDataWrapper messageContext, MessageChannel channel) {
-        channel.sendMessage(messageContext.getGuild().getName() + " | "
-                + Objects.requireNonNull(messageContext.getMessage().getCategory()).getName()
-                + " | " + messageContext.getMessage().getChannel().getName() + " by "
-                + messageContext.getAuthor().getName()
-                + ": " + messageContext.getMessage().getContentRaw()).queue();
-    }
-
-    /**
      * Loggs a message es embed.
      *
      * @param messageContext messageContext to log
@@ -221,11 +186,16 @@ public final class MessageSender {
         Timestamp t = java.sql.Timestamp.from(instant); // Convert instant to Timestamp
 
         if (messageContext.getChannel() instanceof TextChannel) {
-            EmbedBuilder builder = new EmbedBuilder();
-            builder.setTitle(messageContext.getGuild().getName() + " | " + messageContext.getChannel().getName());
-            builder.setTimestamp(t.toInstant());
-            builder.setAuthor(messageContext.getAuthor().getAsTag(), null, messageContext.getAuthor().getAvatarUrl());
-            builder.setDescription(messageContext.getMessage().getContentRaw());
+            EmbedBuilder builder = new EmbedBuilder()
+                    .setTitle(messageContext.getGuild().getName() + " | " + messageContext.getChannel().getName())
+                    .setTimestamp(t.toInstant())
+                    .setAuthor(messageContext.getAuthor().getAsTag(), null, messageContext.getAuthor().getAvatarUrl())
+                    .setDescription(messageContext.getMessage().getContentRaw());
+            List<Message.Attachment> attachments = messageContext.getMessage().getAttachments();
+            if (!attachments.isEmpty() && attachments.get(0).isImage()) {
+                builder.setImage(attachments.get(0).getUrl());
+            }
+
             try {
                 channel.sendMessage(builder.build()).queue();
             } catch (InsufficientPermissionException e) {
@@ -264,5 +234,55 @@ public final class MessageSender {
                 + "\" on  guild " + receivedEvent.getGuild().getName() + " ("
                 + receivedEvent.getGuild().getId() + ")";
         ShepardBot.getLogger().command(command);
+    }
+
+    /**
+     * send a simple Message to a channel.
+     *
+     * @param message Message to send.
+     * @param channel channel to send
+     */
+    public static void sendMessage(String message, MessageChannel channel) {
+        if (message.isEmpty()) return;
+
+        String[] messageParts = message.split(System.lineSeparator());
+        StringBuilder messagePart = new StringBuilder();
+        for (int i = 0; i < messageParts.length; i++) {
+            if (messagePart.length() + messageParts[i].length() < 1024) {
+                messagePart.append(messageParts[i]).append(System.lineSeparator());
+            } else {
+                channel.sendMessage(messagePart.toString()).queue();
+                messagePart = new StringBuilder();
+                i--;
+            }
+        }
+
+        channel.sendMessage(messagePart.toString()).queue();
+    }
+
+    /**
+     * Sends a message to a user.
+     *
+     * @param user           User to send
+     * @param attachments    Attachments to send
+     * @param text           Text to send
+     * @param messageContext message informations.
+     */
+    public static void sendMessage(User user, List<Message.Attachment> attachments, String text,
+                                   MessageEventDataWrapper messageContext) {
+        user.openPrivateChannel().queue(privateChannel -> {
+            privateChannel.sendMessage(text).queue();
+            if (!attachments.isEmpty()) {
+                for (Message.Attachment attachment : attachments) {
+
+                    File fileFromURL = FileHelper.getFileFromURL(attachments.get(0).getUrl());
+                    if (fileFromURL != null) {
+                        privateChannel.sendFile(fileFromURL).queue();
+                    } else {
+                        MessageSender.sendSimpleErrorEmbed("File could not be loaded", messageContext.getChannel());
+                    }
+                }
+            }
+        });
     }
 }

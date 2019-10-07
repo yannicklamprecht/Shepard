@@ -12,11 +12,11 @@ import de.eldoria.shepard.contexts.commands.exceptions.CommandException;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.reactionactions.ExecuteCommand;
 import de.eldoria.shepard.reactionactions.SendCommandHelp;
+import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.PrivateChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -30,31 +30,25 @@ import java.util.List;
 public class CommandListener extends ListenerAdapter {
 
     @Override
-    public void onMessageUpdate(@Nonnull MessageUpdateEvent event) {
+    public void onGuildMessageUpdate(@Nonnull GuildMessageUpdateEvent event) {
         if (event.getMessage().getTimeCreated().isAfter(OffsetDateTime.now().minusMinutes(5))) {
             onCommand(new MessageEventDataWrapper(event));
         }
     }
 
     @Override
-    public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
+    public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
         onCommand(new MessageEventDataWrapper(event));
     }
 
     private void onCommand(MessageEventDataWrapper messageContext) {
-        if (messageContext.getChannel() instanceof PrivateChannel) {
-            if (messageContext.getAuthor().isBot()) return;
-            messageContext.getChannel().sendMessage("I'm too shy. Please speak to me on a public Server.").queue();
-            return;
-        }
-
-
         String receivedMessage = messageContext.getMessage().getContentRaw();
+        receivedMessage = receivedMessage.replaceAll("\\s\\s+", " ");
         String[] args = receivedMessage.split(" ");
 
         boolean isCommand = false;
 
-        if (checkPrefix(receivedMessage, messageContext)) {
+        if (Verifier.checkPrefix(receivedMessage, messageContext)) {
             isCommand = true;
             args[0] = args[0].replaceFirst(PrefixData.getPrefix(messageContext.getGuild(), messageContext), "");
 
@@ -67,6 +61,9 @@ public class CommandListener extends ListenerAdapter {
 
         if (isCommand) {
             //BotCheck
+            if (messageContext.getAuthor().getIdLong() == ShepardBot.getJDA().getSelfUser().getIdLong()) {
+                return;
+            }
             if (messageContext.getAuthor().isBot()) {
                 MessageSender.sendMessage("I'm not allowed to talk to you " + messageContext.getAuthor().getName()
                         + ". Please leave me alone ._.", messageContext.getChannel());
@@ -82,15 +79,19 @@ public class CommandListener extends ListenerAdapter {
                 args = new String[0];
             }
             if (command != null && command.isContextValid(messageContext)) {
+                if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
+                    command.sendCommandUsage(messageContext.getChannel());
+                    return;
+                }
                 if (command.checkArguments(args)) {
                     try {
                         command.execute(label, args, messageContext);
                     } catch (CommandException | InsufficientPermissionException e) {
                         try {
-                            MessageSender.sendSimpleError(e.getMessage(), messageContext.getChannel());
+                            MessageSender.sendSimpleErrorEmbed(e.getMessage(), messageContext.getChannel());
                         } catch (InsufficientPermissionException ex) {
                             messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
-                                    MessageSender.sendSimpleError(ex.getMessage(), privateChannel));
+                                    MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));
                         }
                     }
                 } else {
@@ -99,10 +100,14 @@ public class CommandListener extends ListenerAdapter {
                         command.sendCommandUsage(messageContext.getChannel());
                     } catch (InsufficientPermissionException ex) {
                         messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
-                                MessageSender.sendSimpleError(ex.getMessage(), privateChannel));
+                                MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));
                     }
-
                 }
+                return;
+            } else if (command != null && command.canBeExecutedHere(messageContext)) {
+                MessageSender.sendMessage("Insufficient permission for context **"
+                        + command.getClass().getSimpleName().toUpperCase()
+                        + "**. Ask a Server Administrator for permission.", messageContext.getChannel());
                 return;
             }
 
@@ -126,12 +131,6 @@ public class CommandListener extends ListenerAdapter {
                     + "help for a full list of available commands!", false)}, messageContext.getChannel());
 
         }
-
-    }
-
-    private boolean checkPrefix(String message, MessageEventDataWrapper event) {
-        return message.startsWith(PrefixData.getPrefix(event.getGuild(), event));
-
     }
 }
 

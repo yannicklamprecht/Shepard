@@ -2,11 +2,16 @@ package de.eldoria.shepard.database;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.Normandy;
+import de.eldoria.shepard.database.types.Rank;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import net.dv8tion.jda.api.entities.User;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +22,26 @@ public final class DbUtil {
 
     private DbUtil() {
     }
+
+    /**
+     * Get a sorted ranked list from a result set.
+     *
+     * @param result Result set to retrieve ranks.
+     * @return List of ranks.
+     * @throws SQLException SQL exception
+     */
+    public static List<Rank> getScoreListFromResult(ResultSet result) throws SQLException {
+        List<Rank> ranks = new ArrayList<>();
+
+        while (result.next()) {
+            User user = ShepardBot.getJDA().getUserById(result.getString("user_id"));
+            if (user != null) {
+                ranks.add(new Rank(user, result.getInt("score")));
+            }
+        }
+        return ranks;
+    }
+
 
     /**
      * Extracts an id from discord's formatting.
@@ -39,7 +64,7 @@ public final class DbUtil {
      * @param event Event for error sending to channel to inform user.
      * @throws SQLException when the query was not executed successful
      */
-    public static void handleException(SQLException ex, MessageEventDataWrapper event) throws SQLException {
+    private static void handleException(SQLException ex, MessageEventDataWrapper event) throws SQLException {
         StringBuilder builder = new StringBuilder();
 
         builder.append("SQLException: ").append(ex.getMessage()).append(lineSeparator())
@@ -50,13 +75,14 @@ public final class DbUtil {
         if (event != null) {
             MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, event.getChannel());
         }
-        MessageSender.sendSimpleError(builder.toString(), Normandy.getErrorChannel());
+        MessageSender.sendSimpleErrorEmbed(builder.toString(), Normandy.getErrorChannel());
         throw ex;
     }
 
     /**
      * Handles SQL Exceptions.
-     *  @param ex    SQL Exception
+     *
+     * @param ex    SQL Exception
      * @param event Event for error sending to channel to inform user.
      */
     public static void handleExceptionAndIgnore(SQLException ex, MessageEventDataWrapper event) {

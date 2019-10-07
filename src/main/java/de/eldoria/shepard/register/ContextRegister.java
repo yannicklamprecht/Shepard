@@ -1,12 +1,16 @@
 package de.eldoria.shepard.register;
 
 import de.eldoria.shepard.contexts.ContextSensitive;
+import de.eldoria.shepard.contexts.commands.admin.BotPresence;
 import de.eldoria.shepard.contexts.commands.admin.Changelog;
 import de.eldoria.shepard.contexts.commands.admin.Greeting;
 import de.eldoria.shepard.contexts.commands.admin.Invite;
 import de.eldoria.shepard.contexts.commands.admin.ManageQuote;
+import de.eldoria.shepard.contexts.commands.admin.Monitoring;
 import de.eldoria.shepard.contexts.commands.admin.Permission;
 import de.eldoria.shepard.contexts.commands.admin.Prefix;
+import de.eldoria.shepard.contexts.commands.admin.PrivateAnswer;
+import de.eldoria.shepard.contexts.commands.admin.SendPrivateMessage;
 import de.eldoria.shepard.contexts.commands.admin.ShowKeyword;
 import de.eldoria.shepard.contexts.commands.admin.Ticket;
 import de.eldoria.shepard.contexts.commands.admin.TicketSettings;
@@ -23,13 +27,12 @@ import de.eldoria.shepard.contexts.commands.fun.MagicConch;
 import de.eldoria.shepard.contexts.commands.fun.MockingSpongebob;
 import de.eldoria.shepard.contexts.commands.fun.Oha;
 import de.eldoria.shepard.contexts.commands.fun.Owo;
-import de.eldoria.shepard.contexts.commands.fun.Owod;
 import de.eldoria.shepard.contexts.commands.fun.Quote;
 import de.eldoria.shepard.contexts.commands.fun.RandomJoke;
-import de.eldoria.shepard.contexts.commands.fun.Sayd;
+import de.eldoria.shepard.contexts.commands.fun.Kudos;
+import de.eldoria.shepard.contexts.commands.fun.Say;
 import de.eldoria.shepard.contexts.commands.fun.Someone;
 import de.eldoria.shepard.contexts.commands.fun.Uwu;
-import de.eldoria.shepard.contexts.commands.fun.Uwud;
 import de.eldoria.shepard.contexts.commands.util.GetRaw;
 import de.eldoria.shepard.contexts.commands.util.Help;
 import de.eldoria.shepard.contexts.commands.util.HireMe;
@@ -94,15 +97,14 @@ public final class ContextRegister {
         contextSensitives.add(new MockingSpongebob());
         contextSensitives.add(new Oha());
         contextSensitives.add(new Owo());
-        contextSensitives.add(new Owod());
         contextSensitives.add(new RandomJoke());
-        contextSensitives.add(new Sayd());
+        contextSensitives.add(new Say());
         contextSensitives.add(new Uwu());
-        contextSensitives.add(new Uwud());
         contextSensitives.add(new Quote());
         contextSensitives.add(new Someone());
         contextSensitives.add(new LargeEmote());
         contextSensitives.add(new GuessGame());
+        contextSensitives.add(new Kudos());
     }
 
     private void registerExclusiveCommands() {
@@ -128,7 +130,10 @@ public final class ContextRegister {
         contextSensitives.add(new ManageQuote());
         contextSensitives.add(new Permission());
         contextSensitives.add(new GuessGameConfig());
-
+        contextSensitives.add(new BotPresence());
+        contextSensitives.add(new PrivateAnswer());
+        contextSensitives.add(new SendPrivateMessage());
+        contextSensitives.add(new Monitoring());
     }
 
     private static void getInstance() {

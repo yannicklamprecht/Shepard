@@ -4,16 +4,17 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
+import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class Invite extends Command {
@@ -46,19 +47,19 @@ public class Invite extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        if (cmd.equalsIgnoreCase("addInvite") || cmd.equalsIgnoreCase("ai")) {
+        if (isArgument(cmd, "addInvite", "ai")) {
             addInvite(args, messageContext);
             return;
         }
-        if (cmd.equalsIgnoreCase("removeInvite") || cmd.equalsIgnoreCase("remi")) {
+        if (isArgument(cmd, "removeInvite", "remi")) {
             removeInvite(args, messageContext);
             return;
         }
-        if (cmd.equalsIgnoreCase("refreshInvites") || cmd.equalsIgnoreCase("refi")) {
+        if (isArgument(cmd, "refreshInvites", "refi")) {
             refreshInvites(messageContext);
             return;
         }
-        if (cmd.equalsIgnoreCase("showInvites") || cmd.equalsIgnoreCase("si")) {
+        if (isArgument(cmd, "showInvites", "si")) {
             showInvites(messageContext);
             return;
         }
@@ -70,20 +71,15 @@ public class Invite extends Command {
         List<DatabaseInvite> invites = InviteData.getInvites(messageContext.getGuild(), messageContext);
 
         StringBuilder message = new StringBuilder();
-        String code = "code      ";
-        String usages = "Usage Count ";
-        String name = "Name";
-        message.append("Registered Invites: ").append(lineSeparator())
-                .append("```yaml").append(lineSeparator())
-                .append(code).append(usages).append(name).append(lineSeparator());
+        message.append("Registered Invites: ").append(lineSeparator());
 
+        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
+                invites, "Code", "Usage Count", "Invite Name");
         for (DatabaseInvite invite : invites) {
-            String invCode = StringUtils.rightPad(invite.getCode(), code.length(), " ");
-            String invUsage = StringUtils.rightPad(invite.getUsedCount() + "", usages.length(), " ");
-            String invName = invite.getSource();
-            message.append(invCode).append(invUsage).append(invName).append(lineSeparator());
+            tableBuilder.next();
+            tableBuilder.setRow(invite.getCode(), invite.getUsedCount() + "", invite.getSource());
         }
-        message.append("```");
+        message.append(tableBuilder);
         MessageSender.sendMessage(message.toString(), messageContext.getChannel());
     }
 

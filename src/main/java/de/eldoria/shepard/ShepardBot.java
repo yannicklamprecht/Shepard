@@ -42,11 +42,6 @@ public final class ShepardBot {
                 org.apache.log4j.BasicConfigurator.configure();
             }
 
-            try {
-                initiateJda();
-            } catch (LoginException | InterruptedException e) {
-                e.printStackTrace();
-            }
         } catch (InterruptedException e) {
             System.out.println("Startup interrupted");
         }
@@ -54,6 +49,12 @@ public final class ShepardBot {
     }
 
     private void setup() {
+        try {
+            initiateJda();
+        } catch (LoginException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
         ContextRegister.registerContexts();
         ListenerRegister.registerListener();
         logger.info("Registered " + CommandCollection.getInstance().getCommands().size() + " Commands");
@@ -64,6 +65,7 @@ public final class ShepardBot {
             CommandCollection.getInstance().debug();
             KeyWordCollection.getInstance().debug();
         }
+
 
         MessageSender.sendSimpleTextBox("Shepard meldet sich zum Dienst! Erwarte ihre Befehle!",
                 "Registered " + CommandCollection.getInstance().getCommands().size() + " Commands!"
@@ -95,10 +97,11 @@ public final class ShepardBot {
 
 
         instance.setup();
+
     }
 
     private void initiateJda() throws LoginException, InterruptedException {
-        jda = new JDABuilder(config.getToken()).build();
+        jda = new JDABuilder(config.getToken()).setMaxReconnectDelay(60).build();
 
         // optionally block until JDA is ready
         jda.awaitReady();
@@ -108,6 +111,8 @@ public final class ShepardBot {
         } catch (Exception e) {
             ShepardBot.getLogger().error(e.getMessage());
         }
+
+        logger.info("JDA initialized");
     }
 
     /**
@@ -147,9 +152,11 @@ public final class ShepardBot {
                 "",
                 Color.RED, ShepardReactions.ASLEEP, Normandy.getGeneralLogChannel());
 
-        jda.shutdown();
+        if (jda != null) {
+            jda.shutdown();
+            ShepardBot.getLogger().info("JDA shut down. Closing Application in 5 Seconds!");
+        }
         jda = null;
-        ShepardBot.getLogger().info("JDA shut down. Closing Application in 5 Seconds!");
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
