@@ -1,6 +1,6 @@
 package de.eldoria.shepard.contexts.commands.exceptions;
 
-class CommandException extends IllegalArgumentException {
+public class CommandException extends IllegalArgumentException {
 
     /**
      * Creates a new command exception.
