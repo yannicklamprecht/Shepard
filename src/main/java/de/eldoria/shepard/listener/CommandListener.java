@@ -60,6 +60,9 @@ public class CommandListener extends ListenerAdapter {
 
         if (isCommand) {
             //BotCheck
+            if (messageContext.getAuthor().getIdLong() == ShepardBot.getJDA().getSelfUser().getIdLong()) {
+                return;
+            }
             if (messageContext.getAuthor().isBot()) {
                 MessageSender.sendMessage("I'm not allowed to talk to you " + messageContext.getAuthor().getName()
                         + ". Please leave me alone ._.", messageContext.getChannel());
@@ -75,7 +78,7 @@ public class CommandListener extends ListenerAdapter {
                 args = new String[0];
             }
             if (command != null && command.isContextValid(messageContext)) {
-                if(args.length > 0 && args[0].equalsIgnoreCase("help")){
+                if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
                     command.sendCommandUsage(messageContext.getChannel());
                     return;
                 }
