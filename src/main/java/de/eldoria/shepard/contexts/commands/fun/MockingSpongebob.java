@@ -28,7 +28,7 @@ public class MockingSpongebob extends Command {
         if (image == null) {
             MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, messageContext.getChannel());
         } else {
-            messageContext.getChannel().sendFile(image, "mock" + UUID.randomUUID() + ".jpg").queue();
+            messageContext.getChannel().sendFile(image).queue();
         }
     }
 }
