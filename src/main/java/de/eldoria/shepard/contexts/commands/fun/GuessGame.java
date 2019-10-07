@@ -9,6 +9,7 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.guessgame.EvaluationScheduler;
 import de.eldoria.shepard.util.Emoji;
+import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -89,31 +90,11 @@ public class GuessGame extends Command {
                 ? GuessGameData.getGlobalTopScore(10, messageContext)
                 : GuessGameData.getTopScore(messageContext.getGuild(), 10, messageContext);
 
-        int nameLength = 5;
+        String rankTable = TextFormatting.getRankTable(ranks);
 
-        for (Rank rank : ranks) {
-            nameLength = Math.max(nameLength, rank.getUser().getAsTag().length());
-        }
-
-        StringBuilder builder = new StringBuilder();
-
-        builder.append(global ? "**GLOBAL RANKING**" : "**SERVER RANKING**")
-                .append(lineSeparator()).append("```");
-        builder.append("Rank ").append(fillString("User ", nameLength + 1)).append("Score");
-
-        int ranking = 1;
-        for (Rank rank : ranks) {
-
-            builder.append(lineSeparator())
-                    .append(fillString(ranking + "", 5))
-                    .append(fillString(rank.getUser().getAsTag(), nameLength + 1))
-                    .append(rank.getScore());
-            ranking++;
-        }
-
-        builder.append(lineSeparator()).append("```");
-
-        MessageSender.sendMessage(builder.toString(), messageContext.getChannel());
+        MessageSender.sendMessage((global ? "**GLOBAL GUESS GAME RANKING**" : "**SERVER GUESS GAME RANKING**")
+                        + lineSeparator() + rankTable,
+                messageContext.getChannel());
     }
 
     private void startGame(MessageEventDataWrapper messageContext) {
