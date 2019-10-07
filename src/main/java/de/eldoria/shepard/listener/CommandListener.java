@@ -43,6 +43,9 @@ public class CommandListener extends ListenerAdapter {
 
     private void onCommand(MessageEventDataWrapper messageContext) {
         String receivedMessage = messageContext.getMessage().getContentRaw();
+        while (receivedMessage.contains("  ")) {
+            receivedMessage = receivedMessage.replace("  ", " ");
+        }
         String[] args = receivedMessage.split(" ");
 
         boolean isCommand = false;
@@ -101,7 +104,6 @@ public class CommandListener extends ListenerAdapter {
                         messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
                                 MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));
                     }
-
                 }
                 return;
             } else if (command != null && command.canBeExecutedHere(messageContext)) {
@@ -131,8 +133,6 @@ public class CommandListener extends ListenerAdapter {
                     + "help for a full list of available commands!", false)}, messageContext.getChannel());
 
         }
-
     }
-
 }
 
