@@ -1,7 +1,7 @@
 package de.eldoria.shepard.contexts.commands.util;
 
-import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 /**
@@ -16,7 +16,5 @@ public class Test extends Command {
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        Command help = CommandCollection.getInstance().getCommand("help");
-        help.executeAsync(help, label, args, messageContext);
     }
 }

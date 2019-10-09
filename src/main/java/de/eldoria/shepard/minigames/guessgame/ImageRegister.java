@@ -28,12 +28,11 @@ public final class ImageRegister {
     public void addImage(MessageEventDataWrapper messageContext, String url) {
         switch (getConfigurationState(messageContext)) {
             case NONE:
+            case CONFIGURED:
                 break;
             case CROPPED:
             case FULL:
                 configurations.get(new UserChannelKey(messageContext)).addImage(url);
-                break;
-            case CONFIGURED:
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + getConfigurationState(messageContext));
