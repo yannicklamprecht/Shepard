@@ -85,7 +85,7 @@ public class CommandListener extends ListenerAdapter {
                 }
                 if (command.checkArguments(args)) {
                     try {
-                        command.execute(label, args, messageContext);
+                        command.executeAsync(label, args, messageContext);
                     } catch (CommandException | InsufficientPermissionException e) {
                         try {
                             MessageSender.sendSimpleErrorEmbed(e.getMessage(), messageContext.getChannel());
