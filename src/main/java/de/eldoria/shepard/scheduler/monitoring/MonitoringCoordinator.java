@@ -54,6 +54,6 @@ class MonitoringCoordinator implements Runnable {
 
 
     private boolean onlyError() {
-        return counts == 0;
+        return counts != 0;
     }
 }
