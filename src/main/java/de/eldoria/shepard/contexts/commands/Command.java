@@ -7,8 +7,11 @@ import de.eldoria.shepard.contexts.ContextSensitive;
 import info.debatty.java.stringsimilarity.JaroWinkler;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.apache.commons.lang.NotImplementedException;
 
 import java.awt.Color;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * An abstract class for commands.
  */
-public abstract class Command extends ContextSensitive {
+public class Command extends ContextSensitive implements Runnable, Cloneable {
 
     /**
      * Name of the command.
@@ -37,20 +40,35 @@ public abstract class Command extends ContextSensitive {
     protected CommandArg[] commandArgs = new CommandArg[0];
 
     private final JaroWinkler similarity = new JaroWinkler();
+    protected String label;
+    protected String[] args;
+    protected MessageEventDataWrapper messageContext;
 
     /**
      * Create a new command an register it to the {@link CommandCollection}.
      */
     protected Command() {
         CommandCollection.getInstance().addCommand(this);
+    }
 
+    /**
+     * Creates a new command in a thread and executes.
+     *
+     * @param label
+     * @param args
+     * @param messageContext
+     */
+    public Command(String label, String[] args, MessageEventDataWrapper messageContext) {
+        this.label = label;
+        this.args = args;
+        this.messageContext = messageContext;
     }
 
     /**
      * Executes the command.
      *
-     * @param label       Label/Alias which was used for command execution
-     * @param args        Arguments of the command.
+     * @param label          Label/Alias which was used for command execution
+     * @param args           Arguments of the command.
      * @param messageContext Message Received Event of the command execution
      */
     public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
@@ -58,14 +76,44 @@ public abstract class Command extends ContextSensitive {
         MessageSender.logCommand(label, args, messageContext);
     }
 
+    public void executeAsync(Command command, String label, String[] args, MessageEventDataWrapper messageContext) {
+        Command com;
+        try {
+            Constructor commandConstructor = this.getClass().getConstructor();
+            com = this.getClass().cast(commandConstructor.newInstance());
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            e.printStackTrace();
+            return;
+        }
+        com.initialiseParameter(label, args, messageContext);
+        Thread thread = new Thread(com);
+        thread.start();
+    }
+
     /**
      * Internal executor for command. Called from inside the class.
      *
-     * @param label       Label/Alias which was used for command execution
-     * @param args        Arguments of the command.
+     * @param label          Label/Alias which was used for command execution
+     * @param args           Arguments of the command.
      * @param messageContext Message Received Event of the command execution
      */
-    protected abstract void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext);
+    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
+        throw new NotImplementedException();
+    }
+
+    /**
+     * Internal executor for command.
+     */
+    private void internalExecute() {
+        internalExecute(this.label, this.args, this.messageContext);
+    }
+
+    private void initialiseParameter(String label, String[] args, MessageEventDataWrapper messageContext) {
+        this.label = label;
+        this.args = args;
+        this.messageContext = messageContext;
+    }
+
 
     /**
      * Get the name of the command.
@@ -232,5 +280,10 @@ public abstract class Command extends ContextSensitive {
             cmdScore = Math.max(cmdScore, similarity);
         }
         return cmdScore;
+    }
+
+    @Override
+    public void run() {
+        internalExecute();
     }
 }
