@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 public class KudoCounter implements Runnable {
     public void initialize() {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(this, 5, 30, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(this, 30, 60, TimeUnit.MINUTES);
     }
 
     @Override
