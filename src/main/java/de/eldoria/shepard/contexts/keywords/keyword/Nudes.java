@@ -23,7 +23,7 @@ public class Nudes extends Keyword {
     @Override
     public void execute(GuildMessageReceivedEvent event, String key) {
         if (event.getChannel().getType() == ChannelType.TEXT) {
-            TextChannel channel = (TextChannel) event.getChannel();
+            TextChannel channel = event.getChannel();
             if (channel.isNSFW()) {
                 DefaultImageBoards.KONACHAN.search(40, "femshep").async(images -> {
                     Random rand = new Random();

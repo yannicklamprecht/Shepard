@@ -172,4 +172,21 @@ public final class RubberPointsData {
         return -1;
     }
 
+    /**
+     * Add to all users 1 kudo.
+     *
+     * @return true if the query execution was successful
+     */
+    public static boolean upcountKudos() {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.upcount_free_rubber_points()")) {
+            statement.execute();
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, null);
+            return false;
+        }
+        return true;
+    }
+
+
 }

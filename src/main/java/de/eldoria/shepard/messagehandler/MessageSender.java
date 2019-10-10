@@ -275,7 +275,7 @@ public final class MessageSender {
             if (!attachments.isEmpty()) {
                 for (Message.Attachment attachment : attachments) {
 
-                    File fileFromURL = FileHelper.getFileFromURL(attachments.get(0).getUrl());
+                    File fileFromURL = FileHelper.getFileFromURL(attachment.getUrl());
                     if (fileFromURL != null) {
                         privateChannel.sendFile(fileFromURL).queue();
                     } else {

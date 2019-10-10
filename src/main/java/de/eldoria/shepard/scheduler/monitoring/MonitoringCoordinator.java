@@ -49,11 +49,11 @@ class MonitoringCoordinator implements Runnable {
             }
         }
         counts++;
+        counts = counts % broadcastCount;
     }
 
 
     private boolean onlyError() {
-        counts = counts % broadcastCount;
-        return counts == 0;
+        return counts != 0;
     }
 }

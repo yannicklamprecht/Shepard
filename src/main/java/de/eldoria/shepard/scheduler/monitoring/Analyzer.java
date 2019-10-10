@@ -8,6 +8,8 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.awt.Color;
 import java.io.IOException;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 class Analyzer implements Runnable {
 
@@ -24,6 +26,8 @@ class Analyzer implements Runnable {
      */
     private final boolean onlyError;
 
+    private String time;
+
     Analyzer(Address address, TextChannel channel, boolean onlyError) {
         this.address = address;
         this.channel = channel;
@@ -32,11 +36,16 @@ class Analyzer implements Runnable {
 
     @Override
     public void run() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(" HH:mm dd.MM.yyyy");
+        LocalDateTime now = LocalDateTime.now();
+        time = dtf.format(now);
+
         if (address.isMinecraftIp()) {
             analyzeMinecraftAddress();
         } else {
             analyzeNonMinecraftAddress();
         }
+
     }
 
     private void analyzeMinecraftAddress() {
@@ -46,6 +55,7 @@ class Analyzer implements Runnable {
         }
 
         if (minecraftPing.isOnline() && !onlyError) {
+
             EmbedBuilder builder = new EmbedBuilder()
                     .setTitle("Status of " + address.getName())
                     .addField("IP", minecraftPing.getIp() + "", true)
@@ -56,14 +66,16 @@ class Analyzer implements Runnable {
                             + minecraftPing.getPlayers().getMax(), false)
                     .addField("VERSION", minecraftPing.getVersion().replace("Requires MC ", "")
                             + "", false)
-                    .setColor(Color.green);
+                    .setColor(Color.green)
+                    .setFooter(time);
             channel.sendMessage(builder.build()).queue();
         } else if (!minecraftPing.isOnline()) {
             EmbedBuilder builder = new EmbedBuilder()
                     .setTitle("WARNING: SERVER DOWN")
                     .setDescription("Server **" + address.getName() + "** under IP " + address.getFullAddress()
                             + " is currently unavailable!")
-                    .setColor(Color.red);
+                    .setColor(Color.red)
+                    .setFooter(time);
 
             channel.sendMessage(builder.build()).queue();
             if (!MonitoringScheduler.getInstance().markedAsUnreachable(channel.getGuild().getIdLong(), address)) {

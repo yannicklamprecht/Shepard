@@ -15,9 +15,8 @@ public final class MonitoringScheduler {
     private static MonitoringScheduler instance;
     private Map<Long, List<Address>> unreachable = new HashMap<>();
 
-    private ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
-
     private MonitoringScheduler() {
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
         executor.scheduleAtFixedRate(new MonitoringCoordinator(24), 0, 5, TimeUnit.MINUTES);
         executor.scheduleAtFixedRate(new ReconnectCoordinator(), 0, 1, TimeUnit.MINUTES);
     }

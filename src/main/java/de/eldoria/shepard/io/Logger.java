@@ -70,6 +70,7 @@ public class Logger {
      */
     public void error(Throwable exception) {
         error(ExceptionUtils.getStackTrace(exception));
+        MessageSender.sendSimpleErrorEmbed(ExceptionUtils.getStackTrace(exception), Normandy.getErrorChannel());
     }
 
     /**

@@ -15,17 +15,16 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.List;
 
-import static de.eldoria.shepard.util.TextFormatting.fillString;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class GuessGame extends Command {
 
-    private final String description = "Is this image part of an nsfw image or not?" + lineSeparator()
+    private static final String DESCRIPTION = "Is this image part of an nsfw image or not?" + lineSeparator()
             + "Click :white_check_mark: for yes or :x: for no!" + lineSeparator()
             + "You have 30 seconds to guess!";
 
-    private final String title = "NSFW or not! Guess now!";
+    private static final String TITLE = "NSFW or not! Guess now!";
 
     public GuessGame() {
         commandName = "guessGame";
@@ -109,8 +108,8 @@ public class GuessGame extends Command {
         }
         EmbedBuilder builder = new EmbedBuilder();
 
-        builder.setTitle(title)
-                .setDescription(description)
+        builder.setTitle(TITLE)
+                .setDescription(DESCRIPTION)
                 .setImage(hentaiImage.getCroppedImage())
                 .setFooter("Hint: Everything which isn't clearly NSFW is sfw!");
 

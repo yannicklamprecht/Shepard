@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.util;
 
+import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.ShepardBot;
@@ -31,40 +32,24 @@ public class ListServer extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         List<Guild> guilds = ShepardBot.getJDA().getGuilds();
-        String[][] text = new String[guilds.size()][3];
-        int sizeName = 0;
-        int sizeOwner = 0;
-        int sizeSince = 0;
 
-        for (int i = 0; i < guilds.size(); i++) {
-            text[i][0] = guilds.get(i).getName();
-            if (text[i][0].length() > sizeName) sizeName = text[i][0].length();
-
-            text[i][1] = Objects.requireNonNull(guilds.get(i).getOwner()).getUser().getAsTag();
-            if (text[i][1].length() > sizeOwner) sizeOwner = text[i][1].length();
-
-            OffsetDateTime time = Objects.requireNonNull(guilds.get(i)
-                    .getMemberById(ShepardBot.getJDA().getSelfUser().getId())).getTimeJoined();
+        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(guilds, "Servername", "Serverowner", "Join Date");
+        tableBuilder.setHighlighting("json");
+        for (Guild guild : guilds) {
+            OffsetDateTime time = guild.getMemberById(ShepardBot.getJDA().getSelfUser().getId()).getTimeJoined();
 
             LocalDate date = time.toLocalDate();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
             String formatted = date.format(formatter);
 
-            text[i][2] = formatted;
-            if (text[i][2].length() > sizeSince) sizeSince = text[i][2].length();
+            tableBuilder.next();
+            tableBuilder.setRow("\"" + guild.getName() + "\"",
+                    guild.getOwner().getUser().getAsTag(),
+                    formatted);
         }
-
-        //Build Message
-        String messagepart = "```json\n";
-        for (int i = 0; i < guilds.size(); i++) {
-            messagepart = messagepart.concat("\"" + fillString(text[i][0] + "\"", sizeName + 1)
-                    + " by " + fillString(text[i][1], sizeOwner) + " since: "
-                    + fillString(text[i][2], sizeSince) + "\n");
-        }
-        messagepart = messagepart.concat("```");
 
         String message = "I am currently serving " + guilds.size() + " server:\n";
-        MessageSender.sendMessage(message.concat(messagepart), messageContext.getChannel());
+        MessageSender.sendMessage(message.concat(tableBuilder.toString()), messageContext.getChannel());
     }
 
 }

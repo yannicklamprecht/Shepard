@@ -7,7 +7,6 @@ import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.io.File;
-import java.util.UUID;
 
 public class MockingSpongebob extends Command {
     private static final String BASE_URL = "https://mockingspongebob.org/";
