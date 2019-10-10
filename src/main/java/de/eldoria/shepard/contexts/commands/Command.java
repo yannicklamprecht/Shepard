@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  * An abstract class for commands.
  */
-public class Command extends ContextSensitive {
+public abstract class Command extends ContextSensitive {
 
     /**
      * Name of the command.
@@ -78,9 +78,7 @@ public class Command extends ContextSensitive {
      * @param args           Arguments of the command.
      * @param messageContext Message Received Event of the command execution
      */
-    protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        throw new NotImplementedException();
-    }
+    protected abstract void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext);
 
     /**
      * Get the name of the command.
