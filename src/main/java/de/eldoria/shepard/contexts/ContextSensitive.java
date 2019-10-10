@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * A {@link ListenerAdapter} filtering events for different contexts.
  */
-public abstract class ContextSensitive extends Thread {
+public abstract class ContextSensitive {
 
     /**
      * Creates a new context Sensitive event.
