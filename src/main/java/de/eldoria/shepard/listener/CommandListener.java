@@ -86,13 +86,16 @@ public class CommandListener extends ListenerAdapter {
                 if (command.checkArguments(args)) {
                     try {
                         command.executeAsync(label, args, messageContext);
-                    } catch (CommandException | InsufficientPermissionException e) {
+                    } catch (InsufficientPermissionException | CommandException e) {
                         try {
                             MessageSender.sendSimpleErrorEmbed(e.getMessage(), messageContext.getChannel());
+
                         } catch (InsufficientPermissionException ex) {
                             messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
                                     MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));
                         }
+                    } catch (Exception e) {
+                        ShepardBot.getLogger().error(e);
                     }
                 } else {
                     try {
