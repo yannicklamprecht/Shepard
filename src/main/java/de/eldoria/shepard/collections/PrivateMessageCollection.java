@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PrivateMessageCollection {
+public final class PrivateMessageCollection {
 
     private static PrivateMessageCollection instance;
 
@@ -73,11 +73,11 @@ public class PrivateMessageCollection {
             return name;
         }
 
-        public long getId() {
+        long getId() {
             return id;
         }
 
-        public boolean hasSimilarName(String name) {
+        boolean hasSimilarName(String name) {
             return this.name.startsWith(name.toLowerCase());
         }
     }

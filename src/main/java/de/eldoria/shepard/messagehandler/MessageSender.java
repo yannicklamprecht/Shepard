@@ -1,9 +1,8 @@
 package de.eldoria.shepard.messagehandler;
 
-import com.google.api.client.util.IOUtils;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.GreetingSettings;
-import de.eldoria.shepard.util.Emoji;
+import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -18,40 +17,12 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.Color;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.List;
 
 public final class MessageSender {
 
-    /**
-     * send a simple Message to a channel.
-     *
-     * @param message Message to send.
-     * @param channel channel to send
-     */
-    public static void sendMessage(String message, MessageChannel channel) {
-        if (message.isEmpty()) return;
-
-        String[] messageParts = message.split(System.lineSeparator());
-        StringBuilder messagePart = new StringBuilder();
-        for (int i = 0; i < messageParts.length; i++) {
-            if (messagePart.length() + messageParts[i].length() < 1024) {
-                messagePart.append(messageParts[i]).append(System.lineSeparator());
-            } else {
-                channel.sendMessage(messagePart.toString()).queue();
-                messagePart = new StringBuilder();
-                i--;
-            }
-        }
-
-        channel.sendMessage(messagePart.toString()).queue();
-    }
 
     /**
      * Sends a textbox to a channel.
@@ -74,7 +45,6 @@ public final class MessageSender {
      */
     public static void sendTextBox(String title, List<MessageEmbed.Field> fields, MessageChannel channel, Color color) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setDescription("test")
                 .setTitle(title)
                 .setColor(color);
         for (MessageEmbed.Field field : fields) {
@@ -267,11 +237,35 @@ public final class MessageSender {
     }
 
     /**
+     * send a simple Message to a channel.
+     *
+     * @param message Message to send.
+     * @param channel channel to send
+     */
+    public static void sendMessage(String message, MessageChannel channel) {
+        if (message.isEmpty()) return;
+
+        String[] messageParts = message.split(System.lineSeparator());
+        StringBuilder messagePart = new StringBuilder();
+        for (int i = 0; i < messageParts.length; i++) {
+            if (messagePart.length() + messageParts[i].length() < 1024) {
+                messagePart.append(messageParts[i]).append(System.lineSeparator());
+            } else {
+                channel.sendMessage(messagePart.toString()).queue();
+                messagePart = new StringBuilder();
+                i--;
+            }
+        }
+
+        channel.sendMessage(messagePart.toString()).queue();
+    }
+
+    /**
      * Sends a message to a user.
      *
-     * @param user User to send
-     * @param attachments Attachments to send
-     * @param text Text to send
+     * @param user           User to send
+     * @param attachments    Attachments to send
+     * @param text           Text to send
      * @param messageContext message informations.
      */
     public static void sendMessage(User user, List<Message.Attachment> attachments, String text,
@@ -279,21 +273,14 @@ public final class MessageSender {
         user.openPrivateChannel().queue(privateChannel -> {
             privateChannel.sendMessage(text).queue();
             if (!attachments.isEmpty()) {
-                try {
-                    InputStream url = new URL(attachments.get(0).getUrl()).openStream();
-                    String[] split = attachments.get(0).getProxyUrl().split("\\.");
-                    String suffix = split[split.length - 1];
-                    String[] urlSplitted = split[split.length - 2].split("\\\\");
-                    String name = urlSplitted[urlSplitted.length - 1];
-                    File tempFile = File.createTempFile(name, "." + suffix);
-                    FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
-                    IOUtils.copy(url, fileOutputStream);
+                for (Message.Attachment attachment : attachments) {
 
-                    privateChannel.sendFile(tempFile).queue();
-                    tempFile.delete();
-                } catch (IOException e) {
-                    MessageSender.sendSimpleErrorEmbed("File could not be loaded", messageContext.getChannel());
-                    ShepardBot.getLogger().error(e);
+                    File fileFromURL = FileHelper.getFileFromURL(attachment.getUrl());
+                    if (fileFromURL != null) {
+                        privateChannel.sendFile(fileFromURL).queue();
+                    } else {
+                        MessageSender.sendSimpleErrorEmbed("File could not be loaded", messageContext.getChannel());
+                    }
                 }
             }
         });

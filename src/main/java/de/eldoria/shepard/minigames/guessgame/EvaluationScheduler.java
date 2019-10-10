@@ -1,6 +1,6 @@
 package de.eldoria.shepard.minigames.guessgame;
 
-import de.eldoria.shepard.database.types.HentaiImage;
+import de.eldoria.shepard.database.types.GuessGameImage;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -17,7 +17,7 @@ public class EvaluationScheduler {
 
     private ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(5);
 
-    public static void scheduleEvaluation(Message message, HentaiImage image) {
+    public static void scheduleEvaluation(Message message, GuessGameImage image) {
         Evaluator evaluator = new Evaluator(message, image);
         getInstance().executor.schedule(evaluator, 30, TimeUnit.SECONDS);
         getInstance().evaluationChannel.put(message.getChannel().getIdLong(), evaluator);

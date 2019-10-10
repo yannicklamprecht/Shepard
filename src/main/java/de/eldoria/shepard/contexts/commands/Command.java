@@ -7,11 +7,13 @@ import de.eldoria.shepard.contexts.ContextSensitive;
 import info.debatty.java.stringsimilarity.JaroWinkler;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.apache.commons.lang.NotImplementedException;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -43,26 +45,37 @@ public abstract class Command extends ContextSensitive {
      */
     protected Command() {
         CommandCollection.getInstance().addCommand(this);
-
     }
 
     /**
      * Executes the command.
      *
-     * @param label       Label/Alias which was used for command execution
-     * @param args        Arguments of the command.
+     * @param label          Label/Alias which was used for command execution
+     * @param args           Arguments of the command.
      * @param messageContext Message Received Event of the command execution
      */
+    @Deprecated
     public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
         internalExecute(label, args, messageContext);
         MessageSender.logCommand(label, args, messageContext);
     }
 
     /**
+     * Executes the method async.
+     *
+     * @param label          Label/Alias which was used for command execution
+     * @param args           Arguments of the command.
+     * @param messageContext Message Received Event of the command execution
+     */
+    public void executeAsync(String label, String[] args, MessageEventDataWrapper messageContext) {
+        CompletableFuture.runAsync(() -> execute(label, args, messageContext));
+    }
+
+    /**
      * Internal executor for command. Called from inside the class.
      *
-     * @param label       Label/Alias which was used for command execution
-     * @param args        Arguments of the command.
+     * @param label          Label/Alias which was used for command execution
+     * @param args           Arguments of the command.
      * @param messageContext Message Received Event of the command execution
      */
     protected abstract void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext);

@@ -15,9 +15,6 @@ import de.eldoria.shepard.reactionactions.SendCommandHelp;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.PrivateChannel;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
@@ -46,6 +43,7 @@ public class CommandListener extends ListenerAdapter {
 
     private void onCommand(MessageEventDataWrapper messageContext) {
         String receivedMessage = messageContext.getMessage().getContentRaw();
+        receivedMessage = receivedMessage.replaceAll("\\s\\s+", " ");
         String[] args = receivedMessage.split(" ");
 
         boolean isCommand = false;
@@ -63,6 +61,9 @@ public class CommandListener extends ListenerAdapter {
 
         if (isCommand) {
             //BotCheck
+            if (messageContext.getAuthor().getIdLong() == ShepardBot.getJDA().getSelfUser().getIdLong()) {
+                return;
+            }
             if (messageContext.getAuthor().isBot()) {
                 MessageSender.sendMessage("I'm not allowed to talk to you " + messageContext.getAuthor().getName()
                         + ". Please leave me alone ._.", messageContext.getChannel());
@@ -78,16 +79,23 @@ public class CommandListener extends ListenerAdapter {
                 args = new String[0];
             }
             if (command != null && command.isContextValid(messageContext)) {
+                if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
+                    command.sendCommandUsage(messageContext.getChannel());
+                    return;
+                }
                 if (command.checkArguments(args)) {
                     try {
-                        command.execute(label, args, messageContext);
-                    } catch (CommandException | InsufficientPermissionException e) {
+                        command.executeAsync(label, args, messageContext);
+                    } catch (InsufficientPermissionException | CommandException e) {
                         try {
                             MessageSender.sendSimpleErrorEmbed(e.getMessage(), messageContext.getChannel());
+
                         } catch (InsufficientPermissionException ex) {
                             messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
                                     MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));
                         }
+                    } catch (Exception e) {
+                        ShepardBot.getLogger().error(e);
                     }
                 } else {
                     try {
@@ -97,7 +105,6 @@ public class CommandListener extends ListenerAdapter {
                         messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
                                 MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));
                     }
-
                 }
                 return;
             } else if (command != null && command.canBeExecutedHere(messageContext)) {
@@ -127,8 +134,6 @@ public class CommandListener extends ListenerAdapter {
                     + "help for a full list of available commands!", false)}, messageContext.getChannel());
 
         }
-
     }
-
 }
 

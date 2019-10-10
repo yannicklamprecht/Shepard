@@ -1,8 +1,8 @@
 package de.eldoria.shepard.minigames.guessgame;
 
 import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.database.queries.HentaiOrNotData;
-import de.eldoria.shepard.database.types.HentaiImage;
+import de.eldoria.shepard.database.queries.GuessGameData;
+import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.IMentionable;
@@ -19,11 +19,11 @@ import static java.lang.System.lineSeparator;
 
 public class Evaluator implements Runnable {
     private long messageId;
-    private HentaiImage image;
+    private GuessGameImage image;
     private long channelId;
     private Map<Long, Boolean> votes = new HashMap<>();
 
-    Evaluator(Message message, HentaiImage image) {
+    Evaluator(Message message, GuessGameImage image) {
         this.messageId = message.getIdLong();
         this.image = image;
         this.channelId = message.getChannel().getIdLong();
@@ -52,9 +52,9 @@ public class Evaluator implements Runnable {
             votePoints = Math.round(1 + sharedPoints);
         }
 
-        HentaiOrNotData.addVoteScore(guildChannel.getGuild(),
+        GuessGameData.addVoteScore(guildChannel.getGuild(),
                 winners, votePoints, null);
-        HentaiOrNotData.addVoteScore(guildChannel.getGuild(),
+        GuessGameData.addVoteScore(guildChannel.getGuild(),
                 looser, -1, null);
 
         EmbedBuilder builder = new EmbedBuilder();

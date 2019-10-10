@@ -2,7 +2,7 @@ package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
-import de.eldoria.shepard.database.queries.HentaiOrNotData;
+import de.eldoria.shepard.database.queries.GuessGameData;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.guessgame.ImageRegister;
@@ -24,7 +24,7 @@ public class GuessGameConfig extends Command {
                                 + "**__r__emoveImage** -> Remove image from database" + lineSeparator()
                                 + "**__c__ancelRegistration** -> Cancel registration of image", true),
                 new CommandArg("values",
-                        "**addImage** -> [`true` or `nsfw` if hentai | `false` or `sfw` if not]"  + lineSeparator()
+                        "**addImage** -> [`true` or `nsfw` if hentai | `false` or `sfw` if not]" + lineSeparator()
                                 + "**removeImage** -> [url of cropped or full image]" + lineSeparator()
                                 + "**cancelRegistration** -> leave empty", false)
         };
@@ -43,7 +43,7 @@ public class GuessGameConfig extends Command {
             return;
         }
         if (cmd.equalsIgnoreCase("cancelRegistration") || cmd.equalsIgnoreCase("c")) {
-            ImageRegister.getInstance().cancelConfiguration(messageContext.getAuthor());
+            ImageRegister.getInstance().cancelConfiguration(messageContext);
             MessageSender.sendMessage("Registration canceled.", messageContext.getChannel());
             return;
         }
@@ -56,7 +56,9 @@ public class GuessGameConfig extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             return;
         }
-        HentaiOrNotData.removeHentaiImage(args[1], messageContext);
+        if (GuessGameData.removeHentaiImage(args[1], messageContext)) {
+            MessageSender.sendMessage("Removed Image!", messageContext.getChannel());
+        }
     }
 
     private void addImage(String[] args, MessageEventDataWrapper messageContext) {
@@ -70,7 +72,7 @@ public class GuessGameConfig extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getChannel());
             return;
         }
-        ImageRegister.getInstance().startConfiguration(messageContext.getAuthor(),
+        ImageRegister.getInstance().startConfiguration(messageContext,
                 booleanState.stateAsBoolean);
         MessageSender.sendMessage("Started registration of new image set." + lineSeparator()
                 + "Please send the cropped image.", messageContext.getChannel());

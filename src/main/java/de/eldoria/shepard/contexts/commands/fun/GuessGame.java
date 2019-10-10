@@ -2,29 +2,29 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
-import de.eldoria.shepard.database.queries.HentaiOrNotData;
-import de.eldoria.shepard.database.types.HentaiImage;
+import de.eldoria.shepard.database.queries.GuessGameData;
+import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.database.types.Rank;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.guessgame.EvaluationScheduler;
 import de.eldoria.shepard.util.Emoji;
+import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.List;
 
-import static de.eldoria.shepard.util.TextFormatting.fillString;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class GuessGame extends Command {
 
-    private final String description = "Is this image part of an nsfw image or not?" + lineSeparator()
+    private static final String DESCRIPTION = "Is this image part of an nsfw image or not?" + lineSeparator()
             + "Click :white_check_mark: for yes or :x: for no!" + lineSeparator()
             + "You have 30 seconds to guess!";
 
-    private final String title = "NSFW or not! Guess now!";
+    private static final String TITLE = "NSFW or not! Guess now!";
 
     public GuessGame() {
         commandName = "guessGame";
@@ -64,14 +64,14 @@ public class GuessGame extends Command {
         String cmd = args[0];
 
         if (isArgument(cmd, "score", "s")) {
-            int userScore = HentaiOrNotData.getUserScore(messageContext.getGuild(),
+            int userScore = GuessGameData.getUserScore(messageContext.getGuild(),
                     messageContext.getAuthor(), messageContext);
             MessageSender.sendMessage("Your score is: " + userScore, messageContext.getChannel());
             return;
         }
 
         if (isArgument(cmd, "globalScore", "gs")) {
-            int userScore = HentaiOrNotData.getGlobalUserScore(messageContext.getAuthor(), messageContext);
+            int userScore = GuessGameData.getGlobalUserScore(messageContext.getAuthor(), messageContext);
             MessageSender.sendMessage("Your global score is: " + userScore, messageContext.getChannel());
             return;
         }
@@ -86,34 +86,14 @@ public class GuessGame extends Command {
 
     private void sendTopScores(boolean global, MessageEventDataWrapper messageContext) {
         List<Rank> ranks = global
-                ? HentaiOrNotData.getGlobalTopScore(10, messageContext)
-                : HentaiOrNotData.getTopScore(messageContext.getGuild(), 10, messageContext);
+                ? GuessGameData.getGlobalTopScore(10, messageContext)
+                : GuessGameData.getTopScore(messageContext.getGuild(), 10, messageContext);
 
-        int nameLength = 5;
+        String rankTable = TextFormatting.getRankTable(ranks);
 
-        for (Rank rank : ranks) {
-            nameLength = Math.max(nameLength, rank.getUser().getAsTag().length());
-        }
-
-        StringBuilder builder = new StringBuilder();
-
-        builder.append(global ? "**GLOBAL RANKING**" : "**SERVER RANKING**")
-                .append(lineSeparator()).append("```");
-        builder.append("Rank ").append(fillString("User ", nameLength + 1)).append("Score");
-
-        int ranking = 1;
-        for (Rank rank : ranks) {
-
-            builder.append(lineSeparator())
-                    .append(fillString(ranking + "", 5))
-                    .append(fillString(rank.getUser().getAsTag(), nameLength + 1))
-                    .append(rank.getScore());
-            ranking++;
-        }
-
-        builder.append(lineSeparator()).append("```");
-
-        MessageSender.sendMessage(builder.toString(), messageContext.getChannel());
+        MessageSender.sendMessage((global ? "**GLOBAL GUESS GAME RANKING**" : "**SERVER GUESS GAME RANKING**")
+                        + lineSeparator() + rankTable,
+                messageContext.getChannel());
     }
 
     private void startGame(MessageEventDataWrapper messageContext) {
@@ -122,14 +102,14 @@ public class GuessGame extends Command {
             return;
         }
 
-        HentaiImage hentaiImage = HentaiOrNotData.getHentaiImage(messageContext);
+        GuessGameImage hentaiImage = GuessGameData.getHentaiImage(messageContext);
         if (hentaiImage == null) {
             return;
         }
         EmbedBuilder builder = new EmbedBuilder();
 
-        builder.setTitle(title)
-                .setDescription(description)
+        builder.setTitle(TITLE)
+                .setDescription(DESCRIPTION)
                 .setImage(hentaiImage.getCroppedImage())
                 .setFooter("Hint: Everything which isn't clearly NSFW is sfw!");
 

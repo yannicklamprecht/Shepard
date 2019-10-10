@@ -16,5 +16,5 @@ public enum ConfigurationType {
     /**
      * ready to be stored in database.
      */
-    CONFIGURED;
+    CONFIGURED
 }
