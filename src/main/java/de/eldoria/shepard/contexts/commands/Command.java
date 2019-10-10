@@ -54,11 +54,19 @@ public class Command extends ContextSensitive {
      * @param args           Arguments of the command.
      * @param messageContext Message Received Event of the command execution
      */
+    @Deprecated
     public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
         internalExecute(label, args, messageContext);
         MessageSender.logCommand(label, args, messageContext);
     }
 
+    /**
+     * Executes the method async.
+     *
+     * @param label          Label/Alias which was used for command execution
+     * @param args           Arguments of the command.
+     * @param messageContext Message Received Event of the command execution
+     */
     public void executeAsync(String label, String[] args, MessageEventDataWrapper messageContext) {
         CompletableFuture.runAsync(() -> execute(label, args, messageContext));
     }
