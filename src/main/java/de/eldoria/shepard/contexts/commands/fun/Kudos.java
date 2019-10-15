@@ -21,7 +21,7 @@ public class Kudos extends Command {
     public Kudos() {
         commandName = "kudos";
         commandAliases = new String[] {"gummipunkte", "rubberpoints"};
-        commandDesc = "Give kudos to others, when they do good things. You earn one point every 30 minutes.";
+        commandDesc = "Give kudos to others, when they do good things. You earn one point every hour.";
         commandArgs = new CommandArg[] {
                 new CommandArg("action",
                         "leave empty -> Show your free rubber points and how much you earned!" + lineSeparator()
@@ -58,15 +58,15 @@ public class Kudos extends Command {
             if (isArgument(label, "rubberpoints", "kudos")) {
                 MessageSender.sendMessage(
                         "You have **" + freePoints + "/100** free " + pointType + " to give! (You get 1 "
-                                + pointType.substring(0, pointType.length() - 1) + " every 30 minutes)" + lineSeparator()
+                                + pointType.substring(0, pointType.length() - 1) + " every hour)" + lineSeparator()
                                 + "You have earned **" + userPoints + " " + pointType + "** on this Server!" + lineSeparator()
                                 + (userPoints != globalUserPoints ?
                                 "You have earned **" + globalUserPoints + " " + pointType + "** on all Servers!" : ""),
                         messageContext.getChannel());
             } else {
                 MessageSender.sendMessage(
-                        "Du hast **" + freePoints + "/100** " + pointType + " zu vergeben! (Du erhältst 1 "
-                                + pointType.substring(0, pointType.length() - 1) + " alle 30 Minuten)" + lineSeparator()
+                        "Du hast **" + freePoints + "/100** " + pointType + " zu vergeben! (Du erhältst jede stunde 1 "
+                                + pointType.substring(0, pointType.length() - 1) + ")" + lineSeparator()
                                 + "Du hast **" + userPoints + " " + pointType + "** auf diesem Server erhalten!" + lineSeparator()
                                 + (userPoints != globalUserPoints ?
                                 "Du hast **" + globalUserPoints + " " + pointType + "** insgesamt erhalten!" : ""),
