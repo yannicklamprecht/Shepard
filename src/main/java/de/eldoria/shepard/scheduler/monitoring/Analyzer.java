@@ -1,7 +1,9 @@
 package de.eldoria.shepard.scheduler.monitoring;
 
 import de.eldoria.shepard.database.types.Address;
+import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.util.PingMinecraftServer;
+import de.eldoria.shepard.util.TextFormatting;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -10,6 +12,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import static de.eldoria.shepard.util.TextFormatting.getTimeAsString;
 
 class Analyzer implements Runnable {
 
@@ -26,8 +30,6 @@ class Analyzer implements Runnable {
      */
     private final boolean onlyError;
 
-    private String time;
-
     Analyzer(Address address, TextChannel channel, boolean onlyError) {
         this.address = address;
         this.channel = channel;
@@ -36,16 +38,11 @@ class Analyzer implements Runnable {
 
     @Override
     public void run() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(" HH:mm dd.MM.yyyy");
-        LocalDateTime now = LocalDateTime.now();
-        time = dtf.format(now);
-
         if (address.isMinecraftIp()) {
             analyzeMinecraftAddress();
         } else {
             analyzeNonMinecraftAddress();
         }
-
     }
 
     private void analyzeMinecraftAddress() {
@@ -67,7 +64,8 @@ class Analyzer implements Runnable {
                     .addField("VERSION", minecraftPing.getVersion().replace("Requires MC ", "")
                             + "", false)
                     .setColor(Color.green)
-                    .setFooter(time);
+                    .setFooter(getTimeAsString())
+                    .setThumbnail(ShepardReactions.SHULKY.thumbnail);
             channel.sendMessage(builder.build()).queue();
         } else if (!minecraftPing.isOnline()) {
             EmbedBuilder builder = new EmbedBuilder()
@@ -75,7 +73,8 @@ class Analyzer implements Runnable {
                     .setDescription("Server **" + address.getName() + "** under IP " + address.getFullAddress()
                             + " is currently unavailable!")
                     .setColor(Color.red)
-                    .setFooter(time);
+                    .setThumbnail(ShepardReactions.SHULKY.thumbnail)
+                    .setFooter(getTimeAsString());
 
             channel.sendMessage(builder.build()).queue();
             if (!MonitoringScheduler.getInstance().markedAsUnreachable(channel.getGuild().getIdLong(), address)) {
@@ -88,7 +87,10 @@ class Analyzer implements Runnable {
 
     private void analyzeNonMinecraftAddress() {
         if (!isAddressReachable()) {
-            channel.sendMessage("Service under " + address.getFullAddress() + " is currently unavailable!").queue();
+            EmbedBuilder builder = new EmbedBuilder()
+                    .setTitle("Service **" + address.getName() + "** is unavailable!")
+                    .setDescription("Service under: " + address.getFullAddress());
+            channel.sendMessage(builder.build()).queue();
             MonitoringScheduler.getInstance().markAsUnreachable(channel.getGuild().getIdLong(), address);
             if (!MonitoringScheduler.getInstance().markedAsUnreachable(channel.getGuild().getIdLong(), address)) {
                 channel.sendMessage("@here").queue();
@@ -119,5 +121,6 @@ class Analyzer implements Runnable {
     PingMinecraftServer.MinecraftPing checkMinecraftServer() {
         return PingMinecraftServer.pingServer(address.getFullAddress());
     }
+
 
 }

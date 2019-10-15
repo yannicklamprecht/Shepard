@@ -3,6 +3,8 @@ package de.eldoria.shepard.util;
 import de.eldoria.shepard.database.types.Rank;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -171,5 +173,17 @@ public final class TextFormatting {
                     .append("```");
             return builder.toString();
         }
+
+    }
+
+    /**
+     * Get the current time as string
+     *
+     * @return time in format:  HH:mm dd.MM.yyyy
+     */
+    public static String getTimeAsString() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(" HH:mm dd.MM.yyyy");
+        LocalDateTime now = LocalDateTime.now();
+        return dtf.format(now);
     }
 }
