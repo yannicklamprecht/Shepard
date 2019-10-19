@@ -9,10 +9,14 @@ public class UniqueMessageIdentifier {
     private final long channelId;
     private final long messageId;
 
-    UniqueMessageIdentifier(TextChannel channel, long message) {
-        guildId = channel.getGuild().getOwnerIdLong();
+    public UniqueMessageIdentifier(TextChannel channel, long message) {
+        guildId = channel.getGuild().getIdLong();
         channelId = channel.getIdLong();
         messageId = message;
+    }
+
+    public boolean isChannel(TextChannel channel) {
+        return channel.getIdLong() == channelId && channel.getGuild().getIdLong() == guildId;
     }
 
     private long getGuildId() {
