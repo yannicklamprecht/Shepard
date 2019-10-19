@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.GuessGameData;
@@ -7,7 +8,9 @@ import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.database.types.Rank;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.minigames.guessgame.EvaluationScheduler;
+import de.eldoria.shepard.minigames.EvaluationScheduler;
+import de.eldoria.shepard.minigames.EvaluationSchedulerCollection;
+import de.eldoria.shepard.minigames.guessgame.GuessGameEvaluator;
 import de.eldoria.shepard.util.Emoji;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -38,6 +41,7 @@ public class GuessGame extends Command {
                                 + "**__t__op** -> The top 10 player on this server" + lineSeparator()
                                 + "**__g__lobal__t__op** -> The top 10 player.", false)
         };
+        category = ContextCategory.FUN;
     }
 
     @Override
@@ -97,7 +101,8 @@ public class GuessGame extends Command {
     }
 
     private void startGame(MessageEventDataWrapper messageContext) {
-        if (EvaluationScheduler.evaluationInProgress(messageContext.getTextChannel())) {
+        EvaluationScheduler<GuessGameEvaluator> evaluationScheduler = EvaluationSchedulerCollection.getGuessGameScheduler();
+        if (evaluationScheduler.isEvaluationActive(messageContext.getTextChannel())) {
             MessageSender.sendMessage("One round is still in progress.", messageContext.getChannel());
             return;
         }
@@ -117,7 +122,7 @@ public class GuessGame extends Command {
                 .queue(message -> {
                     message.addReaction(Emoji.CHECK_MARK_BUTTON.unicode).queue();
                     message.addReaction(Emoji.CROSS_MARK.unicode).queue();
-                    EvaluationScheduler.scheduleEvaluation(message, hentaiImage);
+                    evaluationScheduler.scheduleEvaluation(message,30, new GuessGameEvaluator(message, hentaiImage));
                 });
     }
 }

@@ -1,9 +1,10 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.DbUtil;
-import de.eldoria.shepard.database.queries.RubberPointsData;
+import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.database.types.Rank;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -35,6 +36,7 @@ public class Kudos extends Command {
                                 + "**__t__op__G__lobal** -> leave empty.",
                         false)
         };
+        category = ContextCategory.FUN;
     }
 
     @Override
@@ -49,11 +51,11 @@ public class Kudos extends Command {
         }
 
         if (args.length == 0) {
-            int freePoints = RubberPointsData.getFreePoints(
+            int freePoints = KudoData.getFreePoints(
                     messageContext.getGuild(), messageContext.getAuthor(), messageContext);
-            int userPoints = RubberPointsData.getUserScore(
+            int userPoints = KudoData.getUserScore(
                     messageContext.getGuild(), messageContext.getAuthor(), messageContext);
-            int globalUserPoints = RubberPointsData.getGlobalUserScore(messageContext.getAuthor(), messageContext);
+            int globalUserPoints = KudoData.getGlobalUserScore(messageContext.getAuthor(), messageContext);
 
             if (isArgument(label, "rubberpoints", "kudos")) {
                 MessageSender.sendMessage(
@@ -125,12 +127,12 @@ public class Kudos extends Command {
             return;
         }
 
-        if (!RubberPointsData.tryTakePoints(
+        if (!KudoData.tryTakePoints(
                 messageContext.getGuild(), messageContext.getAuthor(), points, messageContext)) {
-            MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_POINTS, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_KUDOS, messageContext.getChannel());
             return;
         }
-        if (!RubberPointsData.addRubberPoints(
+        if (!KudoData.addRubberPoints(
                 messageContext.getGuild(), memberById.getUser(), points, messageContext)) {
             return;
         }
@@ -153,8 +155,8 @@ public class Kudos extends Command {
 
     private void sendTopScores(String pointType, boolean global, MessageEventDataWrapper messageContext) {
         List<Rank> ranks = global
-                ? RubberPointsData.getGlobalTopScore(25, messageContext)
-                : RubberPointsData.getTopScore(messageContext.getGuild(), 25, messageContext);
+                ? KudoData.getGlobalTopScore(25, messageContext)
+                : KudoData.getTopScore(messageContext.getGuild(), 25, messageContext);
 
         String rankTable = TextFormatting.getRankTable(ranks);
 
