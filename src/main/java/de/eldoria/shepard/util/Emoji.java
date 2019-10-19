@@ -12,7 +12,17 @@ public enum Emoji {
     /**
      * :question: emoji.
      */
-    QUESTION_MARK("\u2753");
+    QUESTION_MARK("\u2753"),
+
+    /**
+     * :moneybag: emoji.
+     */
+    MONEY_BAG("\ud83d\udcb0"),
+
+    /**
+     * :dollar:
+     */
+    DOLLAR("\ud83d\udcb5");
 
     /**
      * Returns the unicode of the emoji.
