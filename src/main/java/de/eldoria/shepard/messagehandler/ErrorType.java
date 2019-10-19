@@ -32,9 +32,9 @@ public enum ErrorType {
      */
     NOT_A_NUMBER("This is not a number!"),
     /**
-     * Used when the user has not enough rubber points.
+     * Used when the user has not enough Kudos.
      */
-    NOT_ENOUGH_POINTS("You dont have enough points!"),
+    NOT_ENOUGH_KUDOS("You dont have enough Kudos!"),
     /**
      * Used when a channel is not a guild text channel.
      */
@@ -79,6 +79,10 @@ public enum ErrorType {
      * Used when the list type could not be parsed.
      */
     INVALID_ADDRESS("Invalid Input. The Address must be a ipv4/6 or a domain."),
+    /**
+     * Used when a interval doesn't have a valid time type.
+     */
+    INVALID_INTERVAL("Invalid Interval type."),
     /**
      * Used when no message was found.
      */
