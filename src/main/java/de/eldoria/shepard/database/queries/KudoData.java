@@ -15,8 +15,8 @@ import java.util.List;
 import static de.eldoria.shepard.database.DbUtil.getScoreListFromResult;
 import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
-public final class RubberPointsData {
-    private RubberPointsData() {
+public final class KudoData {
+    private KudoData() {
     }
 
     /**
@@ -58,6 +58,30 @@ public final class RubberPointsData {
             statement.setString(1, guild.getId());
             statement.setString(2, user.getId());
             statement.setInt(3, score);
+            statement.execute();
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Add the amount to the amount in the database. Negative amount subtracts from amount.
+     *
+     * @param guild          Guild where the amount should be applied
+     * @param user           user where the amount should be applied
+     * @param amount          The amount which should be applied
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
+     */
+    public static boolean addFreeRubberPoints(Guild guild, User user, int amount,
+                                          MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.add_free_rubber_points(?,?,?)")) {
+            statement.setString(1, guild.getId());
+            statement.setString(2, user.getId());
+            statement.setInt(3, amount);
             statement.execute();
         } catch (SQLException e) {
             handleExceptionAndIgnore(e, messageContext);
