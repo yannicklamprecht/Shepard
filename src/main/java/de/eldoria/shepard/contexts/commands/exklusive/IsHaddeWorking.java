@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.exklusive;
 
 import de.eldoria.shepard.calendar.CalendarEvent;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
@@ -25,6 +26,7 @@ public class IsHaddeWorking extends Command {
         commandName = "isHaddeWorking";
         commandAliases = new String[] {"istHaddeArbeiten"};
         commandDesc = "Gibt an, ob Hadde arbeiten ist";
+        category = ContextCategory.EXCLUSIVE;
     }
 
     @Override

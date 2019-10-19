@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.botconfig;
 
 import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.ListType;
@@ -44,6 +45,7 @@ public class ManageContextUsers extends Command {
                                 + "**addUser** -> Add a user to the list (Multiple users possible)"
                                 + System.lineSeparator()
                                 + "**removeUser** -> Removes a user from the list (Multiple users possible", true)};
+        category = ContextCategory.BOTCONFIG;
     }
 
     @Override

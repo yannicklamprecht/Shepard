@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
@@ -13,6 +14,7 @@ public class Uwu extends Command {
         commandName = "uwu";
         commandDesc = "UWU - Use \"uwud\" to delete your command afterwards.";
         commandAliases = new String[] {"uwud"};
+        category = ContextCategory.FUN;
     }
 
 

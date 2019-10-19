@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.InviteData;
@@ -19,7 +20,7 @@ import static java.lang.System.lineSeparator;
 
 public class Invite extends Command {
 
-    private final Pattern pattern;
+    private static final Pattern INVITE = Pattern.compile("([a-zA-Z0-9]{6,7})$");
 
     /**
      * Creates a new Invite command object.
@@ -40,8 +41,7 @@ public class Invite extends Command {
                                 + "**removeInvite** -> [codeOfInvite]" + lineSeparator()
                                 + "**refreshInvites** -> leave empty" + lineSeparator()
                                 + "**showInvites** -> leave empty", false)};
-
-        pattern = Pattern.compile("([a-zA-Z0-9]{6,7})$");
+        category = ContextCategory.ADMIN;
     }
 
     @Override
@@ -116,7 +116,7 @@ public class Invite extends Command {
             return;
         }
 
-        Matcher matcher = pattern.matcher(args[1]);
+        Matcher matcher = INVITE.matcher(args[1]);
         if (!matcher.find()) {
             MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext.getChannel());
         }

@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -25,6 +26,7 @@ public class Prefix extends Command {
                 new CommandArg("value",
                         "**set** -> One or two character" + lineSeparator()
                                 + "**reset** -> leave empty", false)};
+        category = ContextCategory.ADMIN;
     }
 
     @Override

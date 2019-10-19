@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.TicketData;
@@ -56,6 +57,7 @@ public class TicketSettings extends Command {
                                 + "Supported Placeholder: {user_name} {user_tag} {user_mention}",
                         true)};
 
+        category = ContextCategory.ADMIN;
     }
 
     @Override

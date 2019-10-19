@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
@@ -17,6 +18,7 @@ public class Say extends Command {
         commandArgs = new CommandArg[]
                 {new CommandArg("Message", "Message Shepard should say.", true),};
         commandAliases = new String[] {"sayd"};
+        category = ContextCategory.FUN;
     }
 
     @Override

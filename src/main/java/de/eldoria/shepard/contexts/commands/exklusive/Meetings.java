@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.exklusive;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.calendar.CalendarEvent;
@@ -24,6 +25,7 @@ public class Meetings extends Command {
         commandName = "meetings";
         commandAliases = new String[] {"besprechung", "meeting"};
         commandDesc = "Der nächste Besprechungstermin";
+        category = ContextCategory.EXCLUSIVE;
     }
 
     @Override

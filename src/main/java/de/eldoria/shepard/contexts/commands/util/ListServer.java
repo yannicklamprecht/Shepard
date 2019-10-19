@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.util;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -27,6 +28,7 @@ public class ListServer extends Command {
         commandName = "listServer";
         commandAliases = new String[] {"serverList", "servers", "server"};
         commandDesc = "Lists all Server where Shepard is online";
+        category = ContextCategory.UTIL;
     }
 
     @Override
