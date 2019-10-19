@@ -1,17 +1,20 @@
 package de.eldoria.shepard.contexts.commands.util;
 
 import de.eldoria.shepard.collections.CommandCollection;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.database.queries.PrefixData;
+import de.eldoria.shepard.register.ContextRegister;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import org.apache.commons.collections4.iterators.AbstractUntypedIteratorDecorator;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A command for listing all possible commands.
@@ -28,6 +31,7 @@ public class Help extends Command {
         commandArgs = new CommandArg[]
                 {new CommandArg("Command", "Name or Alias of Command", false),
                         new CommandArg("Argument", "One Argument of the Command", false)};
+        category = ContextCategory.UTIL;
     }
 
     @Override
@@ -81,31 +85,43 @@ public class Help extends Command {
 
     /* Sends a list of all commands with description */
     private void listCommands(MessageEventDataWrapper event) {
-        List<Command> commands = CommandCollection.getInstance().getCommands();
+        Map<ContextCategory, List<Command>> commands = new HashMap<>();
 
         List<MessageEmbed.Field> fields = new ArrayList<>();
 
-        int inline = 0;
-
-        for (Command command : commands) {
+        for (Command command : CommandCollection.getInstance().getCommands()) {
             if (!command.isContextValid(event)) {
                 continue;
             }
-
-            var field = new MessageEmbed.Field(command.getCommandName(), command.getCommandDesc(),
-                    (inline % 2) != 0);
-
-            fields.add(field);
-            inline++;
+            commands.putIfAbsent(command.getCategory(), new ArrayList<>());
+            commands.get(command.getCategory()).add(command);
         }
 
-        event.getAuthor().openPrivateChannel().queue(privateChannel -> {
-            if (privateChannel != null && event.getAuthor().hasPrivateChannel()) {
-                MessageSender.sendTextBox("__**COMMANDS**__", fields, privateChannel, Color.green);
-                MessageSender.sendMessage("I send you a direct message with a list of commands.", event.getChannel());
-            } else {
-                MessageSender.sendTextBox("__**COMMANDS**__", fields, event.getChannel(), Color.green);
-            }
-        });
+        fields.add(getCommandField(commands, ContextCategory.BOTCONFIG));
+        fields.add(getCommandField(commands, ContextCategory.ADMIN));
+        fields.add(getCommandField(commands, ContextCategory.EXCLUSIVE));
+        fields.add(getCommandField(commands, ContextCategory.FUN));
+        fields.add(getCommandField(commands, ContextCategory.UTIL));
+        fields.add(new MessageEmbed.Field("", "**Use `help <command>` for more information about a command.**", false));
+        fields.add(new MessageEmbed.Field("Maybe useful:",
+                "**[Invite me](https://discordapp.com/oauth2/authorize?client_id=512413049894731780&scope=bot&permissions=1544027254), "
+                        + "[Support Server](https://discord.gg/AJyFGAj)**", false));
+
+        fields.removeIf(Objects::isNull);
+
+        MessageSender.sendTextBox("__**COMMANDS**__", fields, event.getChannel(), Color.green);
+    }
+
+    private String getCommandNames(List<Command> commands) {
+        return commands.stream().map(command -> "`" + command.getCommandName() + "`").collect(Collectors.joining(", "));
+    }
+
+    private MessageEmbed.Field getCommandField(Map<ContextCategory, List<Command>> commands, ContextCategory category) {
+        List<Command> list = commands.getOrDefault(category, Collections.emptyList());
+        if (!list.isEmpty()) {
+            return new MessageEmbed.Field(list.get(0).getCategory().category_Name,
+                    getCommandNames(list), false);
+        }
+        return null;
     }
 }
