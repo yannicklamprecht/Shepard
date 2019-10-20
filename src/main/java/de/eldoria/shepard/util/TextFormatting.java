@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import static java.lang.System.console;
 import static java.lang.System.lineSeparator;
 
 public final class TextFormatting {
@@ -61,18 +62,18 @@ public final class TextFormatting {
     public static String trimText(String string, String endSequence, int maxChars, boolean keepWords) {
         if (!keepWords) {
             String substring = string.substring(0, Math.max(0, maxChars - endSequence.length()));
-            return substring + endSequence;
+            return (substring + endSequence).trim();
         }
         String[] split = string.split("\\s");
         StringBuilder builder = new StringBuilder();
         for (String s : split) {
             if (builder.length() + s.length() > maxChars + endSequence.length()) {
                 builder.append(endSequence);
-                return builder.toString();
+                return builder.toString().trim();
             }
             builder.append(" ").append(s);
         }
-        return builder.toString();
+        return builder.toString().trim();
     }
 
 
@@ -142,6 +143,9 @@ public final class TextFormatting {
         public void setRow(String... columnEntries) {
             if (rowPointer == 0) {
                 return;
+            }
+            for (int i = 0; i < columnEntries.length; i++) {
+                columnEntries[i] = columnEntries[i].replace("`","");
             }
             if (columnEntries.length <= table[0].length) {
                 table[rowPointer] = columnEntries;
