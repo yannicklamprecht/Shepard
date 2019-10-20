@@ -71,7 +71,6 @@ public class Ticket extends Command {
             return;
         }
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
-        sendCommandUsage(messageContext.getChannel());
     }
 
     private void close(String[] args, MessageEventDataWrapper receivedEvent) {

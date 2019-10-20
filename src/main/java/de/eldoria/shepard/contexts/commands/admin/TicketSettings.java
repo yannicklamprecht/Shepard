@@ -111,13 +111,11 @@ public class TicketSettings extends Command {
         }
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
-        sendCommandUsage(messageContext.getChannel());
     }
 
     private void setCreationMessage(String[] args, MessageEventDataWrapper receivedEvent, TicketType scopeTicket) {
         if (args.length < 3) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
-            sendCommandUsage(receivedEvent.getChannel());
             return;
         }
 
@@ -133,7 +131,6 @@ public class TicketSettings extends Command {
     private void setChannelCategory(String[] args, MessageEventDataWrapper receivedEvent, TicketType scopeTicket) {
         if (args.length != 3) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
-            sendCommandUsage(receivedEvent.getChannel());
             return;
         }
 
@@ -154,7 +151,6 @@ public class TicketSettings extends Command {
     private void setRoles(String[] args, MessageEventDataWrapper receivedEvent, String cmd, TicketType scopeTicket) {
         if (args.length < 3) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
-            sendCommandUsage(receivedEvent.getChannel());
             return;
         }
         String[] roleIds = Arrays.copyOfRange(args, 2, args.length);
@@ -184,7 +180,6 @@ public class TicketSettings extends Command {
     private void removeType(String[] args, MessageEventDataWrapper receivedEvent, TicketType scopeTicket) {
         if (args.length != 2) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
-            sendCommandUsage(receivedEvent.getChannel());
             return;
         }
         List<String> channelIdsByType = TicketData.getChannelIdsByType(receivedEvent.getGuild(),
@@ -225,7 +220,6 @@ public class TicketSettings extends Command {
     private void createType(String[] args, MessageEventDataWrapper receivedEvent, String type) {
         if (args.length != 3) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
-            sendCommandUsage(receivedEvent.getChannel());
             return;
         }
 

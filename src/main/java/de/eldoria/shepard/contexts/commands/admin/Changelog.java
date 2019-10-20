@@ -69,7 +69,6 @@ public class Changelog extends Command {
         }
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
-        sendCommandUsage(messageContext.getChannel());
     }
 
     private void showRoles(MessageEventDataWrapper receivedEvent) {

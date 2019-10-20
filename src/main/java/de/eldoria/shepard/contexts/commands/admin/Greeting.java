@@ -55,7 +55,6 @@ public class Greeting extends Command {
         }
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
-        sendCommandUsage(messageContext.getChannel());
     }
 
     private void setMessage(String[] args, MessageEventDataWrapper messageContext) {
@@ -97,6 +96,5 @@ public class Greeting extends Command {
             }
         }
         MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext.getChannel());
-        sendCommandUsage(messageContext.getChannel());
     }
 }

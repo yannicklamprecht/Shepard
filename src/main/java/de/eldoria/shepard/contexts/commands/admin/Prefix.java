@@ -42,7 +42,6 @@ public class Prefix extends Command {
         }
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
-        sendCommandUsage(messageContext.getChannel());
     }
 
     private void reset(MessageEventDataWrapper messageContext) {
@@ -55,7 +54,6 @@ public class Prefix extends Command {
     private void set(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 1) {
             MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
-            sendCommandUsage(messageContext.getChannel());
             return;
         }
 

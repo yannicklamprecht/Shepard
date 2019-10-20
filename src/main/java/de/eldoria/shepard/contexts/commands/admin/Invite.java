@@ -64,7 +64,6 @@ public class Invite extends Command {
             return;
         }
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
-        sendCommandUsage(messageContext.getChannel());
     }
 
     private void showInvites(MessageEventDataWrapper messageContext) {
