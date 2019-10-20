@@ -24,9 +24,8 @@ public class ExecuteCommand extends Action {
 
     @Override
     protected void internalExecute(GuildMessageReactionAddEvent event) {
-
         if (command.checkArguments(args)) {
-            command.execute(command.getCommandName(), args, messageContext);
+            command.executeAsync(command.getCommandName(), args, messageContext);
             event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(message -> {
                 if (message != null) {
                     message.delete().queue();
