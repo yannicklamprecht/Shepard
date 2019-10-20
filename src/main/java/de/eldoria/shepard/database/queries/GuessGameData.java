@@ -70,6 +70,30 @@ public final class GuessGameData {
     }
 
     /**
+     * Get a specific hentai image set from database.
+     *
+     * @param link           the full or cropped image link
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return hentai image object
+     */
+    public static GuessGameImage getHentaiImage(String link, MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_image_set(?)")) {
+            statement.setString(1, link);
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return new GuessGameImage(result.getString("cropped_image"),
+                        result.getString("full_image"),
+                        result.getBoolean("hentai"));
+            }
+
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+        }
+        return null;
+    }
+
+    /**
      * Removes a hentai image set from database.
      *
      * @param imageUrl       url of cropped ir full image.
@@ -80,6 +104,26 @@ public final class GuessGameData {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.remove_hentai_image(?)")) {
             statement.setString(1, imageUrl);
+            statement.execute();
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Changes the NSFW flag of a image.
+     *
+     * @param imageUrl       url of cropped ir full image.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
+     */
+    public static boolean changeImageFlag(String imageUrl, boolean nsfw, MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.change_hentai_image_flag(?,?)")) {
+            statement.setString(1, imageUrl);
+            statement.setBoolean(2, nsfw);
             statement.execute();
         } catch (SQLException e) {
             handleExceptionAndIgnore(e, messageContext);

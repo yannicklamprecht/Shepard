@@ -114,7 +114,7 @@ public enum ErrorType {
     /**
      * Used when a context is not found.
      */
-    CONTEXT_NOT_FOUND("Context not found. Please use the context name or an alias!", false),
+    CONTEXT_NOT_FOUND("Context not found. Please use the context name or an alias!"),
     /**
      * Used when no emote was found.
      */
@@ -122,7 +122,15 @@ public enum ErrorType {
     /**
      * Used when a user executes a command on himself, when he is not allowed to do it!.
      */
-    SELF_ASSIGNMENT("You can't do this to yourself!");
+    SELF_ASSIGNMENT("You can't do this to yourself!"),
+    /**
+     * Used when no last command was found.
+     */
+    NO_LAST_COMMAND_FOUND("There is no last used Command saved!"),
+    /**
+     * Used when no guess game image was found.
+     */
+    INVALID_IMAGE_URL("Invalid image url.");
 
 
     /**
