@@ -11,10 +11,12 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.EvaluationScheduler;
 import de.eldoria.shepard.minigames.EvaluationSchedulerCollection;
 import de.eldoria.shepard.minigames.guessgame.GuessGameEvaluator;
-import de.eldoria.shepard.util.Emoji;
+import de.eldoria.shepard.util.reactions.EmojiCollection;
 import de.eldoria.shepard.util.TextFormatting;
+import de.eldoria.shepard.util.reactions.EmoteCollection;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Emote;
 
 import java.util.List;
 
@@ -22,10 +24,6 @@ import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class GuessGame extends Command {
-
-    private static final String DESCRIPTION = "Is this image part of an nsfw image or not?" + lineSeparator()
-            + "Click :white_check_mark: for yes or :x: for no!" + lineSeparator()
-            + "You have 30 seconds to guess!";
 
     private static final String TITLE = "NSFW or not! Guess now!";
 
@@ -114,15 +112,19 @@ public class GuessGame extends Command {
         EmbedBuilder builder = new EmbedBuilder();
 
         builder.setTitle(TITLE)
-                .setDescription(DESCRIPTION)
+                .setDescription("Is this image part of an nsfw image or not?" + lineSeparator()
+                        + "Click " + EmoteCollection.ANIM_CHECKMARK.getEmote().getAsMention()
+                        + " for yes or " + EmoteCollection.ANIM_CROSS.getEmote().getAsMention()
+                        + " for no!" + lineSeparator()
+                        + "You have 30 seconds to guess!")
                 .setImage(hentaiImage.getCroppedImage())
                 .setFooter("Hint: Everything which isn't clearly NSFW is sfw!");
 
         messageContext.getChannel().sendMessage(builder.build())
                 .queue(message -> {
-                    message.addReaction(Emoji.CHECK_MARK_BUTTON.unicode).queue();
-                    message.addReaction(Emoji.CROSS_MARK.unicode).queue();
-                    evaluationScheduler.scheduleEvaluation(message,30, new GuessGameEvaluator(message, hentaiImage));
+                    message.addReaction(EmoteCollection.ANIM_CHECKMARK.getEmote()).queue();
+                    message.addReaction(EmoteCollection.ANIM_CROSS.getEmote()).queue();
+                    evaluationScheduler.scheduleEvaluation(message, 30, new GuessGameEvaluator(message, hentaiImage));
                 });
     }
 }

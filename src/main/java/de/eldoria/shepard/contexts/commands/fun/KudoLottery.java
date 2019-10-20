@@ -8,7 +8,8 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.EvaluationScheduler;
 import de.eldoria.shepard.minigames.EvaluationSchedulerCollection;
 import de.eldoria.shepard.minigames.kudolottery.KudoLotteryEvaluator;
-import de.eldoria.shepard.util.Emoji;
+import de.eldoria.shepard.util.reactions.EmojiCollection;
+import de.eldoria.shepard.util.reactions.EmoteCollection;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -44,16 +45,19 @@ public class KudoLottery extends Command {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("KUDO LOTTERY")
                 .setDescription("A new round is starting. Please place your bets!" + lineSeparator()
-                        + " You have 1 minute!")
+                        + " You have 3 minutes!")
                 .addField("Currently there is 1 Kudo in the pot!",
-                        "Press " + Emoji.MONEY_BAG.unicode + " to buy 10 Tickets for 10 Kudos." + lineSeparator()
-                                + "Press " + Emoji.DOLLAR.unicode + "to buy 1 Ticket for 1 Kudo.", true)
+                        "Press " + EmoteCollection.INFINITY.getEmote().getAsMention() + " to buy as much Tickets as you can." + lineSeparator()
+                                + "Press " + EmoteCollection.PLUS_X.getEmote().getAsMention() + " to buy 10 Tickets for 10 Kudos." + lineSeparator()
+                                + "Press " + EmoteCollection.PLUS_I.getEmote().getAsMention() + " to buy 1 Ticket for 1 Kudo.",
+                        true)
                 .setColor(Color.orange);
 
         messageContext.getChannel().sendMessage(builder.build()).queue(message -> {
-            message.addReaction(Emoji.MONEY_BAG.unicode).queue();
-            message.addReaction(Emoji.DOLLAR.unicode).queue();
-            kudoLotteryScheduler.scheduleEvaluation(message, 60,
+            message.addReaction(EmoteCollection.INFINITY.getEmote()).queue();
+            message.addReaction(EmoteCollection.PLUS_X.getEmote()).queue();
+            message.addReaction(EmoteCollection.PLUS_I.getEmote()).queue();
+            kudoLotteryScheduler.scheduleEvaluation(message, 180,
                     new KudoLotteryEvaluator(message, messageContext.getAuthor()));
         });
     }
