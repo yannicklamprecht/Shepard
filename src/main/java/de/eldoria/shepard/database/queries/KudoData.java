@@ -22,8 +22,10 @@ public final class KudoData {
     /**
      * Try to take the points from the user.
      *
-     * @param guild guild where the points should be taken.
-     * @param user  user from who the points should be taken.
+     * @param guild          guild where the points should be taken.
+     * @param user           user from who the points should be taken.
+     * @param points         points to take
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the points where taken.
      */
     public static boolean tryTakePoints(Guild guild, User user, int points, MessageEventDataWrapper messageContext) {
@@ -71,12 +73,12 @@ public final class KudoData {
      *
      * @param guild          Guild where the amount should be applied
      * @param user           user where the amount should be applied
-     * @param amount          The amount which should be applied
+     * @param amount         The amount which should be applied
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean addFreeRubberPoints(Guild guild, User user, int amount,
-                                          MessageEventDataWrapper messageContext) {
+                                              MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_free_rubber_points(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -176,6 +178,7 @@ public final class KudoData {
     /**
      * Get the sum of all scores of a user.
      *
+     * @param guild          Guild for lookup
      * @param user           User for lookup.
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return global score of user

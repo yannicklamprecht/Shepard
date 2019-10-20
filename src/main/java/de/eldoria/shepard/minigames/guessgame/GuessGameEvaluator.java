@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 import static java.lang.System.lineSeparator;
 
 public class GuessGameEvaluator extends Evaluator {
-    private GuessGameImage image;
-    private Map<Long, Boolean> votes = new HashMap<>();
+    private final GuessGameImage image;
+    private final Map<Long, Boolean> votes = new HashMap<>();
 
     public GuessGameEvaluator(Message message, GuessGameImage image) {
         super(message.getIdLong(), message.getChannel().getIdLong());

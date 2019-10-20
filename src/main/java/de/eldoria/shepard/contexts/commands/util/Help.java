@@ -2,19 +2,21 @@ package de.eldoria.shepard.contexts.commands.util;
 
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.contexts.ContextCategory;
-import de.eldoria.shepard.contexts.commands.admin.Prefix;
 import de.eldoria.shepard.database.queries.PrefixData;
-import de.eldoria.shepard.register.ContextRegister;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import org.apache.commons.collections4.iterators.AbstractUntypedIteratorDecorator;
 
 import java.awt.Color;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -121,7 +123,7 @@ public class Help extends Command {
     private MessageEmbed.Field getCommandField(Map<ContextCategory, List<Command>> commands, ContextCategory category) {
         List<Command> list = commands.getOrDefault(category, Collections.emptyList());
         if (!list.isEmpty()) {
-            return new MessageEmbed.Field(category.category_Name,
+            return new MessageEmbed.Field(category.categoryName,
                     getCommandNames(list), false);
         }
         return null;

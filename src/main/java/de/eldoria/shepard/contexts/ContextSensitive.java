@@ -22,6 +22,9 @@ import java.util.Map;
  * A {@link ListenerAdapter} filtering events for different contexts.
  */
 public abstract class ContextSensitive {
+    /**
+     * Category of the context.
+     */
     protected ContextCategory category;
 
     /**

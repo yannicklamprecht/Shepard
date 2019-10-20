@@ -61,17 +61,22 @@ public class Kudos extends Command {
                 MessageSender.sendMessage(
                         "You have **" + freePoints + "/100** free " + pointType + " to give! (You get 1 "
                                 + pointType.substring(0, pointType.length() - 1) + " every hour)" + lineSeparator()
-                                + "You have earned **" + userPoints + " " + pointType + "** on this Server!" + lineSeparator()
-                                + (userPoints != globalUserPoints ?
-                                "You have earned **" + globalUserPoints + " " + pointType + "** on all Servers!" : ""),
+                                + "You have earned **" + userPoints + " " + pointType + "** on this Server!"
+                                + lineSeparator()
+                                + (userPoints != globalUserPoints
+                                ? "You have earned **" + globalUserPoints + " "
+                                + pointType + "** on all Servers!" : ""),
                         messageContext.getChannel());
             } else {
                 MessageSender.sendMessage(
-                        "Du hast **" + freePoints + "/100** " + pointType + " zu vergeben! (Du erhältst jede stunde 1 "
+                        "Du hast **" + freePoints + "/100** " + pointType
+                                + " zu vergeben! (Du erhältst jede stunde 1 "
                                 + pointType.substring(0, pointType.length() - 1) + ")" + lineSeparator()
-                                + "Du hast **" + userPoints + " " + pointType + "** auf diesem Server erhalten!" + lineSeparator()
-                                + (userPoints != globalUserPoints ?
-                                "Du hast **" + globalUserPoints + " " + pointType + "** insgesamt erhalten!" : ""),
+                                + "Du hast **" + userPoints + " " + pointType + "** auf diesem Server erhalten!"
+                                + lineSeparator()
+                                + (userPoints != globalUserPoints
+                                ? "Du hast **" + globalUserPoints + " " + pointType
+                                + "** insgesamt erhalten!" : ""),
                         messageContext.getChannel());
             }
             return;
@@ -138,13 +143,13 @@ public class Kudos extends Command {
         }
         if (label.equalsIgnoreCase("rubberpoints")) {
             MessageSender.sendMessage(memberById.getAsMention() + " recieved **" + points
-                            + "** rubber points from " + messageContext.getAuthor().getAsMention() + "!"
-                    , messageContext.getChannel());
+                            + "** rubber points from " + messageContext.getAuthor().getAsMention() + "!",
+                    messageContext.getChannel());
         }
         if (label.equalsIgnoreCase("kudos")) {
             MessageSender.sendMessage(memberById.getAsMention() + " recieved **" + points
-                            + "** Kudos from " + messageContext.getAuthor().getAsMention() + "!"
-                    , messageContext.getChannel());
+                            + "** Kudos from " + messageContext.getAuthor().getAsMention() + "!",
+                    messageContext.getChannel());
         }
         if (label.equalsIgnoreCase("gummipunkte")) {
             MessageSender.sendMessage(memberById.getAsMention() + " erhält **" + points

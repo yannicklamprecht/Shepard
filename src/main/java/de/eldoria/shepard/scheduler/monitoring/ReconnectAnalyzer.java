@@ -2,10 +2,8 @@ package de.eldoria.shepard.scheduler.monitoring;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.Address;
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.util.PingMinecraftServer;
-import de.eldoria.shepard.util.TextFormatting;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 

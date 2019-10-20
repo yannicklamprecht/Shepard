@@ -9,7 +9,7 @@ import java.util.Objects;
 public final class ImageRegister {
     private static ImageRegister instance;
 
-    private Map<UserChannelKey, ImageConfiguration> configurations = new HashMap<>();
+    private final Map<UserChannelKey, ImageConfiguration> configurations = new HashMap<>();
 
     private ImageRegister() {
     }
@@ -67,8 +67,8 @@ public final class ImageRegister {
     }
 
     private static class UserChannelKey {
-        long userId;
-        long channelId;
+        final long userId;
+        final long channelId;
 
         UserChannelKey(MessageEventDataWrapper messageContext) {
             this.userId = messageContext.getAuthor().getIdLong();

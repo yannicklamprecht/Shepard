@@ -3,7 +3,6 @@ package de.eldoria.shepard.minigames;
 import de.eldoria.shepard.collections.UniqueMessageIdentifier;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
-import org.w3c.dom.Text;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -15,8 +14,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class EvaluationScheduler<T extends Evaluator> {
-    private Map<UniqueMessageIdentifier, T> evaluationChannel = new HashMap<>();
-    private ScheduledExecutorService executor;
+    private final Map<UniqueMessageIdentifier, T> evaluationChannel = new HashMap<>();
+    private final ScheduledExecutorService executor;
 
     public EvaluationScheduler(int poolSize) {
         executor = new ScheduledThreadPoolExecutor(poolSize);
@@ -35,8 +34,10 @@ public class EvaluationScheduler<T extends Evaluator> {
 
     /**
      * Schedules a evaluation.
-     * @param message
-     * @param evaluator
+     *
+     * @param message   message to evaluate
+     * @param seconds   seconds till evaluation.
+     * @param evaluator evaluator for evaluation
      */
     public void scheduleEvaluation(Message message, int seconds, T evaluator) {
         executor.schedule(evaluator, seconds, TimeUnit.SECONDS);
@@ -46,6 +47,7 @@ public class EvaluationScheduler<T extends Evaluator> {
 
     /**
      * Check if a message is used for voting.
+     *
      * @param uniqueMessageIdentifier identifier for message.
      * @return true if it is a voting message.
      */
@@ -55,15 +57,17 @@ public class EvaluationScheduler<T extends Evaluator> {
 
     /**
      * Check if a channel is in a evaluation process.
+     *
      * @param channel channel for lookup
      * @return true if a evaluation is in progress in this channel
      */
-    public boolean isEvaluationActive(TextChannel channel){
+    public boolean isEvaluationActive(TextChannel channel) {
         return getChannelEvaluator(channel) != null;
     }
 
     /**
      * Marks a evaluation for a channel as done.
+     *
      * @param channel channel to remove.
      */
     public void evaluationDone(TextChannel channel) {

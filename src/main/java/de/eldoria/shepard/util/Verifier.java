@@ -4,7 +4,11 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.ISnowflake;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
 import java.util.Arrays;
 import java.util.List;
@@ -46,12 +50,14 @@ public class Verifier {
     }
 
     /**
-     * Check if two object have the same Snowflake
+     * Check if two object have the same Snowflake.
+     *
      * @param a first object
      * @param b second object
      * @return true if the snowflakes are equal.
      */
     public static boolean equalSnowflake(ISnowflake a, ISnowflake b) {
+        if (a == null || b == null) return false;
         return a.getIdLong() == b.getIdLong();
     }
 

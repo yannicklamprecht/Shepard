@@ -12,9 +12,6 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
-
-import static de.eldoria.shepard.util.TextFormatting.fillString;
 
 /**
  * A command to list all servers the bot is a member of.
@@ -35,7 +32,8 @@ public class ListServer extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         List<Guild> guilds = ShepardBot.getJDA().getGuilds();
 
-        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(guilds, "Servername", "Serverowner", "Join Date");
+        TextFormatting.TableBuilder tableBuilder
+                = TextFormatting.getTableBuilder(guilds, "Servername", "Serverowner", "Join Date");
         tableBuilder.setHighlighting("json");
         for (Guild guild : guilds) {
             OffsetDateTime time = guild.getMemberById(ShepardBot.getJDA().getSelfUser().getId()).getTimeJoined();

@@ -12,14 +12,17 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
-import java.awt.*;
-import java.util.*;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import static java.lang.System.lineSeparator;
 
 public class KudoLotteryEvaluator extends Evaluator {
-    private Map<Long, Integer> bet = new HashMap<>();
+    private final Map<Long, Integer> bet = new HashMap<>();
 
     public KudoLotteryEvaluator(Message message, User user) {
         super(message.getIdLong(), message.getChannel().getIdLong());
@@ -82,29 +85,29 @@ public class KudoLotteryEvaluator extends Evaluator {
         if (amount != -1 && !KudoData.tryTakePoints(guild, user, amount, null)) {
             return;
         }
-
+        int finalAmount = amount;
         if (amount == -1) {
-            amount = 0;
+            finalAmount = 0;
             while (KudoData.tryTakePoints(guild, user, 50, null)) {
-                amount += 50;
+                finalAmount += 50;
             }
             while (KudoData.tryTakePoints(guild, user, 20, null)) {
-                amount += 20;
+                finalAmount += 20;
             }
             while (KudoData.tryTakePoints(guild, user, 10, null)) {
-                amount += 10;
+                finalAmount += 10;
             }
             while (KudoData.tryTakePoints(guild, user, 5, null)) {
-                amount += 5;
+                finalAmount += 5;
             }
             while (KudoData.tryTakePoints(guild, user, 1, null)) {
-                amount += 1;
+                finalAmount += 1;
             }
         }
 
-        Integer currentAmount = bet.putIfAbsent(user.getIdLong(), amount);
+        Integer currentAmount = bet.putIfAbsent(user.getIdLong(), finalAmount);
         if (currentAmount != null) {
-            bet.put(user.getIdLong(), currentAmount + amount);
+            bet.put(user.getIdLong(), currentAmount + finalAmount);
         }
 
         int sum = bet.values().stream().mapToInt(Integer::intValue).sum();
@@ -114,9 +117,12 @@ public class KudoLotteryEvaluator extends Evaluator {
                 .setDescription("A new round is starting. Please place your bets!" + lineSeparator()
                         + " You have 3 minute!")
                 .addField("Currently there are " + sum + " Kudos in the pot!",
-                        "Press " + EmojiCollection.GEM.unicode + " to buy as much Tickets as you can." + lineSeparator()
-                                + "Press " + EmojiCollection.MONEY_BAG.unicode + " to buy 10 Tickets for 10 Kudos." + lineSeparator()
-                                + "Press " + EmojiCollection.DOLLAR.unicode + "to buy 1 Ticket for 1 Kudo.", true)
+                        "Press " + EmojiCollection.GEM.unicode
+                                + " to buy as much Tickets as you can." + lineSeparator()
+                                + "Press " + EmojiCollection.MONEY_BAG.unicode
+                                + " to buy 10 Tickets for 10 Kudos." + lineSeparator()
+                                + "Press " + EmojiCollection.DOLLAR.unicode
+                                + "to buy 1 Ticket for 1 Kudo.", true)
                 .setColor(Color.orange);
 
         ShepardBot.getJDA().getTextChannelById(channelId).retrieveMessageById(messageId)

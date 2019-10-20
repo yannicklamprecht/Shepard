@@ -230,7 +230,8 @@ public final class MessageSender {
     }
 
     public static void logCommand(String label, String[] args, MessageEventDataWrapper receivedEvent) {
-        String command = receivedEvent.getAuthor().getAsTag() +  " executed command \""+ label + " " + String.join(" ", args)
+        String command = receivedEvent.getAuthor().getAsTag()
+                + " executed command \"" + label + " " + String.join(" ", args)
                 + "\" on  guild " + receivedEvent.getGuild().getName() + " ("
                 + receivedEvent.getGuild().getId() + ")";
         ShepardBot.getLogger().command(command);

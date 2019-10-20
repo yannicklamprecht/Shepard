@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class MonitoringScheduler {
     private static MonitoringScheduler instance;
-    private Map<Long, List<Address>> unreachable = new HashMap<>();
+    private final Map<Long, List<Address>> unreachable = new HashMap<>();
 
     private MonitoringScheduler() {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);

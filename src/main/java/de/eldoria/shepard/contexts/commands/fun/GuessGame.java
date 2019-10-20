@@ -11,12 +11,10 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.EvaluationScheduler;
 import de.eldoria.shepard.minigames.EvaluationSchedulerCollection;
 import de.eldoria.shepard.minigames.guessgame.GuessGameEvaluator;
-import de.eldoria.shepard.util.reactions.EmojiCollection;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.reactions.EmoteCollection;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Emote;
 
 import java.util.List;
 
@@ -99,7 +97,8 @@ public class GuessGame extends Command {
     }
 
     private void startGame(MessageEventDataWrapper messageContext) {
-        EvaluationScheduler<GuessGameEvaluator> evaluationScheduler = EvaluationSchedulerCollection.getGuessGameScheduler();
+        EvaluationScheduler<GuessGameEvaluator> evaluationScheduler
+                = EvaluationSchedulerCollection.getGuessGameScheduler();
         if (evaluationScheduler.isEvaluationActive(messageContext.getTextChannel())) {
             MessageSender.sendMessage("One round is still in progress.", messageContext.getChannel());
             return;

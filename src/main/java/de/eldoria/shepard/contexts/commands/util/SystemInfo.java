@@ -20,7 +20,9 @@ public class SystemInfo extends Command {
                 .addField("CPU",
                         "Available Cores: " + runtime.availableProcessors(),
                         true)
-                .addField("Memory", "Used Memory: " + runtime.totalMemory() / 1000000 + "MB/" + runtime.maxMemory() / 1000000 + "MB", false
+                .addField("Memory", "Used Memory: "
+                        + runtime.totalMemory() / 1000000 + "MB/"
+                        + runtime.maxMemory() / 1000000 + "MB", false
                 );
         messageContext.getChannel().sendMessage(builder.build()).queue();
     }

@@ -7,7 +7,6 @@ import de.eldoria.shepard.contexts.ContextSensitive;
 import info.debatty.java.stringsimilarity.JaroWinkler;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import org.apache.commons.lang.NotImplementedException;
 
 import java.awt.Color;
 import java.util.ArrayList;

@@ -20,12 +20,12 @@ public enum EmojiCollection {
     MONEY_BAG("\ud83d\udcb0"),
 
     /**
-     * :dollar:
+     * :dollar: emoji.
      */
     DOLLAR("\ud83d\udcb5"),
 
     /**
-     * :gem:
+     * :gem: emoji.
      */
     GEM("\uD83D\uDC8E");
 

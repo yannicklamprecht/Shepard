@@ -1,7 +1,15 @@
 package de.eldoria.shepard.register;
 
-import de.eldoria.shepard.contexts.commands.util.Reminder;
-import de.eldoria.shepard.listener.*;
+import de.eldoria.shepard.listener.ChangelogListener;
+import de.eldoria.shepard.listener.CommandListener;
+import de.eldoria.shepard.listener.GreetingListener;
+import de.eldoria.shepard.listener.HentaiImageRegisterListener;
+import de.eldoria.shepard.listener.KeywordListener;
+import de.eldoria.shepard.listener.LogListener;
+import de.eldoria.shepard.listener.MessageSniffer;
+import de.eldoria.shepard.listener.PrivateMessageListener;
+import de.eldoria.shepard.listener.ReactionListener;
+import de.eldoria.shepard.listener.TicketCleanupListener;
 import de.eldoria.shepard.scheduler.KudoCounter;
 import de.eldoria.shepard.scheduler.ReminderScheduler;
 import de.eldoria.shepard.scheduler.invites.InviteScheduler;

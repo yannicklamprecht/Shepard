@@ -21,7 +21,8 @@ public final class ReminderData {
     private ReminderData() {
     }
 
-    public static boolean addReminderInterval(Guild guild, User user, TextChannel channel, String message, String interval,
+    public static boolean addReminderInterval(Guild guild, User user, TextChannel channel,
+                                              String message, String interval,
                                               MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = getConn()
                 .prepareStatement("SELECT shepard_func.add_reminder_interval(?,?,?,?,?)")) {
@@ -39,7 +40,7 @@ public final class ReminderData {
     }
 
     /**
-     * Add a reminder on a date on a specific time
+     * Add a reminder on a date on a specific time.
      *
      * @param guild          guild on which the reminder was created
      * @param user           user which created the reminder
@@ -50,7 +51,8 @@ public final class ReminderData {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addReminderDate(Guild guild, User user, TextChannel channel, String message, String date, String time,
+    public static boolean addReminderDate(Guild guild, User user, TextChannel channel,
+                                          String message, String date, String time,
                                           MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = getConn()
                 .prepareStatement("SELECT shepard_func.add_reminder_date(?,?,?,?,?,?)")) {

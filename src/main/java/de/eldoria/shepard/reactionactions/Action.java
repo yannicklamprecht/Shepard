@@ -14,7 +14,7 @@ public abstract class Action {
     private final ReactionType reactionType;
     private final boolean oneTime;
     private long userId;
-    private int secondsValid;
+    private final int secondsValid;
     private boolean used;
 
     Action(EmojiCollection emojiCollection, User exclusiveUser, int secondsValid, boolean oneTime) {

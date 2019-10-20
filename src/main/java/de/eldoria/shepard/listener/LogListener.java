@@ -4,16 +4,15 @@ import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
-import net.dv8tion.jda.api.events.*;
+import net.dv8tion.jda.api.events.DisconnectEvent;
+import net.dv8tion.jda.api.events.ReconnectedEvent;
+import net.dv8tion.jda.api.events.ResumedEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.awt.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.awt.Color;
 
 public class LogListener extends ListenerAdapter {
 

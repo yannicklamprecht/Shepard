@@ -23,15 +23,18 @@ public class ReactionListener extends ListenerAdapter {
         }
         ReactionActionCollection.getInstance().invokeReactionAction(event);
 
-        UniqueMessageIdentifier uniqueMessageIdentifier = new UniqueMessageIdentifier(event.getChannel(), event.getMessageIdLong());
+        UniqueMessageIdentifier uniqueMessageIdentifier
+                = new UniqueMessageIdentifier(event.getChannel(), event.getMessageIdLong());
 
         guessGame(event, uniqueMessageIdentifier);
 
         kudoCheck(event, uniqueMessageIdentifier);
     }
 
-    private void guessGame(@Nonnull GuildMessageReactionAddEvent event, UniqueMessageIdentifier uniqueMessageIdentifier) {
-        EvaluationScheduler<GuessGameEvaluator> guessGameScheduler = EvaluationSchedulerCollection.getGuessGameScheduler();
+    private void guessGame(@Nonnull GuildMessageReactionAddEvent event,
+                           UniqueMessageIdentifier uniqueMessageIdentifier) {
+        EvaluationScheduler<GuessGameEvaluator> guessGameScheduler
+                = EvaluationSchedulerCollection.getGuessGameScheduler();
         if (guessGameScheduler.isReactionMessage(uniqueMessageIdentifier)) {
             GuessGameEvaluator channelEvaluator = guessGameScheduler.getChannelEvaluator(event.getChannel());
 
@@ -51,12 +54,15 @@ public class ReactionListener extends ListenerAdapter {
         }
     }
 
-    private void kudoCheck(@Nonnull GuildMessageReactionAddEvent event, UniqueMessageIdentifier uniqueMessageIdentifier) {
-        EvaluationScheduler<KudoLotteryEvaluator> kudoLotteryScheduler = EvaluationSchedulerCollection.getKudoLotteryScheduler();
+    private void kudoCheck(@Nonnull GuildMessageReactionAddEvent event,
+                           UniqueMessageIdentifier uniqueMessageIdentifier) {
+        EvaluationScheduler<KudoLotteryEvaluator> kudoLotteryScheduler
+                = EvaluationSchedulerCollection.getKudoLotteryScheduler();
         if (kudoLotteryScheduler.isReactionMessage(uniqueMessageIdentifier)) {
-            KudoLotteryEvaluator channelEvaluator = kudoLotteryScheduler.getChannelEvaluator(event.getChannel());
+            KudoLotteryEvaluator channelEvaluator =
+                    kudoLotteryScheduler.getChannelEvaluator(event.getChannel());
 
-            if (event.getReactionEmote().isEmoji() ||channelEvaluator == null) {
+            if (event.getReactionEmote().isEmoji() || channelEvaluator == null) {
                 return;
             }
 

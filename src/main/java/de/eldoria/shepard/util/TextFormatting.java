@@ -1,7 +1,6 @@
 package de.eldoria.shepard.util;
 
 import de.eldoria.shepard.database.types.Rank;
-import org.apache.commons.lang.text.StrBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -39,13 +38,15 @@ public final class TextFormatting {
      * @return range as string
      */
     public static String getRangeAsString(String delimiter, String[] source, int from, int to) {
+        int finalTo = to;
         if (to < 1) {
-            to = source.length + to;
+            finalTo = source.length + to;
         }
+        int finalFrom = from;
         if (from < 0) {
-            from = source.length + from;
+            finalFrom = source.length + from;
         }
-        return String.join(delimiter, Arrays.copyOfRange(source, from, to)).trim();
+        return String.join(delimiter, Arrays.copyOfRange(source, finalFrom, finalTo)).trim();
     }
 
     /**
@@ -168,6 +169,17 @@ public final class TextFormatting {
         }
 
         /**
+         * Get the current time as string.
+         *
+         * @return time in format:  HH:mm dd.MM.yyyy
+         */
+        public static String getTimeAsString() {
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern(" HH:mm dd.MM.yyyy");
+            LocalDateTime now = LocalDateTime.now();
+            return dtf.format(now);
+        }
+
+        /**
          * Returns the formatted table in block code style.
          *
          * @return Table as string.
@@ -206,17 +218,5 @@ public final class TextFormatting {
                     .append("```");
             return builder.toString();
         }
-
-    }
-
-    /**
-     * Get the current time as string
-     *
-     * @return time in format:  HH:mm dd.MM.yyyy
-     */
-    public static String getTimeAsString() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(" HH:mm dd.MM.yyyy");
-        LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
     }
 }

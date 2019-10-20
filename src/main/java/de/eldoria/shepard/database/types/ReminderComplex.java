@@ -8,19 +8,19 @@ import net.dv8tion.jda.api.entities.User;
 import javax.annotation.Nullable;
 
 public class ReminderComplex extends ReminderSimple {
-    private Guild guild;
-    private TextChannel channel;
-    private User user;
+    private final Guild guild;
+    private final TextChannel channel;
+    private final User user;
 
-    public ReminderComplex(String guild_id, String channel_id, String user_id, String text) {
+    public ReminderComplex(String guildId, String channelId, String userId, String text) {
         super(0, text);
-        channel = ShepardBot.getJDA().getTextChannelById(channel_id);
+        channel = ShepardBot.getJDA().getTextChannelById(channelId);
         if (channel != null) {
             guild = channel.getGuild();
         } else {
-            guild = ShepardBot.getJDA().getGuildById(guild_id);
+            guild = ShepardBot.getJDA().getGuildById(guildId);
         }
-        user = ShepardBot.getJDA().getUserById(user_id);
+        user = ShepardBot.getJDA().getUserById(userId);
     }
 
     @Nullable

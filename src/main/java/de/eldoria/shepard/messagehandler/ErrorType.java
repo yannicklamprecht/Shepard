@@ -120,7 +120,7 @@ public enum ErrorType {
      */
     NO_EMOTE_FOUND("No emote was found."),
     /**
-     * Used when a user executes a command on himself, when he is not allowed to do it!
+     * Used when a user executes a command on himself, when he is not allowed to do it!.
      */
     SELF_ASSIGNMENT("You can't do this to yourself!");
 

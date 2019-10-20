@@ -3,15 +3,12 @@ package de.eldoria.shepard.scheduler.monitoring;
 import de.eldoria.shepard.database.types.Address;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.util.PingMinecraftServer;
-import de.eldoria.shepard.util.TextFormatting;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.Color;
 import java.io.IOException;
 import java.net.Socket;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static de.eldoria.shepard.util.TextFormatting.getTimeAsString;
 
@@ -20,11 +17,11 @@ class Analyzer implements Runnable {
     /**
      * Address object to store address information.
      */
-    protected Address address;
+    protected final Address address;
     /**
      * Text channel for monitoring feedback.
      */
-    protected TextChannel channel;
+    protected final TextChannel channel;
     /**
      * Only Report Errors.
      */

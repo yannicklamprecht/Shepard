@@ -1,14 +1,12 @@
 package de.eldoria.shepard.database.types;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ReminderSimple {
-    private int reminderId;
-    private String text;
-    private String time;
+    private final int reminderId;
+    private final String text;
+    private final String time;
 
     public ReminderSimple(int reminderId, String text, Timestamp timestamp) {
         this.reminderId = reminderId;

@@ -47,7 +47,8 @@ public class Reminder extends Command {
         if (isArgument(cmd, "show", "s")) {
             List<ReminderSimple> reminders = ReminderData.getUserReminder(messageContext.getGuild(),
                     messageContext.getAuthor(), messageContext);
-            TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(reminders, "ID", "Message", "Time");
+            TextFormatting.TableBuilder tableBuilder
+                    = TextFormatting.getTableBuilder(reminders, "ID", "Message", "Time");
             for (ReminderSimple reminder : reminders) {
                 tableBuilder.next();
                 tableBuilder.setRow(
@@ -82,15 +83,17 @@ public class Reminder extends Command {
                 return;
             }
 
-            ReminderSimple reminder = userReminder.stream().filter(reminderSimple -> reminderSimple.getReminderId() == number).collect(Collectors.toList()).get(0);
+            ReminderSimple reminder = userReminder.stream().filter(reminderSimple ->
+                    reminderSimple.getReminderId() == number).collect(Collectors.toList()).get(0);
 
-            ReminderData.removeUserReminder(messageContext.getGuild(), messageContext.getAuthor(), number, messageContext);
+            ReminderData.removeUserReminder(messageContext.getGuild(), messageContext.getAuthor(),
+                    number, messageContext);
 
             MessageSender.sendMessage("Removed reminder " + reminder.getReminderId() + ": \""
                             + TextFormatting.trimText(reminder.getText(), "...", 20, true)
                             + System.lineSeparator()
-                            + "Which would be send at " + reminder.getTime()
-                    , messageContext.getTextChannel());
+                            + "Which would be send at " + reminder.getTime(),
+                    messageContext.getTextChannel());
             return;
         }
 

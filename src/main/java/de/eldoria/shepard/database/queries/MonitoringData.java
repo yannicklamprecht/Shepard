@@ -18,8 +18,8 @@ import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public final class MonitoringData {
 
-    private static Map<Long, List<Address>> addresses = new HashMap<>();
-    private static Map<Long, Boolean> addressesDirty = new HashMap<>();
+    private static final Map<Long, List<Address>> addresses = new HashMap<>();
+    private static final Map<Long, Boolean> addressesDirty = new HashMap<>();
 
     private MonitoringData() {
     }
@@ -148,22 +148,6 @@ public final class MonitoringData {
         }
         return addresses.get(guild);
 
-    }
-
-    /**
-     * Get monitoring addresses for all guilds.
-     *
-     * @param messageContext messageContext from command sending for error handling. Can be null.
-     * @return map of lists with a list for each guild
-     */
-    public static Map<Long, List<Address>> getMonitoringAddresses(MessageEventDataWrapper messageContext) {
-        for (Map.Entry<Long, Boolean> set : addressesDirty.entrySet()) {
-            if (set.getValue()) {
-                getMonitoringAddressesForGuild(set.getKey(), null);
-            }
-        }
-
-        return addresses;
     }
 
     /**

@@ -1,10 +1,8 @@
 package de.eldoria.shepard.scheduler;
 
-import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.database.queries.ReminderData;
 import de.eldoria.shepard.database.types.ReminderComplex;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import net.dv8tion.jda.api.entities.Member;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -34,7 +32,8 @@ public class ReminderScheduler implements Runnable {
                 return;
             }
 
-            MessageSender.sendMessage("Hey " + reminder.getUser().getAsMention() + "! I should remind you of something... Let me think... AH!" + System.lineSeparator()
+            MessageSender.sendMessage("Hey " + reminder.getUser().getAsMention()
+                    + "! I should remind you of something... Let me think... AH!" + System.lineSeparator()
                     + "**" +  reminder.getText() + "**", reminder.getChannel());
 
         }

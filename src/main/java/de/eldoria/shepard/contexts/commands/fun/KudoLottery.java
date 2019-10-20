@@ -8,12 +8,11 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.EvaluationScheduler;
 import de.eldoria.shepard.minigames.EvaluationSchedulerCollection;
 import de.eldoria.shepard.minigames.kudolottery.KudoLotteryEvaluator;
-import de.eldoria.shepard.util.reactions.EmojiCollection;
 import de.eldoria.shepard.util.reactions.EmoteCollection;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.awt.*;
+import java.awt.Color;
 
 import static java.lang.System.lineSeparator;
 
@@ -35,7 +34,8 @@ public class KudoLottery extends Command {
             return;
         }
 
-        EvaluationScheduler<KudoLotteryEvaluator> kudoLotteryScheduler = EvaluationSchedulerCollection.getKudoLotteryScheduler();
+        EvaluationScheduler<KudoLotteryEvaluator> kudoLotteryScheduler
+                = EvaluationSchedulerCollection.getKudoLotteryScheduler();
 
         if (kudoLotteryScheduler.isEvaluationActive(messageContext.getTextChannel())) {
             MessageSender.sendMessage("There is a active Lottery in this channel.", messageContext.getChannel());
@@ -47,9 +47,12 @@ public class KudoLottery extends Command {
                 .setDescription("A new round is starting. Please place your bets!" + lineSeparator()
                         + " You have 3 minutes!")
                 .addField("Currently there is 1 Kudo in the pot!",
-                        "Press " + EmoteCollection.INFINITY.getEmote().getAsMention() + " to buy as much Tickets as you can." + lineSeparator()
-                                + "Press " + EmoteCollection.PLUS_X.getEmote().getAsMention() + " to buy 10 Tickets for 10 Kudos." + lineSeparator()
-                                + "Press " + EmoteCollection.PLUS_I.getEmote().getAsMention() + " to buy 1 Ticket for 1 Kudo.",
+                        "Press " + EmoteCollection.INFINITY.getEmote().getAsMention()
+                                + " to buy as much Tickets as you can." + lineSeparator()
+                                + "Press " + EmoteCollection.PLUS_X.getEmote().getAsMention()
+                                + " to buy 10 Tickets for 10 Kudos." + lineSeparator()
+                                + "Press " + EmoteCollection.PLUS_I.getEmote().getAsMention()
+                                + " to buy 1 Ticket for 1 Kudo.",
                         true)
                 .setColor(Color.orange);
 

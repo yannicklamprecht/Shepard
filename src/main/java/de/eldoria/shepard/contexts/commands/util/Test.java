@@ -2,7 +2,6 @@ package de.eldoria.shepard.contexts.commands.util;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 /**
@@ -18,6 +17,5 @@ public class Test extends Command {
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        MessageSender.sendSimpleTextBox("Title", "[test](https://google.com)", messageContext.getChannel());
     }
 }
