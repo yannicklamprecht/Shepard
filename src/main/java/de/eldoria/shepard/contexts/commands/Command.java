@@ -169,7 +169,6 @@ public abstract class Command extends ContextSensitive {
             fields.add(new MessageEmbed.Field("__**Aliases:**__", String.join(", ", getCommandAliases()), false));
         }
 
-
         StringBuilder desc = new StringBuilder();
 
         desc.append(getCommandName()).append(" ");

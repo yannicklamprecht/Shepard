@@ -100,7 +100,6 @@ public class CommandListener extends ListenerAdapter {
                 } else {
                     try {
                         MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
-                        command.sendCommandUsage(messageContext.getChannel());
                     } catch (InsufficientPermissionException ex) {
                         messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
                                 MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));

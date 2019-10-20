@@ -1,11 +1,11 @@
 package de.eldoria.shepard.contexts;
 
 public enum ContextCategory {
-    ADMIN("Bot Administration"),
-    BOTCONFIG("Bot Configuration"),
-    EXCLUSIVE("Server exclusive Command"),
-    FUN("Entertainment Commands"),
-    UTIL("Utility Commands"),
+    ADMIN("\u2699 Bot Administration"),
+    BOTCONFIG("\uD83D\uDD27 Bot Configuration"),
+    EXCLUSIVE("\uD83C\uDF89 Server exclusive Command"),
+    FUN("\uD83D\uDD79 Entertainment Commands"),
+    UTIL("\u2049 Utility Commands"),
     KEYWORD("Keywords");
 
     public final String category_Name;

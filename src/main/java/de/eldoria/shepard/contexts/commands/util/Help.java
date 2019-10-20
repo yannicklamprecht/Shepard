@@ -2,6 +2,7 @@ package de.eldoria.shepard.contexts.commands.util;
 
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.commands.admin.Prefix;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.register.ContextRegister;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -102,7 +103,8 @@ public class Help extends Command {
         fields.add(getCommandField(commands, ContextCategory.EXCLUSIVE));
         fields.add(getCommandField(commands, ContextCategory.FUN));
         fields.add(getCommandField(commands, ContextCategory.UTIL));
-        fields.add(new MessageEmbed.Field("", "**Use `help <command>` for more information about a command.**", false));
+        fields.add(new MessageEmbed.Field("", "**Use `" + PrefixData.getPrefix(event.getGuild(), event)
+                + "<command> help` for more information about a command.**", false));
         fields.add(new MessageEmbed.Field("Maybe useful:",
                 "**[Invite me](https://discordapp.com/oauth2/authorize?client_id=512413049894731780&scope=bot&permissions=1544027254), "
                         + "[Support Server](https://discord.gg/AJyFGAj)**", false));
@@ -119,7 +121,7 @@ public class Help extends Command {
     private MessageEmbed.Field getCommandField(Map<ContextCategory, List<Command>> commands, ContextCategory category) {
         List<Command> list = commands.getOrDefault(category, Collections.emptyList());
         if (!list.isEmpty()) {
-            return new MessageEmbed.Field(list.get(0).getCategory().category_Name,
+            return new MessageEmbed.Field(category.category_Name,
                     getCommandNames(list), false);
         }
         return null;

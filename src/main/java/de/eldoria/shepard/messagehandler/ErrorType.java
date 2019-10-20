@@ -80,9 +80,9 @@ public enum ErrorType {
      */
     INVALID_ADDRESS("Invalid Input. The Address must be a ipv4/6 or a domain."),
     /**
-     * Used when a interval doesn't have a valid time type.
+     * Used when a time doesn't have a valid time formatting.
      */
-    INVALID_INTERVAL("Invalid Interval type."),
+    INVALID_TIME("Invalid time."),
     /**
      * Used when no message was found.
      */
