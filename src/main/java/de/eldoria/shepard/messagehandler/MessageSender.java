@@ -1,6 +1,7 @@
 package de.eldoria.shepard.messagehandler;
 
 import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.database.types.GreetingSettings;
 import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -235,6 +236,7 @@ public final class MessageSender {
                 + "\" on  guild " + receivedEvent.getGuild().getName() + " ("
                 + receivedEvent.getGuild().getId() + ")";
         ShepardBot.getLogger().command(command);
+        Normandy.getCommandLogChannel().sendMessage(command).queue();
     }
 
     /**
