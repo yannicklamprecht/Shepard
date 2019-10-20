@@ -1,6 +1,7 @@
 package de.eldoria.shepard.util;
 
 import de.eldoria.shepard.database.types.Rank;
+import org.apache.commons.lang.text.StrBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -33,12 +34,44 @@ public final class TextFormatting {
      *
      * @param delimiter delimiter for string join
      * @param source    source array
-     * @param from      start index (included)
-     * @param to        end index (excluded)
+     * @param from      start index (included). Use negative counts to count from the last index.
+     * @param to        end index (excluded). Use negative counts to count from the last index.
      * @return range as string
      */
     public static String getRangeAsString(String delimiter, String[] source, int from, int to) {
-        return String.join(delimiter, Arrays.copyOfRange(source, from, to));
+        if (to < 1) {
+            to = source.length + to;
+        }
+        if (from < 0) {
+            from = source.length + from;
+        }
+        return String.join(delimiter, Arrays.copyOfRange(source, from, to)).trim();
+    }
+
+    /**
+     * Trims a text to the desired length.
+     *
+     * @param string      String to trim
+     * @param endSequence end sequence which should be append at the end of the string. included in max chars.
+     * @param maxChars    max char length.
+     * @param keepWords   of true no word will be cut.
+     * @return String with length of maxChars of shorter.
+     */
+    public static String trimText(String string, String endSequence, int maxChars, boolean keepWords) {
+        if (!keepWords) {
+            String substring = string.substring(0, Math.max(0, maxChars - endSequence.length()));
+            return substring + endSequence;
+        }
+        String[] split = string.split("\\s");
+        StringBuilder builder = new StringBuilder();
+        for (String s : split) {
+            if (builder.length() + s.length() > maxChars + endSequence.length()) {
+                builder.append(endSequence);
+                return builder.toString();
+            }
+            builder.append(" ").append(s);
+        }
+        return builder.toString();
     }
 
 
