@@ -111,6 +111,17 @@ public final class TextFormatting {
         return tableBuilder.toString();
     }
 
+    /**
+     * Get the current time as string.
+     *
+     * @return time in format:  HH:mm dd.MM.yyyy
+     */
+    public static String getTimeAsString() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(" HH:mm dd.MM.yyyy");
+        LocalDateTime now = LocalDateTime.now();
+        return dtf.format(now);
+    }
+
     public static class TableBuilder {
         private final String[][] table;
         private String markdown = "";
@@ -166,17 +177,6 @@ public final class TextFormatting {
          */
         public void setPadding(int padding) {
             this.padding = Math.min(10, Math.max(1, padding));
-        }
-
-        /**
-         * Get the current time as string.
-         *
-         * @return time in format:  HH:mm dd.MM.yyyy
-         */
-        public static String getTimeAsString() {
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern(" HH:mm dd.MM.yyyy");
-            LocalDateTime now = LocalDateTime.now();
-            return dtf.format(now);
         }
 
         /**
