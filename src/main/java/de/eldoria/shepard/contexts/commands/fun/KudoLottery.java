@@ -38,7 +38,7 @@ public class KudoLottery extends Command {
                 = EvaluationSchedulerCollection.getKudoLotteryScheduler();
 
         if (kudoLotteryScheduler.isEvaluationActive(messageContext.getTextChannel())) {
-            MessageSender.sendMessage("There is a active Lottery in this channel.", messageContext.getChannel());
+            MessageSender.sendMessage("There is an active Lottery in this channel.", messageContext.getChannel());
             return;
         }
 

@@ -116,7 +116,7 @@ public class KudoLotteryEvaluator extends Evaluator {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("KUDO LOTTERY")
                 .setDescription("A new round is starting. Please place your bets!" + lineSeparator()
-                        + " You have 3 minute!")
+                        + " You have 3 minutes!")
                 .addField("Currently there are " + sum + " Kudos in the pot!",
                         "Press " + EmoteCollection.INFINITY.getEmote().getAsMention()
                                 + " to buy as much Tickets as you can." + lineSeparator()
