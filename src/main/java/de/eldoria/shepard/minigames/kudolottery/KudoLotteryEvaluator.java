@@ -3,8 +3,9 @@ package de.eldoria.shepard.minigames.kudolottery;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.minigames.EvaluationSchedulerCollection;
 import de.eldoria.shepard.minigames.Evaluator;
-import de.eldoria.shepard.util.Emoji;
+import de.eldoria.shepard.util.reactions.EmojiCollection;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -58,19 +59,49 @@ public class KudoLotteryEvaluator extends Evaluator {
         if (bet.size() == 1) {
             MessageSender.sendMessage("There was only one attendee. The Kudos will be returned!", guildChannel);
             KudoData.addFreeRubberPoints(guildChannel.getGuild(), userById, sum, null);
+            EvaluationSchedulerCollection.getKudoLotteryScheduler().evaluationDone(guildChannel);
             return;
         }
 
-        KudoData.addRubberPoints(guildChannel.getGuild(), userById, sum, null);
+        int winnerPoints = bet.entrySet().stream().filter(set -> set.getKey().equals(userId))
+                .map(Map.Entry::getValue)
+                .mapToInt(Integer::intValue).sum();
+
+        KudoData.addRubberPoints(guildChannel.getGuild(), userById, sum - winnerPoints, null);
+
+        KudoData.addFreeRubberPoints(guildChannel.getGuild(), userById, winnerPoints, null);
 
         MessageSender.sendMessage("**Congratulation to " + userById.getAsMention() + "!**" + System.lineSeparator()
                 + "You win " + sum + " Kudos!", guildChannel);
+
+        EvaluationSchedulerCollection.getKudoLotteryScheduler().evaluationDone(guildChannel);
     }
 
     public void addBet(Guild guild, User user, int amount) {
-        if (!KudoData.tryTakePoints(guild, user, amount, null)) {
+
+        if (amount != -1 && !KudoData.tryTakePoints(guild, user, amount, null)) {
             return;
         }
+
+        if (amount == -1) {
+            amount = 0;
+            while (KudoData.tryTakePoints(guild, user, 50, null)) {
+                amount += 50;
+            }
+            while (KudoData.tryTakePoints(guild, user, 20, null)) {
+                amount += 20;
+            }
+            while (KudoData.tryTakePoints(guild, user, 10, null)) {
+                amount += 10;
+            }
+            while (KudoData.tryTakePoints(guild, user, 5, null)) {
+                amount += 5;
+            }
+            while (KudoData.tryTakePoints(guild, user, 1, null)) {
+                amount += 1;
+            }
+        }
+
         Integer currentAmount = bet.putIfAbsent(user.getIdLong(), amount);
         if (currentAmount != null) {
             bet.put(user.getIdLong(), currentAmount + amount);
@@ -81,10 +112,11 @@ public class KudoLotteryEvaluator extends Evaluator {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("KUDO LOTTERY")
                 .setDescription("A new round is starting. Please place your bets!" + lineSeparator()
-                        + " You have 1 minute!")
+                        + " You have 3 minute!")
                 .addField("Currently there are " + sum + " Kudos in the pot!",
-                        "Press " + Emoji.MONEY_BAG.unicode + " to buy 10 Tickets for 10 Kudos." + lineSeparator()
-                                + "Press " + Emoji.DOLLAR.unicode + "to buy 1 Ticket for 1 Kudo.", true)
+                        "Press " + EmojiCollection.GEM.unicode + " to buy as much Tickets as you can." + lineSeparator()
+                                + "Press " + EmojiCollection.MONEY_BAG.unicode + " to buy 10 Tickets for 10 Kudos." + lineSeparator()
+                                + "Press " + EmojiCollection.DOLLAR.unicode + "to buy 1 Ticket for 1 Kudo.", true)
                 .setColor(Color.orange);
 
         ShepardBot.getJDA().getTextChannelById(channelId).retrieveMessageById(messageId)
