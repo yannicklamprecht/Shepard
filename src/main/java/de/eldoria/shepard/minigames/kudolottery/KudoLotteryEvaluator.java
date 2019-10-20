@@ -6,6 +6,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.EvaluationSchedulerCollection;
 import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.util.reactions.EmojiCollection;
+import de.eldoria.shepard.util.reactions.EmoteCollection;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
@@ -117,12 +118,12 @@ public class KudoLotteryEvaluator extends Evaluator {
                 .setDescription("A new round is starting. Please place your bets!" + lineSeparator()
                         + " You have 3 minute!")
                 .addField("Currently there are " + sum + " Kudos in the pot!",
-                        "Press " + EmojiCollection.GEM.unicode
+                        "Press " + EmoteCollection.INFINITY.getEmote().getAsMention()
                                 + " to buy as much Tickets as you can." + lineSeparator()
-                                + "Press " + EmojiCollection.MONEY_BAG.unicode
+                                + "Press " + EmoteCollection.PLUS_X.getEmote().getAsMention()
                                 + " to buy 10 Tickets for 10 Kudos." + lineSeparator()
-                                + "Press " + EmojiCollection.DOLLAR.unicode
-                                + "to buy 1 Ticket for 1 Kudo.", true)
+                                + "Press " + EmoteCollection.PLUS_I.getEmote().getAsMention()
+                                + " to buy 1 Ticket for 1 Kudo.", true)
                 .setColor(Color.orange);
 
         ShepardBot.getJDA().getTextChannelById(channelId).retrieveMessageById(messageId)
