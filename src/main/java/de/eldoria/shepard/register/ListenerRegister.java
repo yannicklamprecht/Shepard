@@ -1,7 +1,9 @@
 package de.eldoria.shepard.register;
 
+import de.eldoria.shepard.contexts.commands.util.Reminder;
 import de.eldoria.shepard.listener.*;
 import de.eldoria.shepard.scheduler.KudoCounter;
+import de.eldoria.shepard.scheduler.ReminderScheduler;
 import de.eldoria.shepard.scheduler.invites.InviteScheduler;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.scheduler.monitoring.MonitoringScheduler;
@@ -28,6 +30,7 @@ public final class ListenerRegister {
         listener.add(new PrivateMessageListener());
         InviteScheduler.initialize();
         MonitoringScheduler.initialize();
+        new ReminderScheduler().initialize();
         new KudoCounter().initialize();
     }
 

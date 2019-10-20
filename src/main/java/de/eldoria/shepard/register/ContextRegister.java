@@ -21,13 +21,7 @@ import de.eldoria.shepard.contexts.commands.exklusive.IsHaddeWorking;
 import de.eldoria.shepard.contexts.commands.exklusive.Meetings;
 import de.eldoria.shepard.contexts.commands.fun.*;
 import de.eldoria.shepard.contexts.commands.admin.GuessGameConfig;
-import de.eldoria.shepard.contexts.commands.util.GetRaw;
-import de.eldoria.shepard.contexts.commands.util.Help;
-import de.eldoria.shepard.contexts.commands.util.HireMe;
-import de.eldoria.shepard.contexts.commands.util.Home;
-import de.eldoria.shepard.contexts.commands.util.ListServer;
-import de.eldoria.shepard.contexts.commands.util.Test;
-import de.eldoria.shepard.contexts.commands.util.UserInfo;
+import de.eldoria.shepard.contexts.commands.util.*;
 import de.eldoria.shepard.contexts.keywords.keyword.AmIRight;
 import de.eldoria.shepard.contexts.keywords.keyword.CommanderQuestion;
 import de.eldoria.shepard.contexts.keywords.keyword.Communism;
@@ -61,13 +55,15 @@ public final class ContextRegister {
     }
 
     private static void registerUtilCommands() {
-        new GetRaw();
+        new Reminder();
+        new UserInfo();
         new Help();
         new HireMe();
-        new ListServer();
-        new Test();
-        new UserInfo();
         new Home();
+        new SystemInfo();
+        new ListServer();
+        new GetRaw();
+        new Test();
     }
 
     private static void registerFunCommands() {
