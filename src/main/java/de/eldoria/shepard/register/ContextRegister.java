@@ -1,25 +1,26 @@
 package de.eldoria.shepard.register;
 
-import de.eldoria.shepard.contexts.commands.botconfig.BotPresence;
 import de.eldoria.shepard.contexts.commands.admin.Changelog;
 import de.eldoria.shepard.contexts.commands.admin.Greeting;
+import de.eldoria.shepard.contexts.commands.admin.GuessGameConfig;
 import de.eldoria.shepard.contexts.commands.admin.Invite;
 import de.eldoria.shepard.contexts.commands.admin.ManageQuote;
 import de.eldoria.shepard.contexts.commands.admin.Monitoring;
 import de.eldoria.shepard.contexts.commands.admin.Permission;
 import de.eldoria.shepard.contexts.commands.admin.Prefix;
 import de.eldoria.shepard.contexts.commands.admin.PrivateAnswer;
+import de.eldoria.shepard.contexts.commands.admin.RepeatCommand;
 import de.eldoria.shepard.contexts.commands.admin.SendPrivateMessage;
 import de.eldoria.shepard.contexts.commands.admin.ShowKeyword;
 import de.eldoria.shepard.contexts.commands.admin.Ticket;
 import de.eldoria.shepard.contexts.commands.admin.TicketSettings;
+import de.eldoria.shepard.contexts.commands.botconfig.BotPresence;
 import de.eldoria.shepard.contexts.commands.botconfig.ContextInfo;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContext;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContextGuild;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContextUsers;
 import de.eldoria.shepard.contexts.commands.exklusive.IsHaddeWorking;
 import de.eldoria.shepard.contexts.commands.exklusive.Meetings;
-import de.eldoria.shepard.contexts.commands.admin.GuessGameConfig;
 import de.eldoria.shepard.contexts.commands.fun.GuessGame;
 import de.eldoria.shepard.contexts.commands.fun.KudoLottery;
 import de.eldoria.shepard.contexts.commands.fun.Kudos;
@@ -126,6 +127,7 @@ public final class ContextRegister {
         new PrivateAnswer();
         new SendPrivateMessage();
         new Monitoring();
+        new RepeatCommand();
     }
 
     /**
