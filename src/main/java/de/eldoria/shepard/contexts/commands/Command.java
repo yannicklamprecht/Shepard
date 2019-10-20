@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands;
 
 import de.eldoria.shepard.collections.CommandCollection;
+import de.eldoria.shepard.collections.LatestCommandsCollection;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.ContextSensitive;
@@ -54,9 +55,11 @@ public abstract class Command extends ContextSensitive {
      * @param messageContext Message Received Event of the command execution
      */
     @Deprecated
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public final void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
         internalExecute(label, args, messageContext);
         MessageSender.logCommand(label, args, messageContext);
+        LatestCommandsCollection.getInstance().saveLatestCommand(messageContext.getGuild(), messageContext.getAuthor(),
+                this, label, args);
     }
 
     /**
