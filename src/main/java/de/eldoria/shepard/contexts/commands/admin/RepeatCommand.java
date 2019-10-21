@@ -24,6 +24,10 @@ public class RepeatCommand extends Command {
             MessageSender.sendSimpleError(ErrorType.NO_LAST_COMMAND_FOUND, messageContext.getTextChannel());
             return;
         }
+
+        if (latestCommand.getCommand().getCommandName().equals(this.getCommandName())) {
+            return;
+        }
         latestCommand.getCommand().executeAsync(latestCommand.getLabel(), latestCommand.getArgs(), messageContext);
     }
 }

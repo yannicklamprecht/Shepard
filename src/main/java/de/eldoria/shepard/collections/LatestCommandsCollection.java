@@ -23,14 +23,14 @@ public class LatestCommandsCollection {
         return instance;
     }
 
-    public SavedCommand getLatestCommand(Guild guild, User user) {
+    public synchronized SavedCommand getLatestCommand(Guild guild, User user) {
         if (latestCommands.containsKey(guild.getOwnerIdLong())) {
             return latestCommands.get(guild.getOwnerIdLong()).get(user.getIdLong());
         }
         return null;
     }
 
-    public void saveLatestCommand(Guild guild, User user, Command command, String label, String[] args) {
+    public synchronized void saveLatestCommand(Guild guild, User user, Command command, String label, String[] args) {
         latestCommands.putIfAbsent(guild.getOwnerIdLong(), new HashMap<>());
         latestCommands.get(guild.getOwnerIdLong()).put(user.getIdLong(), new SavedCommand(command, label, args));
     }
