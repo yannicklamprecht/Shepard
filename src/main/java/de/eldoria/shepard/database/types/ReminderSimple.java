@@ -7,11 +7,11 @@ public class ReminderSimple {
     private final int reminderId;
     private final String text;
     private final String time;
+    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public ReminderSimple(int reminderId, String text, Timestamp timestamp) {
         this.reminderId = reminderId;
         this.text = text;
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         this.time = dtf.format(timestamp.toLocalDateTime());
     }
 

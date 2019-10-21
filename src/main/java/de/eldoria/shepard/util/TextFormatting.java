@@ -120,8 +120,7 @@ public final class TextFormatting {
      * @return time in format:  HH:mm dd.MM.yyyy
      */
     public static String getTimeAsString() {
-        LocalDateTime now = LocalDateTime.now();
-        return DATE_TIME_FORMATTER.format(now);
+        return DATE_TIME_FORMATTER.format(LocalDateTime.now());
     }
 
     public static class TableBuilder {
