@@ -5,8 +5,8 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.minigames.EvaluationScheduler;
-import de.eldoria.shepard.minigames.EvaluationSchedulerCollection;
+import de.eldoria.shepard.minigames.ChannelEvaluator;
+import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.kudolottery.KudoLotteryEvaluator;
 import de.eldoria.shepard.util.reactions.EmoteCollection;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -34,8 +34,8 @@ public class KudoLottery extends Command {
             return;
         }
 
-        EvaluationScheduler<KudoLotteryEvaluator> kudoLotteryScheduler
-                = EvaluationSchedulerCollection.getKudoLotteryScheduler();
+        ChannelEvaluator<KudoLotteryEvaluator> kudoLotteryScheduler
+                = Evaluator.getKudoLotteryScheduler();
 
         if (kudoLotteryScheduler.isEvaluationActive(messageContext.getTextChannel())) {
             MessageSender.sendMessage("There is an active Lottery in this channel.", messageContext.getChannel());

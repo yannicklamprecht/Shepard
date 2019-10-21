@@ -37,7 +37,9 @@ public class GreetingListener extends ListenerAdapter {
                         InviteData.upCountInvite(event.getGuild(), invite.getCode(), null);
                     }
                     MessageSender.sendGreeting(event, greeting, dInvite.get().getSource(), channel);
+                    return;
                 }
+                MessageSender.sendGreeting(event, greeting, null, channel);
             });
         });
     }

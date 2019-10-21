@@ -3,9 +3,8 @@ package de.eldoria.shepard.minigames.kudolottery;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.minigames.EvaluationSchedulerCollection;
 import de.eldoria.shepard.minigames.Evaluator;
-import de.eldoria.shepard.util.reactions.EmojiCollection;
+import de.eldoria.shepard.minigames.BaseEvaluator;
 import de.eldoria.shepard.util.reactions.EmoteCollection;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -22,7 +21,7 @@ import java.util.Random;
 
 import static java.lang.System.lineSeparator;
 
-public class KudoLotteryEvaluator extends Evaluator {
+public class KudoLotteryEvaluator extends BaseEvaluator {
     private final Map<Long, Integer> bet = new HashMap<>();
 
     public KudoLotteryEvaluator(Message message, User user) {
@@ -50,7 +49,7 @@ public class KudoLotteryEvaluator extends Evaluator {
         Random random = new Random();
         int i = random.nextInt(pool.size());
 
-        Long userId = pool.get(i);
+        long userId = pool.get(i);
         User userById = ShepardBot.getJDA().getUserById(userId);
 
         if (userById == null) {
@@ -63,7 +62,7 @@ public class KudoLotteryEvaluator extends Evaluator {
         if (bet.size() == 1) {
             MessageSender.sendMessage("There was only one attendee. The Kudos will be returned!", guildChannel);
             KudoData.addFreeRubberPoints(guildChannel.getGuild(), userById, sum, null);
-            EvaluationSchedulerCollection.getKudoLotteryScheduler().evaluationDone(guildChannel);
+            Evaluator.getKudoLotteryScheduler().evaluationDone(guildChannel);
             return;
         }
 
@@ -78,7 +77,7 @@ public class KudoLotteryEvaluator extends Evaluator {
         MessageSender.sendMessage("**Congratulation to " + userById.getAsMention() + "!**" + System.lineSeparator()
                 + "You win " + sum + " Kudos!", guildChannel);
 
-        EvaluationSchedulerCollection.getKudoLotteryScheduler().evaluationDone(guildChannel);
+        Evaluator.getKudoLotteryScheduler().evaluationDone(guildChannel);
     }
 
     public void addBet(Guild guild, User user, int amount) {
@@ -106,9 +105,10 @@ public class KudoLotteryEvaluator extends Evaluator {
             }
         }
 
-        Integer currentAmount = bet.putIfAbsent(user.getIdLong(), finalAmount);
-        if (currentAmount != null) {
-            bet.put(user.getIdLong(), currentAmount + finalAmount);
+        if(bet.containsKey(user.getIdLong())){
+            bet.put(user.getIdLong(), bet.get(user.getIdLong()) + finalAmount);
+        }else{
+            bet.put(user.getIdLong(), finalAmount);
         }
 
         int sum = bet.values().stream().mapToInt(Integer::intValue).sum();

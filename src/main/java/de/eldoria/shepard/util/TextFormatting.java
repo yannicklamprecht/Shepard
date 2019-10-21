@@ -13,6 +13,9 @@ import java.util.List;
 import static java.lang.System.lineSeparator;
 
 public final class TextFormatting {
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
+
+
     private TextFormatting() {
     }
 
@@ -55,7 +58,7 @@ public final class TextFormatting {
      * @param string      String to trim
      * @param endSequence end sequence which should be append at the end of the string. included in max chars.
      * @param maxChars    max char length.
-     * @param keepWords   of true no word will be cut.
+     * @param keepWords   true if no word should be cut.
      * @return String with length of maxChars of shorter.
      */
     public static String trimText(String string, String endSequence, int maxChars, boolean keepWords) {
@@ -117,9 +120,7 @@ public final class TextFormatting {
      * @return time in format:  HH:mm dd.MM.yyyy
      */
     public static String getTimeAsString() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(" HH:mm dd.MM.yyyy");
-        LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
+        return DATE_TIME_FORMATTER.format(LocalDateTime.now());
     }
 
     public static class TableBuilder {
