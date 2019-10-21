@@ -6,7 +6,6 @@ import de.eldoria.shepard.listener.GreetingListener;
 import de.eldoria.shepard.listener.HentaiImageRegisterListener;
 import de.eldoria.shepard.listener.KeywordListener;
 import de.eldoria.shepard.listener.LogListener;
-import de.eldoria.shepard.listener.MessageSniffer;
 import de.eldoria.shepard.listener.PrivateMessageListener;
 import de.eldoria.shepard.listener.ReactionListener;
 import de.eldoria.shepard.listener.TicketCleanupListener;
@@ -31,7 +30,6 @@ public final class ListenerRegister {
         listener.add(new GreetingListener());
         listener.add(new KeywordListener());
         listener.add(new LogListener());
-        listener.add(new MessageSniffer());
         listener.add(new TicketCleanupListener());
         listener.add(new ReactionListener());
         listener.add(new HentaiImageRegisterListener());
