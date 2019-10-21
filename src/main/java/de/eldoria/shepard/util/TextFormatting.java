@@ -13,7 +13,8 @@ import java.util.List;
 import static java.lang.System.lineSeparator;
 
 public final class TextFormatting {
-    public static final String DATEFORMAT =  "HH:mm dd.MM.yyyy";
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
+
 
     private TextFormatting() {
     }
@@ -119,9 +120,8 @@ public final class TextFormatting {
      * @return time in format:  HH:mm dd.MM.yyyy
      */
     public static String getTimeAsString() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(DATEFORMAT);
         LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
+        return DATE_TIME_FORMATTER.format(now);
     }
 
     public static class TableBuilder {
