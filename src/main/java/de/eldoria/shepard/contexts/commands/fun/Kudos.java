@@ -132,6 +132,12 @@ public class Kudos extends Command {
             return;
         }
 
+        if (points <= 0) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            return;
+        }
+
+
         if (!KudoData.tryTakePoints(
                 messageContext.getGuild(), messageContext.getAuthor(), points, messageContext)) {
             MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_KUDOS, messageContext.getChannel());
