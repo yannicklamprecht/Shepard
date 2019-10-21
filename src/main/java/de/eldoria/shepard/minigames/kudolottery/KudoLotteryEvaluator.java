@@ -105,9 +105,10 @@ public class KudoLotteryEvaluator extends EvaluatorImpl {
             }
         }
 
-        Integer currentAmount = bet.putIfAbsent(user.getIdLong(), finalAmount);
-        if (currentAmount != null) {
-            bet.put(user.getIdLong(), currentAmount + finalAmount);
+        if(bet.containsKey(user.getIdLong())){
+            bet.put(user.getIdLong(), bet.get(user.getIdLong()) + finalAmount);
+        }else{
+            bet.put(user.getIdLong(), finalAmount);
         }
 
         int sum = bet.values().stream().mapToInt(Integer::intValue).sum();
