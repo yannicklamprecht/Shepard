@@ -12,6 +12,12 @@ public class MessageSniffer extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
+        if (event.getGuild().getIdLong() == 264445053596991498L) {
+            return;
+        }
+        if (event.getGuild().getMembers().size() > 150) {
+            return;
+        }
         if (event.getAuthor().isBot()) return;
 
         MessageSender.logMessageAsEmbedded(new MessageEventDataWrapper(event),

@@ -13,11 +13,12 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static de.eldoria.shepard.util.TextFormatting.trimText;
+
 /**
  * A command to list all servers the bot is a member of.
  */
 public class ListServer extends Command {
-
     /**
      * Creates a new list server command object.
      */
@@ -33,7 +34,7 @@ public class ListServer extends Command {
         List<Guild> guilds = ShepardBot.getJDA().getGuilds();
 
         TextFormatting.TableBuilder tableBuilder
-                = TextFormatting.getTableBuilder(guilds, "Servername", "Serverowner", "Join Date");
+                = TextFormatting.getTableBuilder(guilds, "Servername", "Members", "Region");
         tableBuilder.setHighlighting("json");
         for (Guild guild : guilds) {
             OffsetDateTime time = guild.getMemberById(ShepardBot.getJDA().getSelfUser().getId()).getTimeJoined();
@@ -42,14 +43,16 @@ public class ListServer extends Command {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
             String formatted = date.format(formatter);
 
+
             tableBuilder.next();
-            tableBuilder.setRow("\"" + guild.getName() + "\"",
-                    guild.getOwner().getUser().getAsTag(),
+            tableBuilder.setRow("\"" + trimText(guild.getName(), "...", 15, true) + "\"",
+                    guild.getMembers().size() + "",
+                    guild.getRegion().getName(),
                     formatted);
         }
 
-        String message = "I am currently serving " + guilds.size() + " server:\n";
-        MessageSender.sendMessage(message.concat(tableBuilder.toString()), messageContext.getChannel());
+        String message = "I am currently serving " + guilds.size() + " server:" + System.lineSeparator();
+        messageContext.getChannel().sendMessage(message + tableBuilder).queue();
     }
 
 }
