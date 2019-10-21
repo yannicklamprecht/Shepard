@@ -4,7 +4,7 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.minigames.Evaluator;
-import de.eldoria.shepard.minigames.EvaluatorImpl;
+import de.eldoria.shepard.minigames.BaseEvaluator;
 import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.IMentionable;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.System.lineSeparator;
 
-public class GuessGameEvaluator extends EvaluatorImpl {
+public class GuessGameEvaluator extends BaseEvaluator {
     private final GuessGameImage image;
     private final Map<Long, Boolean> votes = new HashMap<>();
 

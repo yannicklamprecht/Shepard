@@ -4,7 +4,7 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.Evaluator;
-import de.eldoria.shepard.minigames.EvaluatorImpl;
+import de.eldoria.shepard.minigames.BaseEvaluator;
 import de.eldoria.shepard.util.reactions.EmoteCollection;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -21,7 +21,7 @@ import java.util.Random;
 
 import static java.lang.System.lineSeparator;
 
-public class KudoLotteryEvaluator extends EvaluatorImpl {
+public class KudoLotteryEvaluator extends BaseEvaluator {
     private final Map<Long, Integer> bet = new HashMap<>();
 
     public KudoLotteryEvaluator(Message message, User user) {

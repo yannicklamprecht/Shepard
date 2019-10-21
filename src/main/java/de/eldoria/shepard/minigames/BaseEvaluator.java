@@ -1,6 +1,6 @@
 package de.eldoria.shepard.minigames;
 
-public abstract class EvaluatorImpl implements Runnable {
+public abstract class BaseEvaluator implements Runnable {
     /**
      * Message id of evaluation message.
      */
@@ -10,7 +10,7 @@ public abstract class EvaluatorImpl implements Runnable {
      */
     protected final long channelId;
 
-    public EvaluatorImpl(long messageId, long channelId) {
+    public BaseEvaluator(long messageId, long channelId) {
         this.messageId = messageId;
         this.channelId = channelId;
     }

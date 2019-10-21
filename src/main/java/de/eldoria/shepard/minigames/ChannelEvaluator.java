@@ -6,15 +6,13 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
-public class ChannelEvaluator<T extends EvaluatorImpl> {
+public class ChannelEvaluator<T extends BaseEvaluator> {
 
     private final Map<UniqueMessageIdentifier, T> evaluationChannel;
     private final ScheduledExecutorService executor;
