@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.QuoteData;
@@ -23,6 +24,7 @@ public class Quote extends Command {
                 new CommandArg("keyword",
                         "leave empty or enter a keyword to get a quote containing this word",
                         false)};
+        category = ContextCategory.FUN;
     }
 
     @Override

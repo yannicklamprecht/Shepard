@@ -1,6 +1,7 @@
-package de.eldoria.shepard.contexts.commands.admin;
+package de.eldoria.shepard.contexts.commands.botconfig;
 
 import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -33,6 +34,7 @@ public class BotPresence extends Command {
                         false
                 )
         };
+        category = ContextCategory.BOTCONFIG;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -15,6 +16,7 @@ public class Someone extends Command {
     public Someone() {
         commandName = "Someone";
         commandDesc = "Tags someone who is online in this channel";
+        category = ContextCategory.FUN;
     }
 
     @Override

@@ -32,9 +32,9 @@ public enum ErrorType {
      */
     NOT_A_NUMBER("This is not a number!"),
     /**
-     * Used when the user has not enough rubber points.
+     * Used when the user has not enough Kudos.
      */
-    NOT_ENOUGH_POINTS("You dont have enough points!"),
+    NOT_ENOUGH_KUDOS("You dont have enough Kudos!"),
     /**
      * Used when a channel is not a guild text channel.
      */
@@ -80,6 +80,10 @@ public enum ErrorType {
      */
     INVALID_ADDRESS("Invalid Input. The Address must be a ipv4/6 or a domain."),
     /**
+     * Used when a time doesn't have a valid time formatting.
+     */
+    INVALID_TIME("Invalid time."),
+    /**
      * Used when no message was found.
      */
     NO_MESSAGE_FOUND("No message found!"),
@@ -116,7 +120,7 @@ public enum ErrorType {
      */
     NO_EMOTE_FOUND("No emote was found."),
     /**
-     * Used when a user executes a command on himself, when he is not allowed to do it!
+     * Used when a user executes a command on himself, when he is not allowed to do it!.
      */
     SELF_ASSIGNMENT("You can't do this to yourself!");
 

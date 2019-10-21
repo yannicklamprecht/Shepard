@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
@@ -20,9 +21,10 @@ public class MagicConch extends Command {
      * Creates a new MagicConch command object.
      */
     public MagicConch() {
-        commandName = "MagicConch";
+        commandName = "magicConch";
         commandAliases = new String[] {"MagischeMiesmuschel"};
         commandDesc = "Find your decision!";
+        category = ContextCategory.FUN;
     }
 
     @Override

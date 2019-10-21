@@ -2,6 +2,7 @@ package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.Normandy;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.DbUtil;
@@ -21,6 +22,7 @@ public class SendPrivateMessage extends Command {
                 new CommandArg("text",
                         "The text you want to send",
                         true)};
+        category = ContextCategory.ADMIN;
     }
 
     @Override

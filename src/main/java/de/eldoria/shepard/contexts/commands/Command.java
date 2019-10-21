@@ -7,7 +7,6 @@ import de.eldoria.shepard.contexts.ContextSensitive;
 import info.debatty.java.stringsimilarity.JaroWinkler;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import org.apache.commons.lang.NotImplementedException;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -168,7 +167,6 @@ public abstract class Command extends ContextSensitive {
         if (getCommandAliases() != null && getCommandAliases().length != 0) {
             fields.add(new MessageEmbed.Field("__**Aliases:**__", String.join(", ", getCommandAliases()), false));
         }
-
 
         StringBuilder desc = new StringBuilder();
 

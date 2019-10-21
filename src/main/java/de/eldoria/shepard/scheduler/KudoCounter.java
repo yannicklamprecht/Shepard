@@ -1,6 +1,6 @@
 package de.eldoria.shepard.scheduler;
 
-import de.eldoria.shepard.database.queries.RubberPointsData;
+import de.eldoria.shepard.database.queries.KudoData;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -14,6 +14,6 @@ public class KudoCounter implements Runnable {
 
     @Override
     public void run() {
-        RubberPointsData.upcountKudos();
+        KudoData.upcountKudos();
     }
 }

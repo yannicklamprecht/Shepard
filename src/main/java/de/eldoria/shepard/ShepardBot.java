@@ -66,7 +66,6 @@ public final class ShepardBot {
             KeyWordCollection.getInstance().debug();
         }
 
-
         MessageSender.sendSimpleTextBox("Shepard meldet sich zum Dienst! Erwarte ihre Befehle!",
                 "Registered " + CommandCollection.getInstance().getCommands().size() + " Commands!"
                         + System.lineSeparator()
@@ -74,6 +73,7 @@ public final class ShepardBot {
                         + System.lineSeparator()
                         + "Serving " + jda.getGuilds().size() + " Guilds!",
                 Color.GREEN, ShepardReactions.EXCITED, Normandy.getGeneralLogChannel());
+
 
         logger.info("Setup complete!");
     }

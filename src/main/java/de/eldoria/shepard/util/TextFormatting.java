@@ -3,6 +3,8 @@ package de.eldoria.shepard.util;
 import de.eldoria.shepard.database.types.Rank;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,6 +13,9 @@ import java.util.List;
 import static java.lang.System.lineSeparator;
 
 public final class TextFormatting {
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
+
+
     private TextFormatting() {
     }
 
@@ -31,12 +36,46 @@ public final class TextFormatting {
      *
      * @param delimiter delimiter for string join
      * @param source    source array
-     * @param from      start index (included)
-     * @param to        end index (excluded)
+     * @param from      start index (included). Use negative counts to count from the last index.
+     * @param to        end index (excluded). Use negative counts to count from the last index.
      * @return range as string
      */
     public static String getRangeAsString(String delimiter, String[] source, int from, int to) {
-        return String.join(delimiter, Arrays.copyOfRange(source, from, to));
+        int finalTo = to;
+        if (to < 1) {
+            finalTo = source.length + to;
+        }
+        int finalFrom = from;
+        if (from < 0) {
+            finalFrom = source.length + from;
+        }
+        return String.join(delimiter, Arrays.copyOfRange(source, finalFrom, finalTo)).trim();
+    }
+
+    /**
+     * Trims a text to the desired length.
+     *
+     * @param string      String to trim
+     * @param endSequence end sequence which should be append at the end of the string. included in max chars.
+     * @param maxChars    max char length.
+     * @param keepWords   true if no word should be cut.
+     * @return String with length of maxChars of shorter.
+     */
+    public static String trimText(String string, String endSequence, int maxChars, boolean keepWords) {
+        if (!keepWords) {
+            String substring = string.substring(0, Math.max(0, maxChars - endSequence.length()));
+            return substring + endSequence;
+        }
+        String[] split = string.split("\\s");
+        StringBuilder builder = new StringBuilder();
+        for (String s : split) {
+            if (builder.length() + s.length() > maxChars + endSequence.length()) {
+                builder.append(endSequence);
+                return builder.toString();
+            }
+            builder.append(" ").append(s);
+        }
+        return builder.toString();
     }
 
 
@@ -73,6 +112,15 @@ public final class TextFormatting {
             ranking++;
         }
         return tableBuilder.toString();
+    }
+
+    /**
+     * Get the current time as string.
+     *
+     * @return time in format:  HH:mm dd.MM.yyyy
+     */
+    public static String getTimeAsString() {
+        return DATE_TIME_FORMATTER.format(LocalDateTime.now());
     }
 
     public static class TableBuilder {

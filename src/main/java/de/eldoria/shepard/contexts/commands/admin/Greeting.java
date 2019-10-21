@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.DbUtil;
@@ -31,6 +32,7 @@ public class Greeting extends Command {
                                 + "**removeChannel** -> leave empty" + lineSeparator()
                                 + "**setMessage** -> Type your text message" + lineSeparator()
                                 + "Supported Placeholders: {user_tag} {user_name} {user_mention}", false)};
+        category = ContextCategory.ADMIN;
     }
 
 
@@ -53,7 +55,6 @@ public class Greeting extends Command {
         }
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
-        sendCommandUsage(messageContext.getChannel());
     }
 
     private void setMessage(String[] args, MessageEventDataWrapper messageContext) {
@@ -95,6 +96,5 @@ public class Greeting extends Command {
             }
         }
         MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext.getChannel());
-        sendCommandUsage(messageContext.getChannel());
     }
 }

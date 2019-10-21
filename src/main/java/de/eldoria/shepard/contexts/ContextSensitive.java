@@ -22,6 +22,10 @@ import java.util.Map;
  * A {@link ListenerAdapter} filtering events for different contexts.
  */
 public abstract class ContextSensitive {
+    /**
+     * Category of the context.
+     */
+    protected ContextCategory category;
 
     /**
      * Creates a new context Sensitive event.
@@ -187,5 +191,13 @@ public abstract class ContextSensitive {
 
     private Map<String, List<String>> getUserPermissions(MessageEventDataWrapper context) {
         return ContextData.getContextUserPermissions(getClass().getSimpleName(), context);
+    }
+
+    /**
+     * Get the category of the context.
+     * @return category
+     */
+    public ContextCategory getCategory() {
+        return category;
     }
 }

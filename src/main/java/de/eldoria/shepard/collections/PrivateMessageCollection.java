@@ -11,7 +11,7 @@ public final class PrivateMessageCollection {
 
     private static PrivateMessageCollection instance;
 
-    private List<MessageUser> lastMessageUsers = new ArrayList<>();
+    private final List<MessageUser> lastMessageUsers = new ArrayList<>();
 
     private PrivateMessageCollection() {
     }
@@ -60,8 +60,8 @@ public final class PrivateMessageCollection {
 
 
     private static class MessageUser {
-        private String name;
-        private long id;
+        private final String name;
+        private final long id;
 
         MessageUser(String name, long id) {
 

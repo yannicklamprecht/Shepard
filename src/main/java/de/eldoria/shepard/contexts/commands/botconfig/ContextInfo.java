@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.botconfig;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.ContextHelper;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
@@ -21,6 +22,7 @@ public class ContextInfo extends Command {
         commandDesc = "Information about context settings";
         commandAliases = new String[] {"cinfo"};
         commandArgs = new CommandArg[] {new CommandArg("context name", "name of the context", true)};
+        category = ContextCategory.BOTCONFIG;
     }
 
     @Override

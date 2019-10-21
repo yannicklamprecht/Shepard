@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.QuoteData;
@@ -39,6 +40,7 @@ public class ManageQuote extends Command {
                                 + "**show** -> [keyword] shows all quotes which contain the keyword or"
                                 + "leave empty to show all quotes",
                         false)};
+        category = ContextCategory.ADMIN;
     }
 
     @Override

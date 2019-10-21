@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.GuessGameData;
@@ -7,9 +8,11 @@ import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.database.types.Rank;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.minigames.guessgame.EvaluationScheduler;
-import de.eldoria.shepard.util.Emoji;
+import de.eldoria.shepard.minigames.ChannelEvaluator;
+import de.eldoria.shepard.minigames.Evaluator;
+import de.eldoria.shepard.minigames.guessgame.GuessGameEvaluator;
 import de.eldoria.shepard.util.TextFormatting;
+import de.eldoria.shepard.util.reactions.EmoteCollection;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -19,10 +22,6 @@ import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class GuessGame extends Command {
-
-    private static final String DESCRIPTION = "Is this image part of an nsfw image or not?" + lineSeparator()
-            + "Click :white_check_mark: for yes or :x: for no!" + lineSeparator()
-            + "You have 30 seconds to guess!";
 
     private static final String TITLE = "NSFW or not! Guess now!";
 
@@ -38,6 +37,7 @@ public class GuessGame extends Command {
                                 + "**__t__op** -> The top 10 player on this server" + lineSeparator()
                                 + "**__g__lobal__t__op** -> The top 10 player.", false)
         };
+        category = ContextCategory.FUN;
     }
 
     @Override
@@ -97,7 +97,9 @@ public class GuessGame extends Command {
     }
 
     private void startGame(MessageEventDataWrapper messageContext) {
-        if (EvaluationScheduler.evaluationInProgress(messageContext.getTextChannel())) {
+        ChannelEvaluator<GuessGameEvaluator> channelEvaluator
+                = Evaluator.getGuessGameScheduler();
+        if (channelEvaluator.isEvaluationActive(messageContext.getTextChannel())) {
             MessageSender.sendMessage("One round is still in progress.", messageContext.getChannel());
             return;
         }
@@ -109,15 +111,19 @@ public class GuessGame extends Command {
         EmbedBuilder builder = new EmbedBuilder();
 
         builder.setTitle(TITLE)
-                .setDescription(DESCRIPTION)
+                .setDescription("Is this image part of an nsfw image or not?" + lineSeparator()
+                        + "Click " + EmoteCollection.ANIM_CHECKMARK.getEmote().getAsMention()
+                        + " for yes or " + EmoteCollection.ANIM_CROSS.getEmote().getAsMention()
+                        + " for no!" + lineSeparator()
+                        + "You have 30 seconds to guess!")
                 .setImage(hentaiImage.getCroppedImage())
                 .setFooter("Hint: Everything which isn't clearly NSFW is sfw!");
 
         messageContext.getChannel().sendMessage(builder.build())
                 .queue(message -> {
-                    message.addReaction(Emoji.CHECK_MARK_BUTTON.unicode).queue();
-                    message.addReaction(Emoji.CROSS_MARK.unicode).queue();
-                    EvaluationScheduler.scheduleEvaluation(message, hentaiImage);
+                    message.addReaction(EmoteCollection.ANIM_CHECKMARK.getEmote()).queue();
+                    message.addReaction(EmoteCollection.ANIM_CROSS.getEmote()).queue();
+                    channelEvaluator.scheduleEvaluation(message, 30, new GuessGameEvaluator(message, hentaiImage));
                 });
     }
 }

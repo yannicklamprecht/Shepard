@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.DbUtil;
@@ -43,6 +44,7 @@ public class Monitoring extends Command {
                                 + "**disable** -> leave empty" + lineSeparator(), false)
 
         };
+        category = ContextCategory.ADMIN;
     }
 
     @Override

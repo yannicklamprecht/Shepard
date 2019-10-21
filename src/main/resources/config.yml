@@ -1,17 +1,9 @@
 debug: false
-#prefix: "&"
-prefix: "!"
-#token: "NTEyNDEzMDQ5ODk0NzMxNzgw.DxjtCg.6nF2czGITfrX-HHR4cN7eCfil7I"
-token: "NjE3NzYxMDc3MDYwNTY3MDcw.XWv1Ow.Y-8QpkNEm2Uq52a-FruQfydiwr4"
-#database:
-#  username: postgres
-#  password: chojo
-#  db: postgres
-#  address: localhost
-#  port: 5432
+prefix: "&"
+token: ""
 database:
-  username: "eldoriapga"
-  password: "aZaw54BDsu%7a"
-  db: "Shepard"
-  address: "144.76.174.81"
-  port: "5432"
+  username: ""
+  password: ""
+  db: ""
+  address: ""
+  port: ""

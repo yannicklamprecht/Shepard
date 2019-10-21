@@ -3,6 +3,8 @@ package de.eldoria.shepard.minigames.guessgame;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
+import de.eldoria.shepard.minigames.Evaluator;
+import de.eldoria.shepard.minigames.BaseEvaluator;
 import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.IMentionable;
@@ -17,16 +19,13 @@ import java.util.stream.Collectors;
 
 import static java.lang.System.lineSeparator;
 
-public class Evaluator implements Runnable {
-    private long messageId;
-    private GuessGameImage image;
-    private long channelId;
-    private Map<Long, Boolean> votes = new HashMap<>();
+public class GuessGameEvaluator extends BaseEvaluator {
+    private final GuessGameImage image;
+    private final Map<Long, Boolean> votes = new HashMap<>();
 
-    Evaluator(Message message, GuessGameImage image) {
-        this.messageId = message.getIdLong();
+    public GuessGameEvaluator(Message message, GuessGameImage image) {
+        super(message.getIdLong(), message.getChannel().getIdLong());
         this.image = image;
-        this.channelId = message.getChannel().getIdLong();
     }
 
     @Override
@@ -62,6 +61,8 @@ public class Evaluator implements Runnable {
         int totalPlayer = looser.size() + winners.size();
         if (totalPlayer != 0 && !winners.isEmpty()) {
 
+
+
             List<User> firstWinner = winners.subList(0, Math.min(winners.size(), 5));
 
             String names = firstWinner.stream().map(IMentionable::getAsMention)
@@ -88,7 +89,7 @@ public class Evaluator implements Runnable {
 
         guildChannel.sendMessage(builder.build()).queue();
 
-        EvaluationScheduler.evaluationDone(channelId);
+        Evaluator.getGuessGameScheduler().evaluationDone(guildChannel);
     }
 
     public void addVote(User user, boolean voteValue) {

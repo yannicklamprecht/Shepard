@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class MonitoringScheduler {
     private static MonitoringScheduler instance;
-    private Map<Long, List<Address>> unreachable = new HashMap<>();
+    private final Map<Long, List<Address>> unreachable = new HashMap<>();
 
     private MonitoringScheduler() {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(2);
@@ -49,6 +49,13 @@ public final class MonitoringScheduler {
         }
     }
 
+    /**
+     * Checks if a server is already marked as unreachable.
+     *
+     * @param guild   guild for lookup
+     * @param address address for lookup
+     * @return true if the server is marked as unreachable
+     */
     boolean markedAsUnreachable(long guild, Address address) {
         if (unreachable.containsKey(guild)) {
             return unreachable.get(guild).contains(address);

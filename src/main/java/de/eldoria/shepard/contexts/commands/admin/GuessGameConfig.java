@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.GuessGameData;
@@ -28,6 +29,7 @@ public class GuessGameConfig extends Command {
                                 + "**removeImage** -> [url of cropped or full image]" + lineSeparator()
                                 + "**cancelRegistration** -> leave empty", false)
         };
+        category = ContextCategory.ADMIN;
     }
 
     @Override

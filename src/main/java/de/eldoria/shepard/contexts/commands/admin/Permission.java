@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
@@ -49,6 +50,7 @@ public class Permission extends Command {
                                 + "**showRoles** -> leave empty.",
                         false)
         };
+        category = ContextCategory.ADMIN;
     }
 
     @Override

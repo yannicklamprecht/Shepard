@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -25,6 +26,7 @@ public class Prefix extends Command {
                 new CommandArg("value",
                         "**set** -> One or two character" + lineSeparator()
                                 + "**reset** -> leave empty", false)};
+        category = ContextCategory.ADMIN;
     }
 
     @Override
@@ -40,7 +42,6 @@ public class Prefix extends Command {
         }
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
-        sendCommandUsage(messageContext.getChannel());
     }
 
     private void reset(MessageEventDataWrapper messageContext) {
@@ -53,7 +54,6 @@ public class Prefix extends Command {
     private void set(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 1) {
             MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
-            sendCommandUsage(messageContext.getChannel());
             return;
         }
 

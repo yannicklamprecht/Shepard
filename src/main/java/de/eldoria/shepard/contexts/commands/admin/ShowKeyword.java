@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.collections.KeyWordCollection;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -15,7 +16,8 @@ public class ShowKeyword extends Command {
      */
     public ShowKeyword() {
         commandName = "showKeywords";
-        commandDesc = "Displays or valid Keywords";
+        commandDesc = "Show all valid Keywords";
+        category = ContextCategory.ADMIN;
     }
 
     @Override
