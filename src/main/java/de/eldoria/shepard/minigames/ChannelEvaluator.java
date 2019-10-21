@@ -8,28 +8,28 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class EvaluationScheduler<T extends Evaluator> {
-    private final Map<UniqueMessageIdentifier, T> evaluationChannel = new HashMap<>();
+public class ChannelEvaluator<T extends EvaluatorImpl> {
+
+    private final Map<UniqueMessageIdentifier, T> evaluationChannel;
     private final ScheduledExecutorService executor;
 
-    public EvaluationScheduler(int poolSize) {
+    public ChannelEvaluator(int poolSize) {
+        this.evaluationChannel = new HashMap<>();
         executor = new ScheduledThreadPoolExecutor(poolSize);
 
     }
 
     @Nullable
     public T getChannelEvaluator(TextChannel channel) {
-        List<Map.Entry<UniqueMessageIdentifier, T>> collect = evaluationChannel.entrySet()
-                .stream().filter(a -> a.getKey().isChannel(channel)).collect(Collectors.toUnmodifiableList());
-        if (collect.isEmpty()) {
-            return null;
-        }
-        return collect.get(0).getValue();
+        Optional<Map.Entry<UniqueMessageIdentifier, T>> collect = evaluationChannel.entrySet()
+                .stream().filter(a -> a.getKey().isChannel(channel)).findFirst();
+        return collect.map(Map.Entry::getValue).orElse(null);
     }
 
     /**
@@ -71,12 +71,10 @@ public class EvaluationScheduler<T extends Evaluator> {
      * @param channel channel to remove.
      */
     public void evaluationDone(TextChannel channel) {
-        List<Map.Entry<UniqueMessageIdentifier, T>> collect = evaluationChannel.entrySet()
-                .stream().filter(a -> a.getKey().isChannel(channel)).collect(Collectors.toUnmodifiableList());
-        if (!collect.isEmpty()) {
-            evaluationChannel.remove(collect.get(0).getKey());
-        }
+        Optional<Map.Entry<UniqueMessageIdentifier, T>> collect = evaluationChannel.entrySet()
+                .stream().filter(a -> a.getKey().isChannel(channel)).findFirst();
+
+        collect.ifPresent(uniqueMessageIdentifierTEntry ->
+                evaluationChannel.remove(uniqueMessageIdentifierTEntry.getKey()));
     }
-
-
 }
