@@ -11,7 +11,6 @@ public class ReminderSimple {
     public ReminderSimple(int reminderId, String text, Timestamp timestamp) {
         this.reminderId = reminderId;
         this.text = text;
-        System.out.println(timestamp.toLocalDateTime());
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         this.time = dtf.format(timestamp.toLocalDateTime());
     }

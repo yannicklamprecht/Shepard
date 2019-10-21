@@ -8,8 +8,8 @@ import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.database.types.Rank;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.minigames.EvaluationScheduler;
-import de.eldoria.shepard.minigames.EvaluationSchedulerCollection;
+import de.eldoria.shepard.minigames.ChannelEvaluator;
+import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.guessgame.GuessGameEvaluator;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.reactions.EmoteCollection;
@@ -97,9 +97,9 @@ public class GuessGame extends Command {
     }
 
     private void startGame(MessageEventDataWrapper messageContext) {
-        EvaluationScheduler<GuessGameEvaluator> evaluationScheduler
-                = EvaluationSchedulerCollection.getGuessGameScheduler();
-        if (evaluationScheduler.isEvaluationActive(messageContext.getTextChannel())) {
+        ChannelEvaluator<GuessGameEvaluator> channelEvaluator
+                = Evaluator.getGuessGameScheduler();
+        if (channelEvaluator.isEvaluationActive(messageContext.getTextChannel())) {
             MessageSender.sendMessage("One round is still in progress.", messageContext.getChannel());
             return;
         }
@@ -123,7 +123,7 @@ public class GuessGame extends Command {
                 .queue(message -> {
                     message.addReaction(EmoteCollection.ANIM_CHECKMARK.getEmote()).queue();
                     message.addReaction(EmoteCollection.ANIM_CROSS.getEmote()).queue();
-                    evaluationScheduler.scheduleEvaluation(message, 30, new GuessGameEvaluator(message, hentaiImage));
+                    channelEvaluator.scheduleEvaluation(message, 30, new GuessGameEvaluator(message, hentaiImage));
                 });
     }
 }

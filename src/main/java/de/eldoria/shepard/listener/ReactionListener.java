@@ -2,8 +2,8 @@ package de.eldoria.shepard.listener;
 
 import de.eldoria.shepard.collections.ReactionActionCollection;
 import de.eldoria.shepard.collections.UniqueMessageIdentifier;
-import de.eldoria.shepard.minigames.EvaluationScheduler;
-import de.eldoria.shepard.minigames.EvaluationSchedulerCollection;
+import de.eldoria.shepard.minigames.ChannelEvaluator;
+import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.guessgame.GuessGameEvaluator;
 import de.eldoria.shepard.minigames.kudolottery.KudoLotteryEvaluator;
 import de.eldoria.shepard.util.reactions.EmoteCollection;
@@ -33,8 +33,8 @@ public class ReactionListener extends ListenerAdapter {
 
     private void guessGame(@Nonnull GuildMessageReactionAddEvent event,
                            UniqueMessageIdentifier uniqueMessageIdentifier) {
-        EvaluationScheduler<GuessGameEvaluator> guessGameScheduler
-                = EvaluationSchedulerCollection.getGuessGameScheduler();
+        ChannelEvaluator<GuessGameEvaluator> guessGameScheduler
+                = Evaluator.getGuessGameScheduler();
         if (guessGameScheduler.isReactionMessage(uniqueMessageIdentifier)) {
             GuessGameEvaluator channelEvaluator = guessGameScheduler.getChannelEvaluator(event.getChannel());
 
@@ -56,8 +56,8 @@ public class ReactionListener extends ListenerAdapter {
 
     private void kudoCheck(@Nonnull GuildMessageReactionAddEvent event,
                            UniqueMessageIdentifier uniqueMessageIdentifier) {
-        EvaluationScheduler<KudoLotteryEvaluator> kudoLotteryScheduler
-                = EvaluationSchedulerCollection.getKudoLotteryScheduler();
+        ChannelEvaluator<KudoLotteryEvaluator> kudoLotteryScheduler
+                = Evaluator.getKudoLotteryScheduler();
         if (kudoLotteryScheduler.isReactionMessage(uniqueMessageIdentifier)) {
             KudoLotteryEvaluator channelEvaluator =
                     kudoLotteryScheduler.getChannelEvaluator(event.getChannel());
