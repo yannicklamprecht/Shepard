@@ -11,11 +11,14 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GreetingListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+        AtomicBoolean greetingSend = new AtomicBoolean(false);
+
         List<DatabaseInvite> databaseInvites = InviteData.getInvites(event.getGuild(), null);
 
         GreetingSettings greeting = GreetingData.getGreeting(event.getGuild());
@@ -24,23 +27,27 @@ public class GreetingListener extends ListenerAdapter {
         MessageChannel channel = greeting.getChannel();
         if (channel == null) return;
 
-        event.getGuild().retrieveInvites().queue(invites -> {
-            invites.forEach(invite -> {
-                Optional<DatabaseInvite> dInvite = databaseInvites.stream()
-                        .filter(inv -> inv.getCode().equals(invite.getCode())).findAny();
-                if (dInvite.isEmpty()) {
-                    MessageSender.sendGreeting(event, greeting, null, channel);
-                    return;
-                }
-                if (invite.getUses() != dInvite.get().getUsedCount()) {
-                    for (int i = dInvite.get().getUsedCount(); i < invite.getUses(); i++) {
-                        InviteData.upCountInvite(event.getGuild(), invite.getCode(), null);
+        event.getGuild().retrieveInvites().queue(invites ->
+                invites.forEach(invite -> {
+                    Optional<DatabaseInvite> dInvite = databaseInvites.stream()
+                            .filter(inv -> inv.getCode().equals(invite.getCode())).findFirst();
+                    if (dInvite.isEmpty()) {
+                        MessageSender.sendGreeting(event, greeting, null, channel);
+                        greetingSend.set(true);
+                        return;
                     }
-                    MessageSender.sendGreeting(event, greeting, dInvite.get().getSource(), channel);
-                    return;
-                }
-                MessageSender.sendGreeting(event, greeting, null, channel);
-            });
-        });
+                    if (invite.getUses() != dInvite.get().getUsedCount()) {
+                        for (int i = dInvite.get().getUsedCount(); i < invite.getUses(); i++) {
+                            InviteData.upCountInvite(event.getGuild(), invite.getCode(), null);
+                        }
+                        if (!greetingSend.get()) {
+                            MessageSender.sendGreeting(event, greeting, dInvite.get().getSource(), channel);
+                            greetingSend.set(true);
+                        }
+                    }
+                }));
+        if (!greetingSend.get()) {
+            MessageSender.sendGreeting(event, greeting, null, channel);
+        }
     }
 }
