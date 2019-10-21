@@ -67,7 +67,6 @@ public class ReconnectAnalyzer extends Analyzer {
                 if (ShepardBot.getConfig().debugActive()) {
                     ShepardBot.getLogger().info("Service is still down: " + address.getFullAddress());
                 }
-
             }
         }
     }

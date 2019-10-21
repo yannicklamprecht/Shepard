@@ -13,7 +13,6 @@ import java.net.Socket;
 import static de.eldoria.shepard.util.TextFormatting.getTimeAsString;
 
 class Analyzer implements Runnable {
-
     /**
      * Address object to store address information.
      */
@@ -62,7 +61,7 @@ class Analyzer implements Runnable {
                             + "", false)
                     .setColor(Color.green)
                     .setFooter(getTimeAsString())
-                    .setThumbnail(ShepardReactions.SHULKY.thumbnail);
+                    .setThumbnail(ShepardReactions.EXCITED.thumbnail);
             channel.sendMessage(builder.build()).queue();
         } else if (!minecraftPing.isOnline()) {
             EmbedBuilder builder = new EmbedBuilder()
@@ -86,7 +85,8 @@ class Analyzer implements Runnable {
         if (!isAddressReachable()) {
             EmbedBuilder builder = new EmbedBuilder()
                     .setTitle("Service **" + address.getName() + "** is unavailable!")
-                    .setDescription("Service under: " + address.getFullAddress());
+                    .setDescription("Service under: " + address.getFullAddress())
+                    .setThumbnail(ShepardReactions.SHULKY.thumbnail);
             channel.sendMessage(builder.build()).queue();
             MonitoringScheduler.getInstance().markAsUnreachable(channel.getGuild().getIdLong(), address);
             if (!MonitoringScheduler.getInstance().markedAsUnreachable(channel.getGuild().getIdLong(), address)) {
