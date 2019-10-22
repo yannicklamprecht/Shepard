@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 class ReconnectCoordinator implements Runnable {
     private static final int API_REQUEST_DELAY = 5;
-    private ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(10);
+    private final ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(10);
 
     @Override
     public void run() {

@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.botconfig;
 
 import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.ListType;
@@ -44,6 +45,7 @@ public class ManageContextGuild extends Command {
                                 + "**addGuild** -> Add a guild to the list (Multiple guilds possible)"
                                 + System.lineSeparator()
                                 + "**removeguild** -> Removes a guild from the list (Multiple guilds possible", true)};
+        category = ContextCategory.BOTCONFIG;
     }
 
     @Override

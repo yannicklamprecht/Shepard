@@ -10,6 +10,7 @@ public class Normandy {
     private static final long generalLogChannel = 538094461381640192L;
     private static final long commandLogChannel = 538087478960324630L;
     private static final long privateAnswerChannel = 627891573430157334L;
+    private static final long testOutputChannel = 633630420231258112L;
 
     /**
      * Get the normandy instance.
@@ -47,6 +48,16 @@ public class Normandy {
 
     public static TextChannel getCommandLogChannel() {
         return getNormandy().getTextChannelById(commandLogChannel);
+    }
+
+    /**
+     * Get the private answer channel.
+     *
+     * @return command log channel
+     */
+
+    public static TextChannel getTestOutputChannel() {
+        return getNormandy().getTextChannelById(testOutputChannel);
     }
 
     /**

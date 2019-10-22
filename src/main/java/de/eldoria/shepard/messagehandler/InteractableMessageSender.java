@@ -2,6 +2,7 @@ package de.eldoria.shepard.messagehandler;
 
 import de.eldoria.shepard.collections.ReactionActionCollection;
 import de.eldoria.shepard.reactionactions.Action;
+import de.eldoria.shepard.reactionactions.ReactionType;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -113,7 +114,11 @@ public final class InteractableMessageSender {
     private static void registerActions(TextChannel channel, Message message, Action... actions) {
         Arrays.stream(actions).forEach(action -> {
             ReactionActionCollection.getInstance().addReactionAction(channel, message, action);
-            message.addReaction(action.getReaction()).queue();
+            if (action.getReactionType() == ReactionType.EMOJI) {
+                message.addReaction(action.getEmoji()).queue();
+            } else {
+                message.addReaction(action.getEmote()).queue();
+            }
         });
     }
 }

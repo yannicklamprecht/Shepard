@@ -1,6 +1,7 @@
 package de.eldoria.shepard.messagehandler;
 
 import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.database.types.GreetingSettings;
 import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -230,10 +231,12 @@ public final class MessageSender {
     }
 
     public static void logCommand(String label, String[] args, MessageEventDataWrapper receivedEvent) {
-        String command = "Executed command \"" + label + " " + String.join(" ", args)
+        String command = receivedEvent.getAuthor().getAsTag()
+                + " executed command \"" + label + " " + String.join(" ", args)
                 + "\" on  guild " + receivedEvent.getGuild().getName() + " ("
                 + receivedEvent.getGuild().getId() + ")";
         ShepardBot.getLogger().command(command);
+        Normandy.getCommandLogChannel().sendMessage(command).queue();
     }
 
     /**

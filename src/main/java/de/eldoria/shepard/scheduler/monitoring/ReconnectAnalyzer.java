@@ -2,11 +2,14 @@ package de.eldoria.shepard.scheduler.monitoring;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.Address;
+import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.util.PingMinecraftServer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.Color;
+
+import static de.eldoria.shepard.util.TextFormatting.getTimeAsString;
 
 public class ReconnectAnalyzer extends Analyzer {
     ReconnectAnalyzer(Address address, TextChannel channel) {
@@ -34,7 +37,9 @@ public class ReconnectAnalyzer extends Analyzer {
                                 + minecraftPing.getPlayers().getMax(), false)
                         .addField("VERSION", minecraftPing.getVersion().replace("Requires MC ", "")
                                 + "", false)
-                        .setColor(Color.green);
+                        .setColor(Color.green)
+                        .setFooter(getTimeAsString())
+                        .setThumbnail(ShepardReactions.WINK.thumbnail);
                 channel.sendMessage(builder.build()).queue();
                 MonitoringScheduler.getInstance().markAsReachable(channel.getGuild().getIdLong(), address);
                 if (ShepardBot.getConfig().debugActive()) {
@@ -48,7 +53,12 @@ public class ReconnectAnalyzer extends Analyzer {
         } else {
             boolean addressReachable = isAddressReachable();
             if (addressReachable) {
-                channel.sendMessage("Service on " + address.getFullAddress() + " is back again!").queue();
+                EmbedBuilder builder = new EmbedBuilder()
+                        .setTitle("Service " + address.getName() + " is back again!")
+                        .setDescription("Service Address: " + address.getFullAddress())
+                        .setFooter(getTimeAsString())
+                        .setThumbnail(ShepardReactions.WINK.thumbnail);
+                channel.sendMessage(builder.build()).queue();
                 MonitoringScheduler.getInstance().markAsReachable(channel.getGuild().getIdLong(), address);
                 if (ShepardBot.getConfig().debugActive()) {
                     ShepardBot.getLogger().info("Service is reachable again: " + address.getFullAddress());
@@ -57,9 +67,7 @@ public class ReconnectAnalyzer extends Analyzer {
                 if (ShepardBot.getConfig().debugActive()) {
                     ShepardBot.getLogger().info("Service is still down: " + address.getFullAddress());
                 }
-
             }
         }
-
     }
 }

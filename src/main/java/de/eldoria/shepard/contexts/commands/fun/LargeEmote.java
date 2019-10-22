@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.util.FileHelper;
@@ -18,6 +19,7 @@ public class LargeEmote extends Command {
         commandDesc = "Get the image of the emote";
         commandArgs = new CommandArg[] {new CommandArg("Emote[...]", "Mention one or more custom emote!", true)};
         commandAliases = new String[] {"lemote"};
+        category = ContextCategory.FUN;
     }
 
     @Override

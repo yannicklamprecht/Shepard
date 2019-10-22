@@ -3,9 +3,9 @@ package de.eldoria.shepard.database.types;
 import org.jetbrains.annotations.NotNull;
 
 public class GuessGameImage {
-    private String croppedImage;
-    private String fullImage;
-    private boolean hentai;
+    private final String croppedImage;
+    private final String fullImage;
+    private final boolean hentai;
 
     public GuessGameImage(String croppedImage, String fullImage, boolean hentai) {
         this.croppedImage = croppedImage;

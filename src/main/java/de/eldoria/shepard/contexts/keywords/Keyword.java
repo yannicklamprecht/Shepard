@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.keywords;
 
 import de.eldoria.shepard.collections.KeyWordCollection;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.ContextSensitive;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -17,6 +18,7 @@ public abstract class Keyword extends ContextSensitive {
      */
     protected Keyword() {
         KeyWordCollection.getInstance().addKeyword(this);
+        category = ContextCategory.KEYWORD;
     }
 
     /**

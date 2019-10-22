@@ -3,7 +3,7 @@ package de.eldoria.shepard.minigames.guessgame;
 import de.eldoria.shepard.database.queries.GuessGameData;
 
 public class ImageConfiguration {
-    private boolean hentai;
+    private final boolean hentai;
     private String croppedImage;
     private String fullImage;
 

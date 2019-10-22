@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.ChangelogData;
@@ -41,6 +42,7 @@ public class Changelog extends Command {
                                 + "**activate** -> [channel]" + lineSeparator()
                                 + "**deactivate** -> leave empty" + lineSeparator()
                                 + "**roles** -> leave empty", false)};
+        category = ContextCategory.ADMIN;
     }
 
     @Override
@@ -67,7 +69,6 @@ public class Changelog extends Command {
         }
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
-        sendCommandUsage(messageContext.getChannel());
     }
 
     private void showRoles(MessageEventDataWrapper receivedEvent) {

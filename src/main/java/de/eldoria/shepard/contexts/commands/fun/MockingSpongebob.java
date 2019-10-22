@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -15,6 +16,7 @@ public class MockingSpongebob extends Command {
         this.commandName = "mockingSpongebob";
         this.commandDesc = "MoCkInG SpOnGeBoB";
         this.commandAliases = new String[] {"msb", "mock"};
+        category = ContextCategory.FUN;
     }
 
     @Override

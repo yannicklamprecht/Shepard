@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.util;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -30,10 +31,11 @@ public class UserInfo extends Command {
      * Creates new User info command object.
      */
     public UserInfo() {
-        commandName = "UserInfo";
+        commandName = "userInfo";
         commandAliases = new String[] {"aboutuser"};
         commandDesc = "Information about a user";
         commandArgs = new CommandArg[] {new CommandArg("user", "Tag, Name or ID of user", true)};
+        category = ContextCategory.UTIL;
     }
 
     @Override

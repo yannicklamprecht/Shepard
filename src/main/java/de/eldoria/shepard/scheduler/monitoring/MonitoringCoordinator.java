@@ -14,9 +14,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 class MonitoringCoordinator implements Runnable {
     private static final int API_REQUEST_DELAY = 5;
-    private ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(10);
+    private final ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(10);
     private int counts;
-    private int broadcastCount;
+    private final int broadcastCount;
 
     /**
      * Initiates a monitoring coordinator with broadcast settings.

@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.botconfig;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.ContextData;
@@ -30,6 +31,7 @@ public class ManageContext extends Command {
                                 + "Command can only used from users"
                                 + " which are admin on a guild or when they have the permission on the guild", true),
                 new CommandArg("value", "True or False", true)};
+        category = ContextCategory.BOTCONFIG;
     }
 
     @Override

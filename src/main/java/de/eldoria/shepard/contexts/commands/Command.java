@@ -1,13 +1,13 @@
 package de.eldoria.shepard.contexts.commands;
 
 import de.eldoria.shepard.collections.CommandCollection;
+import de.eldoria.shepard.collections.LatestCommandsCollection;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.ContextSensitive;
 import info.debatty.java.stringsimilarity.JaroWinkler;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import org.apache.commons.lang.NotImplementedException;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -55,9 +55,11 @@ public abstract class Command extends ContextSensitive {
      * @param messageContext Message Received Event of the command execution
      */
     @Deprecated
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public final void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
         internalExecute(label, args, messageContext);
         MessageSender.logCommand(label, args, messageContext);
+        LatestCommandsCollection.getInstance().saveLatestCommand(messageContext.getGuild(), messageContext.getAuthor(),
+                this, label, args);
     }
 
     /**
@@ -168,7 +170,6 @@ public abstract class Command extends ContextSensitive {
         if (getCommandAliases() != null && getCommandAliases().length != 0) {
             fields.add(new MessageEmbed.Field("__**Aliases:**__", String.join(", ", getCommandAliases()), false));
         }
-
 
         StringBuilder desc = new StringBuilder();
 
