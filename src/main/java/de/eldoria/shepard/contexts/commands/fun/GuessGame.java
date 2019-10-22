@@ -27,7 +27,7 @@ public class GuessGame extends Command {
 
     public GuessGame() {
         commandName = "guessGame";
-        commandAliases = new String[] {"hentaiOrNot", "nsfwornot"};
+        commandAliases = new String[] {"nsfwornot"};
         commandDesc = "Game where you have to guess if a cropped image is part of a hentai image or not.";
         commandArgs = new CommandArg[] {
                 new CommandArg("action",
@@ -42,13 +42,14 @@ public class GuessGame extends Command {
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        if (!isArgument(messageContext.getChannel().getName(), "hentaiornot", "hentai-or-not",
+        if (!isArgument(messageContext.getChannel().getName(),
                 "guessgame", "guess-game", "nsfwornot", "nsfw-or-not")) {
             MessageSender.sendMessage("This is a minigame."
                             + "Minigame commands can only be executed in a minigame channel." + lineSeparator()
                             + "Please create a channel with one of the following names to play the game:"
                             + lineSeparator()
-                            + "`hentaiornot, hentai-or-not,guessgame, guess-game, nsfwornot, nsfw-or-not`",
+                            + "`guessgame`, `guess-game` for the **sfw version**" + lineSeparator()
+                            + "`nsfwornot`, `nsfw-or-not` for the **nsfw version**",
                     messageContext.getChannel());
             return;
         }
