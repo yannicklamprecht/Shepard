@@ -1,5 +1,9 @@
-package de.eldoria.shepard;
+package de.eldoria.shepard.botlist;
 
+import com.google.api.client.http.HttpStatusCodes;
+import com.google.gson.Gson;
+import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.database.queries.KudoData;
 import org.discordbots.api.client.DiscordBotListAPI;
 import net.dv8tion.jda.api.entities.User;
 import spark.Request;
@@ -9,7 +13,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static spark.Spark.post;
 import static spark.route.HttpMethod.get;
-import static spark.route.HttpMethod.post;
 
 public class BotListReporter {
     private DiscordBotListAPI api;
@@ -17,8 +20,8 @@ public class BotListReporter {
 
     private BotListReporter() {
         api = new DiscordBotListAPI.Builder()
-                .token("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUxMjQxMzA0OTg5NDczMTc4MCIsImJvdCI6dHJ1ZSwiaWF0IjoxNTcxNjk2NDYwfQ.ERtbOsNSZfmytzNNKzHo7y79eGC8DTYMjzN00QTUFN8")
-                .botId("512413049894731780")
+                .token(ShepardBot.getConfig().getBotList().getToken())
+                .botId(ShepardBot.getJDA().getSelfUser().getId())
                 .build();
 
         defineRoutes();
@@ -55,9 +58,21 @@ public class BotListReporter {
     }
 
     public void defineRoutes() {
-        post("/votes/", (Request request, Response response) -> {
+        post("/votes/", (request, response) -> {
+            String authorization = request.headers("Authorization");
+            if(!authorization.equals(ShepardBot.getConfig().getBotList().getAuthorization())){
+                return HttpStatusCodes.STATUS_CODE_UNAUTHORIZED;
+            }
+
             response.type("application/json");
-            return request.body();
+            BotListResponse botListResponse = new Gson().fromJson(request.body(), BotListResponse.class);
+            handleVote(botListResponse);
+
+            return HttpStatusCodes.STATUS_CODE_OK;
         });
+    }
+
+    public void handleVote(BotListResponse botListResponse) {
+
     }
 }
