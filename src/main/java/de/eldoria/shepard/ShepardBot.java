@@ -98,6 +98,7 @@ public final class ShepardBot {
 
         instance.setup();
 
+        BotListReporter.initialize();
     }
 
     private void initiateJda() throws LoginException, InterruptedException {
