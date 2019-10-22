@@ -62,7 +62,6 @@ public class GuessGameEvaluator extends BaseEvaluator {
         if (totalPlayer != 0 && !winners.isEmpty()) {
 
 
-
             List<User> firstWinner = winners.subList(0, Math.min(winners.size(), 5));
 
             String names = firstWinner.stream().map(IMentionable::getAsMention)
@@ -78,9 +77,13 @@ public class GuessGameEvaluator extends BaseEvaluator {
             builder.setDescription("Nobody voted. owo");
         }
 
-        if (image.isHentai() && guildChannel.isNSFW()) {
+        guildChannel.getManager().setNSFW(guildChannel.getName().startsWith("nsfw")).complete();
+
+        boolean nsfw = guildChannel.isNSFW();
+
+        if (image.isHentai() && nsfw) {
             builder.setImage(image.getFullImage());
-        } else if (image.isHentai() && !guildChannel.isNSFW()) {
+        } else if (image.isHentai() && !nsfw) {
             builder.addField("Image not displayed. This is not a NSFW Channel!", "", false);
         }
         if (!image.isHentai()) {
