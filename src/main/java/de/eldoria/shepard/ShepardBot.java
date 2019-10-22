@@ -1,5 +1,6 @@
 package de.eldoria.shepard;
 
+import de.eldoria.shepard.botlist.BotListReporter;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.KeyWordCollection;
 import de.eldoria.shepard.collections.Normandy;
