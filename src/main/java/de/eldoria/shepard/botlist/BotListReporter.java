@@ -3,26 +3,27 @@ package de.eldoria.shepard.botlist;
 import com.google.api.client.http.HttpStatusCodes;
 import com.google.gson.Gson;
 import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.database.queries.KudoData;
-import org.discordbots.api.client.DiscordBotListAPI;
 import net.dv8tion.jda.api.entities.User;
-import spark.Request;
-import spark.Response;
+import org.discordbots.api.client.DiscordBotListAPI;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 import static spark.Spark.post;
-import static spark.route.HttpMethod.get;
 
 public class BotListReporter {
-    private DiscordBotListAPI api;
     private static BotListReporter instance;
+    private DiscordBotListAPI api;
+    private List<Consumer<BotListResponse>> eventHandlers;
 
     private BotListReporter() {
         api = new DiscordBotListAPI.Builder()
                 .token(ShepardBot.getConfig().getBotList().getToken())
                 .botId(ShepardBot.getJDA().getSelfUser().getId())
                 .build();
+        eventHandlers = new ArrayList<>();
 
         defineRoutes();
     }
@@ -57,7 +58,11 @@ public class BotListReporter {
         return voted.get();
     }
 
-    public void defineRoutes() {
+    public void addEventHandler(Consumer<BotListResponse> eventHandler) {
+        eventHandlers.add(eventHandler);
+    }
+
+    private void defineRoutes() {
         post("/votes/", (request, response) -> {
             String authorization = request.headers("Authorization");
             if(!authorization.equals(ShepardBot.getConfig().getBotList().getAuthorization())){
@@ -72,7 +77,7 @@ public class BotListReporter {
         });
     }
 
-    public void handleVote(BotListResponse botListResponse) {
-
+    private void handleVote(BotListResponse botListResponse) {
+        eventHandlers.forEach(eventHandler -> eventHandler.accept(botListResponse));
     }
 }
