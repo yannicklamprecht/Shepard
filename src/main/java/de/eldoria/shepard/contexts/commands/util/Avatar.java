@@ -46,10 +46,14 @@ public class Avatar extends Command {
         }
 
         if (user == null) {
-            user = ShepardBot.getJDA().getUserByTag(args[0]);
+            try {
+                user = ShepardBot.getJDA().getUserByTag(args[0]);
+            } catch (IllegalArgumentException e) {
+
+            }
         }
 
-        if ((user == null)) {
+        if (user == null) {
             List<User> usersByName = ShepardBot.getJDA().getUsersByName(args[0], true);
             if (!usersByName.isEmpty()) {
                 user = usersByName.get(0);
