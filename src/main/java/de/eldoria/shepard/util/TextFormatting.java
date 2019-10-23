@@ -50,6 +50,11 @@ public final class TextFormatting {
         if (from < 0) {
             finalFrom = source.length + from;
         }
+
+        if (finalFrom > finalTo || finalFrom < 0 || finalTo > source.length) {
+            return "";
+        }
+
         return String.join(delimiter, Arrays.copyOfRange(source, finalFrom, finalTo)).trim();
     }
 
@@ -62,19 +67,24 @@ public final class TextFormatting {
      * @param keepWords   true if no word should be cut.
      * @return String with length of maxChars of shorter.
      */
-    public static String trimText(String string, String endSequence, int maxChars, boolean keepWords) {
+    public static String cropText(String string, String endSequence, int maxChars, boolean keepWords) {
+        if (string.length() <= maxChars) {
+            return string;
+        }
         if (!keepWords) {
             String substring = string.substring(0, Math.max(0, maxChars - endSequence.length()));
             return (substring + endSequence).trim();
         }
+
         String[] split = string.split("\\s");
+
         StringBuilder builder = new StringBuilder();
+
         for (String s : split) {
-            if (builder.length() + s.length() > maxChars + endSequence.length()) {
-                builder.append(endSequence);
-                return builder.toString().trim();
+            if (builder.length() + s.length() + 1 + endSequence.length() > maxChars) {
+                return builder.toString().trim() + endSequence;
             }
-            builder.append(" ").append(s);
+            builder.append(s).append(" ");
         }
         return builder.toString().trim();
     }
@@ -146,7 +156,7 @@ public final class TextFormatting {
                 return;
             }
             for (int i = 0; i < columnEntries.length; i++) {
-                columnEntries[i] = columnEntries[i].replace("`","");
+                columnEntries[i] = columnEntries[i].replace("`", "");
             }
             if (columnEntries.length <= table[0].length) {
                 table[rowPointer] = columnEntries;

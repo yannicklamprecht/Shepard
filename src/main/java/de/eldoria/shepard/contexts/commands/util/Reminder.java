@@ -53,7 +53,7 @@ public class Reminder extends Command {
                 tableBuilder.next();
                 tableBuilder.setRow(
                         reminder.getReminderId() + "",
-                        TextFormatting.trimText(reminder.getText(), "...", 30, true),
+                        TextFormatting.cropText(reminder.getText(), "...", 30, true),
                         reminder.getTime());
             }
 
@@ -90,7 +90,7 @@ public class Reminder extends Command {
                     number, messageContext);
 
             MessageSender.sendMessage("Removed reminder " + reminder.getReminderId() + ": \""
-                            + TextFormatting.trimText(reminder.getText(), "...", 20, true)
+                            + TextFormatting.cropText(reminder.getText(), "...", 20, true)
                             + System.lineSeparator()
                             + "Which would be send at " + reminder.getTime(),
                     messageContext.getTextChannel());

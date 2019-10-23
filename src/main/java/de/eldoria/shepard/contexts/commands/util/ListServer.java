@@ -3,7 +3,6 @@ package de.eldoria.shepard.contexts.commands.util;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.Command;
 import net.dv8tion.jda.api.entities.Guild;
@@ -13,7 +12,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static de.eldoria.shepard.util.TextFormatting.trimText;
+import static de.eldoria.shepard.util.TextFormatting.cropText;
 
 /**
  * A command to list all servers the bot is a member of.
@@ -45,7 +44,7 @@ public class ListServer extends Command {
 
 
             tableBuilder.next();
-            tableBuilder.setRow("\"" + trimText(guild.getName(), "...", 15, true) + "\"",
+            tableBuilder.setRow("\"" + cropText(guild.getName(), "...", 15, true) + "\"",
                     guild.getMembers().size() + "",
                     guild.getRegion().getName(),
                     formatted);
