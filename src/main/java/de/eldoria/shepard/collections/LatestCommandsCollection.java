@@ -1,17 +1,16 @@
 package de.eldoria.shepard.collections;
 
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class LatestCommandsCollection {
+public final class LatestCommandsCollection {
     private static LatestCommandsCollection instance;
 
-    private static Map<Long, Map<Long, SavedCommand>> latestCommands = new HashMap<>();
+    private static final Map<Long, Map<Long, SavedCommand>> latestCommands = new HashMap<>();
 
     private LatestCommandsCollection() {
     }
@@ -36,9 +35,9 @@ public class LatestCommandsCollection {
     }
 
     public static class SavedCommand {
-        private Command command;
-        private String label;
-        private String[] args;
+        private final Command command;
+        private final String label;
+        private final String[] args;
 
         SavedCommand(Command command, String label, String[] args) {
             this.command = command;

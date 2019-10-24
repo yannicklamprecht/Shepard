@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static java.lang.System.console;
 import static java.lang.System.lineSeparator;
 
 public final class TextFormatting {

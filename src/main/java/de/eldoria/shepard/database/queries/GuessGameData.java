@@ -116,6 +116,7 @@ public final class GuessGameData {
      * Changes the NSFW flag of a image.
      *
      * @param imageUrl       url of cropped ir full image.
+     * @param nsfw           true if the image is nsfw
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */

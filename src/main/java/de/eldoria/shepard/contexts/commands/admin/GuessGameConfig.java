@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.GuessGameData;
@@ -10,11 +11,10 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.guessgame.ImageRegister;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.FileHelper;
-import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 
 import static de.eldoria.shepard.util.Verifier.isArgument;
@@ -96,14 +96,14 @@ public class GuessGameConfig extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
-        String replace = args[2].replace("nsfw", "true").replace("sfw", "false");
-        BooleanState booleanState = Verifier.checkAndGetBoolean(replace);
+        BooleanState booleanState = ArgumentParser.getBoolean(args[2], "nsfw", "sfw");
         if (booleanState == BooleanState.UNDEFINED) {
             MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getChannel());
             return;
         }
 
         File fileFromURL = FileHelper.getFileFromURL(args[1]);
+
         if (fileFromURL == null) {
             MessageSender.sendSimpleError(ErrorType.INVALID_IMAGE_URL, messageContext.getTextChannel());
             return;
@@ -114,7 +114,6 @@ public class GuessGameConfig extends Command {
                     + (booleanState.stateAsBoolean ? "NSFW" : "SFW"), messageContext.getTextChannel());
             messageContext.getChannel().sendFile(fileFromURL).queue();
         }
-        return;
     }
 
     private void removeImage(String[] args, MessageEventDataWrapper messageContext) {
@@ -132,8 +131,7 @@ public class GuessGameConfig extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             return;
         }
-        String replace = args[1].replace("nsfw", "true").replace("sfw", "false");
-        BooleanState booleanState = Verifier.checkAndGetBoolean(replace);
+        BooleanState booleanState = ArgumentParser.getBoolean(args[1], "nsfw", "sfw");
         if (booleanState == BooleanState.UNDEFINED) {
             MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getChannel());
             return;

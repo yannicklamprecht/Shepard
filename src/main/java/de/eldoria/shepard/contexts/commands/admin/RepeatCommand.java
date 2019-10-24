@@ -17,8 +17,8 @@ public class RepeatCommand extends Command {
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        LatestCommandsCollection.SavedCommand latestCommand
-                = LatestCommandsCollection.getInstance().getLatestCommand(messageContext.getGuild(), messageContext.getAuthor());
+        LatestCommandsCollection.SavedCommand latestCommand = LatestCommandsCollection.getInstance()
+                .getLatestCommand(messageContext.getGuild(), messageContext.getAuthor());
 
         if (latestCommand == null) {
             MessageSender.sendSimpleError(ErrorType.NO_LAST_COMMAND_FOUND, messageContext.getTextChannel());

@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.util;
 
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.ReminderData;
@@ -18,8 +19,10 @@ import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class Reminder extends Command {
-    private static final Pattern INTERVAL = Pattern.compile("in\\s([0-9])+\\s(((min|hour|day|week)s?)|month)", Pattern.MULTILINE);
-    private static final Pattern DATE = Pattern.compile("on\\s[0-9]{1,2}\\.[0-9]{1,2}\\.\\s[0-9]{1,2}:[0-9]{1,2}", Pattern.MULTILINE);
+    private static final Pattern INTERVAL = Pattern.compile("in\\s([0-9])+\\s(((min|hour|day|week)s?)|month)",
+            Pattern.MULTILINE);
+    private static final Pattern DATE = Pattern.compile("on\\s[0-9]{1,2}\\.[0-9]{1,2}\\.\\s[0-9]{1,2}:[0-9]{1,2}",
+            Pattern.MULTILINE);
 
     public Reminder() {
         commandName = "remind";
@@ -45,20 +48,7 @@ public class Reminder extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
         if (isArgument(cmd, "show", "s")) {
-            List<ReminderSimple> reminders = ReminderData.getUserReminder(messageContext.getGuild(),
-                    messageContext.getAuthor(), messageContext);
-            TextFormatting.TableBuilder tableBuilder
-                    = TextFormatting.getTableBuilder(reminders, "ID", "Message", "Time");
-            for (ReminderSimple reminder : reminders) {
-                tableBuilder.next();
-                tableBuilder.setRow(
-                        reminder.getReminderId() + "",
-                        TextFormatting.cropText(reminder.getText(), "...", 30, true),
-                        reminder.getTime());
-            }
-
-            MessageSender.sendMessage("Your current reminders: " + System.lineSeparator() + tableBuilder,
-                    messageContext.getTextChannel());
+            show(messageContext);
             return;
         }
 
@@ -68,32 +58,7 @@ public class Reminder extends Command {
         }
 
         if (isArgument(cmd, "remove", "r")) {
-            int number;
-            try {
-                number = Integer.parseInt(args[2]);
-            } catch (NumberFormatException e) {
-                MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
-                return;
-            }
-
-            List<ReminderSimple> userReminder = ReminderData.getUserReminder(messageContext.getGuild(),
-                    messageContext.getAuthor(), messageContext);
-            if (number > userReminder.size()) {
-                MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getTextChannel());
-                return;
-            }
-
-            ReminderSimple reminder = userReminder.stream().filter(reminderSimple ->
-                    reminderSimple.getReminderId() == number).collect(Collectors.toList()).get(0);
-
-            ReminderData.removeUserReminder(messageContext.getGuild(), messageContext.getAuthor(),
-                    number, messageContext);
-
-            MessageSender.sendMessage("Removed reminder " + reminder.getReminderId() + ": \""
-                            + TextFormatting.cropText(reminder.getText(), "...", 20, true)
-                            + System.lineSeparator()
-                            + "Which would be send at " + reminder.getTime(),
-                    messageContext.getTextChannel());
+            remove(args, messageContext);
             return;
         }
 
@@ -110,8 +75,52 @@ public class Reminder extends Command {
 
     }
 
+    private void remove(String[] args, MessageEventDataWrapper messageContext) {
+        Integer number = ArgumentParser.parseInt(args[2]);
+        if (number == null) {
+            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
+            return;
+        }
+
+        List<ReminderSimple> userReminder = ReminderData.getUserReminder(messageContext.getGuild(),
+                messageContext.getAuthor(), messageContext);
+        if (number > userReminder.size()) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getTextChannel());
+            return;
+        }
+
+        ReminderSimple reminder = userReminder.stream().filter(reminderSimple ->
+                reminderSimple.getReminderId() == number).collect(Collectors.toList()).get(0);
+
+        ReminderData.removeUserReminder(messageContext.getGuild(), messageContext.getAuthor(),
+                number, messageContext);
+
+        MessageSender.sendMessage("Removed reminder " + reminder.getReminderId() + ": \""
+                        + TextFormatting.cropText(reminder.getText(), "...", 20, true)
+                        + System.lineSeparator()
+                        + "Which would be send at " + reminder.getTime(),
+                messageContext.getTextChannel());
+    }
+
+    private void show(MessageEventDataWrapper messageContext) {
+        List<ReminderSimple> reminders = ReminderData.getUserReminder(messageContext.getGuild(),
+                messageContext.getAuthor(), messageContext);
+        TextFormatting.TableBuilder tableBuilder
+                = TextFormatting.getTableBuilder(reminders, "ID", "Message", "Time");
+        for (ReminderSimple reminder : reminders) {
+            tableBuilder.next();
+            tableBuilder.setRow(
+                    reminder.getReminderId() + "",
+                    TextFormatting.cropText(reminder.getText(), "...", 30, true),
+                    reminder.getTime());
+        }
+
+        MessageSender.sendMessage("Your current reminders: " + System.lineSeparator() + tableBuilder,
+                messageContext.getTextChannel());
+    }
+
     private void add(String[] args, MessageEventDataWrapper messageContext) {
-        String command = String.join(" ", args);
+        String command = ArgumentParser.getMessage(args, 0, 0);
         if (!DATE.matcher(command).find() && !INTERVAL.matcher(command).find()) {
             MessageSender.sendSimpleError(ErrorType.INVALID_TIME, messageContext.getChannel());
             return;
@@ -120,7 +129,7 @@ public class Reminder extends Command {
         if (DATE.matcher(command).find()) {
             String date = args[args.length - 2];
             String time = args[args.length - 1];
-            String message = TextFormatting.getRangeAsString(" ", args, 1, -4);
+            String message = ArgumentParser.getMessage(args, 1, -4);
 
             if (ReminderData.addReminderDate(messageContext.getGuild(), messageContext.getAuthor(),
                     messageContext.getTextChannel(), message, date, time, messageContext)) {
@@ -131,8 +140,8 @@ public class Reminder extends Command {
             return;
         }
 
-        String interval = TextFormatting.getRangeAsString(" ", args, -2, 0);
-        String message = TextFormatting.getRangeAsString(" ", args, 1, -3);
+        String interval = ArgumentParser.getMessage(args, -2);
+        String message = ArgumentParser.getMessage(args, 1, -3);
 
         if (ReminderData.addReminderInterval(messageContext.getGuild(), messageContext.getAuthor(),
                 messageContext.getTextChannel(), message, interval, messageContext)) {

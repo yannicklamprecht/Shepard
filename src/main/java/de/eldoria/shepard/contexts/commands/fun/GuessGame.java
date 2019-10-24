@@ -99,7 +99,7 @@ public class GuessGame extends Command {
 
     private void startGame(MessageEventDataWrapper messageContext) {
         ChannelEvaluator<GuessGameEvaluator> channelEvaluator
-                = Evaluator.getGuessGameScheduler();
+                = Evaluator.getGuessGame();
         if (channelEvaluator.isEvaluationActive(messageContext.getTextChannel())) {
             MessageSender.sendMessage("One round is still in progress.", messageContext.getChannel());
             return;
@@ -109,6 +109,7 @@ public class GuessGame extends Command {
         if (hentaiImage == null) {
             return;
         }
+
         EmbedBuilder builder = new EmbedBuilder();
 
         builder.setTitle(TITLE)

@@ -105,9 +105,9 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
             }
         }
 
-        if(bet.containsKey(user.getIdLong())){
+        if (bet.containsKey(user.getIdLong())) {
             bet.put(user.getIdLong(), bet.get(user.getIdLong()) + finalAmount);
-        }else{
+        } else {
             bet.put(user.getIdLong(), finalAmount);
         }
 

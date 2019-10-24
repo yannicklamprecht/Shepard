@@ -1,16 +1,14 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
-import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.GreetingData;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.TextChannel;
-
-import java.util.Arrays;
 
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
@@ -59,7 +57,8 @@ public class Greeting extends Command {
 
     private void setMessage(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length > 1) {
-            String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+            String message = ArgumentParser.getMessage(args, 1);
+
             if (GreetingData.setGreetingText(messageContext.getGuild(), message, messageContext)) {
                 MessageSender.sendMessage("Changed greeting message to " + lineSeparator()
                         + message, messageContext.getChannel());
@@ -85,13 +84,13 @@ public class Greeting extends Command {
             }
             return;
         } else if (args.length == 2) {
-            TextChannel channel = messageContext.getGuild().getTextChannelById(DbUtil.getIdRaw(args[1]));
+            TextChannel channel = ArgumentParser.getTextChannel(messageContext.getGuild(), args[1]);
+
             if (channel != null) {
                 if (GreetingData.setGreetingChannel(messageContext.getGuild(), channel, messageContext)) {
                     MessageSender.sendMessage("Greeting channel set to "
                             + channel.getAsMention(), messageContext.getChannel());
                 }
-
                 return;
             }
         }

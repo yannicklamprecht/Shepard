@@ -34,7 +34,7 @@ public class ReactionListener extends ListenerAdapter {
     private void guessGame(@Nonnull GuildMessageReactionAddEvent event,
                            UniqueMessageIdentifier uniqueMessageIdentifier) {
         ChannelEvaluator<GuessGameEvaluator> guessGameScheduler
-                = Evaluator.getGuessGameScheduler();
+                = Evaluator.getGuessGame();
         if (guessGameScheduler.isReactionMessage(uniqueMessageIdentifier)) {
             GuessGameEvaluator channelEvaluator = guessGameScheduler.getChannelEvaluator(event.getChannel());
 

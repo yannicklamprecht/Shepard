@@ -13,10 +13,10 @@ import java.util.function.Consumer;
 
 import static spark.Spark.post;
 
-public class BotListReporter {
+public final class BotListReporter {
     private static BotListReporter instance;
-    private DiscordBotListAPI api;
-    private List<Consumer<BotListResponse>> eventHandlers;
+    private final DiscordBotListAPI api;
+    private final List<Consumer<BotListResponse>> eventHandlers;
 
     private BotListReporter() {
         api = new DiscordBotListAPI.Builder()
@@ -65,7 +65,7 @@ public class BotListReporter {
     private void defineRoutes() {
         post("/votes/", (request, response) -> {
             String authorization = request.headers("Authorization");
-            if(!authorization.equals(ShepardBot.getConfig().getBotList().getAuthorization())){
+            if (!authorization.equals(ShepardBot.getConfig().getBotList().getAuthorization())) {
                 return HttpStatusCodes.STATUS_CODE_UNAUTHORIZED;
             }
 

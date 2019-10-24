@@ -69,6 +69,13 @@ class TextFormattingTest {
     }
 
     @Test
+    void getRangeAsString8() {
+        String[] array = new String[] {"this", "is", "a", "simple", "test", "text", "as", "array"};
+        String rangeAsString = TextFormatting.getRangeAsString(" ", array, -1, 0);
+        assertEquals("array", rangeAsString);
+    }
+
+    @Test
     void trimText0() {
         String text = "This is a simple text to test text cropping";
         String cropText = TextFormatting.cropText(text, "...", text.length(), false);

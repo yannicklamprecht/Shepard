@@ -2,11 +2,11 @@ package de.eldoria.shepard.contexts.commands.botconfig;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.managers.Presence;
@@ -59,7 +59,7 @@ public class BotPresence extends Command {
 
         if (isArgument(activity, "playing", "p")) {
             presence.setActivity(Activity.playing(
-                    TextFormatting.getRangeAsString(" ", args, 1, args.length)
+                    ArgumentParser.getMessage(args, 1)
             ));
             return;
         }
@@ -67,8 +67,8 @@ public class BotPresence extends Command {
             if (args.length > 2) {
 
                 presence.setActivity(Activity.streaming(
-                        TextFormatting.getRangeAsString(" ", args, 1, args.length - 1),
-                        args[args.length - 1]
+                        ArgumentParser.getMessage(args, 1, -1),
+                        ArgumentParser.getMessage(args, -1)
                 ));
                 return;
             } else {
@@ -86,8 +86,7 @@ public class BotPresence extends Command {
 
         if (isArgument(activity, "listening", "l")) {
             presence.setActivity(Activity.listening(
-                    TextFormatting.getRangeAsString(" ", args, 1, args.length)
-            ));
+                    ArgumentParser.getMessage(args, 1)));
             return;
         }
 

@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.database.queries.ChangelogData;
@@ -12,10 +13,8 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.database.DbUtil.getIdRaw;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -72,15 +71,12 @@ public class Changelog extends Command {
     }
 
     private void showRoles(MessageEventDataWrapper receivedEvent) {
-        List<String> roleIds = ChangelogData.getRoles(receivedEvent.getGuild(), receivedEvent);
-
-        List<String> roleMentions = roleIds.stream()
-                .map(roleId -> receivedEvent.getGuild().getRoleById(getIdRaw(roleId)))
-                .filter(Objects::nonNull).map(IMentionable::getAsMention)
-                .collect(Collectors.toList());
+        List<String> collect = ArgumentParser.getRoles(receivedEvent.getGuild(),
+                ChangelogData.getRoles(receivedEvent.getGuild(), receivedEvent))
+                .stream().map(IMentionable::getAsMention).collect(Collectors.toList());
 
         MessageSender.sendSimpleTextBox("Currently logged roles:",
-                String.join(lineSeparator(), roleMentions), receivedEvent.getChannel());
+                String.join(lineSeparator(), collect), receivedEvent.getChannel());
     }
 
     private void deactivate(MessageEventDataWrapper receivedEvent) {
@@ -95,7 +91,7 @@ public class Changelog extends Command {
             return;
         }
 
-        TextChannel textChannelById = messageContext.getGuild().getTextChannelById(getIdRaw(args[1]));
+        TextChannel textChannelById = ArgumentParser.getTextChannel(messageContext.getGuild(), args[1]);
 
         if (textChannelById == null) {
             MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, messageContext.getChannel());
@@ -106,7 +102,6 @@ public class Changelog extends Command {
             MessageSender.sendMessage("Changelog is presented in channel" + textChannelById.getAsMention(),
                     messageContext.getChannel());
         }
-
     }
 
     private void modifyRoles(String[] args, MessageEventDataWrapper messageContext, String cmd) {
@@ -115,20 +110,21 @@ public class Changelog extends Command {
             return;
         }
 
-        Role roleById = messageContext.getGuild().getRoleById(getIdRaw(args[1]));
-        if (roleById == null) {
+        Role role = ArgumentParser.getRole(messageContext.getGuild(), args[1]);
+
+        if (role == null) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ROLE, messageContext.getChannel());
             return;
         }
 
         if (isArgument(cmd, "addRole", "ar")) {
-            if (ChangelogData.addRole(messageContext.getGuild(), roleById, messageContext)) {
-                MessageSender.sendMessage("Added role **" + roleById.getName() + "** to changelog.",
+            if (ChangelogData.addRole(messageContext.getGuild(), role, messageContext)) {
+                MessageSender.sendMessage("Added role **" + role.getName() + "** to changelog.",
                         messageContext.getChannel());
             }
         } else {
-            if (ChangelogData.removeRole(messageContext.getGuild(), roleById, messageContext)) {
-                MessageSender.sendMessage("Removed role **" + roleById.getName() + "** from changelog.",
+            if (ChangelogData.removeRole(messageContext.getGuild(), role, messageContext)) {
+                MessageSender.sendMessage("Removed role **" + role.getName() + "** from changelog.",
                         messageContext.getChannel());
             }
         }

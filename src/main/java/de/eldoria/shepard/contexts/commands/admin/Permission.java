@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
@@ -18,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.contexts.ContextHelper.getContextName;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -57,7 +57,7 @@ public class Permission extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[1];
 
-        String contextName = getContextName(args[0], messageContext);
+        String contextName = ArgumentParser.getContextName(args[0], messageContext);
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
@@ -95,11 +95,12 @@ public class Permission extends Command {
     }
 
     private void showMentions(MessageEventDataWrapper messageContext, String contextName, String message) {
-        List<String> contextRolePermission = ContextData.getContextRolePermission(messageContext.getGuild(),
-                contextName, messageContext);
+        String roleMentions = ArgumentParser.getRoles(messageContext.getGuild(),
+                ContextData.getContextRolePermission(messageContext.getGuild(),
+                        contextName, messageContext)).stream().map(IMentionable::getAsMention)
+                .collect(Collectors.joining(lineSeparator()));
         MessageSender.sendSimpleTextBox(message,
-                Verifier.getValidRoles(messageContext.getGuild(), contextRolePermission)
-                        .stream().map(IMentionable::getAsMention).collect(Collectors.joining(lineSeparator())),
+                roleMentions,
                 Color.blue, messageContext.getChannel());
     }
 
@@ -110,7 +111,9 @@ public class Permission extends Command {
             return;
         }
 
-        List<User> validUser = Verifier.getValidUserByString(Arrays.copyOfRange(args, 2, args.length));
+
+        List<User> validUser = ArgumentParser.getGuildUsers(receivedEvent.getGuild(),
+                ArgumentParser.getRangeAsList(Arrays.asList(args), 2));
 
         for (User user : validUser) {
             if (modifyType == ModifyType.ADD) {

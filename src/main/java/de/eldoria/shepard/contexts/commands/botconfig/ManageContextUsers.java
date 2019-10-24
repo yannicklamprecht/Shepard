@@ -1,9 +1,8 @@
 package de.eldoria.shepard.contexts.commands.botconfig;
 
-import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
-import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -12,14 +11,10 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
 import de.eldoria.shepard.util.BooleanState;
-import de.eldoria.shepard.util.Verifier;
-import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static de.eldoria.shepard.contexts.ContextHelper.getContextName;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 
 public class ManageContextUsers extends Command {
@@ -50,7 +45,7 @@ public class ManageContextUsers extends Command {
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        String contextName = getContextName(args[0], messageContext);
+        String contextName = ArgumentParser.getContextName(args[0], messageContext);
         String cmd = args[1];
 
         if (contextName == null) {
@@ -88,23 +83,18 @@ public class ManageContextUsers extends Command {
                             ModifyType modifyType, MessageEventDataWrapper messageContext) {
         List<String> mentions = new ArrayList<>();
 
-        for (String userId : Arrays.copyOfRange(args, 2, args.length)) {
-            if (Verifier.isValidId(userId)) {
-                User user = ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(userId));
-                if (user != null) {
+        ArgumentParser.getGuildUsers(messageContext.getGuild(),
+                ArgumentParser.getRangeAsList(args, 2))
+                .forEach(user -> {
                     if (modifyType == ModifyType.ADD) {
                         if (!ContextData.addContextUser(contextName, user, messageContext)) {
                             return;
                         }
-                    } else {
-                        if (!ContextData.removeContextUser(contextName, user, messageContext)) {
-                            return;
-                        }
+                    } else if (!ContextData.removeContextUser(contextName, user, messageContext)) {
+                        return;
                     }
                     mentions.add(user.getAsMention());
-                }
-            }
-        }
+                });
 
         String names = String.join(System.lineSeparator(), mentions);
 
@@ -127,7 +117,6 @@ public class ManageContextUsers extends Command {
         manageUser(args, contextName, ModifyType.REMOVE, messageContext);
     }
 
-
     private void setListType(String[] args, String contextName, MessageEventDataWrapper messageContext) {
         ListType type = ListType.getType(args[2]);
 
@@ -142,19 +131,17 @@ public class ManageContextUsers extends Command {
                             + contextName.toUpperCase() + "\" to " + type.toString() + "**",
                     messageContext.getChannel());
         }
-
     }
 
     private void setActive(String[] args, String contextName, MessageEventDataWrapper messageContext) {
-        BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
+        BooleanState bState = ArgumentParser.getBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN,
-                    messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getChannel());
             return;
         }
 
-        boolean state = bState == BooleanState.TRUE;
+        boolean state = bState.stateAsBoolean;
 
         if (!ContextData.setContextUserCheckActive(contextName, state, messageContext)) {
             return;
@@ -167,7 +154,6 @@ public class ManageContextUsers extends Command {
         } else {
             MessageSender.sendMessage("**Deactivated user check for context \"" + contextName.toUpperCase() + "\"**",
                     messageContext.getChannel());
-
         }
     }
 }

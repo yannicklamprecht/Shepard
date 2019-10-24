@@ -4,10 +4,10 @@ import java.sql.Timestamp;
 import java.time.format.DateTimeFormatter;
 
 public class ReminderSimple {
+    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private final int reminderId;
     private final String text;
     private final String time;
-    private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public ReminderSimple(int reminderId, String text, Timestamp timestamp) {
         this.reminderId = reminderId;

@@ -8,7 +8,7 @@ public class Evaluator {
     private static ChannelEvaluator<KudoLotteryEvaluator> kudoLotteryChannelEvaluatorInstance;
 
 
-    public static ChannelEvaluator<GuessGameEvaluator> getGuessGameScheduler() {
+    public static ChannelEvaluator<GuessGameEvaluator> getGuessGame() {
         if (guessGameChannelEvaluatorInstance == null) {
             guessGameChannelEvaluatorInstance = new ChannelEvaluator<>(5);
         }

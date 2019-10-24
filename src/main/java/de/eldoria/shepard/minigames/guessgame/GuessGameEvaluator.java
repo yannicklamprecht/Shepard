@@ -92,7 +92,7 @@ public class GuessGameEvaluator extends BaseEvaluator {
 
         guildChannel.sendMessage(builder.build()).queue();
 
-        Evaluator.getGuessGameScheduler().evaluationDone(guildChannel);
+        Evaluator.getGuessGame().evaluationDone(guildChannel);
     }
 
     public void addVote(User user, boolean voteValue) {

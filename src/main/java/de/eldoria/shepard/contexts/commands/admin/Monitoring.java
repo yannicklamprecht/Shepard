@@ -1,9 +1,9 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
-import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.MonitoringData;
 import de.eldoria.shepard.database.types.Address;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -111,7 +111,7 @@ public class Monitoring extends Command {
             return true;
         }
 
-        String name = TextFormatting.getRangeAsString(" ", args, 2, args.length - 1);
+        String name = ArgumentParser.getMessage(args,2,-1);
         if (MonitoringData.addMonitoringAddress(
                 messageContext.getGuild(), args[1], name, booleanState.stateAsBoolean, messageContext)) {
             MessageSender.sendMessage("Registered Address **" + args[1] + "** as **" + name + "**!",
@@ -120,9 +120,9 @@ public class Monitoring extends Command {
         return false;
     }
 
-    private boolean enable(String arg, MessageEventDataWrapper messageContext) {
-        if (Verifier.isValidId(arg)) {
-            TextChannel channel = messageContext.getGuild().getTextChannelById(DbUtil.getIdRaw(arg));
+    private boolean enable(String channelString, MessageEventDataWrapper messageContext) {
+        if (Verifier.isValidId(channelString)) {
+            TextChannel channel = ArgumentParser.getTextChannel(messageContext.getGuild(), channelString);
             if (channel != null) {
                 if (MonitoringData.setMonitoringChannel(messageContext.getGuild(), channel, messageContext)) {
                     MessageSender.sendMessage(

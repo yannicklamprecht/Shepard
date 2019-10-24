@@ -1,17 +1,19 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandArg;
-import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
 import de.eldoria.shepard.util.TextFormatting;
+import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
@@ -21,11 +23,11 @@ import net.dv8tion.jda.api.requests.restaction.PermissionOverrideAction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static de.eldoria.shepard.database.queries.TicketData.getTypeOwnerRoles;
 import static de.eldoria.shepard.database.queries.TicketData.getTypeSupportRoles;
 import static de.eldoria.shepard.database.queries.TicketData.removeChannel;
-import static de.eldoria.shepard.util.Verifier.getValidRoles;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -80,16 +82,11 @@ public class Ticket extends Command {
         }
 
 
-        TextChannel channel = receivedEvent.getGuild().getTextChannelById(receivedEvent.getChannel().getIdLong());
-        if (channel == null) {
-            MessageSender.sendSimpleError(ErrorType.NOT_GUILD_TEXT_CHANNEL, receivedEvent.getChannel());
-            return;
-        }
-
+        TextChannel channel = receivedEvent.getTextChannel();
         String channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
 
         if (channelOwnerId == null) {
-            MessageSender.sendSimpleError(ErrorType.NOT_TICKET_CHANEL, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_TICKET_CHANNEL, receivedEvent.getChannel());
             return;
         }
 
@@ -101,16 +98,14 @@ public class Ticket extends Command {
 
 
             //Get the ticket owner member object
-            Member member = receivedEvent.getGuild().getMemberById(channelOwnerId);
+            Member member = ArgumentParser.getGuildMember(receivedEvent.getGuild(), channelOwnerId);
 
             //If Member is present remove roles for this ticket.
-            if (member != null) {
+            if (member != null && type != null) {
                 //Get the owner roles of the current ticket. They should be removed.
-                if (type != null) {
-                    List<String> ownerRolesAsString = getTypeOwnerRoles(receivedEvent.getGuild(),
-                            type.getKeyword(), receivedEvent);
-                    TicketHelper.removeAndUpdateTicketRoles(receivedEvent, member, ownerRolesAsString);
-                }
+                List<Role> roles = ArgumentParser.getRoles(receivedEvent.getGuild(),
+                        getTypeOwnerRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent));
+                TicketHelper.removeAndUpdateTicketRoles(receivedEvent, member, roles);
             }
 
             //Finally delete the channel.
@@ -148,16 +143,13 @@ public class Ticket extends Command {
                 return;
             }
 
-            List<String> ownerMentions = new ArrayList<>();
+            List<String> ownerMentions = ArgumentParser.getRoles(receivedEvent.getGuild(),
+                    getTypeOwnerRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent))
+                    .stream().map(IMentionable::getAsMention).collect(Collectors.toList());
 
-            getValidRoles(receivedEvent.getGuild(),
-                    getTypeOwnerRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent)
-                            .toArray(String[]::new)).forEach(role -> ownerMentions.add(role.getAsMention()));
-
-            List<String> supporterMentions = new ArrayList<>();
-            getValidRoles(receivedEvent.getGuild(),
-                    getTypeSupportRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent)
-                            .toArray(String[]::new)).forEach(role -> supporterMentions.add(role.getAsMention()));
+            List<String> supporterMentions = ArgumentParser.getRoles(receivedEvent.getGuild(),
+                    getTypeSupportRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent))
+                    .stream().map(IMentionable::getAsMention).collect(Collectors.toList());
 
             List<MessageEmbed.Field> fields = new ArrayList<>();
             fields.add(new MessageEmbed.Field("Channel Category:", type.getCategory().getName(), false));
@@ -176,12 +168,14 @@ public class Ticket extends Command {
         if (args.length != 3) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
         }
-        Member member = receivedEvent.getGuild().getMemberById(DbUtil.getIdRaw(args[2]));
+
+        Member member = ArgumentParser.getGuildMember(receivedEvent.getGuild(), args[2]);
         if (member == null) {
             MessageSender.sendSimpleError(ErrorType.INVALID_USER, receivedEvent.getChannel());
             return;
         }
-        if (member.getIdLong() == receivedEvent.getAuthor().getIdLong()) {
+
+        if (Verifier.equalSnowflake(member, receivedEvent.getAuthor())) {
             MessageSender.sendSimpleError(ErrorType.TICKET_SELF_ASSIGNMENT, receivedEvent.getChannel());
             return;
         }
@@ -219,10 +213,10 @@ public class Ticket extends Command {
                             member.getUser(), ticket.getKeyword(), receivedEvent);
 
                     //Get ticket support and owner roles
-                    List<Role> supportRoles = getValidRoles(receivedEvent.getGuild(),
+                    List<Role> supportRoles = ArgumentParser.getRoles(receivedEvent.getGuild(),
                             getTypeSupportRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
 
-                    List<Role> ownerRoles = getValidRoles(receivedEvent.getGuild(),
+                    List<Role> ownerRoles = ArgumentParser.getRoles(receivedEvent.getGuild(),
                             getTypeOwnerRoles(receivedEvent.getGuild(), ticket.getKeyword(), receivedEvent));
                     //Assign ticket support and owner roles
                     for (Role role : ownerRoles) {
