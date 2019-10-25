@@ -6,6 +6,8 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
+import de.eldoria.shepard.localization.enums.GeneralLocale;
+import de.eldoria.shepard.localization.enums.InviteLocale;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -29,22 +31,20 @@ public class Invite extends Command {
     public Invite() {
         commandName = "invite";
         commandDesc = "Manage registered invites";
-        commandArgs = new CommandArg[] {
+        commandArgs = new CommandArg[]{
                 new CommandArg("action", true,
-                        new SubArg("addInvite", )
-                        "**__a__dd__I__nvite** -> Registers or update a invite" + lineSeparator()
-                                + "**__rem__ove__I__nvite** -> removes a invite" + lineSeparator()
-                                + "**__ref__resh__I__nvites** -> removes non present invites from database"
-                                + lineSeparator()
-                                + "**__s__how__I__nvites** -> Lists all registered invites", true),
-                new CommandArg("values",
-                        "**addInvite** -> [codeOfInvite] [Invite Name/Description]"
-                                + lineSeparator()
-                                + "**removeInvite** -> [codeOfInvite]" + lineSeparator()
-                                + "**refreshInvites** -> leave empty" + lineSeparator()
-                                + "**showInvites** -> leave empty", false)};
+                        new SubArg("addInvite", InviteLocale.C_ADD_INVITE.replacement, true),
+                        new SubArg("removeInvite", InviteLocale.C_REMOVE_INVITE.replacement, true),
+                        new SubArg("refreshInvites", InviteLocale.C_REFRESH_INVITES.replacement, true),
+                        new SubArg("showInvites", InviteLocale.C_SHOW_INVITES.replacement, true)),
+                new CommandArg("values", false,
+                        new SubArg("addInvite", InviteLocale.C_CODE.replacement + " " + InviteLocale.C_INVITE_NAME.replacement),
+                        new SubArg("removeInvite", InviteLocale.C_CODE.replacement),
+                        new SubArg("refreshInvite", GeneralLocale.EMPTY.replacement),
+                        new SubArg("showInvites", GeneralLocale.EMPTY.replacement))};
         category = ContextCategory.ADMIN;
     }
+
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
@@ -65,36 +65,36 @@ public class Invite extends Command {
             showInvites(messageContext);
             return;
         }
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
     }
 
     private void showInvites(MessageEventDataWrapper messageContext) {
         List<DatabaseInvite> invites = InviteData.getInvites(messageContext.getGuild(), messageContext);
 
         StringBuilder message = new StringBuilder();
-        message.append("Registered Invites: ").append(lineSeparator());
+        message.append(InviteLocale.M_REGISTERED_INVITES.replacement).append(lineSeparator());
 
         TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
-                invites, "Code", "Usage Count", "Invite Name");
+                invites, InviteLocale.M_CODE.replacement, InviteLocale.M_USAGE_COUNT.replacement, InviteLocale.M_INVITE_NAME.replacement);
         for (DatabaseInvite invite : invites) {
             tableBuilder.next();
             tableBuilder.setRow(invite.getCode(), invite.getUsedCount() + "", invite.getSource());
         }
         message.append(tableBuilder);
-        MessageSender.sendMessage(message.toString(), messageContext.getChannel());
+        MessageSender.sendMessage(message.toString(), messageContext);
     }
 
     private void refreshInvites(MessageEventDataWrapper messageContext) {
         messageContext.getGuild().retrieveInvites().queue(invites -> {
             if (InviteData.updateInvite(messageContext.getGuild(), invites, messageContext)) {
-                MessageSender.sendMessage("Removed non existent invites!", messageContext.getChannel());
+                MessageSender.sendMessage(InviteLocale.M_REMOVED_NON_EXISTENT_INVITES.replacement, messageContext);
             }
         });
     }
 
     private void removeInvite(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent);
             return;
         }
         List<DatabaseInvite> databaseInvites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
@@ -102,24 +102,24 @@ public class Invite extends Command {
         for (DatabaseInvite invite : databaseInvites) {
             if (invite.getCode().equals(args[1])) {
                 if (InviteData.removeInvite(receivedEvent.getGuild(), args[1], receivedEvent)) {
-                    MessageSender.sendMessage("Removed invite " + invite.getSource(), receivedEvent.getChannel());
+                    MessageSender.sendMessage(InviteLocale.M_REMOVED_INVITE.replacement + " **" + invite.getSource() + "**", receivedEvent);
                     return;
                 }
             }
         }
         MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND,
-                receivedEvent.getChannel());
+                receivedEvent);
     }
 
     private void addInvite(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
             return;
         }
 
         Matcher matcher = INVITE.matcher(args[1]);
         if (!matcher.find()) {
-            MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext);
         }
         String code = matcher.group(1);
 
@@ -130,15 +130,16 @@ public class Invite extends Command {
                     String name = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
                     if (InviteData.addInvite(messageContext.getGuild(), invite.getCode(), name,
                             invite.getUses(), messageContext)) {
-                        MessageSender.sendMessage("Added Invite **\"" + name + "\"** with code **"
-                                        + invite.getCode() + "** to database with usage count of **"
-                                        + invite.getUses() + "**",
-                                messageContext.getChannel());
+                        MessageSender.sendMessage(locale.getReplacedString(InviteLocale.M_ADDED_INVITE.localeCode,
+                                messageContext.getGuild(),
+                                "**" + name + "**",
+                                "**" + invite.getCode() + "**",
+                                "**" + invite.getUses() + "**"), messageContext);
                     }
                     return;
                 }
             }
-            MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext);
         });
     }
 }
