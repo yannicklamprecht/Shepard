@@ -62,7 +62,7 @@ public class Greeting extends Command {
             String message = ArgumentParser.getMessage(args, 1);
 
             if (GreetingData.setGreetingText(messageContext.getGuild(), message, messageContext)) {
-                MessageSender.sendMessage(GreetingsLocale.C_SET_MESSAGE + lineSeparator()
+                MessageSender.sendMessage(GreetingsLocale.M_SET_MESSAGE + lineSeparator()
                         + message, messageContext);
             }
             return;
