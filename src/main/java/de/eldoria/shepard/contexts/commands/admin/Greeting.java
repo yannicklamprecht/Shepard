@@ -3,8 +3,11 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.GreetingData;
+import de.eldoria.shepard.localization.enums.GeneralLocale;
+import de.eldoria.shepard.localization.enums.GreetingsLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -21,15 +24,14 @@ public class Greeting extends Command {
         commandName = "greeting";
         commandDesc = "Manage greeting settings.";
         commandArgs = new CommandArg[] {
-                new CommandArg("action",
-                        "**__s__et__C__hannel** -> Set or change the greeting Channel" + lineSeparator()
-                                + "**__r__emove__C__hannel** -> Remove channel and disable greeting." + lineSeparator()
-                                + "**__s__et__M__essage** -> Set or change the greeting message", true),
-                new CommandArg("value",
-                        "**setChannel** -> Channel Mention or execute in greeting Channel." + lineSeparator()
-                                + "**removeChannel** -> leave empty" + lineSeparator()
-                                + "**setMessage** -> Type your text message" + lineSeparator()
-                                + "Supported Placeholders: {user_tag} {user_name} {user_mention}", false)};
+                new CommandArg("action", true,
+                        new SubArg("setChannel", GreetingsLocale.C_SET_CHANNEL.replacement, true),
+                        new SubArg("removeChannel", GreetingsLocale.C_REMOVE_CHANNEL.replacement, true),
+                        new SubArg("setMessage", GreetingsLocale.C_SET_MESSAGE.replacement, true)),
+                new CommandArg("value", false,
+                        new SubArg("setChannel", GeneralLocale.CHANNEL_MENTION_OR_EXECUTE.replacement),
+                        new SubArg("removeChannel", GeneralLocale.EMPTY.replacement),
+                        new SubArg("setMessage", GeneralLocale.MESSAGE_MENTION.replacement))};
         category = ContextCategory.ADMIN;
     }
 
@@ -52,7 +54,7 @@ public class Greeting extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
     }
 
     private void setMessage(String[] args, MessageEventDataWrapper messageContext) {
@@ -60,17 +62,17 @@ public class Greeting extends Command {
             String message = ArgumentParser.getMessage(args, 1);
 
             if (GreetingData.setGreetingText(messageContext.getGuild(), message, messageContext)) {
-                MessageSender.sendMessage("Changed greeting message to " + lineSeparator()
-                        + message, messageContext.getChannel());
+                MessageSender.sendMessage(GreetingsLocale.C_SET_MESSAGE + lineSeparator()
+                        + message, messageContext);
             }
             return;
         }
-        MessageSender.sendSimpleError(ErrorType.NO_MESSAGE_FOUND, messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.NO_MESSAGE_FOUND, messageContext);
     }
 
     private void removeChannel(MessageEventDataWrapper messageContext) {
         if (GreetingData.removeGreetingChannel(messageContext.getGuild(), messageContext)) {
-            MessageSender.sendMessage("Removed greeting channel.", messageContext.getChannel());
+            MessageSender.sendMessage(GreetingsLocale.M_REMOVED_CHANNEL.replacement, messageContext);
         }
 
     }
@@ -79,8 +81,8 @@ public class Greeting extends Command {
         if (args.length == 1) {
             if (GreetingData.setGreetingChannel(messageContext.getGuild(),
                     messageContext.getChannel(), messageContext)) {
-                MessageSender.sendMessage("Greeting Channel set to "
-                        + ((TextChannel) messageContext.getChannel()).getAsMention(), messageContext.getChannel());
+                MessageSender.sendMessage(GreetingsLocale.M_SET_CHANNEL + " "
+                        + messageContext.getTextChannel().getAsMention(), messageContext);
             }
             return;
         } else if (args.length == 2) {
@@ -88,12 +90,13 @@ public class Greeting extends Command {
 
             if (channel != null) {
                 if (GreetingData.setGreetingChannel(messageContext.getGuild(), channel, messageContext)) {
-                    MessageSender.sendMessage("Greeting channel set to "
-                            + channel.getAsMention(), messageContext.getChannel());
+                    MessageSender.sendMessage(
+                            GreetingsLocale.M_SET_CHANNEL + " "
+                                    + channel.getAsMention(), messageContext);
                 }
                 return;
             }
         }
-        MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext);
     }
 }
