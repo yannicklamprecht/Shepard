@@ -2,7 +2,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
 import de.eldoria.shepard.util.TextFormatting;
@@ -29,7 +30,8 @@ public class Invite extends Command {
         commandName = "invite";
         commandDesc = "Manage registered invites";
         commandArgs = new CommandArg[] {
-                new CommandArg("action",
+                new CommandArg("action", true,
+                        new SubArg("addInvite", )
                         "**__a__dd__I__nvite** -> Registers or update a invite" + lineSeparator()
                                 + "**__rem__ove__I__nvite** -> removes a invite" + lineSeparator()
                                 + "**__ref__resh__I__nvites** -> removes non present invites from database"

@@ -15,7 +15,6 @@ import static java.lang.System.lineSeparator;
 public final class TextFormatting {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
 
-
     private TextFormatting() {
     }
 
@@ -123,6 +122,7 @@ public final class TextFormatting {
         }
         return tableBuilder.toString();
     }
+
 
     /**
      * Get the current time as string.

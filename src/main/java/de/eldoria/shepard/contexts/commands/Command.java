@@ -2,6 +2,8 @@ package de.eldoria.shepard.contexts.commands;
 
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.LatestCommandsCollection;
+import de.eldoria.shepard.contexts.commands.argument.CommandArg;
+import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.ContextSensitive;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
  */
 public abstract class Command extends ContextSensitive {
 
+    protected LanguageHandler locale;
     /**
      * Name of the command.
      */
@@ -45,6 +48,7 @@ public abstract class Command extends ContextSensitive {
      */
     protected Command() {
         CommandCollection.getInstance().addCommand(this);
+        locale = LanguageHandler.getInstance();
     }
 
     /**
@@ -193,7 +197,7 @@ public abstract class Command extends ContextSensitive {
                 desc.append("**").append(arg.getArgName().toUpperCase()).append("**")
                         .append(arg.isRequired() ? " REQUIRED" : " OPTIONAL")
                         .append(System.lineSeparator())
-                        .append("> ").append(arg.getArgDesc()
+                        .append("> ").append(arg.getSubArgs()
                         .replace(System.lineSeparator(), System.lineSeparator() + "> "))
                         .append(System.lineSeparator())
                         .append(System.lineSeparator());
@@ -222,7 +226,7 @@ public abstract class Command extends ContextSensitive {
         for (CommandArg arg : commandArgs) {
             if (arg.getArgName().equalsIgnoreCase(argument)) {
                 List<MessageEmbed.Field> fields = new ArrayList<>();
-                fields.add(new MessageEmbed.Field("Description:", arg.getArgDesc(), false));
+                fields.add(new MessageEmbed.Field("Description:", arg.getSubArgs(), false));
                 fields.add(new MessageEmbed.Field("Required", arg.isRequired() ? "true" : "false", false));
                 MessageSender.sendTextBox("Help for Argument: \"" + arg.getArgName() + "\" of command \""
                         + getCommandName() + "\"", fields, channel);
