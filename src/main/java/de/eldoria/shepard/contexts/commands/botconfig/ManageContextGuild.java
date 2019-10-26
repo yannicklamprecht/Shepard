@@ -2,9 +2,12 @@ package de.eldoria.shepard.contexts.commands.botconfig;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
+import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.ContextData;
+import de.eldoria.shepard.localization.enums.GeneralLocale;
+import de.eldoria.shepard.localization.enums.botconfig.ManageContextGuildLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -15,6 +18,8 @@ import de.eldoria.shepard.util.BooleanState;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.eldoria.shepard.localization.enums.GeneralLocale.*;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextGuildLocale.*;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 
 public class ManageContextGuild extends Command {
@@ -24,22 +29,21 @@ public class ManageContextGuild extends Command {
     public ManageContextGuild() {
         commandName = "manageContextGuild";
         commandAliases = new String[] {"mcg"};
-        commandDesc = "Manage which guilds can use a context.";
+        commandDesc = DESCRIPTION.replacement;
         commandArgs = new CommandArg[] {
-                new CommandArg("context name", "Name of the context to change", true),
-                new CommandArg("action",
-                        "**set__A__ctive** -> Enables/Disables Guild Check for Command" + System.lineSeparator()
-                                + "**set__L__ist__T__ype** -> Defines it the list should be used as White or Blacklist"
-                                + System.lineSeparator()
-                                + "**__a__dd__G__uild** -> Adds a guild to the list" + System.lineSeparator()
-                                + "**__r__emove__G__uild** -> Removes a guild from the list", true),
-                new CommandArg("value",
-                        "**setActive** -> 'true' or 'false'" + System.lineSeparator()
-                                + "**setListType** -> 'BLACKLIST' or 'WHITELIST'. "
-                                + "Defines as which Type the guild list should be used" + System.lineSeparator()
-                                + "**addGuild** -> Add a guild to the list (Multiple guilds possible)"
-                                + System.lineSeparator()
-                                + "**removeguild** -> Removes a guild from the list (Multiple guilds possible", true)};
+                new CommandArg("context name", true,
+                        new SubArg("context name", A_CONTEXT_NAME.replacement)),
+                new CommandArg("action", true,
+                        new SubArg("setActive", C_SET_ACTIVE.replacement, true),
+                        new SubArg("setListType", C_SET_LIST_TYPE.replacement, true),
+                        new SubArg("addGuild", C_ADD_GUILD.replacement, true),
+                        new SubArg("removeGuild", C_REMOVE_GUILD.replacement, true)),
+                new CommandArg("value", true,
+                        new SubArg("setActive", A_BOOLEAN.replacement),
+                        new SubArg("setListType", A_LIST_TYPE.replacement),
+                        new SubArg("addGuild", A_GUILDS.replacement),
+                        new SubArg("removeGuild", A_GUILDS.replacement))
+        };
         category = ContextCategory.BOTCONFIG;
     }
 
@@ -50,7 +54,7 @@ public class ManageContextGuild extends Command {
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
-                    messageContext.getChannel());
+                    messageContext);
             return;
         }
 
@@ -74,7 +78,7 @@ public class ManageContextGuild extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
         sendCommandArgHelp("action", messageContext.getChannel());
 
     }
@@ -88,16 +92,16 @@ public class ManageContextGuild extends Command {
     }
 
     private void modifyGuild(String[] args, String contextName,
-                             ModifyType modifyType, MessageEventDataWrapper receivedEvent) {
+                             ModifyType modifyType, MessageEventDataWrapper messageContext) {
         List<String> mentions = new ArrayList<>();
 
         ArgumentParser.getGuilds(ArgumentParser.getRangeAsList(args, 2)).forEach(guild -> {
             if (modifyType == ModifyType.ADD) {
-                if (!ContextData.addContextGuild(contextName, guild, receivedEvent)) {
+                if (!ContextData.addContextGuild(contextName, guild, messageContext)) {
                     return;
                 }
             } else {
-                if (!ContextData.removeContextGuild(contextName, guild, receivedEvent)) {
+                if (!ContextData.removeContextGuild(contextName, guild, messageContext)) {
                     return;
                 }
             }
@@ -107,16 +111,13 @@ public class ManageContextGuild extends Command {
         String names = String.join(System.lineSeparator(), mentions);
 
         if (modifyType == ModifyType.ADD) {
-            MessageSender.sendSimpleTextBox("Added following guilds to context \""
-                            + contextName.toUpperCase() + "\"", names + "**",
-                    receivedEvent.getChannel());
+            MessageSender.sendSimpleTextBox(M_ADDED_GUILDS + " **"
+                    + contextName.toUpperCase() + "**", names, messageContext);
 
         } else {
-            MessageSender.sendSimpleTextBox("Removed following guilds from context \""
-                            + contextName.toUpperCase() + "\"", names + "**",
-                    receivedEvent.getChannel());
+            MessageSender.sendSimpleTextBox(M_REMOVED_GUILDS + " **"
+                    + contextName.toUpperCase() + "**", names, messageContext);
         }
-
     }
 
 
@@ -124,15 +125,14 @@ public class ManageContextGuild extends Command {
         ListType type = ListType.getType(args[2]);
 
         if (type == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_LIST_TYPE,
-                    messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_LIST_TYPE, messageContext);
             return;
         }
 
         if (ContextData.setContextGuildListType(contextName, type, messageContext)) {
-            MessageSender.sendMessage("**Changed guild list type of context \""
-                            + contextName.toUpperCase() + "\" to " + type.toString() + "**",
-                    messageContext.getChannel());
+            MessageSender.sendMessage(locale.getReplacedString(M_CHANGED_LIST_TYPE.localeCode,
+                    messageContext.getGuild(), "**" + contextName.toUpperCase() + "**")
+                    + "**" + type.toString() + "**", messageContext);
         }
 
     }
@@ -141,7 +141,7 @@ public class ManageContextGuild extends Command {
         BooleanState bState = ArgumentParser.getBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext);
             return;
         }
 
@@ -149,11 +149,11 @@ public class ManageContextGuild extends Command {
 
         if (ContextData.setContextGuildCheckActive(contextName, state, messageContext)) {
             if (state) {
-                MessageSender.sendMessage("**Activated guild check for context \""
-                        + contextName.toUpperCase() + "\"**", messageContext.getChannel());
+                MessageSender.sendMessage(M_ACTIVATED_CHECK.replacement + "**"
+                        + contextName.toUpperCase() + "**", messageContext);
             } else {
-                MessageSender.sendMessage("**Deactivated guild check for context \""
-                        + contextName.toUpperCase() + "\"**", messageContext.getChannel());
+                MessageSender.sendMessage(M_DEACTIVATED_CHECK + "**"
+                        + contextName.toUpperCase() + "**", messageContext);
             }
         }
     }

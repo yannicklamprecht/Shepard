@@ -81,8 +81,8 @@ public class ManageContext extends Command {
                     + "\"" + contextName.toUpperCase() + "\"**", messageContext);
 
         } else {
-            MessageSender.sendMessage("**" + M_DEACTIVATED_ADMIN +
-                    "\"" + contextName.toUpperCase() + "\"**", messageContext);
+            MessageSender.sendMessage("**" + M_DEACTIVATED_ADMIN
+                    + "\"" + contextName.toUpperCase() + "\"**", messageContext);
         }
     }
 

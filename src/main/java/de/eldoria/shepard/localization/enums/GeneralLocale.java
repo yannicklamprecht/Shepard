@@ -8,6 +8,7 @@ public enum GeneralLocale {
     A_USERS("command.general.argument.users"),
     A_ROLE("command.general.argument.role"),
     A_ROLES("command.general.argument.roles"),
+    A_GUILDS("command.general.argument.guilds"),
     A_MESSAGE("command.general.argument.message"),
     A_TEXT("command.general.argument.text"),
     A_MESSAGE_MENTION("command.general.argument.messageMention"),

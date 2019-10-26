@@ -3,6 +3,7 @@ package de.eldoria.shepard.contexts.commands.fun;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.database.queries.KudoData;
+import de.eldoria.shepard.localization.Util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.enums.fun.KudoLotteryLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -11,7 +12,6 @@ import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.kudolottery.KudoLotteryEvaluator;
 import de.eldoria.shepard.util.reactions.EmoteCollection;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.Color;
 
@@ -43,7 +43,7 @@ public class KudoLottery extends Command {
             return;
         }
 
-        EmbedBuilder builder = new EmbedBuilder()
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
                 .setTitle(M_EMBED_TITLE.replacement)
                 .setDescription(M_EMBED_DESCRIPTION.replacement)
                 .addField(M_EMBED_KUDOS_IN_POT.replacement,

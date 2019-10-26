@@ -28,5 +28,4 @@ public enum ManageContextLocale {
     public String toString() {
         return replacement;
     }
-
-    }
+}
