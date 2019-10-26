@@ -3,6 +3,7 @@ package de.eldoria.shepard.contexts.commands.fun;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.database.queries.KudoData;
+import de.eldoria.shepard.localization.enums.fun.KudoLotteryLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.ChannelEvaluator;
@@ -14,13 +15,13 @@ import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.Color;
 
-import static java.lang.System.lineSeparator;
+import static de.eldoria.shepard.localization.enums.fun.KudoLotteryLocale.*;
 
 public class KudoLottery extends Command {
     public KudoLottery() {
         commandName = "kudoLottery";
         commandAliases = new String[] {"lottery", "kl"};
-        commandDesc = "Play for Kudos! You need at least 1 Kudo to start a round! 1 ticket = 1 Kudo";
+        commandDesc = DESCRIPTION.replacement;
         category = ContextCategory.FUN;
     }
 
@@ -30,7 +31,7 @@ public class KudoLottery extends Command {
                 messageContext.getAuthor(), 1, messageContext);
 
         if (!success) {
-            MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_KUDOS, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_KUDOS, messageContext);
             return;
         }
 
@@ -38,21 +39,19 @@ public class KudoLottery extends Command {
                 = Evaluator.getKudoLotteryScheduler();
 
         if (kudoLotteryScheduler.isEvaluationActive(messageContext.getTextChannel())) {
-            MessageSender.sendMessage("There is an active Lottery in this channel.", messageContext.getChannel());
+            MessageSender.sendMessage(M_LOTTERY_RUNNING.replacement, messageContext);
             return;
         }
 
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle("KUDO LOTTERY")
-                .setDescription("A new round is starting. Please place your bets!" + lineSeparator()
-                        + " You have 3 minutes!")
-                .addField("Currently there is 1 Kudo in the pot!",
-                        "Press " + EmoteCollection.INFINITY.getEmote().getAsMention()
-                                + " to buy as much Tickets as you can." + lineSeparator()
-                                + "Press " + EmoteCollection.PLUS_X.getEmote().getAsMention()
-                                + " to buy 10 Tickets for 10 Kudos." + lineSeparator()
-                                + "Press " + EmoteCollection.PLUS_I.getEmote().getAsMention()
-                                + " to buy 1 Ticket for 1 Kudo.",
+                .setTitle(M_EMBED_TITLE.replacement)
+                .setDescription(M_EMBED_DESCRIPTION.replacement)
+                .addField(M_EMBED_KUDOS_IN_POT.replacement,
+                        locale.getReplacedString(M_EMBED_EXPLANATION.localeCode,
+                                messageContext.getGuild(),
+                                EmoteCollection.INFINITY.getEmote().getAsMention(),
+                                EmoteCollection.PLUS_X.getEmote().getAsMention(),
+                                EmoteCollection.PLUS_I.getEmote().getAsMention()),
                         true)
                 .setColor(Color.orange);
 
