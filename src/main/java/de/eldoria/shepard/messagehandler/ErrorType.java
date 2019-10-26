@@ -130,7 +130,15 @@ public enum ErrorType {
     /**
      * Used when no guess game image was found.
      */
-    INVALID_IMAGE_URL("Invalid image url.");
+    INVALID_IMAGE_URL("Invalid image url."),
+    /**
+     * Used when there is no defined ticket type on a guild.
+     */
+    NO_TICKET_TYPES_DEFINED("No ticket types defined"),
+    /**
+     * Used when a command which is restricted to a specific channel is executed outside the channel.
+     */
+    EXCLUSIVE_CHANNEL("This is only available in a specific channel!");
 
 
     /**

@@ -4,8 +4,13 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
+import de.eldoria.shepard.localization.Util.LocalizedField;
+import de.eldoria.shepard.localization.enums.GeneralLocale;
+import de.eldoria.shepard.localization.enums.WordsLocale;
+import de.eldoria.shepard.localization.enums.admin.TicketLocale;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -28,6 +33,7 @@ import java.util.stream.Collectors;
 import static de.eldoria.shepard.database.queries.TicketData.getTypeOwnerRoles;
 import static de.eldoria.shepard.database.queries.TicketData.getTypeSupportRoles;
 import static de.eldoria.shepard.database.queries.TicketData.removeChannel;
+import static de.eldoria.shepard.localization.enums.admin.TicketLocale.*;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -41,17 +47,15 @@ public class Ticket extends Command {
         commandAliases = new String[] {"t"};
         commandDesc = "Ticket system for creation of channels to help users";
         commandArgs = new CommandArg[] {
-                new CommandArg("action",
-                        "**__o__pen** -> Open a new ticket" + lineSeparator()
-                                + "**__c__lose** -> Close a ticket" + lineSeparator()
-                                + "**__l__ist** -> Shows a list of all available ticket types",
-                        true),
-                new CommandArg("value",
-                        "**open** -> [ticket_type] [user_name]" + lineSeparator()
-                                + "**close** -> Leave empty. Execute in channel which you want to close."
-                                + lineSeparator()
-                                + "**list** -> Leave empty for a overview or type keyword for further type infos",
-                        false)};
+                new CommandArg("action", true,
+                        new SubArg("open", C_OPEN.replacement, true),
+                        new SubArg("close", C_CLOSE.replacement, true),
+                        new SubArg("info", C_INFO.replacement, true)),
+                new CommandArg("value", false,
+                        new SubArg("open", A_TICKET_TYPE + " " + GeneralLocale.A_USER),
+                        new SubArg("close", A_CLOSE.replacement),
+                        new SubArg("info", A_INFO.replacement))
+        };
         category = ContextCategory.ADMIN;
     }
 
@@ -72,12 +76,12 @@ public class Ticket extends Command {
             typeInfo(args, messageContext);
             return;
         }
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
     }
 
     private void close(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length != 1) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent);
             return;
         }
 
@@ -86,7 +90,7 @@ public class Ticket extends Command {
         String channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
 
         if (channelOwnerId == null) {
-            MessageSender.sendSimpleError(ErrorType.NOT_TICKET_CHANNEL, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_TICKET_CHANNEL, receivedEvent);
             return;
         }
 
@@ -117,7 +121,7 @@ public class Ticket extends Command {
     private void typeInfo(String[] args, MessageEventDataWrapper receivedEvent) {
         List<TicketType> tickets = TicketData.getTypes(receivedEvent.getGuild(), receivedEvent);
         if (tickets.isEmpty()) {
-            MessageSender.sendMessage("No ticket types defined", receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NO_TICKET_TYPES_DEFINED, receivedEvent);
             return;
         }
 
@@ -125,21 +129,21 @@ public class Ticket extends Command {
         if (args.length == 1) {
 
             TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
-                    tickets, "Keyword", "", "Category");
+                    tickets, WordsLocale.KEYWORD.replacement, "", WordsLocale.CATEGORY.replacement);
 
             for (TicketType type : tickets) {
                 tableBuilder.next();
                 tableBuilder.setRow(type.getKeyword(), ":", type.getCategory().getName());
             }
 
-            MessageSender.sendMessage("**__Ticket Types with Categories:__**" + lineSeparator()
-                    + tableBuilder, receivedEvent.getChannel());
+            MessageSender.sendMessage("**__" + M_TYPE_LIST + "__**" + lineSeparator()
+                    + tableBuilder, receivedEvent);
         } else if (args.length == 2) {
             //Return info for one ticket type.
             TicketType type = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
 
             if (type == null) {
-                MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, receivedEvent.getChannel());
+                MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, receivedEvent);
                 return;
             }
 
@@ -151,39 +155,39 @@ public class Ticket extends Command {
                     getTypeSupportRoles(receivedEvent.getGuild(), type.getKeyword(), receivedEvent))
                     .stream().map(IMentionable::getAsMention).collect(Collectors.toList());
 
-            List<MessageEmbed.Field> fields = new ArrayList<>();
-            fields.add(new MessageEmbed.Field("Channel Category:", type.getCategory().getName(), false));
-            fields.add(new MessageEmbed.Field("Creation Message:", type.getCreationMessage(), false));
-            fields.add(new MessageEmbed.Field("Ticket Owner Groups:",
-                    String.join(lineSeparator() + "", ownerMentions), false));
-            fields.add(new MessageEmbed.Field("Ticket Supporter Groups:",
-                    String.join(lineSeparator() + "", supporterMentions), false));
+            List<LocalizedField> fields = new ArrayList<>();
+            fields.add(new LocalizedField(M_CHANNEL_CATEGORY.replacement, type.getCategory().getName(), false, receivedEvent));
+            fields.add(new LocalizedField(M_CREATION_MESSAGE.replacement, type.getCreationMessage(), false, receivedEvent));
+            fields.add(new LocalizedField(M_TICKET_OWNER_ROLES.replacement,
+                    String.join(lineSeparator() + "", ownerMentions), false, receivedEvent));
+            fields.add(new LocalizedField(M_TICKET_SUPPORT_ROLES.replacement,
+                    String.join(lineSeparator() + "", supporterMentions), false, receivedEvent));
 
-            MessageSender.sendTextBox("Information about Ticket Type: \"" + type.getKeyword() + "\"",
-                    fields, receivedEvent.getChannel());
+            MessageSender.sendTextBox(M_TYPE_ABOUT + " **" + type.getKeyword() + "**",
+                    fields, receivedEvent);
         }
     }
 
     private void openTicket(String[] args, MessageEventDataWrapper receivedEvent) {
         if (args.length != 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent);
         }
 
         Member member = ArgumentParser.getGuildMember(receivedEvent.getGuild(), args[2]);
         if (member == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_USER, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_USER, receivedEvent);
             return;
         }
 
         if (Verifier.equalSnowflake(member, receivedEvent.getAuthor())) {
-            MessageSender.sendSimpleError(ErrorType.TICKET_SELF_ASSIGNMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TICKET_SELF_ASSIGNMENT, receivedEvent);
             return;
         }
 
         TicketType ticket = TicketData.getTypeByKeyword(receivedEvent.getGuild(), args[1], receivedEvent);
 
         if (ticket == null) {
-            MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, receivedEvent);
             return;
         }
 
@@ -229,9 +233,13 @@ public class Ticket extends Command {
                     }
 
                     //Greet ticket owner in ticket channel
-                    MessageSender.sendMessage(
+                    MessageSender.sendMessageToChannel(
                             Replacer.applyUserPlaceholder(member.getUser(), ticket.getCreationMessage()),
                             channel);
+
+                    MessageSender.sendMessage(locale.getReplacedString(M_OPEN.localeCode, receivedEvent.getGuild(),
+                            channel.getAsMention(), member.getAsMention()), receivedEvent);
                 });
+
     }
 }

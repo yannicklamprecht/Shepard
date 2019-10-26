@@ -6,8 +6,6 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.ChangelogData;
-import de.eldoria.shepard.localization.enums.ChangelogLocale;
-import de.eldoria.shepard.localization.enums.GeneralLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -18,6 +16,18 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.C_ACTIVATE;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.C_ADD_ROLE;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.C_DEACTIVATE;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.C_REMOVE_ROLE;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.C_ROLES;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.M_ACTIVATED;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.M_ADDED_ROLE;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.M_DEACTIVATED;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.M_LOGGED_ROLES;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_CHANNEL;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_EMPTY;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_ROLE;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -31,17 +41,18 @@ public class Changelog extends Command {
         commandDesc = "provides function to log role changes on a guild";
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
-                        new SubArg("addRole", ChangelogLocale.C_ADD_ROLE.replacement, true),
-                        new SubArg("removeRole", ChangelogLocale.C_REMOVE_ROLE.replacement, true),
-                        new SubArg("activate", ChangelogLocale.C_ACTIVATE.replacement, true),
-                        new SubArg("deactivate", ChangelogLocale.C_DEACTIVATE.replacement, true),
-                        new SubArg("roles", ChangelogLocale.C_ROLES.replacement, true)),
+                        new SubArg("addRole", C_ADD_ROLE.replacement, true),
+                        new SubArg("removeRole", C_REMOVE_ROLE.replacement, true),
+                        new SubArg("activate", C_ACTIVATE.replacement, true),
+                        new SubArg("deactivate", C_DEACTIVATE.replacement, true),
+                        new SubArg("roles", C_ROLES.replacement, true)),
                 new CommandArg("value", false,
-                        new SubArg("addRole", GeneralLocale.ROLE.replacement),
-                        new SubArg("removeRole", GeneralLocale.ROLE.replacement),
-                        new SubArg("activate", GeneralLocale.CHANNEL.replacement),
-                        new SubArg("deactivate", GeneralLocale.EMPTY.replacement),
-                        new SubArg("roles", GeneralLocale.EMPTY.replacement))};
+                        new SubArg("addRole", A_ROLE.replacement),
+                        new SubArg("removeRole", A_ROLE.replacement),
+                        new SubArg("activate", A_CHANNEL.replacement),
+                        new SubArg("deactivate", A_EMPTY.replacement),
+                        new SubArg("roles", A_EMPTY.replacement))
+        };
 
         category = ContextCategory.ADMIN;
     }
@@ -77,13 +88,13 @@ public class Changelog extends Command {
                 ChangelogData.getRoles(receivedEvent.getGuild(), receivedEvent))
                 .stream().map(IMentionable::getAsMention).collect(Collectors.toList());
 
-        MessageSender.sendSimpleTextBox(ChangelogLocale.M_LOGGED_ROLES.replacement,
+        MessageSender.sendSimpleTextBox(M_LOGGED_ROLES.replacement,
                 String.join(lineSeparator(), collect), receivedEvent);
     }
 
     private void deactivate(MessageEventDataWrapper receivedEvent) {
         if (ChangelogData.removeChannel(receivedEvent.getGuild(), receivedEvent)) {
-            MessageSender.sendMessage(ChangelogLocale.M_DEACTIVATED.replacement,
+            MessageSender.sendMessage(M_DEACTIVATED.replacement,
                     receivedEvent);
         }
     }
@@ -102,7 +113,7 @@ public class Changelog extends Command {
         }
 
         if (ChangelogData.setChannel(messageContext.getGuild(), textChannel, messageContext)) {
-            MessageSender.sendMessage(ChangelogLocale.M_ACTIVATED + " " + textChannel.getAsMention(),
+            MessageSender.sendMessage(M_ACTIVATED + " " + textChannel.getAsMention(),
                     messageContext);
         }
     }
@@ -122,14 +133,14 @@ public class Changelog extends Command {
 
         if (isArgument(cmd, "addRole", "ar")) {
             if (ChangelogData.addRole(messageContext.getGuild(), role, messageContext)) {
-                MessageSender.sendMessage(locale.getReplacedString(ChangelogLocale.M_ADDED_ROLE.localeCode,
+                MessageSender.sendMessage(locale.getReplacedString(M_ADDED_ROLE.localeCode,
                         messageContext.getGuild(),
                         "**" + role.getName() + "**"),
                         messageContext);
             }
         } else {
             if (ChangelogData.removeRole(messageContext.getGuild(), role, messageContext)) {
-                MessageSender.sendMessage(locale.getReplacedString(ChangelogLocale.M_ADDED_ROLE.localeCode, messageContext.getGuild(),
+                MessageSender.sendMessage(locale.getReplacedString(M_ADDED_ROLE.localeCode, messageContext.getGuild(),
                         "**" + role.getName() + "**"),
                         messageContext);
             }

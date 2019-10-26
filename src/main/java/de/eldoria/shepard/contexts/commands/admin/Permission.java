@@ -4,8 +4,11 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.queries.ContextData;
+import de.eldoria.shepard.localization.enums.GeneralLocale;
+import de.eldoria.shepard.localization.enums.admin.PermissionLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -19,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.GeneralLocale.*;
+import static de.eldoria.shepard.localization.enums.admin.PermissionLocale.*;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -30,25 +35,22 @@ public class Permission extends Command {
         commandName = "permission";
         commandDesc = "Manage which context can be used by users or roles.";
         commandArgs = new CommandArg[] {
-                new CommandArg("context name",
-                        "name or alias of the context u want to manage",
-                        true),
-                new CommandArg("action",
-                        "**__a__dd__U__ser** -> Gives a user access to this context." + lineSeparator()
-                                + "**__r__emove__U__ser** -> Revokes access to a context for a user." + lineSeparator()
-                                + "**__s__how__U__ser** -> List of users with access to this context." + lineSeparator()
-                                + "**__a__dd__R__ole** -> Gives a role access to this context." + lineSeparator()
-                                + "**__r__emove__R__ole** -> Revokes access to a context for a role." + lineSeparator()
-                                + "**__s__how__R__oles** -> List of roles with access to this context.",
-                        true),
-                new CommandArg("value",
-                        "**addUser** -> [user...] one or more usernames" + lineSeparator()
-                                + "**removeUser** -> [user...] one or more usernames." + lineSeparator()
-                                + "**showUser** -> leave empty." + lineSeparator()
-                                + "**addRole** -> [role...] one or more roles." + lineSeparator()
-                                + "**removeRole** -> [role...] one or more roles." + lineSeparator()
-                                + "**showRoles** -> leave empty.",
-                        false)
+                new CommandArg("context name", true,
+                        new SubArg("context name", A_CONTEXT_NAME.replacement)),
+                new CommandArg("action", true,
+                        new SubArg("addUser", C_ADD_USER.replacement, true),
+                        new SubArg("removeUser", C_REMOVE_USER.replacement, true),
+                        new SubArg("listUser", C_LIST_USER.replacement, true),
+                        new SubArg("addRole", C_ADD_ROLE.replacement, true),
+                        new SubArg("removeRole", C_REMOVE_ROLE.replacement, true),
+                        new SubArg("listRoles", C_LIST_ROLE.replacement, true)),
+                new CommandArg("value", false,
+                        new SubArg("addUser", A_USERS.replacement),
+                        new SubArg("removeUser", A_USERS.replacement),
+                        new SubArg("listUser", A_EMPTY.replacement),
+                        new SubArg("addRole", A_ROLES.replacement),
+                        new SubArg("removeRole", A_ROLES.replacement),
+                        new SubArg("listRoles", A_EMPTY.replacement)),
         };
         category = ContextCategory.ADMIN;
     }
@@ -61,7 +63,7 @@ public class Permission extends Command {
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
-                    messageContext.getChannel());
+                    messageContext);
             return;
         }
 
@@ -91,7 +93,7 @@ public class Permission extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
     }
 
     private void showMentions(MessageEventDataWrapper messageContext, String contextName, String message) {
@@ -101,13 +103,13 @@ public class Permission extends Command {
                 .collect(Collectors.joining(lineSeparator()));
         MessageSender.sendSimpleTextBox(message,
                 roleMentions,
-                Color.blue, messageContext.getChannel());
+                Color.blue, messageContext);
     }
 
     private void modifyUsers(String[] args, MessageEventDataWrapper receivedEvent,
                              String contextName, ModifyType modifyType) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, receivedEvent);
             return;
         }
 
@@ -132,27 +134,26 @@ public class Permission extends Command {
         String names = validUser.stream().map(IMentionable::getAsMention).collect(Collectors.joining(lineSeparator()));
 
         if (modifyType == ModifyType.ADD) {
-            MessageSender.sendSimpleTextBox("Granted following users access to context \""
-                            + contextName.toUpperCase() + "\"", names + "**", Color.green,
-                    receivedEvent.getChannel());
+            MessageSender.sendSimpleTextBox("Granted following users access to context **"
+                            + contextName.toUpperCase() + "**", names, Color.green,
+                    receivedEvent);
         } else {
-            MessageSender.sendSimpleTextBox("Revoked access from following users for context \""
-                            + contextName.toUpperCase() + "\"", names + "**", Color.red,
-                    receivedEvent.getChannel());
+            MessageSender.sendSimpleTextBox("Revoked access from following users for context **"
+                            + contextName.toUpperCase() + "**", names, Color.red,
+                    receivedEvent);
         }
     }
 
     private void modifyRoles(String[] args, MessageEventDataWrapper messageContext,
                              String contextName, ModifyType modifyType) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
             return;
         }
 
-        List<Role> validRoles = Verifier.getValidRoles(messageContext.getGuild(),
-                Arrays.copyOfRange(args, 2, args.length));
+        List<Role> roles = ArgumentParser.getRoles(messageContext.getGuild(), ArgumentParser.getRangeAsList(args, 2));
 
-        for (Role role : validRoles) {
+        for (Role role : roles) {
             if (modifyType == ModifyType.ADD) {
                 if (!ContextData.addContextRolePermission(contextName,
                         messageContext.getGuild(), role, messageContext)) {
@@ -166,16 +167,14 @@ public class Permission extends Command {
             }
         }
 
-        String names = validRoles.stream().map(IMentionable::getAsMention).collect(Collectors.joining(lineSeparator()));
+        String names = roles.stream().map(IMentionable::getAsMention).collect(Collectors.joining(lineSeparator()));
 
         if (modifyType == ModifyType.ADD) {
-            MessageSender.sendSimpleTextBox("Granted following roles access to context \""
-                            + contextName.toUpperCase() + "\"", names + "**",
-                    messageContext.getChannel());
+            MessageSender.sendSimpleTextBox("Granted following roles access to context **"
+                    + contextName.toUpperCase() + "**", names, messageContext);
         } else {
-            MessageSender.sendSimpleTextBox("Revoked access from following roles for context \""
-                            + contextName.toUpperCase() + "\"", names + "**",
-                    messageContext.getChannel());
+            MessageSender.sendSimpleTextBox("Revoked access from following roles for context **"
+                    + contextName.toUpperCase() + "**", names, messageContext);
         }
     }
 }

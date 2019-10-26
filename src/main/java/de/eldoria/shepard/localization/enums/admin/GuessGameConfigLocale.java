@@ -6,8 +6,8 @@ public enum GuessGameConfigLocale {
     C_CHANGE_FLAG("command.guessGameConfig.subcommand.changeFlag"),
     C_SHOW_IMAGE_SET("command.guessGameConfig.subcommand.showImageSet"),
     C_CANCEL_REGISTRATION("command.guessGameConfig.subcommand.cancelRegistration"),
-    C_FLAG("command.guessGameConfig.subcommand.flag"),
-    C_URL("command.guessGameConfig.subcommand.url"),
+    A_FLAG("command.guessGameConfig.argument.flag"),
+    A_URL("command.guessGameConfig.argument.url"),
     M_REGISTRATION_CANCELED("command.guessGameConfig.messages.registrationCanceled"),
     M_DISPLAY_IMAGE("command.guessGameConfig.messages.displayImage"),
     M_CHANGED_FLAG("command.guessGameConfig.messages.changedFlag"),
@@ -28,4 +28,4 @@ public enum GuessGameConfigLocale {
         return replacement;
     }
 
-    }
+}

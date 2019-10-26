@@ -21,7 +21,7 @@ public class RepeatCommand extends Command {
                 .getLatestCommand(messageContext.getGuild(), messageContext.getAuthor());
 
         if (latestCommand == null) {
-            MessageSender.sendSimpleError(ErrorType.NO_LAST_COMMAND_FOUND, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.NO_LAST_COMMAND_FOUND, messageContext);
             return;
         }
 

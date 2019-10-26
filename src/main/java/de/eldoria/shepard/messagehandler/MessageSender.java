@@ -4,12 +4,12 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.database.types.GreetingSettings;
 import de.eldoria.shepard.localization.Util.LocalizedField;
-import de.eldoria.shepard.localization.Util.TextLocalizer;
 import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -268,6 +268,28 @@ public final class MessageSender {
     }
 
     /**
+     * Sends a message to a channel. No auto localisation is provided.
+     * @param message Message to send.
+     * @param channel channel to send
+     */
+    public static void sendMessageToChannel(String message, MessageChannel channel) {
+        if (message.isEmpty()) return;
+
+        String[] messageParts = message.split(System.lineSeparator());
+        StringBuilder messagePart = new StringBuilder();
+        for (int i = 0; i < messageParts.length; i++) {
+            if (messagePart.length() + messageParts[i].length() < 1024) {
+                messagePart.append(messageParts[i]).append(System.lineSeparator());
+            } else {
+                channel.sendMessage(messagePart.toString()).queue();
+                messagePart = new StringBuilder();
+                i--;
+            }
+        }
+        channel.sendMessage(messagePart.toString()).queue();
+    }
+
+    /**
      * Sends a message to a user.
      *
      * @param user           User to send
@@ -275,8 +297,8 @@ public final class MessageSender {
      * @param text           Text to send
      * @param messageContext message informations.
      */
-    public static void sendMessage(User user, List<Message.Attachment> attachments, String text,
-                                   MessageEventDataWrapper messageContext) {
+    public static void sendAttachment(User user, List<Message.Attachment> attachments, String text,
+                                      MessageEventDataWrapper messageContext) {
         user.openPrivateChannel().queue(privateChannel -> {
             privateChannel.sendMessage(text).queue();
             if (!attachments.isEmpty()) {

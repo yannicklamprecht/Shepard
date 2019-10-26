@@ -6,13 +6,20 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.GreetingData;
-import de.eldoria.shepard.localization.enums.GeneralLocale;
-import de.eldoria.shepard.localization.enums.GreetingsLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_CHANNEL_MENTION_OR_EXECUTE;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_EMPTY;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_MESSAGE_MENTION;
+import static de.eldoria.shepard.localization.enums.admin.GreetingsLocale.C_REMOVE_CHANNEL;
+import static de.eldoria.shepard.localization.enums.admin.GreetingsLocale.C_SET_CHANNEL;
+import static de.eldoria.shepard.localization.enums.admin.GreetingsLocale.C_SET_MESSAGE;
+import static de.eldoria.shepard.localization.enums.admin.GreetingsLocale.M_REMOVED_CHANNEL;
+import static de.eldoria.shepard.localization.enums.admin.GreetingsLocale.M_SET_CHANNEL;
+import static de.eldoria.shepard.localization.enums.admin.GreetingsLocale.M_SET_MESSAGE;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -25,13 +32,14 @@ public class Greeting extends Command {
         commandDesc = "Manage greeting settings.";
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
-                        new SubArg("setChannel", GreetingsLocale.C_SET_CHANNEL.replacement, true),
-                        new SubArg("removeChannel", GreetingsLocale.C_REMOVE_CHANNEL.replacement, true),
-                        new SubArg("setMessage", GreetingsLocale.C_SET_MESSAGE.replacement, true)),
+                        new SubArg("setChannel", C_SET_CHANNEL.replacement, true),
+                        new SubArg("removeChannel", C_REMOVE_CHANNEL.replacement, true),
+                        new SubArg("setMessage", C_SET_MESSAGE.replacement, true)),
                 new CommandArg("value", false,
-                        new SubArg("setChannel", GeneralLocale.CHANNEL_MENTION_OR_EXECUTE.replacement),
-                        new SubArg("removeChannel", GeneralLocale.EMPTY.replacement),
-                        new SubArg("setMessage", GeneralLocale.MESSAGE_MENTION.replacement))};
+                        new SubArg("setChannel", A_CHANNEL_MENTION_OR_EXECUTE.replacement),
+                        new SubArg("removeChannel", A_EMPTY.replacement),
+                        new SubArg("setMessage", A_MESSAGE_MENTION.replacement))
+        };
         category = ContextCategory.ADMIN;
     }
 
@@ -62,7 +70,7 @@ public class Greeting extends Command {
             String message = ArgumentParser.getMessage(args, 1);
 
             if (GreetingData.setGreetingText(messageContext.getGuild(), message, messageContext)) {
-                MessageSender.sendMessage(GreetingsLocale.M_SET_MESSAGE + lineSeparator()
+                MessageSender.sendMessage(M_SET_MESSAGE + lineSeparator()
                         + message, messageContext);
             }
             return;
@@ -72,16 +80,15 @@ public class Greeting extends Command {
 
     private void removeChannel(MessageEventDataWrapper messageContext) {
         if (GreetingData.removeGreetingChannel(messageContext.getGuild(), messageContext)) {
-            MessageSender.sendMessage(GreetingsLocale.M_REMOVED_CHANNEL.replacement, messageContext);
+            MessageSender.sendMessage(M_REMOVED_CHANNEL.replacement, messageContext);
         }
-
     }
 
     private void setChannel(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 1) {
             if (GreetingData.setGreetingChannel(messageContext.getGuild(),
                     messageContext.getChannel(), messageContext)) {
-                MessageSender.sendMessage(GreetingsLocale.M_SET_CHANNEL + " "
+                MessageSender.sendMessage(M_SET_CHANNEL + " "
                         + messageContext.getTextChannel().getAsMention(), messageContext);
             }
             return;
@@ -91,7 +98,7 @@ public class Greeting extends Command {
             if (channel != null) {
                 if (GreetingData.setGreetingChannel(messageContext.getGuild(), channel, messageContext)) {
                     MessageSender.sendMessage(
-                            GreetingsLocale.M_SET_CHANNEL + " "
+                            M_SET_CHANNEL + " "
                                     + channel.getAsMention(), messageContext);
                 }
                 return;

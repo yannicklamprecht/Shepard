@@ -7,8 +7,6 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
-import de.eldoria.shepard.localization.enums.GeneralLocale;
-import de.eldoria.shepard.localization.enums.GuessGameConfigLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.guessgame.ImageRegister;
@@ -20,6 +18,19 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.awt.Color;
 import java.io.File;
 
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_EMPTY;
+import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.C_ADD_IMAGE;
+import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.C_CANCEL_REGISTRATION;
+import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.C_CHANGE_FLAG;
+import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.A_FLAG;
+import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.C_REMOVE_IMAGE;
+import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.C_SHOW_IMAGE_SET;
+import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.A_URL;
+import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.M_CHANGED_FLAG;
+import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.M_DISPLAY_IMAGE;
+import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.M_REGISTRATION_CANCELED;
+import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.M_REMOVED_IMAGE;
+import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.M_STARTED_REGISTRATION;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 
 public class GuessGameConfig extends Command {
@@ -30,18 +41,18 @@ public class GuessGameConfig extends Command {
         commandDesc = "Manage Hentai Images";
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
-                        new SubArg("addImage", GuessGameConfigLocale.C_ADD_IMAGE.replacement, true),
-                        new SubArg("removeImage", GuessGameConfigLocale.C_REMOVE_IMAGE.replacement, true),
-                        new SubArg("changeFlag", GuessGameConfigLocale.C_CHANGE_FLAG.replacement, true),
-                        new SubArg("showImageSet", GuessGameConfigLocale.C_SHOW_IMAGE_SET.replacement, true),
-                        new SubArg("cancelRegistration", GuessGameConfigLocale.C_CANCEL_REGISTRATION.replacement, true)),
+                        new SubArg("addImage", C_ADD_IMAGE.replacement, true),
+                        new SubArg("removeImage", C_REMOVE_IMAGE.replacement, true),
+                        new SubArg("changeFlag", C_CHANGE_FLAG.replacement, true),
+                        new SubArg("showImageSet", C_SHOW_IMAGE_SET.replacement, true),
+                        new SubArg("cancelRegistration", C_CANCEL_REGISTRATION.replacement, true)),
                 new CommandArg("values", false,
-                        new SubArg("addImage", GuessGameConfigLocale.C_FLAG.replacement),
-                        new SubArg("removeImage", GuessGameConfigLocale.C_URL.replacement),
-                        new SubArg("changeFlag", GuessGameConfigLocale.C_URL + " "
-                                + GuessGameConfigLocale.C_FLAG),
-                        new SubArg("showImageSet", GuessGameConfigLocale.C_URL.replacement),
-                        new SubArg("cancelRegistration", GeneralLocale.EMPTY.replacement)),
+                        new SubArg("addImage", A_FLAG.replacement),
+                        new SubArg("removeImage", A_URL.replacement),
+                        new SubArg("changeFlag", A_URL + " "
+                                + A_FLAG),
+                        new SubArg("showImageSet", A_URL.replacement),
+                        new SubArg("cancelRegistration", A_EMPTY.replacement))
         };
         category = ContextCategory.ADMIN;
     }
@@ -60,7 +71,7 @@ public class GuessGameConfig extends Command {
         }
         if (isArgument(cmd, "cancelRegistration", "cr")) {
             ImageRegister.getInstance().cancelConfiguration(messageContext);
-            MessageSender.sendMessage(GuessGameConfigLocale.M_REGISTRATION_CANCELED.replacement, messageContext);
+            MessageSender.sendMessage(M_REGISTRATION_CANCELED.replacement, messageContext);
             return;
         }
         if (isArgument(cmd, "changeFlag", "cf")) {
@@ -80,7 +91,7 @@ public class GuessGameConfig extends Command {
             }
 
             EmbedBuilder builder = new EmbedBuilder()
-                    .setTitle(locale.getReplacedString(GuessGameConfigLocale.M_DISPLAY_IMAGE.localeCode,
+                    .setTitle(locale.getReplacedString(M_DISPLAY_IMAGE.localeCode,
                             messageContext.getGuild(), hentaiImage.isHentai() ? "NSFW" : "SFW"))
                     .setThumbnail(hentaiImage.getCroppedImage())
                     .setImage(hentaiImage.getFullImage())
@@ -112,7 +123,7 @@ public class GuessGameConfig extends Command {
         }
 
         if (GuessGameData.changeImageFlag(args[1], booleanState.stateAsBoolean, messageContext)) {
-            MessageSender.sendMessage(locale.getReplacedString(GuessGameConfigLocale.M_CHANGED_FLAG.localeCode,
+            MessageSender.sendMessage(locale.getReplacedString(M_CHANGED_FLAG.localeCode,
                     messageContext.getGuild(), booleanState.stateAsBoolean ? "NSFW" : "SFW"), messageContext);
             messageContext.getChannel().sendFile(fileFromURL).queue();
         }
@@ -124,7 +135,7 @@ public class GuessGameConfig extends Command {
             return;
         }
         if (GuessGameData.removeHentaiImage(args[1], messageContext)) {
-            MessageSender.sendMessage(GuessGameConfigLocale.M_REMOVED_IMAGE.replacement, messageContext);
+            MessageSender.sendMessage(M_REMOVED_IMAGE.replacement, messageContext);
         }
     }
 
@@ -140,6 +151,6 @@ public class GuessGameConfig extends Command {
         }
         ImageRegister.getInstance().startConfiguration(messageContext,
                 booleanState.stateAsBoolean);
-        MessageSender.sendMessage(GuessGameConfigLocale.M_STARTED_REGISTRATION.replacement, messageContext);
+        MessageSender.sendMessage(M_STARTED_REGISTRATION.replacement, messageContext);
     }
 }
