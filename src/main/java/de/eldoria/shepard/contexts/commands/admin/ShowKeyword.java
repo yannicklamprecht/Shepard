@@ -3,6 +3,7 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.collections.KeyWordCollection;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.localization.enums.WordsLocale;
+import de.eldoria.shepard.localization.enums.admin.ShowKeywordLocale;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -11,13 +12,15 @@ import de.eldoria.shepard.contexts.keywords.Keyword;
 
 import java.util.List;
 
+import static de.eldoria.shepard.localization.enums.admin.ShowKeywordLocale.DESCRIPTION;
+
 public class ShowKeyword extends Command {
     /**
      * Creates a new show keyword command object.
      */
     public ShowKeyword() {
         commandName = "showKeywords";
-        commandDesc = "Show all valid Keywords";
+        commandDesc = DESCRIPTION.replacement;
         category = ContextCategory.ADMIN;
     }
 

@@ -1,6 +1,7 @@
-package de.eldoria.shepard.localization.enums;
+package de.eldoria.shepard.localization.enums.admin;
 
 public enum MonitoringLocale {
+    DESCRIPTION("command.monitoring.description"),
     C_ADD("command.monitoring.subcommand.add"),
     C_REMOVE("command.monitoring.subcommand.remove"),
     C_LIST("command.monitoring.subcommand.list"),
@@ -14,7 +15,13 @@ public enum MonitoringLocale {
     M_REMOVED_CHANNEL("command.monitoring.message.removedChannel"),
     M_REGISTERED_ADDRESSES("command.monitoring.message.registeredAddresses");
 
+    /**
+     * Get the normal locale code for direct translation.
+     */
     public final String localeCode;
+    /**
+     * Get the escaped locale code for auto translation.
+     */
     public final String replacement;
 
     MonitoringLocale(String localeCode) {

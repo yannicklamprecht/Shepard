@@ -33,7 +33,7 @@ public class Permission extends Command {
      */
     public Permission() {
         commandName = "permission";
-        commandDesc = "Manage which context can be used by users or roles.";
+        commandDesc = DESCRIPTION.replacement;
         commandArgs = new CommandArg[] {
                 new CommandArg("context name", true,
                         new SubArg("context name", A_CONTEXT_NAME.replacement)),

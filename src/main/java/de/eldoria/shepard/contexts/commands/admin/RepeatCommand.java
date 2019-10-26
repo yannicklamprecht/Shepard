@@ -3,14 +3,17 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.collections.LatestCommandsCollection;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.localization.enums.admin.RepeatCommandLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
+import static de.eldoria.shepard.localization.enums.admin.RepeatCommandLocale.DESCRIPTION;
+
 public class RepeatCommand extends Command {
     public RepeatCommand() {
         commandName = "repeatCommand";
-        commandDesc = "Repeats the last used command";
+        commandDesc = DESCRIPTION.replacement;
         commandAliases = new String[] {"repeat", "rc"};
         category = ContextCategory.ADMIN;
     }

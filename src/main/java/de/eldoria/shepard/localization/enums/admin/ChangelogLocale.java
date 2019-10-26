@@ -1,6 +1,7 @@
-package de.eldoria.shepard.localization.enums;
+package de.eldoria.shepard.localization.enums.admin;
 
 public enum ChangelogLocale {
+    DESCRIPTION("command.changelog.description"),
     C_ADD_ROLE("command.changelog.subcommand.addRole"),
     C_REMOVE_ROLE("command.changelog.subcommand.removeRole"),
     C_ACTIVATE("command.changelog.subcommand.activate"),
@@ -12,7 +13,13 @@ public enum ChangelogLocale {
     M_ADDED_ROLE("command.changelog.messages.addedRole"),
     M_REMOVED_ROLE("command.changelog.messages.removedRole");
 
+    /**
+     * Get the normal locale code for direct translation.
+     */
     public final String localeCode;
+    /**
+     * Get the escaped locale code for auto translation.
+     */
     public final String replacement;
 
     ChangelogLocale(String localeCode) {

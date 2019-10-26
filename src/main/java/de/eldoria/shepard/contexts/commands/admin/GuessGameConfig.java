@@ -19,26 +19,15 @@ import java.awt.Color;
 import java.io.File;
 
 import static de.eldoria.shepard.localization.enums.GeneralLocale.A_EMPTY;
-import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.C_ADD_IMAGE;
-import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.C_CANCEL_REGISTRATION;
-import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.C_CHANGE_FLAG;
-import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.A_FLAG;
-import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.C_REMOVE_IMAGE;
-import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.C_SHOW_IMAGE_SET;
-import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.A_URL;
-import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.M_CHANGED_FLAG;
-import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.M_DISPLAY_IMAGE;
-import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.M_REGISTRATION_CANCELED;
-import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.M_REMOVED_IMAGE;
-import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.M_STARTED_REGISTRATION;
+import static de.eldoria.shepard.localization.enums.admin.GuessGameConfigLocale.*;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 
 public class GuessGameConfig extends Command {
 
     public GuessGameConfig() {
         commandName = "guessGameConfig";
-        commandAliases = new String[] {"ggc", "hentaiconfig"};
-        commandDesc = "Manage Hentai Images";
+        commandAliases = new String[] {"ggconfig"};
+        commandDesc = DESCRIPTION.replacement;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
                         new SubArg("addImage", C_ADD_IMAGE.replacement, true),

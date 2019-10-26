@@ -30,7 +30,7 @@ public class Invite extends Command {
      */
     public Invite() {
         commandName = "invite";
-        commandDesc = "Manage registered invites";
+        commandDesc = DESCRIPTION.replacement;
         commandArgs = new CommandArg[]{
                 new CommandArg("action", true,
                         new SubArg("addInvite", C_ADD_INVITE.replacement, true),

@@ -16,18 +16,10 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.C_ACTIVATE;
-import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.C_ADD_ROLE;
-import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.C_DEACTIVATE;
-import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.C_REMOVE_ROLE;
-import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.C_ROLES;
-import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.M_ACTIVATED;
-import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.M_ADDED_ROLE;
-import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.M_DEACTIVATED;
-import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.M_LOGGED_ROLES;
 import static de.eldoria.shepard.localization.enums.GeneralLocale.A_CHANNEL;
 import static de.eldoria.shepard.localization.enums.GeneralLocale.A_EMPTY;
 import static de.eldoria.shepard.localization.enums.GeneralLocale.A_ROLE;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.*;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -38,7 +30,7 @@ public class Changelog extends Command {
     public Changelog() {
         commandName = "changelog";
         commandAliases = new String[] {"log"};
-        commandDesc = "provides function to log role changes on a guild";
+        commandDesc = DESCRIPTION.replacement;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
                         new SubArg("addRole", C_ADD_ROLE.replacement, true),

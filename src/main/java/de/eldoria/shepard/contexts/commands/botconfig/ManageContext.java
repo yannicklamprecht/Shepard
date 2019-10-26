@@ -4,12 +4,16 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.ContextData;
+import de.eldoria.shepard.localization.enums.GeneralLocale;
+import de.eldoria.shepard.localization.enums.botconfig.ManageContextLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.BooleanState;
 
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextLocale.*;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -23,13 +27,14 @@ public class ManageContext extends Command {
         commandAliases = new String[] {"mc"};
         commandDesc = "Manage the settings of a context";
         commandArgs = new CommandArg[] {
-                new CommandArg("context name", "Name of the context to change", true),
-                new CommandArg("action",
-                        "**set__NSFW__** -> Sets the context as nsfw" + lineSeparator()
-                                + "**set__Admin__Only** -> Marks a command as admin only. "
-                                + "Command can only used from users"
-                                + " which are admin on a guild or when they have the permission on the guild", true),
-                new CommandArg("value", "True or False", true)};
+                new CommandArg("context name", true,
+                        new SubArg("context name", GeneralLocale.A_CONTEXT_NAME.replacement)),
+                new CommandArg("action", true,
+                        new SubArg("setNsfw", C_NSFW.replacement),
+                        new SubArg("setAdminOnly", C_ADMIN.replacement)),
+                new CommandArg("boolean", true, new SubArg("boolean",
+                        GeneralLocale.A_BOOLEAN.replacement))
+        };
         category = ContextCategory.BOTCONFIG;
     }
 
@@ -40,7 +45,7 @@ public class ManageContext extends Command {
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
-                    messageContext.getChannel());
+                    messageContext);
             return;
         }
 
@@ -54,14 +59,14 @@ public class ManageContext extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
     }
 
     private void setAdminOnly(String[] args, String contextName, MessageEventDataWrapper messageContext) {
         BooleanState bState = ArgumentParser.getBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext);
             return;
         }
 
@@ -72,14 +77,12 @@ public class ManageContext extends Command {
         }
 
         if (state) {
-            MessageSender.sendMessage("**Activated admin and permission check for context \""
-                            + contextName.toUpperCase() + "\"**",
-                    messageContext.getChannel());
+            MessageSender.sendMessage("**" + M_ACTIVATED_ADMIN
+                    + "\"" + contextName.toUpperCase() + "\"**", messageContext);
 
         } else {
-            MessageSender.sendMessage("**Deactivated admin and permission check for context \""
-                            + contextName.toUpperCase() + "\"**",
-                    messageContext.getChannel());
+            MessageSender.sendMessage("**" + M_DEACTIVATED_ADMIN +
+                    "\"" + contextName.toUpperCase() + "\"**", messageContext);
         }
     }
 
@@ -87,7 +90,7 @@ public class ManageContext extends Command {
         BooleanState bState = ArgumentParser.getBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext);
             return;
         }
 
@@ -98,12 +101,12 @@ public class ManageContext extends Command {
         }
 
         if (state) {
-            MessageSender.sendMessage("**Activated NSFW check for context \"" + contextName.toUpperCase() + "\"**",
-                    messageContext.getChannel());
+            MessageSender.sendMessage("**" + M_ACTIVATED_NSFW + "\"" + contextName.toUpperCase() + "\"**",
+                    messageContext);
 
         } else {
-            MessageSender.sendMessage("**Deactivated NSFW check for context \"" + contextName.toUpperCase() + "\"**",
-                    messageContext.getChannel());
+            MessageSender.sendMessage("**" + M_DEACTIVATED_NSFW + "\"" + contextName.toUpperCase() + "\"**",
+                    messageContext);
         }
     }
 }

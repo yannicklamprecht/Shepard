@@ -36,7 +36,7 @@ public class TicketSettings extends Command {
      */
     public TicketSettings() {
         commandName = "ticketSettings";
-        commandDesc = "Manage Ticket settings";
+        commandDesc = DESCRIPTION.replacement;
         commandAliases = new String[] {"ts"};
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,

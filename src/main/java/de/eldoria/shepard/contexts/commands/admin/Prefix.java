@@ -21,7 +21,7 @@ public class Prefix extends Command {
      */
     public Prefix() {
         commandName = "prefix";
-        commandDesc = "Manage prefix settings";
+        commandDesc = DESCRIPTION.replacement;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
                         new SubArg("set", C_SET.replacement, true),

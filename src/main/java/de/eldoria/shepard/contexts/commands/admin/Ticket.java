@@ -45,7 +45,7 @@ public class Ticket extends Command {
     public Ticket() {
         commandName = "ticket";
         commandAliases = new String[] {"t"};
-        commandDesc = "Ticket system for creation of channels to help users";
+        commandDesc = DESCRIPTION.replacement;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
                         new SubArg("open", C_OPEN.replacement, true),

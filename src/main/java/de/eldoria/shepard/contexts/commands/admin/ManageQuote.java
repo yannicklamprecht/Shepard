@@ -29,7 +29,7 @@ public class ManageQuote extends Command {
     public ManageQuote() {
         commandName = "manageQuotes";
         commandAliases = new String[] {"mq"};
-        commandDesc = "add or remove quotes";
+        commandDesc = DESCRIPTION.replacement;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
                         new SubArg("add", C_ADD.replacement, true),

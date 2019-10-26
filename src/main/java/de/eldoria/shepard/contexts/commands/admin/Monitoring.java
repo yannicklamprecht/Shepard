@@ -29,7 +29,7 @@ public class Monitoring extends Command {
     public Monitoring() {
         commandName = "monitoring";
         commandAliases = new String[] {"monitor"};
-        commandDesc = "Monitoring of domains, ipv4/6 and minecraft server";
+        commandDesc = DESCRIPTION.replacement;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
                         new SubArg("add", C_ADD.replacement, true),

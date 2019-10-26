@@ -1,6 +1,7 @@
-package de.eldoria.shepard.localization.enums;
+package de.eldoria.shepard.localization.enums.admin;
 
 public enum GuessGameConfigLocale {
+    DESCRIPTION("command.guessGameConfig.description"),
     C_ADD_IMAGE("command.guessGameConfig.subcommand.addImage"),
     C_REMOVE_IMAGE("command.guessGameConfig.subcommand.removeImage"),
     C_CHANGE_FLAG("command.guessGameConfig.subcommand.changeFlag"),
@@ -15,7 +16,13 @@ public enum GuessGameConfigLocale {
     M_STARTED_REGISTRATION("command.guessGameConfig.messages.startedRegistration");
 
 
+    /**
+     * Get the normal locale code for direct translation.
+     */
     public final String localeCode;
+    /**
+     * Get the escaped locale code for auto translation.
+     */
     public final String replacement;
 
     GuessGameConfigLocale(String localeCode) {

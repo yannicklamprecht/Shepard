@@ -5,12 +5,18 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.localization.enums.GeneralLocale;
+import de.eldoria.shepard.localization.enums.botconfig.BotPresenceLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.managers.Presence;
 
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_EMPTY;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_TEXT;
+import static de.eldoria.shepard.localization.enums.botconfig.BotPresenceLocale.*;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -20,19 +26,16 @@ public class BotPresence extends Command {
         commandName = "presence";
         commandDesc = "Set Shepards presence";
         commandArgs = new CommandArg[] {
-                new CommandArg("action",
-                        "**__p__laying** -> set the playing status" + lineSeparator()
-                                + "**__s__treaming** -> set the streaming status" + lineSeparator()
-                                + "**__l__istening** -> set the listening status" + lineSeparator()
-                                + "**__c__lear** -> set the normal online status.",
-                        true),
-                new CommandArg("values",
-                        "**__p__laying** -> [title]" + lineSeparator()
-                                + "**__s__treaming** -> [title] [twitch url]" + lineSeparator()
-                                + "**__l__istening** -> [title]" + lineSeparator()
-                                + "**__c__lear** -> leave empty.",
-                        false
-                )
+                new CommandArg("action", true,
+                        new SubArg("playing", C_PLAYING.replacement, true),
+                        new SubArg("streaming", C_STREAMING.replacement, true),
+                        new SubArg("listening", C_LISTENING.replacement, true),
+                        new SubArg("clear", C_CLEAR.replacement, true)),
+                new CommandArg("values", false,
+                        new SubArg("playing", A_TEXT.replacement),
+                        new SubArg("streaming", A_TEXT + " " + A_TWITCH_URL),
+                        new SubArg("listening", A_TEXT.replacement),
+                        new SubArg("clear", A_EMPTY.replacement))
         };
         category = ContextCategory.BOTCONFIG;
     }
@@ -40,7 +43,7 @@ public class BotPresence extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         if (args.length < 1) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
             return;
         }
         Presence presence = ShepardBot.getJDA().getPresence();
@@ -49,30 +52,31 @@ public class BotPresence extends Command {
 
         if (isArgument(activity, "clear", "c")) {
             presence.setActivity(null);
+            MessageSender.sendMessage(M_CLEAR.replacement, messageContext);
             return;
         }
 
         if (args.length < 2) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
             return;
         }
 
         if (isArgument(activity, "playing", "p")) {
-            presence.setActivity(Activity.playing(
-                    ArgumentParser.getMessage(args, 1)
-            ));
+            String message = ArgumentParser.getMessage(args, 1);
+            presence.setActivity(Activity.playing(message));
+            MessageSender.sendMessage(M_PLAYING + message, messageContext);
             return;
         }
         if (isArgument(activity, "streaming", "s")) {
             if (args.length > 2) {
-
-                presence.setActivity(Activity.streaming(
-                        ArgumentParser.getMessage(args, 1, -1),
-                        ArgumentParser.getMessage(args, -1)
-                ));
+                String message = ArgumentParser.getMessage(args, 1, -1);
+                String url = ArgumentParser.getMessage(args, -1);
+                presence.setActivity(Activity.streaming(message, url));
+                MessageSender.sendMessage(locale.getReplacedString(M_STREAMING.localeCode, messageContext.getGuild(),
+                        message) + url + "!", messageContext);
                 return;
             } else {
-                MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
+                MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
             }
         }
 
@@ -85,13 +89,14 @@ public class BotPresence extends Command {
         }*/
 
         if (isArgument(activity, "listening", "l")) {
-            presence.setActivity(Activity.listening(
-                    ArgumentParser.getMessage(args, 1)));
+            String message = ArgumentParser.getMessage(args, 1);
+            presence.setActivity(Activity.listening(message));
+            MessageSender.sendMessage(M_LISTENING + message, messageContext);
             return;
         }
 
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
 
 
     }

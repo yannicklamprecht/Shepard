@@ -1,11 +1,7 @@
 package de.eldoria.shepard.localization.enums.admin;
 
-public enum PrivateMessageLocale {
-    MESSAGE_DESCRIPTION("command.privateMessage.description"),
-    ANSWER_DESCRIPTION("command.privateAnswer.description"),
-    A_NAME("command.privateMessage.argument.name"),
-    A_MESSAGE("command.privateMessage.argument.message");
-
+public enum RepeatCommandLocale {
+    DESCRIPTION("command.repeatCommand.description");
     /**
      * Get the normal locale code for direct translation.
      */
@@ -15,7 +11,7 @@ public enum PrivateMessageLocale {
      */
     public final String replacement;
 
-    PrivateMessageLocale(String localeCode) {
+    RepeatCommandLocale(String localeCode) {
         this.localeCode = localeCode;
         this.replacement = "$" + localeCode + "$";
     }

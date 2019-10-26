@@ -1,10 +1,7 @@
-package de.eldoria.shepard.localization.enums.admin;
+package de.eldoria.shepard.localization.enums.botconfig;
 
-public enum PrivateMessageLocale {
-    MESSAGE_DESCRIPTION("command.privateMessage.description"),
-    ANSWER_DESCRIPTION("command.privateAnswer.description"),
-    A_NAME("command.privateMessage.argument.name"),
-    A_MESSAGE("command.privateMessage.argument.message");
+public enum ContextInfoLocale {
+    DESCRIPTION("Information about context settings.");
 
     /**
      * Get the normal locale code for direct translation.
@@ -15,7 +12,7 @@ public enum PrivateMessageLocale {
      */
     public final String replacement;
 
-    PrivateMessageLocale(String localeCode) {
+    ContextInfoLocale(String localeCode) {
         this.localeCode = localeCode;
         this.replacement = "$" + localeCode + "$";
     }
@@ -24,5 +21,4 @@ public enum PrivateMessageLocale {
     public String toString() {
         return replacement;
     }
-
 }

@@ -1,6 +1,7 @@
-package de.eldoria.shepard.localization.enums;
+package de.eldoria.shepard.localization.enums.admin;
 
 public enum InviteLocale {
+    DESCRIPTION("command.invite.description"),
     C_ADD_INVITE("command.invite.subcommand.addInvite"),
     C_REMOVE_INVITE("command.invite.subcommand.removeInvite"),
     C_REFRESH_INVITES("command.invite.subcommand.refreshInvites"),
@@ -15,7 +16,13 @@ public enum InviteLocale {
     M_REMOVED_INVITE("command.invite.messages.removedInvite"),
     M_ADDED_INVITE("command.invite.messages.addedInvite");
 
+    /**
+     * Get the normal locale code for direct translation.
+     */
     public final String localeCode;
+    /**
+     * Get the escaped locale code for auto translation.
+     */
     public final String replacement;
 
     InviteLocale(String localeCode) {

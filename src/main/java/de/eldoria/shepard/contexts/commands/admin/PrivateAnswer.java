@@ -17,7 +17,7 @@ public class PrivateAnswer extends Command {
     public PrivateAnswer() {
         commandName = "privateAnswer";
         commandAliases = new String[] {"reply", "answer"};
-        commandDesc = "Answer a user on a private message.";
+        commandDesc = ANSWER_DESCRIPTION.replacement;
         commandArgs = new CommandArg[] {
                 new CommandArg("name", true,
                         new SubArg("name", A_NAME.replacement)),
