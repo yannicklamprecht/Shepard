@@ -1,9 +1,21 @@
 package de.eldoria.shepard.localization.enums.admin;
 
 public enum PrivateMessageLocale {
+    /**
+     * Localization key for description of message command.
+     */
     MESSAGE_DESCRIPTION("command.privateMessage.description"),
+    /**
+     * Localization key for description of reply command.
+     */
     ANSWER_DESCRIPTION("command.privateAnswer.description"),
+    /**
+     * Localization key for argument name.
+     */
     A_NAME("command.privateMessage.argument.name"),
+    /**
+     * Localization key for message message.
+     */
     A_MESSAGE("command.privateMessage.argument.message");
 
     /**

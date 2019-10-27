@@ -1,7 +1,7 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
-import de.eldoria.shepard.localization.Util.LocalizedField;
+import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.enums.fun.MagicConchLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -10,7 +10,10 @@ import de.eldoria.shepard.contexts.commands.Command;
 import java.util.Collections;
 import java.util.Random;
 
-import static de.eldoria.shepard.localization.enums.fun.MagicConchLocale.*;
+import static de.eldoria.shepard.localization.enums.fun.MagicConchLocale.ANSWER_NEGATIVE;
+import static de.eldoria.shepard.localization.enums.fun.MagicConchLocale.ANSWER_NEUTRAL;
+import static de.eldoria.shepard.localization.enums.fun.MagicConchLocale.ANSWER_POSITIVE;
+import static de.eldoria.shepard.localization.enums.fun.MagicConchLocale.M_ANSWER;
 
 
 public class MagicConch extends Command {

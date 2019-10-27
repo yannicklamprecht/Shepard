@@ -6,8 +6,6 @@ import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
-import de.eldoria.shepard.localization.enums.GeneralLocale;
-import de.eldoria.shepard.localization.enums.botconfig.BotPresenceLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -16,9 +14,16 @@ import net.dv8tion.jda.api.managers.Presence;
 
 import static de.eldoria.shepard.localization.enums.GeneralLocale.A_EMPTY;
 import static de.eldoria.shepard.localization.enums.GeneralLocale.A_TEXT;
-import static de.eldoria.shepard.localization.enums.botconfig.BotPresenceLocale.*;
+import static de.eldoria.shepard.localization.enums.botconfig.BotPresenceLocale.A_TWITCH_URL;
+import static de.eldoria.shepard.localization.enums.botconfig.BotPresenceLocale.C_CLEAR;
+import static de.eldoria.shepard.localization.enums.botconfig.BotPresenceLocale.C_LISTENING;
+import static de.eldoria.shepard.localization.enums.botconfig.BotPresenceLocale.C_PLAYING;
+import static de.eldoria.shepard.localization.enums.botconfig.BotPresenceLocale.C_STREAMING;
+import static de.eldoria.shepard.localization.enums.botconfig.BotPresenceLocale.M_CLEAR;
+import static de.eldoria.shepard.localization.enums.botconfig.BotPresenceLocale.M_LISTENING;
+import static de.eldoria.shepard.localization.enums.botconfig.BotPresenceLocale.M_PLAYING;
+import static de.eldoria.shepard.localization.enums.botconfig.BotPresenceLocale.M_STREAMING;
 import static de.eldoria.shepard.util.Verifier.isArgument;
-import static java.lang.System.lineSeparator;
 
 public class BotPresence extends Command {
 

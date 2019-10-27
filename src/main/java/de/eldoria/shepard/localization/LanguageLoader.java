@@ -1,6 +1,6 @@
 package de.eldoria.shepard.localization;
 
-import de.eldoria.shepard.localization.Util.LanguageCode;
+import de.eldoria.shepard.localization.util.LanguageCode;
 
 import java.util.Locale;
 import java.util.ResourceBundle;

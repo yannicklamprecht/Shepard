@@ -7,8 +7,7 @@ import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.database.types.Rank;
-import de.eldoria.shepard.localization.Util.LocalizedEmbedBuilder;
-import de.eldoria.shepard.localization.enums.fun.GuessGameLocale;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.ChannelEvaluator;
@@ -17,11 +16,23 @@ import de.eldoria.shepard.minigames.guessgame.GuessGameEvaluator;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.reactions.EmoteCollection;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.List;
 
-import static de.eldoria.shepard.localization.enums.fun.GuessGameLocale.*;
+import static de.eldoria.shepard.localization.enums.fun.GuessGameLocale.C_SCORE;
+import static de.eldoria.shepard.localization.enums.fun.GuessGameLocale.C_SCORE_GLOBAL;
+import static de.eldoria.shepard.localization.enums.fun.GuessGameLocale.C_START;
+import static de.eldoria.shepard.localization.enums.fun.GuessGameLocale.C_TOP;
+import static de.eldoria.shepard.localization.enums.fun.GuessGameLocale.C_TOP_GLOBAL;
+import static de.eldoria.shepard.localization.enums.fun.GuessGameLocale.M_GAME_DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.fun.GuessGameLocale.M_GAME_FOOTER;
+import static de.eldoria.shepard.localization.enums.fun.GuessGameLocale.M_GLOBAL_RANKING;
+import static de.eldoria.shepard.localization.enums.fun.GuessGameLocale.M_MINIGAME_CHANNEL;
+import static de.eldoria.shepard.localization.enums.fun.GuessGameLocale.M_ROUND_IN_PROGRESS;
+import static de.eldoria.shepard.localization.enums.fun.GuessGameLocale.M_SCORE;
+import static de.eldoria.shepard.localization.enums.fun.GuessGameLocale.M_SCORE_GLOBAL;
+import static de.eldoria.shepard.localization.enums.fun.GuessGameLocale.M_SERVER_RANKING;
+import static de.eldoria.shepard.localization.enums.fun.GuessGameLocale.M_TITLE;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -48,13 +59,7 @@ public class GuessGame extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         if (!isArgument(messageContext.getChannel().getName(),
                 "guessgame", "guess-game", "nsfwornot", "nsfw-or-not")) {
-            MessageSender.sendMessage("This is a minigame."
-                            + "Minigame commands can only be executed in a minigame channel." + lineSeparator()
-                            + "Please create a channel with one of the following names to play the game:"
-                            + lineSeparator()
-                            + "`guessgame`, `guess-game` for the **sfw version**" + lineSeparator()
-                            + "`nsfwornot`, `nsfw-or-not` for the **nsfw version**",
-                    messageContext);
+            MessageSender.sendMessage(M_MINIGAME_CHANNEL.replacement, messageContext);
             return;
         }
         if (args.length == 0) {

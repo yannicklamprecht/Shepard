@@ -1,7 +1,11 @@
 package de.eldoria.shepard.localization.enums.admin;
 
 public enum ShowKeywordLocale {
+    /**
+     * Localization key for description.
+     */
     DESCRIPTION("command.showKeywords.description");
+
     /**
      * Get the normal locale code for direct translation.
      */

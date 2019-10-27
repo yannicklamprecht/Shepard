@@ -1,6 +1,6 @@
 package de.eldoria.shepard.localization;
 
-import de.eldoria.shepard.localization.Util.LanguageCode;
+import de.eldoria.shepard.localization.util.LanguageCode;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.HashMap;
@@ -31,10 +31,11 @@ public class LanguageHandler {
 
     /**
      * Replaced placeholder in a string with the x index of replacements.
-     * @param localeCode locale code for localization
-     * @param guild
-     * @param replacements
-     * @return
+     *
+     * @param localeCode   locale code for localization
+     * @param guild        guild for language lookup.
+     * @param replacements array of replacements for message placeholder.
+     * @return localized message with replace placeholder.
      */
     public String getReplacedString(String localeCode, Guild guild, String... replacements) {
         String languageString = getLanguageString(guild, localeCode);

@@ -1,7 +1,10 @@
 package de.eldoria.shepard.localization.enums.botconfig;
 
 public enum ContextInfoLocale {
-    DESCRIPTION("Information about context settings.");
+    /**
+     * Localization key for description.
+     */
+    DESCRIPTION("command.contextInfo.description");
 
     /**
      * Get the normal locale code for direct translation.

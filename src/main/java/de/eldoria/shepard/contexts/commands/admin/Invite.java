@@ -16,8 +16,21 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static de.eldoria.shepard.localization.enums.GeneralLocale.*;
-import static de.eldoria.shepard.localization.enums.admin.InviteLocale.*;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_EMPTY;
+import static de.eldoria.shepard.localization.enums.admin.InviteLocale.A_CODE;
+import static de.eldoria.shepard.localization.enums.admin.InviteLocale.A_INVITE_NAME;
+import static de.eldoria.shepard.localization.enums.admin.InviteLocale.C_ADD_INVITE;
+import static de.eldoria.shepard.localization.enums.admin.InviteLocale.C_REFRESH_INVITES;
+import static de.eldoria.shepard.localization.enums.admin.InviteLocale.C_REMOVE_INVITE;
+import static de.eldoria.shepard.localization.enums.admin.InviteLocale.C_SHOW_INVITES;
+import static de.eldoria.shepard.localization.enums.admin.InviteLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.admin.InviteLocale.M_ADDED_INVITE;
+import static de.eldoria.shepard.localization.enums.admin.InviteLocale.M_CODE;
+import static de.eldoria.shepard.localization.enums.admin.InviteLocale.M_INVITE_NAME;
+import static de.eldoria.shepard.localization.enums.admin.InviteLocale.M_REGISTERED_INVITES;
+import static de.eldoria.shepard.localization.enums.admin.InviteLocale.M_REMOVED_INVITE;
+import static de.eldoria.shepard.localization.enums.admin.InviteLocale.M_REMOVED_NON_EXISTENT_INVITES;
+import static de.eldoria.shepard.localization.enums.admin.InviteLocale.M_USAGE_COUNT;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -103,7 +116,8 @@ public class Invite extends Command {
         for (DatabaseInvite invite : databaseInvites) {
             if (invite.getCode().equals(args[1])) {
                 if (InviteData.removeInvite(receivedEvent.getGuild(), args[1], receivedEvent)) {
-                    MessageSender.sendMessage(M_REMOVED_INVITE.replacement + " **" + invite.getSource() + "**", receivedEvent);
+                    MessageSender.sendMessage(M_REMOVED_INVITE.replacement + " **" + invite.getSource()
+                            + "**", receivedEvent);
                     return;
                 }
             }

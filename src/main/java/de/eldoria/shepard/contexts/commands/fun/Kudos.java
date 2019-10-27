@@ -7,8 +7,6 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.database.types.Rank;
-import de.eldoria.shepard.localization.enums.GeneralLocale;
-import de.eldoria.shepard.localization.enums.fun.KudosLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.TextFormatting;
@@ -20,7 +18,16 @@ import java.util.List;
 
 import static de.eldoria.shepard.localization.enums.GeneralLocale.A_EMPTY;
 import static de.eldoria.shepard.localization.enums.GeneralLocale.A_USER;
-import static de.eldoria.shepard.localization.enums.fun.KudosLocale.*;
+import static de.eldoria.shepard.localization.enums.fun.KudosLocale.A_POINTS;
+import static de.eldoria.shepard.localization.enums.fun.KudosLocale.C_EMPTY;
+import static de.eldoria.shepard.localization.enums.fun.KudosLocale.C_GIVE;
+import static de.eldoria.shepard.localization.enums.fun.KudosLocale.C_TOP;
+import static de.eldoria.shepard.localization.enums.fun.KudosLocale.C_TOP_GLOBAL;
+import static de.eldoria.shepard.localization.enums.fun.KudosLocale.M_DESCRIPTION_EXTENDED;
+import static de.eldoria.shepard.localization.enums.fun.KudosLocale.M_DESCRIPTION_GENERAL;
+import static de.eldoria.shepard.localization.enums.fun.KudosLocale.M_GLOBAL_RANKING;
+import static de.eldoria.shepard.localization.enums.fun.KudosLocale.M_RECEIVED_KUDOS;
+import static de.eldoria.shepard.localization.enums.fun.KudosLocale.M_SERVER_RANKING;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -31,9 +38,9 @@ public class Kudos extends Command {
         commandArgs = new CommandArg[] {
                 new CommandArg("action", false,
                         new SubArg("leave empty", C_EMPTY.replacement, false),
-                        new SubArg("give", C_EMPTY.replacement, true),
-                        new SubArg("top", C_EMPTY.replacement, true),
-                        new SubArg("topGlobal", C_EMPTY.replacement, true)),
+                        new SubArg("give", C_GIVE.replacement, true),
+                        new SubArg("top", C_TOP.replacement, true),
+                        new SubArg("topGlobal", C_TOP_GLOBAL.replacement, true)),
                 new CommandArg("values", false,
                         new SubArg("give", A_USER + " " + A_POINTS),
                         new SubArg("top", A_EMPTY.replacement),

@@ -3,7 +3,7 @@ package de.eldoria.shepard.messagehandler;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.database.types.GreetingSettings;
-import de.eldoria.shepard.localization.Util.LocalizedField;
+import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.util.Replacer;
@@ -22,7 +22,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 
-import static de.eldoria.shepard.localization.Util.TextLocalizer.fastLocale;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocale;
 
 public final class MessageSender {
 
@@ -32,7 +32,7 @@ public final class MessageSender {
      *
      * @param title   Title of the chatbox.
      * @param fields  List of fields for the chatbox.
-     * @param channel channel to send.
+     * @param messageContext messageContext
      */
     public static void sendTextBox(String title, List<LocalizedField> fields, MessageEventDataWrapper messageContext) {
         sendTextBox(title, fields, messageContext, Color.gray);
@@ -43,10 +43,11 @@ public final class MessageSender {
      *
      * @param title   Title of the chatbox.
      * @param fields  List of fields for the chatbox.
-     * @param channel channel to send.
+     * @param messageContext messageContext
      * @param color   Color of the text box
      */
-    public static void sendTextBox(String title, List<LocalizedField> fields, MessageEventDataWrapper messageContext, Color color) {
+    public static void sendTextBox(String title, List<LocalizedField> fields, MessageEventDataWrapper messageContext,
+                                   Color color) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle(fastLocale(title, messageContext))
                 .setColor(color);
@@ -62,7 +63,7 @@ public final class MessageSender {
      * @param title       Title of text box
      * @param description Text of textbox
      * @param reaction    Reaction for thumbnail
-     * @param channel     channel to send
+     * @param messageContext messageContext
      */
     public static void sendSimpleTextBox(String title, String description,
                                          ShepardReactions reaction, MessageEventDataWrapper messageContext) {
@@ -74,7 +75,7 @@ public final class MessageSender {
      *
      * @param title       Title of text box
      * @param description Text of textbox
-     * @param channel     channel to send
+     * @param messageContext messageContext
      */
     public static void sendSimpleTextBox(String title, String description, MessageEventDataWrapper messageContext) {
         sendSimpleTextBox(title, description, Color.gray, ShepardReactions.NONE, messageContext);
@@ -86,9 +87,10 @@ public final class MessageSender {
      * @param title       Title of text box
      * @param description Text of textbox
      * @param color       Color of the text box
-     * @param channel     channel to send
+     * @param messageContext messageContext
      */
-    public static void sendSimpleTextBox(String title, String description, Color color, MessageEventDataWrapper messageContext) {
+    public static void sendSimpleTextBox(String title, String description, Color color,
+                                         MessageEventDataWrapper messageContext) {
         sendSimpleTextBox(title, description, color, ShepardReactions.NONE, messageContext);
     }
 
@@ -117,7 +119,7 @@ public final class MessageSender {
      * Sends a error with text box.
      *
      * @param fields  List of fields.
-     * @param channel channel to send.
+     * @param messageContext messageContext
      */
     public static void sendError(LocalizedField[] fields, MessageEventDataWrapper messageContext) {
         EmbedBuilder builder = new EmbedBuilder()
@@ -134,7 +136,7 @@ public final class MessageSender {
      * Sends a simple error with predefined error messages.
      *
      * @param type    error type
-     * @param channel channel to send
+     * @param messageContext messageContext
      */
     public static void sendSimpleError(ErrorType type, MessageEventDataWrapper messageContext) {
         if (type.isEmbed) {
@@ -149,7 +151,7 @@ public final class MessageSender {
      * Sends a simple error to a channel.
      *
      * @param error   Error message
-     * @param channel channel to send
+     * @param messageContext messageContext
      */
     public static void sendSimpleErrorEmbed(String error, MessageEventDataWrapper messageContext) {
         EmbedBuilder builder = new EmbedBuilder()
@@ -182,7 +184,6 @@ public final class MessageSender {
      * Loggs a message es embed.
      *
      * @param messageContext messageContext to log
-     * @param channel        channel to log
      */
     public static void logMessageAsEmbedded(MessageEventDataWrapper messageContext) {
         Instant instant = Instant.now(); // get The current time in instant object
@@ -245,7 +246,7 @@ public final class MessageSender {
      * send a simple Message to a channel.
      *
      * @param message Message to send.
-     * @param channel channel to send
+     * @param messageContext messageContext
      */
     public static void sendMessage(String message, MessageEventDataWrapper messageContext) {
         if (message.isEmpty()) return;

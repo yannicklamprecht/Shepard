@@ -1,12 +1,10 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
-import de.eldoria.shepard.localization.enums.fun.RandomJokeLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -15,7 +13,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-import static de.eldoria.shepard.localization.enums.fun.RandomJokeLocale.*;
+import static de.eldoria.shepard.localization.enums.fun.RandomJokeLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.fun.RandomJokeLocale.M_JOKE;
 
 public class RandomJoke extends Command {
 

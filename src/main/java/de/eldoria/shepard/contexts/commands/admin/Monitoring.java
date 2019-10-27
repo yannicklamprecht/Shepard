@@ -20,8 +20,22 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.List;
 
-import static de.eldoria.shepard.localization.enums.GeneralLocale.*;
-import static de.eldoria.shepard.localization.enums.admin.MonitoringLocale.*;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_BOOLEAN_YES_NO;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_EMPTY;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_NAME;
+import static de.eldoria.shepard.localization.enums.admin.MonitoringLocale.A_ADDRESS;
+import static de.eldoria.shepard.localization.enums.admin.MonitoringLocale.A_ADD_TEXT;
+import static de.eldoria.shepard.localization.enums.admin.MonitoringLocale.C_ADD;
+import static de.eldoria.shepard.localization.enums.admin.MonitoringLocale.C_DISABLE;
+import static de.eldoria.shepard.localization.enums.admin.MonitoringLocale.C_ENABLE;
+import static de.eldoria.shepard.localization.enums.admin.MonitoringLocale.C_LIST;
+import static de.eldoria.shepard.localization.enums.admin.MonitoringLocale.C_REMOVE;
+import static de.eldoria.shepard.localization.enums.admin.MonitoringLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.admin.MonitoringLocale.M_REGISTERED_ADDRESS;
+import static de.eldoria.shepard.localization.enums.admin.MonitoringLocale.M_REGISTERED_ADDRESSES;
+import static de.eldoria.shepard.localization.enums.admin.MonitoringLocale.M_REGISTERED_CHANNEL;
+import static de.eldoria.shepard.localization.enums.admin.MonitoringLocale.M_REMOVED_ADDRESS;
+import static de.eldoria.shepard.localization.enums.admin.MonitoringLocale.M_REMOVED_CHANNEL;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -36,7 +50,7 @@ public class Monitoring extends Command {
                         new SubArg("remove", C_REMOVE.replacement, true),
                         new SubArg("list", C_LIST.replacement, true),
                         new SubArg("enable", C_ENABLE.replacement, true),
-                        new SubArg("disable", C_ENABLE.replacement, true)),
+                        new SubArg("disable", C_DISABLE.replacement, true)),
                 new CommandArg("value", false,
                         new SubArg("add", A_ADDRESS + " " + A_NAME + " "
                                 + A_BOOLEAN_YES_NO + lineSeparator() + A_ADD_TEXT),

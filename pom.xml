@@ -83,11 +83,6 @@
                 <version>RELEASE</version>
             </dependency>
             <dependency>
-                <groupId>org.discordbots</groupId>
-                <artifactId>DBL-Java-Library</artifactId>
-                <version>2.0.1</version>
-            </dependency>
-            <dependency>
                 <groupId> org.apache.cassandra</groupId>
                 <artifactId>cassandra-all</artifactId>
                 <version>0.8.1</version>
@@ -173,7 +168,5 @@
                 <version>5.5.2</version>
                 <scope>test</scope>
             </dependency>
-
         </dependencies>
-
 </project>

@@ -6,8 +6,6 @@ import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.ContextData;
-import de.eldoria.shepard.localization.enums.GeneralLocale;
-import de.eldoria.shepard.localization.enums.botconfig.ManageContextGuildLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -18,8 +16,20 @@ import de.eldoria.shepard.util.BooleanState;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.eldoria.shepard.localization.enums.GeneralLocale.*;
-import static de.eldoria.shepard.localization.enums.botconfig.ManageContextGuildLocale.*;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_BOOLEAN;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_GUILDS;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextGuildLocale.A_LIST_TYPE;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextGuildLocale.C_ADD_GUILD;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextGuildLocale.C_REMOVE_GUILD;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextGuildLocale.C_SET_ACTIVE;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextGuildLocale.C_SET_LIST_TYPE;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextGuildLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextGuildLocale.M_ACTIVATED_CHECK;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextGuildLocale.M_ADDED_GUILDS;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextGuildLocale.M_CHANGED_LIST_TYPE;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextGuildLocale.M_DEACTIVATED_CHECK;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextGuildLocale.M_REMOVED_GUILDS;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 
 public class ManageContextGuild extends Command {

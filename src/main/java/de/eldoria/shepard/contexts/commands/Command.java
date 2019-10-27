@@ -23,6 +23,9 @@ import java.util.stream.Collectors;
  */
 public abstract class Command extends ContextSensitive {
 
+    /**
+     * Language handler instance.
+     */
     protected LanguageHandler locale;
     /**
      * Name of the command.

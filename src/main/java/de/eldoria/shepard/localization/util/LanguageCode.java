@@ -1,7 +1,13 @@
-package de.eldoria.shepard.localization.Util;
+package de.eldoria.shepard.localization.util;
 
 public enum LanguageCode {
+    /**
+     * English language code.
+     */
     EN_US("en_US"),
+    /**
+     * German language code.
+     */
     DE_DE("de_DE");
 
     /**

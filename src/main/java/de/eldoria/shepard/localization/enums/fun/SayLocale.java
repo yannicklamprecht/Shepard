@@ -1,7 +1,13 @@
 package de.eldoria.shepard.localization.enums.fun;
 
 public enum SayLocale {
+    /**
+     * Localization key for description.
+     */
     DESCRIPTION("command.say.description"),
+    /**
+     * Localization key for argument say message.
+     */
     A_SAY("command.say.argument.say");
 
     /**

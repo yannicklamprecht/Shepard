@@ -1,6 +1,6 @@
 package de.eldoria.shepard.database.queries;
 
-import de.eldoria.shepard.localization.Util.LanguageCode;
+import de.eldoria.shepard.localization.util.LanguageCode;
 import net.dv8tion.jda.api.entities.Guild;
 
 public class LanguageData {

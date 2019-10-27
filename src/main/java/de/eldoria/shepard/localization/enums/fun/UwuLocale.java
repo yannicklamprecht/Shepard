@@ -1,6 +1,9 @@
 package de.eldoria.shepard.localization.enums.fun;
 
 public enum UwuLocale {
+    /**
+     * Localization key for description.
+     */
     DESCRIPTION("command.uwu.description");
 
     /**

@@ -7,15 +7,18 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.localization.enums.GeneralLocale;
-import de.eldoria.shepard.localization.enums.botconfig.ManageContextLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.BooleanState;
 
-import static de.eldoria.shepard.localization.enums.botconfig.ManageContextLocale.*;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextLocale.C_ADMIN;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextLocale.C_NSFW;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextLocale.M_ACTIVATED_ADMIN;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextLocale.M_ACTIVATED_NSFW;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextLocale.M_DEACTIVATED_ADMIN;
+import static de.eldoria.shepard.localization.enums.botconfig.ManageContextLocale.M_DEACTIVATED_NSFW;
 import static de.eldoria.shepard.util.Verifier.isArgument;
-import static java.lang.System.lineSeparator;
 
 public class ManageContext extends Command {
 

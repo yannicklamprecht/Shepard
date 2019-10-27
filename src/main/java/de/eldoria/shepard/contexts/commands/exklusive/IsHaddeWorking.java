@@ -2,10 +2,10 @@ package de.eldoria.shepard.contexts.commands.exklusive;
 
 import de.eldoria.shepard.calendar.CalendarEvent;
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -17,6 +17,7 @@ import java.util.List;
 
 import static de.eldoria.shepard.calendar.CalendarQuickstart.getHaddeWorktimes;
 
+@Deprecated
 public class IsHaddeWorking extends Command {
 
     /**
@@ -36,7 +37,7 @@ public class IsHaddeWorking extends Command {
             Date currentDate = cal.getTime();
 
             CalendarEvent event = getHaddeWorktimes();
-            List<MessageEmbed.Field> fields = new ArrayList<>();
+            List<LocalizedField> fields = new ArrayList<>();
             if (event != null) {
 
                 SimpleDateFormat getTime = new SimpleDateFormat("HH:mm");
@@ -53,19 +54,19 @@ public class IsHaddeWorking extends Command {
                 }
 
                 if (currentDate.after(event.getStart()) && currentDate.before(event.getEnd())) {
-                    fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?", "Ja, bis "
-                            + getTime.format(event.getEnd()) + " Uhr " + endDate, false));
-                    MessageSender.sendTextBox(null, fields, messageContext.getChannel());
+                    fields.add(new LocalizedField("Ist Hadde arbeiten?", "Ja, bis "
+                            + getTime.format(event.getEnd()) + " Uhr " + endDate, false, messageContext));
+                    MessageSender.sendTextBox(null, fields, messageContext);
                 } else {
-                    fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?", "Nein, er arbeitet "
+                    fields.add(new LocalizedField("Ist Hadde arbeiten?", "Nein, er arbeitet "
                             + startDate + " von " + getTime.format(event.getStart()) + " Uhr bis "
-                            + getTime.format(event.getEnd()) + " Uhr.", false));
-                    MessageSender.sendTextBox(null, fields, messageContext.getChannel());
+                            + getTime.format(event.getEnd()) + " Uhr.", false, messageContext));
+                    MessageSender.sendTextBox(null, fields, messageContext);
                 }
             } else {
-                fields.add(new MessageEmbed.Field("Ist Hadde arbeiten?",
-                        "Ich hab derzeit leider keine Arbeitszeiten", false));
-                MessageSender.sendTextBox(null, fields, messageContext.getChannel());
+                fields.add(new LocalizedField("Ist Hadde arbeiten?",
+                        "Ich hab derzeit leider keine Arbeitszeiten", false, messageContext));
+                MessageSender.sendTextBox(null, fields, messageContext);
 
             }
         } catch (IOException | GeneralSecurityException e) {

@@ -95,7 +95,7 @@ public class CalendarQuickstart {
      * @return An authorized Credential object.
      * @throws IOException If the credentials.json file cannot be found.
      */
-    private static Credential getCredentials(final NetHttpTransport httpTransport) throws IOException {
+    private static Credential getCredentials(NetHttpTransport httpTransport) throws IOException {
         // Load client secrets.
         InputStream in = CalendarQuickstart.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));

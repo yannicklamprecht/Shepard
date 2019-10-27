@@ -2,7 +2,6 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.localization.enums.fun.MockingSpongebobLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.FileHelper;

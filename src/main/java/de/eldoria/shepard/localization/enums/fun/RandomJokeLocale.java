@@ -1,7 +1,13 @@
 package de.eldoria.shepard.localization.enums.fun;
 
 public enum RandomJokeLocale {
+    /**
+     * Localization key for description.
+     */
     DESCRIPTION("command.randomJoke.description"),
+    /**
+     * Localization key for message joke.
+     */
     M_JOKE("command.randomJoke.message.joke");
 
     /**

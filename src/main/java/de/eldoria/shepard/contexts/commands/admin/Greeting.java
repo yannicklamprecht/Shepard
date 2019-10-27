@@ -14,7 +14,13 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import static de.eldoria.shepard.localization.enums.GeneralLocale.A_CHANNEL_MENTION_OR_EXECUTE;
 import static de.eldoria.shepard.localization.enums.GeneralLocale.A_EMPTY;
 import static de.eldoria.shepard.localization.enums.GeneralLocale.A_MESSAGE_MENTION;
-import static de.eldoria.shepard.localization.enums.admin.GreetingsLocale.*;
+import static de.eldoria.shepard.localization.enums.admin.GreetingsLocale.C_REMOVE_CHANNEL;
+import static de.eldoria.shepard.localization.enums.admin.GreetingsLocale.C_SET_CHANNEL;
+import static de.eldoria.shepard.localization.enums.admin.GreetingsLocale.C_SET_MESSAGE;
+import static de.eldoria.shepard.localization.enums.admin.GreetingsLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.admin.GreetingsLocale.M_REMOVED_CHANNEL;
+import static de.eldoria.shepard.localization.enums.admin.GreetingsLocale.M_SET_CHANNEL;
+import static de.eldoria.shepard.localization.enums.admin.GreetingsLocale.M_SET_MESSAGE;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 

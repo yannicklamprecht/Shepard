@@ -1,7 +1,13 @@
 package de.eldoria.shepard.localization.enums.fun;
 
 public enum LargeEmoteLocale {
+    /**
+     * Localization key for description.
+     */
     DESCRIPTION("command.largeEmote.description"),
+    /**
+     * Localization key for argument emotes.
+     */
     A_EMOTE("command.largeEmote.argument.emote");
 
     /**

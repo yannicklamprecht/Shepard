@@ -6,7 +6,6 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.QuoteData;
 import de.eldoria.shepard.database.types.QuoteElement;
-import de.eldoria.shepard.localization.enums.fun.QuoteLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 
@@ -14,7 +13,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static de.eldoria.shepard.localization.enums.fun.QuoteLocale.*;
+import static de.eldoria.shepard.localization.enums.fun.QuoteLocale.A_EMPTY_OR_WORD;
+import static de.eldoria.shepard.localization.enums.fun.QuoteLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.fun.QuoteLocale.M_NO_QUOTE_FOUND;
 
 public class Quote extends Command {
 

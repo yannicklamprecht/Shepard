@@ -7,10 +7,9 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
-import de.eldoria.shepard.localization.Util.LocalizedField;
+import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.enums.GeneralLocale;
 import de.eldoria.shepard.localization.enums.WordsLocale;
-import de.eldoria.shepard.localization.enums.admin.TicketLocale;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -20,7 +19,6 @@ import de.eldoria.shepard.util.Replacer;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.managers.ChannelManager;
@@ -33,7 +31,20 @@ import java.util.stream.Collectors;
 import static de.eldoria.shepard.database.queries.TicketData.getTypeOwnerRoles;
 import static de.eldoria.shepard.database.queries.TicketData.getTypeSupportRoles;
 import static de.eldoria.shepard.database.queries.TicketData.removeChannel;
-import static de.eldoria.shepard.localization.enums.admin.TicketLocale.*;
+import static de.eldoria.shepard.localization.enums.admin.TicketLocale.A_CLOSE;
+import static de.eldoria.shepard.localization.enums.admin.TicketLocale.A_INFO;
+import static de.eldoria.shepard.localization.enums.admin.TicketLocale.A_TICKET_TYPE;
+import static de.eldoria.shepard.localization.enums.admin.TicketLocale.C_CLOSE;
+import static de.eldoria.shepard.localization.enums.admin.TicketLocale.C_INFO;
+import static de.eldoria.shepard.localization.enums.admin.TicketLocale.C_OPEN;
+import static de.eldoria.shepard.localization.enums.admin.TicketLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.admin.TicketLocale.M_CHANNEL_CATEGORY;
+import static de.eldoria.shepard.localization.enums.admin.TicketLocale.M_CREATION_MESSAGE;
+import static de.eldoria.shepard.localization.enums.admin.TicketLocale.M_OPEN;
+import static de.eldoria.shepard.localization.enums.admin.TicketLocale.M_TICKET_OWNER_ROLES;
+import static de.eldoria.shepard.localization.enums.admin.TicketLocale.M_TICKET_SUPPORT_ROLES;
+import static de.eldoria.shepard.localization.enums.admin.TicketLocale.M_TYPE_ABOUT;
+import static de.eldoria.shepard.localization.enums.admin.TicketLocale.M_TYPE_LIST;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -156,8 +167,10 @@ public class Ticket extends Command {
                     .stream().map(IMentionable::getAsMention).collect(Collectors.toList());
 
             List<LocalizedField> fields = new ArrayList<>();
-            fields.add(new LocalizedField(M_CHANNEL_CATEGORY.replacement, type.getCategory().getName(), false, receivedEvent));
-            fields.add(new LocalizedField(M_CREATION_MESSAGE.replacement, type.getCreationMessage(), false, receivedEvent));
+            fields.add(new LocalizedField(M_CHANNEL_CATEGORY.replacement, type.getCategory().getName(), false,
+                    receivedEvent));
+            fields.add(new LocalizedField(M_CREATION_MESSAGE.replacement, type.getCreationMessage(), false,
+                    receivedEvent));
             fields.add(new LocalizedField(M_TICKET_OWNER_ROLES.replacement,
                     String.join(lineSeparator() + "", ownerMentions), false, receivedEvent));
             fields.add(new LocalizedField(M_TICKET_SUPPORT_ROLES.replacement,

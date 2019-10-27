@@ -1,6 +1,9 @@
 package de.eldoria.shepard.localization.enums.fun;
 
 public enum OwoLocale {
+    /**
+     * Localization key for description.
+     */
     DESCRIPTION("command.owo.description");
 
     /**

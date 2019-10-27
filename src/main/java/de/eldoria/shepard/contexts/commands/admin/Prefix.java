@@ -11,7 +11,11 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 
 import static de.eldoria.shepard.database.queries.PrefixData.setPrefix;
 import static de.eldoria.shepard.localization.enums.GeneralLocale.A_EMPTY;
-import static de.eldoria.shepard.localization.enums.admin.PrefixLocale.*;
+import static de.eldoria.shepard.localization.enums.admin.PrefixLocale.A_PREFIX_FORMAT;
+import static de.eldoria.shepard.localization.enums.admin.PrefixLocale.C_RESET;
+import static de.eldoria.shepard.localization.enums.admin.PrefixLocale.C_SET;
+import static de.eldoria.shepard.localization.enums.admin.PrefixLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.admin.PrefixLocale.M_CHANGED;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 
 public class Prefix extends Command {

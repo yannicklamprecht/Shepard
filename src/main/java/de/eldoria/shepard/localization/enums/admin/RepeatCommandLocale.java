@@ -1,7 +1,11 @@
 package de.eldoria.shepard.localization.enums.admin;
 
 public enum RepeatCommandLocale {
+    /**
+     * Localization key for description.
+     */
     DESCRIPTION("command.repeatCommand.description");
+
     /**
      * Get the normal locale code for direct translation.
      */

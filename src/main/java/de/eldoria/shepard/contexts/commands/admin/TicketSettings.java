@@ -7,8 +7,6 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
-import de.eldoria.shepard.localization.enums.GeneralLocale;
-import de.eldoria.shepard.localization.enums.admin.TicketSettingsLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -18,15 +16,29 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.GeneralLocale.*;
-import static de.eldoria.shepard.localization.enums.admin.TicketSettingsLocale.*;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_CATEGORY;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_MESSAGE_MENTION;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_NAME;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_ROLES;
+import static de.eldoria.shepard.localization.enums.admin.TicketSettingsLocale.C_CREATE_TYPE;
+import static de.eldoria.shepard.localization.enums.admin.TicketSettingsLocale.C_REMOVE_TYPE;
+import static de.eldoria.shepard.localization.enums.admin.TicketSettingsLocale.C_SET_CATEGORY;
+import static de.eldoria.shepard.localization.enums.admin.TicketSettingsLocale.C_SET_CREATION_MESSAGE;
+import static de.eldoria.shepard.localization.enums.admin.TicketSettingsLocale.C_SET_OWNER_ROLES;
+import static de.eldoria.shepard.localization.enums.admin.TicketSettingsLocale.C_SET_SUPPORT_ROLES;
+import static de.eldoria.shepard.localization.enums.admin.TicketSettingsLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.admin.TicketSettingsLocale.M_CREATE_TYPE;
+import static de.eldoria.shepard.localization.enums.admin.TicketSettingsLocale.M_REMOVE_TYPE;
+import static de.eldoria.shepard.localization.enums.admin.TicketSettingsLocale.M_SET_CATEGORY;
+import static de.eldoria.shepard.localization.enums.admin.TicketSettingsLocale.M_SET_CREATION_MESSAGE;
+import static de.eldoria.shepard.localization.enums.admin.TicketSettingsLocale.M_SET_OWNER_ROLES;
+import static de.eldoria.shepard.localization.enums.admin.TicketSettingsLocale.M_SET_SUPPORT_ROLES;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -102,18 +114,18 @@ public class TicketSettings extends Command {
         MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
     }
 
-    private void setCreationMessage(String[] args, MessageEventDataWrapper receivedEvent, TicketType scopeTicket) {
+    private void setCreationMessage(String[] args, MessageEventDataWrapper messageContext, TicketType scopeTicket) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
             return;
         }
 
         String message = ArgumentParser.getMessage(args, 2);
 
-        if (TicketData.setCreationMessage(receivedEvent.getGuild(), scopeTicket.getKeyword(), message,
-                receivedEvent)) {
-            MessageSender.sendSimpleTextBox("Set creation text for ticket type " + scopeTicket.getKeyword() + " to:",
-                    message, receivedEvent);
+        if (TicketData.setCreationMessage(messageContext.getGuild(), scopeTicket.getKeyword(), message,
+                messageContext)) {
+            MessageSender.sendSimpleTextBox(locale.getReplacedString(M_SET_CREATION_MESSAGE.localeCode,
+                    messageContext.getGuild(), scopeTicket.getKeyword()), message, messageContext);
         }
     }
 

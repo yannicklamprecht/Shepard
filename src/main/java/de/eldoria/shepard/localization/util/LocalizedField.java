@@ -1,4 +1,4 @@
-package de.eldoria.shepard.localization.Util;
+package de.eldoria.shepard.localization.util;
 
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.MessageEmbed;

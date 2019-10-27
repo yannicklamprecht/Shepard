@@ -19,7 +19,17 @@ import java.util.stream.Collectors;
 import static de.eldoria.shepard.localization.enums.GeneralLocale.A_CHANNEL;
 import static de.eldoria.shepard.localization.enums.GeneralLocale.A_EMPTY;
 import static de.eldoria.shepard.localization.enums.GeneralLocale.A_ROLE;
-import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.*;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.C_ACTIVATE;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.C_ADD_ROLE;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.C_DEACTIVATE;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.C_REMOVE_ROLE;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.C_ROLES;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.M_ACTIVATED;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.M_ADDED_ROLE;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.M_DEACTIVATED;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.M_LOGGED_ROLES;
+import static de.eldoria.shepard.localization.enums.admin.ChangelogLocale.M_REMOVED_ROLE;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -132,7 +142,7 @@ public class Changelog extends Command {
             }
         } else {
             if (ChangelogData.removeRole(messageContext.getGuild(), role, messageContext)) {
-                MessageSender.sendMessage(locale.getReplacedString(M_ADDED_ROLE.localeCode, messageContext.getGuild(),
+                MessageSender.sendMessage(locale.getReplacedString(M_REMOVED_ROLE.localeCode, messageContext.getGuild(),
                         "**" + role.getName() + "**"),
                         messageContext);
             }

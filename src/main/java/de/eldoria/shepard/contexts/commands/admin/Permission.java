@@ -7,23 +7,37 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.queries.ContextData;
-import de.eldoria.shepard.localization.enums.GeneralLocale;
 import de.eldoria.shepard.localization.enums.admin.PermissionLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.util.Verifier;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.GeneralLocale.*;
-import static de.eldoria.shepard.localization.enums.admin.PermissionLocale.*;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_EMPTY;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_ROLES;
+import static de.eldoria.shepard.localization.enums.GeneralLocale.A_USERS;
+import static de.eldoria.shepard.localization.enums.admin.PermissionLocale.C_ADD_ROLE;
+import static de.eldoria.shepard.localization.enums.admin.PermissionLocale.C_ADD_USER;
+import static de.eldoria.shepard.localization.enums.admin.PermissionLocale.C_LIST_ROLE;
+import static de.eldoria.shepard.localization.enums.admin.PermissionLocale.C_LIST_USER;
+import static de.eldoria.shepard.localization.enums.admin.PermissionLocale.C_REMOVE_ROLE;
+import static de.eldoria.shepard.localization.enums.admin.PermissionLocale.C_REMOVE_USER;
+import static de.eldoria.shepard.localization.enums.admin.PermissionLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.admin.PermissionLocale.M_ROLE_ACCESS;
+import static de.eldoria.shepard.localization.enums.admin.PermissionLocale.M_ROLE_ACCESS_GRANTED;
+import static de.eldoria.shepard.localization.enums.admin.PermissionLocale.M_ROLE_ACCESS_REVOKED;
+import static de.eldoria.shepard.localization.enums.admin.PermissionLocale.M_USER_ACCESS;
+import static de.eldoria.shepard.localization.enums.admin.PermissionLocale.M_USER_ACCESS_GRANTED;
+import static de.eldoria.shepard.localization.enums.admin.PermissionLocale.M_USER_ACCESS_REVOKED;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -76,7 +90,7 @@ public class Permission extends Command {
         }
 
         if (isArgument(cmd, "showUser", "su")) {
-            showMentions(messageContext, contextName, "Users with access to this context:");
+            showMentions(messageContext, contextName, M_USER_ACCESS.replacement);
             return;
         }
 
@@ -89,7 +103,7 @@ public class Permission extends Command {
         }
 
         if (isArgument(cmd, "showRole", "sr")) {
-            showMentions(messageContext, contextName, "Roles with access to this context:");
+            showMentions(messageContext, contextName, M_ROLE_ACCESS.replacement);
             return;
         }
 
@@ -106,42 +120,33 @@ public class Permission extends Command {
                 Color.blue, messageContext);
     }
 
-    private void modifyUsers(String[] args, MessageEventDataWrapper receivedEvent,
+    private void modifyUsers(String[] args, MessageEventDataWrapper messageContext,
                              String contextName, ModifyType modifyType) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, receivedEvent);
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
             return;
         }
 
 
-        List<User> validUser = ArgumentParser.getGuildUsers(receivedEvent.getGuild(),
+        List<User> validUser = ArgumentParser.getGuildUsers(messageContext.getGuild(),
                 ArgumentParser.getRangeAsList(Arrays.asList(args), 2));
 
         for (User user : validUser) {
             if (modifyType == ModifyType.ADD) {
                 if (!ContextData.addContextUserPermission(contextName,
-                        receivedEvent.getGuild(), user, receivedEvent)) {
+                        messageContext.getGuild(), user, messageContext)) {
                     return;
                 }
             } else {
                 if (!ContextData.removeContextUserPermission(contextName,
-                        receivedEvent.getGuild(), user, receivedEvent)) {
+                        messageContext.getGuild(), user, messageContext)) {
                     return;
                 }
             }
         }
 
-        String names = validUser.stream().map(IMentionable::getAsMention).collect(Collectors.joining(lineSeparator()));
-
-        if (modifyType == ModifyType.ADD) {
-            MessageSender.sendSimpleTextBox("Granted following users access to context **"
-                            + contextName.toUpperCase() + "**", names, Color.green,
-                    receivedEvent);
-        } else {
-            MessageSender.sendSimpleTextBox("Revoked access from following users for context **"
-                            + contextName.toUpperCase() + "**", names, Color.red,
-                    receivedEvent);
-        }
+        sendMessage(messageContext, contextName, modifyType,
+                M_USER_ACCESS_GRANTED, M_USER_ACCESS_REVOKED, new ArrayList<>(validUser));
     }
 
     private void modifyRoles(String[] args, MessageEventDataWrapper messageContext,
@@ -167,14 +172,21 @@ public class Permission extends Command {
             }
         }
 
-        String names = roles.stream().map(IMentionable::getAsMention).collect(Collectors.joining(lineSeparator()));
+        sendMessage(messageContext, contextName, modifyType,
+                M_ROLE_ACCESS_GRANTED, M_ROLE_ACCESS_REVOKED, new ArrayList<>(roles));
+    }
+
+    private void sendMessage(MessageEventDataWrapper messageContext, String contextName, ModifyType modifyType,
+                             PermissionLocale grantedMessage, PermissionLocale revokedMessage,
+                             List<IMentionable> mentions) {
+        String names = mentions.stream().map(IMentionable::getAsMention).collect(Collectors.joining(lineSeparator()));
 
         if (modifyType == ModifyType.ADD) {
-            MessageSender.sendSimpleTextBox("Granted following roles access to context **"
-                    + contextName.toUpperCase() + "**", names, messageContext);
+            MessageSender.sendSimpleTextBox(grantedMessage + " **" + contextName.toUpperCase() + "**",
+                    names, Color.green, messageContext);
         } else {
-            MessageSender.sendSimpleTextBox("Revoked access from following roles for context **"
-                    + contextName.toUpperCase() + "**", names, messageContext);
+            MessageSender.sendSimpleTextBox(revokedMessage + " **" + contextName.toUpperCase() + "**",
+                    names, Color.red, messageContext);
         }
     }
 }

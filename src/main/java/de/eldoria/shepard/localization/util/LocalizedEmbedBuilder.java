@@ -1,4 +1,4 @@
-package de.eldoria.shepard.localization.Util;
+package de.eldoria.shepard.localization.util;
 
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -8,10 +8,10 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import java.awt.*;
+import java.awt.Color;
 import java.time.temporal.TemporalAccessor;
 
-import static de.eldoria.shepard.localization.Util.TextLocalizer.fastLocale;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocale;
 
 /**
  * Wrapper for auto localization of embeds.
