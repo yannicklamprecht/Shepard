@@ -7,7 +7,7 @@ import de.eldoria.shepard.contexts.commands.Command;
 
 import java.util.Random;
 
-import static de.eldoria.shepard.localization.enums.fun.OhaLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.OhaLocale.DESCRIPTION;
 
 public class Oha extends Command {
 

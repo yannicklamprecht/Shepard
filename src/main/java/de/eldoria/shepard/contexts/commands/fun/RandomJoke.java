@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-import static de.eldoria.shepard.localization.enums.fun.RandomJokeLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.fun.RandomJokeLocale.M_JOKE;
+import static de.eldoria.shepard.localization.enums.commands.fun.RandomJokeLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.RandomJokeLocale.M_JOKE;
 
 public class RandomJoke extends Command {
 

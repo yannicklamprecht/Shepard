@@ -11,7 +11,7 @@ import de.eldoria.shepard.contexts.keywords.Keyword;
 
 import java.util.List;
 
-import static de.eldoria.shepard.localization.enums.admin.ShowKeywordLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.admin.ShowKeywordLocale.DESCRIPTION;
 
 public class ShowKeyword extends Command {
     /**

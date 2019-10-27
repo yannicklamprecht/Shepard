@@ -13,9 +13,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static de.eldoria.shepard.localization.enums.fun.QuoteLocale.A_EMPTY_OR_WORD;
-import static de.eldoria.shepard.localization.enums.fun.QuoteLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.fun.QuoteLocale.M_NO_QUOTE_FOUND;
+import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.A_EMPTY_OR_WORD;
+import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.M_NO_QUOTE_FOUND;
 
 public class Quote extends Command {
 

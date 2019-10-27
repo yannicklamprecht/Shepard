@@ -7,7 +7,7 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
-import static de.eldoria.shepard.localization.enums.admin.RepeatCommandLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.admin.RepeatCommandLocale.DESCRIPTION;
 
 public class RepeatCommand extends Command {
     public RepeatCommand() {

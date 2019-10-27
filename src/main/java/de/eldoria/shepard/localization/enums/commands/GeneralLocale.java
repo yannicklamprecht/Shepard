@@ -1,4 +1,4 @@
-package de.eldoria.shepard.localization.enums;
+package de.eldoria.shepard.localization.enums.commands;
 
 public enum GeneralLocale {
     /**

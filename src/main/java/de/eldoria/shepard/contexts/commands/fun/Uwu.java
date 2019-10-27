@@ -5,7 +5,7 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 
-import static de.eldoria.shepard.localization.enums.fun.UwuLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.UwuLocale.DESCRIPTION;
 
 public class Uwu extends Command {
 

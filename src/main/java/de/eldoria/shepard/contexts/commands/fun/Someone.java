@@ -12,9 +12,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.fun.SomeoneLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.fun.SomeoneLocale.M_NO_ONLINE;
-import static de.eldoria.shepard.localization.enums.fun.SomeoneLocale.M_SOMEONE;
+import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.M_NO_ONLINE;
+import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.M_SOMEONE;
 
 public class Someone extends Command {
     public Someone() {

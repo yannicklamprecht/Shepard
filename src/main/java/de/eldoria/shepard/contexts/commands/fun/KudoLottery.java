@@ -14,12 +14,12 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.awt.Color;
 
-import static de.eldoria.shepard.localization.enums.fun.KudoLotteryLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.fun.KudoLotteryLocale.M_EMBED_DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.fun.KudoLotteryLocale.M_EMBED_EXPLANATION;
-import static de.eldoria.shepard.localization.enums.fun.KudoLotteryLocale.M_EMBED_KUDOS_IN_POT;
-import static de.eldoria.shepard.localization.enums.fun.KudoLotteryLocale.M_EMBED_TITLE;
-import static de.eldoria.shepard.localization.enums.fun.KudoLotteryLocale.M_LOTTERY_RUNNING;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_EMBED_DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_EMBED_EXPLANATION;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_EMBED_KUDOS_IN_POT;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_EMBED_TITLE;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_LOTTERY_RUNNING;
 
 public class KudoLottery extends Command {
     public KudoLottery() {

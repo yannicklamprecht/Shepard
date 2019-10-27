@@ -14,8 +14,8 @@ import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.fun.LargeEmoteLocale.A_EMOTE;
-import static de.eldoria.shepard.localization.enums.fun.LargeEmoteLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.LargeEmoteLocale.A_EMOTE;
+import static de.eldoria.shepard.localization.enums.commands.fun.LargeEmoteLocale.DESCRIPTION;
 
 public class LargeEmote extends Command {
     public LargeEmote() {

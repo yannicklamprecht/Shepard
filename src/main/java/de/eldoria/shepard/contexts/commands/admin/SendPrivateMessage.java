@@ -11,9 +11,9 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
 
-import static de.eldoria.shepard.localization.enums.GeneralLocale.A_USER;
-import static de.eldoria.shepard.localization.enums.admin.PrivateMessageLocale.A_MESSAGE;
-import static de.eldoria.shepard.localization.enums.admin.PrivateMessageLocale.MESSAGE_DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USER;
+import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.A_MESSAGE;
+import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.MESSAGE_DESCRIPTION;
 
 public class SendPrivateMessage extends Command {
     public SendPrivateMessage() {

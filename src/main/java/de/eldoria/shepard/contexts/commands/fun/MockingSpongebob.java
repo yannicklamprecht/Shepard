@@ -9,7 +9,7 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.io.File;
 
-import static de.eldoria.shepard.localization.enums.fun.MockingSpongebobLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.MockingSpongebobLocale.DESCRIPTION;
 
 public class MockingSpongebob extends Command {
     private static final String BASE_URL = "https://mockingspongebob.org/";
