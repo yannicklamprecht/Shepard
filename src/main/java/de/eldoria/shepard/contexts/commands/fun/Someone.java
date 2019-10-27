@@ -2,6 +2,7 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.localization.enums.fun.SomeoneLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -12,10 +13,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.fun.SomeoneLocale.*;
+
 public class Someone extends Command {
     public Someone() {
         commandName = "Someone";
-        commandDesc = "Tags someone who is online in this channel";
+        commandDesc = DESCRIPTION.replacement;
         category = ContextCategory.FUN;
     }
 
@@ -31,7 +34,7 @@ public class Someone extends Command {
                     .collect(Collectors.toList());
 
             if (members.size() == 0) {
-                MessageSender.sendMessage("No one is online :fearful:", messageContext.getChannel());
+                MessageSender.sendMessage(M_NO_ONLINE.replacement, messageContext);
                 return;
             }
 
@@ -39,7 +42,8 @@ public class Someone extends Command {
 
             Member member = members.get(rand.nextInt(members.size()));
 
-            MessageSender.sendMessage(member.getAsMention() + " is someone!", messageContext.getChannel());
+            MessageSender.sendMessage(locale.getReplacedString(M_SOMEONE.localeCode, messageContext.getGuild(),
+                    member.getAsMention()), messageContext);
 
         }
     }

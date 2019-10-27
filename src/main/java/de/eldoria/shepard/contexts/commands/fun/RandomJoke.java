@@ -1,6 +1,8 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.localization.enums.fun.RandomJokeLocale;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
@@ -13,6 +15,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+import static de.eldoria.shepard.localization.enums.fun.RandomJokeLocale.*;
+
 public class RandomJoke extends Command {
 
     /**
@@ -20,17 +24,16 @@ public class RandomJoke extends Command {
      */
     public RandomJoke() {
         commandName = "joke";
-        commandDesc = "Hehe";
+        commandDesc = DESCRIPTION.replacement;
         category = ContextCategory.FUN;
     }
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         try {
-            MessageSender.sendSimpleTextBox("Random Joke", getRandomJoke(), messageContext.getChannel());
+            MessageSender.sendSimpleTextBox(M_JOKE.replacement, getRandomJoke(), messageContext);
         } catch (IOException e) {
-            MessageSender.sendError(new MessageEmbed.Field[]{new MessageEmbed.Field("Error", e.getMessage(),
-                    false)}, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, messageContext);
         }
     }
 

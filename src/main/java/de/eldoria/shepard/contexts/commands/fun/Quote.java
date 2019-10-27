@@ -3,14 +3,18 @@ package de.eldoria.shepard.contexts.commands.fun;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.QuoteData;
 import de.eldoria.shepard.database.types.QuoteElement;
+import de.eldoria.shepard.localization.enums.fun.QuoteLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+
+import static de.eldoria.shepard.localization.enums.fun.QuoteLocale.*;
 
 public class Quote extends Command {
 
@@ -19,11 +23,11 @@ public class Quote extends Command {
      */
     public Quote() {
         commandName = "Quote";
-        commandDesc = "Get a random quote or a quote with a keyword";
+        commandDesc = DESCRIPTION.replacement;
         commandArgs = new CommandArg[] {
-                new CommandArg("keyword",
-                        "leave empty or enter a keyword to get a quote containing this word",
-                        false)};
+                new CommandArg("keyword", false,
+                        new SubArg("keyword", A_EMPTY_OR_WORD.replacement))
+        };
         category = ContextCategory.FUN;
     }
 
@@ -39,13 +43,13 @@ public class Quote extends Command {
         }
 
         if (quotes.size() == 0) {
-            MessageSender.sendMessage("No quote found!", messageContext.getChannel());
+            MessageSender.sendMessage(M_NO_QUOTE_FOUND.replacement, messageContext);
             return;
         }
 
         Random rand = new Random();
         int i = rand.nextInt(quotes.size());
 
-        MessageSender.sendMessage(quotes.get(i).getQuote(), messageContext.getChannel());
+        MessageSender.sendMessage(quotes.get(i).getQuote(), messageContext);
     }
 }
