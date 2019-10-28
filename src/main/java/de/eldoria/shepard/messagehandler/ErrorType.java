@@ -110,7 +110,7 @@ public enum ErrorType {
     /**
      * Used when a ticket close command is executed in a non ticket channel.
      */
-    NOT_TICKET_CHANEL("This is not a ticket channel!"),
+    NOT_TICKET_CHANNEL("This is not a ticket channel!"),
     /**
      * Used when a context is not found.
      */
