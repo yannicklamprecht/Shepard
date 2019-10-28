@@ -220,8 +220,13 @@ public class Ticket extends Command {
                     PermissionOverrideAction everyoneOverride = manager.getChannel().createPermissionOverride(everyone);
                     everyoneOverride.setDeny(Permission.MESSAGE_READ).queue();
 
-                    //Gives ticket owner read permission in channel
-                    PermissionOverrideAction memberOverride = manager.getChannel().createPermissionOverride(member);
+                    PermissionOverrideAction memberOverride;
+                    try {
+                        //Gives ticket owner read permission in channel
+                        memberOverride = manager.getChannel().createPermissionOverride(member);
+                    } catch (IllegalStateException e) {
+                        memberOverride = manager.getChannel().putPermissionOverride(member);
+                    }
                     memberOverride.setAllow(Permission.MESSAGE_READ).queue();
 
                     //Saves channel in database
