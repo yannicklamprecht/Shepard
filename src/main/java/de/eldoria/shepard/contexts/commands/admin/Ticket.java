@@ -73,43 +73,39 @@ public class Ticket extends Command {
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
     }
 
-    private void close(String[] args, MessageEventDataWrapper receivedEvent) {
+    private void close(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 1) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
             return;
         }
 
 
-        TextChannel channel = receivedEvent.getGuild().getTextChannelById(receivedEvent.getChannel().getIdLong());
-        if (channel == null) {
-            MessageSender.sendSimpleError(ErrorType.NOT_GUILD_TEXT_CHANNEL, receivedEvent.getChannel());
-            return;
-        }
+        TextChannel channel = messageContext.getTextChannel();
 
-        String channelOwnerId = TicketData.getChannelOwnerId(receivedEvent.getGuild(), channel, receivedEvent);
+        String channelOwnerId = TicketData.getChannelOwnerId(messageContext.getGuild(), channel, messageContext);
 
         if (channelOwnerId == null) {
-            MessageSender.sendSimpleError(ErrorType.NOT_TICKET_CHANEL, receivedEvent.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_TICKET_CHANNEL, messageContext.getChannel());
             return;
         }
 
         //Get the ticket type for caching.
-        TicketType type = TicketData.getTypeByChannel(receivedEvent.getGuild(), channel, receivedEvent);
+        TicketType type = TicketData.getTypeByChannel(messageContext.getGuild(), channel, messageContext);
 
         //Removes channel from database. needed for further role checking.
-        if (removeChannel(receivedEvent.getGuild(), channel, receivedEvent)) {
+        if (removeChannel(messageContext.getGuild(), channel, messageContext)) {
 
 
             //Get the ticket owner member object
-            Member member = receivedEvent.getGuild().getMemberById(channelOwnerId);
+            Member member = messageContext.getGuild().getMemberById(channelOwnerId);
 
             //If Member is present remove roles for this ticket.
             if (member != null) {
                 //Get the owner roles of the current ticket. They should be removed.
                 if (type != null) {
-                    List<String> ownerRolesAsString = getTypeOwnerRoles(receivedEvent.getGuild(),
-                            type.getKeyword(), receivedEvent);
-                    TicketHelper.removeAndUpdateTicketRoles(receivedEvent, member, ownerRolesAsString);
+                    List<String> ownerRolesAsString = getTypeOwnerRoles(messageContext.getGuild(),
+                            type.getKeyword(), messageContext);
+                    TicketHelper.removeAndUpdateTicketRoles(messageContext, member, ownerRolesAsString);
                 }
             }
 
@@ -209,8 +205,13 @@ public class Ticket extends Command {
                     PermissionOverrideAction everyoneOverride = manager.getChannel().createPermissionOverride(everyone);
                     everyoneOverride.setDeny(Permission.MESSAGE_READ).queue();
 
-                    //Gives ticket owner read permission in channel
-                    PermissionOverrideAction memberOverride = manager.getChannel().createPermissionOverride(member);
+                    PermissionOverrideAction memberOverride;
+                    try {
+                        //Gives ticket owner read permission in channel
+                        memberOverride = manager.getChannel().createPermissionOverride(member);
+                    } catch (IllegalStateException e) {
+                        memberOverride = manager.getChannel().putPermissionOverride(member);
+                    }
                     memberOverride.setAllow(Permission.MESSAGE_READ).queue();
 
                     //Saves channel in database
