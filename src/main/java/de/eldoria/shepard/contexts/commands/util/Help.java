@@ -53,7 +53,7 @@ public class Help extends Command {
 
         Command command = CommandCollection.getInstance().getCommand(args[0]);
         if (command == null || !command.isContextValid(messageContext)) {
-            MessageSender.sendSimpleError(ErrorType.COMMAND_NOT_FOUND, messageContext);
+            MessageSender.sendSimpleError(ErrorType.COMMAND_NOT_FOUND, messageContext.getTextChannel());
             return;
         }
 
@@ -64,12 +64,12 @@ public class Help extends Command {
         }
 
         MessageSender.sendMessage(locale.getReplacedString(HelpLocale.M_USAGE.localeCode, messageContext.getGuild(),
-                prefix), messageContext);
+                prefix), messageContext.getTextChannel());
     }
 
     /* Sends help for a specific command with description, alias and usage.*/
     private void commandHelp(MessageEventDataWrapper messageContext, Command command) {
-        command.sendCommandUsage(messageContext);
+        command.sendCommandUsage(messageContext.getTextChannel());
     }
 
     /* Sends a list of all commands with description */
@@ -102,7 +102,7 @@ public class Help extends Command {
 
         fields.removeIf(Objects::isNull);
 
-        MessageSender.sendTextBox("__**" + HelpLocale.M_COMMANDS + "**__", fields, messageContext, Color.green);
+        MessageSender.sendTextBox("__**" + HelpLocale.M_COMMANDS + "**__", fields, messageContext.getTextChannel(), Color.green);
     }
 
     private String getCommandNames(List<Command> commands) {

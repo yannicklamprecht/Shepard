@@ -82,54 +82,53 @@ public class Changelog extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
-    private void showRoles(MessageEventDataWrapper receivedEvent) {
-        List<String> collect = ArgumentParser.getRoles(receivedEvent.getGuild(),
-                ChangelogData.getRoles(receivedEvent.getGuild(), receivedEvent))
+    private void showRoles(MessageEventDataWrapper messageContext) {
+        List<String> collect = ArgumentParser.getRoles(messageContext.getGuild(),
+                ChangelogData.getRoles(messageContext.getGuild(), messageContext))
                 .stream().map(IMentionable::getAsMention).collect(Collectors.toList());
 
         MessageSender.sendSimpleTextBox(M_LOGGED_ROLES.tag,
-                String.join(lineSeparator(), collect), receivedEvent);
+                String.join(lineSeparator(), collect), messageContext.getTextChannel());
     }
 
-    private void deactivate(MessageEventDataWrapper receivedEvent) {
-        if (ChangelogData.removeChannel(receivedEvent.getGuild(), receivedEvent)) {
+    private void deactivate(MessageEventDataWrapper messageContext) {
+        if (ChangelogData.removeChannel(messageContext.getGuild(), messageContext)) {
             MessageSender.sendMessage(M_DEACTIVATED.tag,
-                    receivedEvent);
+                    messageContext.getTextChannel());
         }
     }
 
     private void activate(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
 
         TextChannel textChannel = ArgumentParser.getTextChannel(messageContext.getGuild(), args[1]);
 
         if (textChannel == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, messageContext.getTextChannel());
             return;
         }
 
         if (ChangelogData.setChannel(messageContext.getGuild(), textChannel, messageContext)) {
-            MessageSender.sendMessage(M_ACTIVATED + " " + textChannel.getAsMention(),
-                    messageContext);
+            MessageSender.sendMessage(M_ACTIVATED + " " + textChannel.getAsMention(), messageContext.getTextChannel());
         }
     }
 
     private void modifyRoles(String[] args, MessageEventDataWrapper messageContext, String cmd) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
 
         Role role = ArgumentParser.getRole(messageContext.getGuild(), args[1]);
 
         if (role == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ROLE, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ROLE, messageContext.getTextChannel());
             return;
         }
 
@@ -137,14 +136,12 @@ public class Changelog extends Command {
             if (ChangelogData.addRole(messageContext.getGuild(), role, messageContext)) {
                 MessageSender.sendMessage(locale.getReplacedString(M_ADDED_ROLE.localeCode,
                         messageContext.getGuild(),
-                        "**" + role.getName() + "**"),
-                        messageContext);
+                        "**" + role.getName() + "**"), messageContext.getTextChannel());
             }
         } else {
             if (ChangelogData.removeRole(messageContext.getGuild(), role, messageContext)) {
                 MessageSender.sendMessage(locale.getReplacedString(M_REMOVED_ROLE.localeCode, messageContext.getGuild(),
-                        "**" + role.getName() + "**"),
-                        messageContext);
+                        "**" + role.getName() + "**"), messageContext.getTextChannel());
             }
         }
     }

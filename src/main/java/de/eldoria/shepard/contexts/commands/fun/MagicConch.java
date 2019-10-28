@@ -53,7 +53,7 @@ public class MagicConch extends Command {
 
         MessageSender.sendTextBox(null,
                 Collections.singletonList(new LocalizedField(M_ANSWER.tag, word, false, messageContext)),
-                messageContext);
+                messageContext.getTextChannel());
 
     }
 }

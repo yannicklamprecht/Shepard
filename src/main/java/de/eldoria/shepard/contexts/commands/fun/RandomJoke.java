@@ -30,9 +30,9 @@ public class RandomJoke extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         try {
-            MessageSender.sendSimpleTextBox(M_JOKE.tag, getRandomJoke(), messageContext);
+            MessageSender.sendSimpleTextBox(M_JOKE.tag, getRandomJoke(), messageContext.getTextChannel());
         } catch (IOException e) {
-            MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, messageContext);
+            MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, messageContext.getTextChannel());
         }
     }
 

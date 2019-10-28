@@ -46,7 +46,6 @@ public final class ShepardBot {
         } catch (InterruptedException e) {
             System.out.println("Startup interrupted");
         }
-
     }
 
     private void setup() {

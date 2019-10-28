@@ -63,8 +63,7 @@ public class ManageContextGuild extends Command {
         String contextName = ArgumentParser.getContextName(args[0], messageContext);
 
         if (contextName == null) {
-            MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
-                    messageContext);
+            MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND, messageContext.getTextChannel());
             return;
         }
 
@@ -88,7 +87,7 @@ public class ManageContextGuild extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
 
     }
 
@@ -121,11 +120,11 @@ public class ManageContextGuild extends Command {
 
         if (modifyType == ModifyType.ADD) {
             MessageSender.sendSimpleTextBox(M_ADDED_GUILDS + " **"
-                    + contextName.toUpperCase() + "**", names, messageContext);
+                    + contextName.toUpperCase() + "**", names, messageContext.getTextChannel());
 
         } else {
             MessageSender.sendSimpleTextBox(M_REMOVED_GUILDS + " **"
-                    + contextName.toUpperCase() + "**", names, messageContext);
+                    + contextName.toUpperCase() + "**", names, messageContext.getTextChannel());
         }
     }
 
@@ -134,14 +133,14 @@ public class ManageContextGuild extends Command {
         ListType type = ListType.getType(args[2]);
 
         if (type == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_LIST_TYPE, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_LIST_TYPE, messageContext.getTextChannel());
             return;
         }
 
         if (ContextData.setContextGuildListType(contextName, type, messageContext)) {
             MessageSender.sendMessage(locale.getReplacedString(M_CHANGED_LIST_TYPE.localeCode,
                     messageContext.getGuild(), "**" + contextName.toUpperCase() + "**")
-                    + "**" + type.toString() + "**", messageContext);
+                    + "**" + type.toString() + "**", messageContext.getTextChannel());
         }
 
     }
@@ -150,7 +149,7 @@ public class ManageContextGuild extends Command {
         BooleanState bState = ArgumentParser.getBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
             return;
         }
 
@@ -159,10 +158,10 @@ public class ManageContextGuild extends Command {
         if (ContextData.setContextGuildCheckActive(contextName, state, messageContext)) {
             if (state) {
                 MessageSender.sendMessage(M_ACTIVATED_CHECK.tag + "**"
-                        + contextName.toUpperCase() + "**", messageContext);
+                        + contextName.toUpperCase() + "**", messageContext.getTextChannel());
             } else {
                 MessageSender.sendMessage(M_DEACTIVATED_CHECK + "**"
-                        + contextName.toUpperCase() + "**", messageContext);
+                        + contextName.toUpperCase() + "**", messageContext.getTextChannel());
             }
         }
     }

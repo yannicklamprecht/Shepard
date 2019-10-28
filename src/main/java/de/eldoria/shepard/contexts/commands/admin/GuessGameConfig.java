@@ -72,7 +72,7 @@ public class GuessGameConfig extends Command {
         }
         if (isArgument(cmd, "cancelRegistration", "cr")) {
             ImageRegister.getInstance().cancelConfiguration(messageContext);
-            MessageSender.sendMessage(M_REGISTRATION_CANCELED.tag, messageContext);
+            MessageSender.sendMessage(M_REGISTRATION_CANCELED.tag, messageContext.getTextChannel());
             return;
         }
         if (isArgument(cmd, "changeFlag", "cf")) {
@@ -82,12 +82,12 @@ public class GuessGameConfig extends Command {
 
         if (isArgument(cmd, "showImageSet", "s")) {
             if (args.length != 2) {
-                MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+                MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
                 return;
             }
             GuessGameImage hentaiImage = GuessGameData.getHentaiImage(args[1], messageContext);
             if (hentaiImage == null) {
-                MessageSender.sendSimpleError(ErrorType.INVALID_IMAGE_URL, messageContext);
+                MessageSender.sendSimpleError(ErrorType.INVALID_IMAGE_URL, messageContext.getTextChannel());
                 return;
             }
 
@@ -102,56 +102,56 @@ public class GuessGameConfig extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
     private void changeFlag(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
         BooleanState booleanState = ArgumentParser.getBoolean(args[2], "nsfw", "sfw");
         if (booleanState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
             return;
         }
 
         File fileFromURL = FileHelper.getFileFromURL(args[1]);
 
         if (fileFromURL == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_IMAGE_URL, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_IMAGE_URL, messageContext.getTextChannel());
             return;
         }
 
         if (GuessGameData.changeImageFlag(args[1], booleanState.stateAsBoolean, messageContext)) {
             MessageSender.sendMessage(locale.getReplacedString(M_CHANGED_FLAG.localeCode,
-                    messageContext.getGuild(), booleanState.stateAsBoolean ? "NSFW" : "SFW"), messageContext);
+                    messageContext.getGuild(), booleanState.stateAsBoolean ? "NSFW" : "SFW"), messageContext.getTextChannel());
             messageContext.getChannel().sendFile(fileFromURL).queue();
         }
     }
 
     private void removeImage(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
         if (GuessGameData.removeHentaiImage(args[1], messageContext)) {
-            MessageSender.sendMessage(M_REMOVED_IMAGE.tag, messageContext);
+            MessageSender.sendMessage(M_REMOVED_IMAGE.tag, messageContext.getTextChannel());
         }
     }
 
     private void addImage(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
         BooleanState booleanState = ArgumentParser.getBoolean(args[1], "nsfw", "sfw");
         if (booleanState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
             return;
         }
         ImageRegister.getInstance().startConfiguration(messageContext,
                 booleanState.stateAsBoolean);
-        MessageSender.sendMessage(M_STARTED_REGISTRATION.tag, messageContext);
+        MessageSender.sendMessage(M_STARTED_REGISTRATION.tag, messageContext.getTextChannel());
     }
 }

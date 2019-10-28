@@ -49,29 +49,29 @@ public class Prefix extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
     private void reset(MessageEventDataWrapper messageContext) {
         if (setPrefix(messageContext.getGuild(), ShepardBot.getConfig().getPrefix(), messageContext)) {
             MessageSender.sendMessage(M_CHANGED + " '" + ShepardBot.getConfig().getPrefix() + "'",
-                    messageContext);
+                    messageContext.getTextChannel());
         }
     }
 
     private void set(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 1) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
         }
 
         if (args[1].length() > 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_PREFIX_LENGTH, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_PREFIX_LENGTH, messageContext.getTextChannel());
             return;
         }
 
         if (setPrefix(messageContext.getGuild(), args[1].trim(), messageContext)) {
-            MessageSender.sendMessage(M_CHANGED + " '" + args[1].trim() + "'", messageContext);
+            MessageSender.sendMessage(M_CHANGED + " '" + args[1].trim() + "'", messageContext.getTextChannel());
         }
     }
 }

@@ -14,6 +14,7 @@ import de.eldoria.shepard.contexts.ContextSensitive;
 import info.debatty.java.stringsimilarity.JaroWinkler;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -173,17 +174,17 @@ public abstract class Command extends ContextSensitive {
     /**
      * Send the usage of the command to a channel.
      *
-     * @param messageContext Channel where the usage should be send in.
+     * @param channel Channel where the usage should be send in.
      */
-    public void sendCommandUsage(MessageEventDataWrapper messageContext) {
+    public void sendCommandUsage(TextChannel channel) {
         List<LocalizedField> fields = new ArrayList<>();
 
-        fields.add(new LocalizedField(getCommandDesc(), "", false, messageContext));
+        fields.add(new LocalizedField(getCommandDesc(), "", false, channel));
 
         // Set aliases
         if (getCommandAliases() != null && getCommandAliases().length != 0) {
             fields.add(new LocalizedField("__**" + HelpLocale.W_ALIASES + ":**__", String.join(", ",
-                    getCommandAliases()), false, messageContext));
+                    getCommandAliases()), false, channel));
         }
 
         String args = Arrays.stream(getCommandArgs()).map(CommandArg::getHelpString)
@@ -191,7 +192,7 @@ public abstract class Command extends ContextSensitive {
 
 
         fields.add(new LocalizedField("__**" + HelpLocale.W_USAGE + ":**__", getCommandName() + " " + args,
-                false, messageContext));
+                false, channel));
 
         StringBuilder desc = new StringBuilder();
         if (commandArgs.length != 0) {
@@ -199,11 +200,11 @@ public abstract class Command extends ContextSensitive {
                 desc.append(arg.getArgHelpString()).append(lineSeparator()).append(lineSeparator());
             }
             fields.add(new LocalizedField("__**" + HelpLocale.W_ARGUMENTS + ":**__", desc.toString(),
-                    false, messageContext));
+                    false, channel));
         }
 
         MessageSender.sendTextBox("__**" + HelpLocale.M_HELP_FOR_COMMAND + " " + getCommandName()
-                + "**__", fields, messageContext, Color.green);
+                + "**__", fields, channel, Color.green);
     }
 
     public double getSimilarityScore(String command) {

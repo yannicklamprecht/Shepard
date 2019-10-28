@@ -35,7 +35,7 @@ public class Someone extends Command {
                     .collect(Collectors.toList());
 
             if (members.size() == 0) {
-                MessageSender.sendMessage(M_NO_ONLINE.tag, messageContext);
+                MessageSender.sendMessage(M_NO_ONLINE.tag, messageContext.getTextChannel());
                 return;
             }
 
@@ -44,7 +44,7 @@ public class Someone extends Command {
             Member member = members.get(rand.nextInt(members.size()));
 
             MessageSender.sendMessage(locale.getReplacedString(M_SOMEONE.localeCode, messageContext.getGuild(),
-                    member.getAsMention()), messageContext);
+                    member.getAsMention()), messageContext.getTextChannel());
         }
     }
 }

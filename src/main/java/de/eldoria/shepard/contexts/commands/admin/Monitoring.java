@@ -65,7 +65,7 @@ public class Monitoring extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 0) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
         }
 
@@ -86,7 +86,7 @@ public class Monitoring extends Command {
         }
 
         if (args.length < 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
 
@@ -104,22 +104,22 @@ public class Monitoring extends Command {
             add(args, messageContext);
             return;
         }
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
     private void add(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
         if (Verifier.getAddressType(args[1]) == AddressType.NONE) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ADDRESS, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ADDRESS, messageContext.getTextChannel());
             return;
         }
 
         BooleanState booleanState = Verifier.checkAndGetBoolean(args[args.length - 1]);
         if (booleanState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
             return;
         }
 
@@ -128,7 +128,7 @@ public class Monitoring extends Command {
                 messageContext.getGuild(), args[1], name, booleanState.stateAsBoolean, messageContext)) {
             MessageSender.sendMessage(locale.getReplacedString(M_REGISTERED_ADDRESS.localeCode,
                     messageContext.getGuild(), "**" + args[1] + "**", "**" + name + "**"),
-                    messageContext);
+                    messageContext.getTextChannel());
         }
     }
 
@@ -137,22 +137,22 @@ public class Monitoring extends Command {
         if (channel != null) {
             if (MonitoringData.setMonitoringChannel(messageContext.getGuild(), channel, messageContext)) {
                 MessageSender.sendMessage(locale.getReplacedString(M_REGISTERED_CHANNEL.localeCode,
-                        messageContext.getGuild(), channel.getAsMention()), messageContext);
+                        messageContext.getGuild(), channel.getAsMention()), messageContext.getTextChannel());
             }
         } else {
-            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, messageContext.getTextChannel());
         }
     }
 
     private void remove(String arg, MessageEventDataWrapper messageContext) {
         Integer integer = ArgumentParser.parseInt(arg);
         if (integer == null) {
-            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext);
+            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
             return;
         }
         if (MonitoringData.removeMonitoringAddressByIndex(messageContext.getGuild(), integer, messageContext)) {
             MessageSender.sendMessage(locale.getReplacedString(M_REMOVED_ADDRESS.localeCode, messageContext.getGuild(),
-                    "**" + integer + "**"), messageContext);
+                    "**" + integer + "**"), messageContext.getTextChannel());
         }
     }
 
@@ -161,7 +161,7 @@ public class Monitoring extends Command {
                 messageContext.getTextChannel(), messageContext)) {
             MessageSender.sendMessage(locale.getReplacedString(M_REGISTERED_CHANNEL.localeCode,
                     messageContext.getGuild(), messageContext.getTextChannel().getAsMention()),
-                    messageContext);
+                    messageContext.getTextChannel());
             return true;
         }
         return false;
@@ -169,7 +169,7 @@ public class Monitoring extends Command {
 
     private void disable(MessageEventDataWrapper messageContext) {
         MonitoringData.removeMonitoringChannel(messageContext.getGuild(), messageContext);
-        MessageSender.sendMessage(M_REMOVED_CHANNEL.tag, messageContext);
+        MessageSender.sendMessage(M_REMOVED_CHANNEL.tag, messageContext.getTextChannel());
     }
 
     private void show(MessageEventDataWrapper messageContext) {
@@ -189,6 +189,6 @@ public class Monitoring extends Command {
         }
 
         MessageSender.sendMessage(M_REGISTERED_ADDRESSES + lineSeparator() + tableBuilder,
-                messageContext);
+                messageContext.getTextChannel());
     }
 }

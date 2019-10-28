@@ -27,7 +27,7 @@ public class Oha extends Command {
         Random rand = new Random();
         int loops = rand.nextInt(30) + 10;
         oha = oha + "a".repeat(loops);
-        MessageSender.sendMessage(oha, messageContext);
+        MessageSender.sendMessage(oha, messageContext.getTextChannel());
 
         if (label.equalsIgnoreCase("ohad")) {
             messageContext.getMessage().delete().queue();

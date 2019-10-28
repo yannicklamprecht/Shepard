@@ -47,8 +47,7 @@ public class ManageContext extends Command {
         String cmd = args[1];
 
         if (contextName == null) {
-            MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
-                    messageContext);
+            MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND, messageContext.getTextChannel());
             return;
         }
 
@@ -62,14 +61,14 @@ public class ManageContext extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
     private void setAdminOnly(String[] args, String contextName, MessageEventDataWrapper messageContext) {
         BooleanState bState = ArgumentParser.getBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
             return;
         }
 
@@ -81,11 +80,11 @@ public class ManageContext extends Command {
 
         if (state) {
             MessageSender.sendMessage("**" + M_ACTIVATED_ADMIN
-                    + "\"" + contextName.toUpperCase() + "\"**", messageContext);
+                    + "\"" + contextName.toUpperCase() + "\"**", messageContext.getTextChannel());
 
         } else {
             MessageSender.sendMessage("**" + M_DEACTIVATED_ADMIN
-                    + "\"" + contextName.toUpperCase() + "\"**", messageContext);
+                    + "\"" + contextName.toUpperCase() + "\"**", messageContext.getTextChannel());
         }
     }
 
@@ -93,7 +92,7 @@ public class ManageContext extends Command {
         BooleanState bState = ArgumentParser.getBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
             return;
         }
 
@@ -105,11 +104,11 @@ public class ManageContext extends Command {
 
         if (state) {
             MessageSender.sendMessage("**" + M_ACTIVATED_NSFW + "\"" + contextName.toUpperCase() + "\"**",
-                    messageContext);
+                    messageContext.getTextChannel());
 
         } else {
             MessageSender.sendMessage("**" + M_DEACTIVATED_NSFW + "\"" + contextName.toUpperCase() + "\"**",
-                    messageContext);
+                    messageContext.getTextChannel());
         }
     }
 }

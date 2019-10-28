@@ -32,10 +32,10 @@ public final class MessageSender {
      *
      * @param title   Title of the chatbox.
      * @param fields  List of fields for the chatbox.
-     * @param messageContext messageContext
+     * @param channel channel
      */
-    public static void sendTextBox(String title, List<LocalizedField> fields, MessageEventDataWrapper messageContext) {
-        sendTextBox(title, fields, messageContext, Color.gray);
+    public static void sendTextBox(String title, List<LocalizedField> fields, TextChannel channel) {
+        sendTextBox(title, fields, channel, Color.gray);
     }
 
     /**
@@ -43,18 +43,18 @@ public final class MessageSender {
      *
      * @param title   Title of the chatbox.
      * @param fields  List of fields for the chatbox.
-     * @param messageContext messageContext
+     * @param channel channel
      * @param color   Color of the text box
      */
-    public static void sendTextBox(String title, List<LocalizedField> fields, MessageEventDataWrapper messageContext,
+    public static void sendTextBox(String title, List<LocalizedField> fields, TextChannel channel,
                                    Color color) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(fastLocale(title, messageContext))
+                .setTitle(fastLocale(title, channel))
                 .setColor(color);
         for (LocalizedField field : fields) {
             builder.addField(field.getField());
         }
-        messageContext.getTextChannel().sendMessage(builder.build()).queue();
+        channel.sendMessage(builder.build()).queue();
     }
 
     /**
@@ -63,11 +63,11 @@ public final class MessageSender {
      * @param title       Title of text box
      * @param description Text of textbox
      * @param reaction    Reaction for thumbnail
-     * @param messageContext messageContext
+     * @param channel channel
      */
     public static void sendSimpleTextBox(String title, String description,
-                                         ShepardReactions reaction, MessageEventDataWrapper messageContext) {
-        sendSimpleTextBox(title, description, Color.gray, reaction, messageContext);
+                                         ShepardReactions reaction, TextChannel channel) {
+        sendSimpleTextBox(title, description, Color.gray, reaction, channel);
     }
 
     /**
@@ -75,10 +75,10 @@ public final class MessageSender {
      *
      * @param title       Title of text box
      * @param description Text of textbox
-     * @param messageContext messageContext
+     * @param channel channel
      */
-    public static void sendSimpleTextBox(String title, String description, MessageEventDataWrapper messageContext) {
-        sendSimpleTextBox(title, description, Color.gray, ShepardReactions.NONE, messageContext);
+    public static void sendSimpleTextBox(String title, String description, TextChannel channel) {
+        sendSimpleTextBox(title, description, Color.gray, ShepardReactions.NONE, channel);
     }
 
     /**
@@ -87,11 +87,11 @@ public final class MessageSender {
      * @param title       Title of text box
      * @param description Text of textbox
      * @param color       Color of the text box
-     * @param messageContext messageContext
+     * @param channel channel
      */
     public static void sendSimpleTextBox(String title, String description, Color color,
-                                         MessageEventDataWrapper messageContext) {
-        sendSimpleTextBox(title, description, color, ShepardReactions.NONE, messageContext);
+                                         TextChannel channel) {
+        sendSimpleTextBox(title, description, color, ShepardReactions.NONE, channel);
     }
 
     /**
@@ -101,34 +101,34 @@ public final class MessageSender {
      * @param description    Text of textbox
      * @param color          Color of the text box
      * @param reaction       Reaction for thumbnail
-     * @param messageContext channel to send
+     * @param channel channel to send
      */
     public static void sendSimpleTextBox(String title, String description, Color color,
-                                         ShepardReactions reaction, MessageEventDataWrapper messageContext) {
+                                         ShepardReactions reaction, TextChannel channel) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(fastLocale(title, messageContext))
+                .setTitle(fastLocale(title, channel))
                 .setColor(color)
-                .setDescription(fastLocale(description, messageContext));
+                .setDescription(fastLocale(description, channel));
         if (reaction != ShepardReactions.NONE) {
             builder.setThumbnail(reaction.thumbnail);
         }
-        messageContext.getTextChannel().sendMessage(builder.build()).queue();
+        channel.sendMessage(builder.build()).queue();
     }
 
     /**
      * Sends a error with text box.
      *
      * @param fields  List of fields.
-     * @param messageContext messageContext
+     * @param channel channel
      */
-    public static void sendError(LocalizedField[] fields, MessageEventDataWrapper messageContext) {
+    public static void sendError(LocalizedField[] fields, TextChannel channel) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("ERROR!")
                 .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
         for (LocalizedField field : fields) {
             builder.addField(field.getField())
                     .setColor(Color.red);
-            messageContext.getTextChannel().sendMessage(builder.build()).queue();
+            channel.sendMessage(builder.build()).queue();
         }
     }
 
@@ -136,13 +136,13 @@ public final class MessageSender {
      * Sends a simple error with predefined error messages.
      *
      * @param type    error type
-     * @param messageContext messageContext
+     * @param channel channel
      */
-    public static void sendSimpleError(ErrorType type, MessageEventDataWrapper messageContext) {
+    public static void sendSimpleError(ErrorType type, TextChannel channel) {
         if (type.isEmbed) {
-            sendSimpleErrorEmbed(type.message, messageContext);
+            sendSimpleErrorEmbed(type.message, channel);
         } else {
-            sendMessage(type.message, messageContext);
+            sendMessage(type.message, channel);
         }
 
     }
@@ -151,60 +151,18 @@ public final class MessageSender {
      * Sends a simple error to a channel.
      *
      * @param error   Error message
-     * @param messageContext messageContext
+     * @param channel channel
      */
-    public static void sendSimpleErrorEmbed(String error, MessageEventDataWrapper messageContext) {
+    public static void sendSimpleErrorEmbed(String error, MessageChannel channel) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("ERROR!")
                 .setDescription(error)
                 .setColor(Color.red)
                 .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
         try {
-            messageContext.getTextChannel().sendMessage(builder.build()).queue();
+            channel.sendMessage(builder.build()).queue();
         } catch (ErrorResponseException e) {
             ShepardBot.getLogger().error(e.getMessage());
-        }
-    }
-
-    /**
-     * Deletes a received message.
-     *
-     * @param messageContext Event of message receive
-     */
-    public static void deleteMessage(MessageEventDataWrapper messageContext) {
-        try {
-            messageContext.getMessage().delete().submit();
-        } catch (InsufficientPermissionException e) {
-            MessageSender.sendError(new LocalizedField[] {new LocalizedField("Lack of Permission",
-                    "Missing permission: MESSAGE_MANAGE", false, messageContext)}, messageContext);
-        }
-    }
-
-    /**
-     * Loggs a message es embed.
-     *
-     * @param messageContext messageContext to log
-     */
-    public static void logMessageAsEmbedded(MessageEventDataWrapper messageContext) {
-        Instant instant = Instant.now(); // get The current time in instant object
-        Timestamp t = java.sql.Timestamp.from(instant); // Convert instant to Timestamp
-
-        if (messageContext.getChannel() instanceof TextChannel) {
-            EmbedBuilder builder = new EmbedBuilder()
-                    .setTitle(messageContext.getGuild().getName() + " | " + messageContext.getChannel().getName())
-                    .setTimestamp(t.toInstant())
-                    .setAuthor(messageContext.getAuthor().getAsTag(), null, messageContext.getAuthor().getAvatarUrl())
-                    .setDescription(messageContext.getMessage().getContentRaw());
-            List<Message.Attachment> attachments = messageContext.getMessage().getAttachments();
-            if (!attachments.isEmpty() && attachments.get(0).isImage()) {
-                builder.setImage(attachments.get(0).getUrl());
-            }
-
-            try {
-                messageContext.getTextChannel().sendMessage(builder.build()).queue();
-            } catch (InsufficientPermissionException e) {
-                //Only when beta bot is running.
-            }
         }
     }
 
@@ -246,12 +204,12 @@ public final class MessageSender {
      * send a simple Message to a channel.
      *
      * @param message Message to send.
-     * @param messageContext messageContext
+     * @param channel channel
      */
-    public static void sendMessage(String message, MessageEventDataWrapper messageContext) {
+    public static void sendMessage(String message, TextChannel channel) {
         if (message.isEmpty()) return;
 
-        String localizedMessage = fastLocale(message, messageContext);
+        String localizedMessage = fastLocale(message, channel);
 
         String[] messageParts = localizedMessage.split(System.lineSeparator());
         StringBuilder messagePart = new StringBuilder();
@@ -259,13 +217,13 @@ public final class MessageSender {
             if (messagePart.length() + messageParts[i].length() < 1024) {
                 messagePart.append(messageParts[i]).append(System.lineSeparator());
             } else {
-                messageContext.getTextChannel().sendMessage(messagePart.toString()).queue();
+                channel.sendMessage(messagePart.toString()).queue();
                 messagePart = new StringBuilder();
                 i--;
             }
         }
 
-        messageContext.getTextChannel().sendMessage(messagePart.toString()).queue();
+        channel.sendMessage(messagePart.toString()).queue();
     }
 
     /**
@@ -299,7 +257,7 @@ public final class MessageSender {
      * @param messageContext message informations.
      */
     public static void sendAttachment(User user, List<Message.Attachment> attachments, String text,
-                                      MessageEventDataWrapper messageContext) {
+                                      TextChannel messageContext) {
         user.openPrivateChannel().queue(privateChannel -> {
             privateChannel.sendMessage(text).queue();
             if (!attachments.isEmpty()) {

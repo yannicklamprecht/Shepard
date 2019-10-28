@@ -27,7 +27,7 @@ public class Say extends Command {
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        MessageSender.sendMessage(ArgumentParser.getMessage(args, 0), messageContext);
+        MessageSender.sendMessage(ArgumentParser.getMessage(args, 0), messageContext.getTextChannel());
 
         if (label.equalsIgnoreCase("sayd")) {
             messageContext.getMessage().delete().queue();

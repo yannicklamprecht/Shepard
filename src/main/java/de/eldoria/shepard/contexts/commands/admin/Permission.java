@@ -77,7 +77,7 @@ public class Permission extends Command {
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
-                    messageContext);
+                    messageContext.getTextChannel());
             return;
         }
 
@@ -107,7 +107,7 @@ public class Permission extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
     private void showMentions(MessageEventDataWrapper messageContext, String contextName, String message) {
@@ -117,13 +117,13 @@ public class Permission extends Command {
                 .collect(Collectors.joining(lineSeparator()));
         MessageSender.sendSimpleTextBox(message,
                 roleMentions,
-                Color.blue, messageContext);
+                Color.blue, messageContext.getTextChannel());
     }
 
     private void modifyUsers(String[] args, MessageEventDataWrapper messageContext,
                              String contextName, ModifyType modifyType) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
         }
 
@@ -152,7 +152,7 @@ public class Permission extends Command {
     private void modifyRoles(String[] args, MessageEventDataWrapper messageContext,
                              String contextName, ModifyType modifyType) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
         }
 
@@ -183,10 +183,10 @@ public class Permission extends Command {
 
         if (modifyType == ModifyType.ADD) {
             MessageSender.sendSimpleTextBox(grantedMessage + " **" + contextName.toUpperCase() + "**",
-                    names, Color.green, messageContext);
+                    names, Color.green, messageContext.getTextChannel());
         } else {
             MessageSender.sendSimpleTextBox(revokedMessage + " **" + contextName.toUpperCase() + "**",
-                    names, Color.red, messageContext);
+                    names, Color.red, messageContext.getTextChannel());
         }
     }
 }

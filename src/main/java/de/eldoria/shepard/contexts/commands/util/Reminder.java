@@ -54,7 +54,7 @@ public class Reminder extends Command {
         }
 
         if (args.length < 2) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
         }
 
@@ -65,7 +65,7 @@ public class Reminder extends Command {
 
 
         if (args.length < 4) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
         }
 
@@ -77,14 +77,14 @@ public class Reminder extends Command {
     private void remove(String[] args, MessageEventDataWrapper messageContext) {
         Integer number = ArgumentParser.parseInt(args[2]);
         if (number == null) {
-            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext);
+            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
             return;
         }
 
         List<ReminderSimple> userReminder = ReminderData.getUserReminder(messageContext.getGuild(),
                 messageContext.getAuthor(), messageContext);
         if (number > userReminder.size()) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getTextChannel());
             return;
         }
 
@@ -97,7 +97,7 @@ public class Reminder extends Command {
         MessageSender.sendMessage(locale.getReplacedString(ReminderLocal.M_REMOVED.localeCode, messageContext.getGuild(),
                 reminder.getReminderId() + "",
                 TextFormatting.cropText(reminder.getText(), "...", 20, true),
-                reminder.getTime()), messageContext);
+                reminder.getTime()), messageContext.getTextChannel());
     }
 
     private void show(MessageEventDataWrapper messageContext) {
@@ -114,13 +114,13 @@ public class Reminder extends Command {
         }
 
         MessageSender.sendMessage(ReminderLocal.M_CURRENT_REMINDERS + System.lineSeparator() + tableBuilder,
-                messageContext);
+                messageContext.getTextChannel());
     }
 
     private void add(String[] args, MessageEventDataWrapper messageContext) {
         String command = ArgumentParser.getMessage(args, 0, 0);
         if (!DATE.matcher(command).find() && !INTERVAL.matcher(command).find()) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_TIME, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_TIME, messageContext.getTextChannel());
             return;
         }
 
@@ -132,7 +132,7 @@ public class Reminder extends Command {
             if (ReminderData.addReminderDate(messageContext.getGuild(), messageContext.getAuthor(),
                     messageContext.getTextChannel(), message, date, time, messageContext)) {
                 MessageSender.sendMessage(locale.getReplacedString(ReminderLocal.M_REMIND_DATE.localeCode,
-                        messageContext.getGuild(), date, time) + System.lineSeparator() + message, messageContext);
+                        messageContext.getGuild(), date, time) + System.lineSeparator() + message, messageContext.getTextChannel());
             }
             return;
         }
@@ -143,7 +143,7 @@ public class Reminder extends Command {
         if (ReminderData.addReminderInterval(messageContext.getGuild(), messageContext.getAuthor(),
                 messageContext.getTextChannel(), message, interval, messageContext)) {
             MessageSender.sendMessage(locale.getReplacedString(ReminderLocal.M_REMIND_TIME.localeCode,
-                    messageContext.getGuild(), interval) + System.lineSeparator() + message, messageContext);
+                    messageContext.getGuild(), interval) + System.lineSeparator() + message, messageContext.getTextChannel());
         }
     }
 }

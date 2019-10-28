@@ -65,7 +65,7 @@ public class Kudos extends Command {
                     messageContext.getGuild(), "**" + globalUserPoints + "**")
                     : message;
 
-            MessageSender.sendMessage(message, messageContext);
+            MessageSender.sendMessage(message, messageContext.getTextChannel());
             return;
         }
 
@@ -86,42 +86,42 @@ public class Kudos extends Command {
             give(label, args, messageContext);
             return;
         }
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
     private void give(String label, String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
         }
 
         Member member = ArgumentParser.getGuildMember(messageContext.getGuild(), args[1]);
 
         if (member == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext.getTextChannel());
             return;
         }
 
         if (Verifier.equalSnowflake(member.getUser(), messageContext.getAuthor())) {
-            MessageSender.sendSimpleError(ErrorType.SELF_ASSIGNMENT, messageContext);
+            MessageSender.sendSimpleError(ErrorType.SELF_ASSIGNMENT, messageContext.getTextChannel());
             return;
         }
 
         Integer points = ArgumentParser.parseInt(args[2]);
 
         if (points == null) {
-            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext);
+            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
             return;
         }
 
         if (points <= 0) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
 
 
         if (!KudoData.tryTakePoints(
                 messageContext.getGuild(), messageContext.getAuthor(), points, messageContext)) {
-            MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_KUDOS, messageContext);
+            MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_KUDOS, messageContext.getTextChannel());
             return;
         }
         if (!KudoData.addRubberPoints(
@@ -130,7 +130,7 @@ public class Kudos extends Command {
         }
         MessageSender.sendMessage(locale.getReplacedString(M_RECEIVED_KUDOS.localeCode, messageContext.getGuild(),
                 member.getAsMention(), "**" + points + "**", messageContext.getAuthor().getAsMention()),
-                messageContext);
+                messageContext.getTextChannel());
     }
 
     private void sendTopScores(boolean global, MessageEventDataWrapper messageContext) {
@@ -141,6 +141,6 @@ public class Kudos extends Command {
         String rankTable = TextFormatting.getRankTable(ranks);
 
         MessageSender.sendMessage("**" + (global ? M_GLOBAL_RANKING.tag : M_SERVER_RANKING.tag) + "**"
-                + lineSeparator() + rankTable, messageContext);
+                + lineSeparator() + rankTable, messageContext.getTextChannel());
     }
 }

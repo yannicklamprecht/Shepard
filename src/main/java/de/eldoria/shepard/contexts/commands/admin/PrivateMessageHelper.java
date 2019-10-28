@@ -9,18 +9,19 @@ import net.dv8tion.jda.api.entities.User;
 
 public final class PrivateMessageHelper {
 
-    private PrivateMessageHelper(){
+    private PrivateMessageHelper() {
     }
 
     static void sendPrivateMessage(String[] args, MessageEventDataWrapper messageContext, User user) {
         if (user == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext.getTextChannel());
             return;
         }
 
-        String text = ArgumentParser.getMessage(args,1);
+        String text = ArgumentParser.getMessage(args, 1);
 
-        MessageSender.sendAttachment(user, messageContext.getMessage().getAttachments(), text, messageContext);
+        MessageSender.sendAttachment(user, messageContext.getMessage().getAttachments(), text,
+                messageContext.getTextChannel());
 
         messageContext.getMessage().addReaction(EmojiCollection.CHECK_MARK_BUTTON.unicode).queue();
     }

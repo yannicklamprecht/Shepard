@@ -4,6 +4,7 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.PrefixData;
+import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.InteractableMessageSender;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -14,7 +15,6 @@ import de.eldoria.shepard.reactionactions.ExecuteCommand;
 import de.eldoria.shepard.reactionactions.SendCommandHelp;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
@@ -66,7 +66,7 @@ public class CommandListener extends ListenerAdapter {
             }
             if (messageContext.getAuthor().isBot()) {
                 MessageSender.sendMessage("I'm not allowed to talk to you " + messageContext.getAuthor().getName()
-                        + ". Please leave me alone ._.", messageContext.getChannel());
+                        + ". Please leave me alone ._.", messageContext.getTextChannel());
                 return;
             }
 
@@ -80,7 +80,7 @@ public class CommandListener extends ListenerAdapter {
             }
             if (command != null && command.isContextValid(messageContext)) {
                 if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
-                    command.sendCommandUsage(messageContext.getChannel());
+                    command.sendCommandUsage(messageContext.getTextChannel());
                     return;
                 }
                 if (command.checkArguments(args)) {
@@ -88,7 +88,7 @@ public class CommandListener extends ListenerAdapter {
                         command.executeAsync(label, args, messageContext);
                     } catch (InsufficientPermissionException | CommandException e) {
                         try {
-                            MessageSender.sendSimpleErrorEmbed(e.getMessage(), messageContext.getChannel());
+                            MessageSender.sendSimpleErrorEmbed(e.getMessage(), messageContext.getTextChannel());
 
                         } catch (InsufficientPermissionException ex) {
                             messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
@@ -99,7 +99,7 @@ public class CommandListener extends ListenerAdapter {
                     }
                 } else {
                     try {
-                        MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
+                        MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
                     } catch (InsufficientPermissionException ex) {
                         messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
                                 MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));
@@ -109,7 +109,7 @@ public class CommandListener extends ListenerAdapter {
             } else if (command != null && command.canBeExecutedHere(messageContext)) {
                 MessageSender.sendMessage("Insufficient permission for context **"
                         + command.getClass().getSimpleName().toUpperCase()
-                        + "**. Ask a Server Administrator for permission.", messageContext.getChannel());
+                        + "**. Ask a Server Administrator for permission.", messageContext.getTextChannel());
                 return;
             }
 
@@ -122,15 +122,16 @@ public class CommandListener extends ListenerAdapter {
                                         + System.lineSeparator() + "**" + cmd.getCommandName() + "**",
                                 Color.green, ShepardReactions.WINK, messageContext.getTextChannel(),
                                 new ExecuteCommand(messageContext.getAuthor(), cmd, args, messageContext),
-                                new SendCommandHelp(cmd, messageContext));
+                                new SendCommandHelp(cmd));
                         return;
                     }
                 }
             }
 
-            MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!", "Type "
-                    + PrefixData.getPrefix(messageContext.getGuild(), messageContext)
-                    + "help for a full list of available commands!", false)}, messageContext.getChannel());
+            MessageSender.sendError(new LocalizedField[] {new LocalizedField("Command not found!",
+                            "Type " + PrefixData.getPrefix(messageContext.getGuild(), messageContext)
+                                    + "help for a full list of available commands!", false, messageContext)},
+                    messageContext.getTextChannel());
 
         }
     }

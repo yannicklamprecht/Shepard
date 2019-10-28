@@ -48,7 +48,7 @@ public class BotPresence extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         if (args.length < 1) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
         }
         Presence presence = ShepardBot.getJDA().getPresence();
@@ -57,19 +57,19 @@ public class BotPresence extends Command {
 
         if (isArgument(activity, "clear", "c")) {
             presence.setActivity(null);
-            MessageSender.sendMessage(M_CLEAR.tag, messageContext);
+            MessageSender.sendMessage(M_CLEAR.tag, messageContext.getTextChannel());
             return;
         }
 
         if (args.length < 2) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
         }
 
         if (isArgument(activity, "playing", "p")) {
             String message = ArgumentParser.getMessage(args, 1);
             presence.setActivity(Activity.playing(message));
-            MessageSender.sendMessage(M_PLAYING + message, messageContext);
+            MessageSender.sendMessage(M_PLAYING + message, messageContext.getTextChannel());
             return;
         }
         if (isArgument(activity, "streaming", "s")) {
@@ -78,10 +78,10 @@ public class BotPresence extends Command {
                 String url = ArgumentParser.getMessage(args, -1);
                 presence.setActivity(Activity.streaming(message, url));
                 MessageSender.sendMessage(locale.getReplacedString(M_STREAMING.localeCode, messageContext.getGuild(),
-                        message) + url + "!", messageContext);
+                        message) + url + "!", messageContext.getTextChannel());
                 return;
             } else {
-                MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
+                MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             }
         }
 
@@ -96,12 +96,12 @@ public class BotPresence extends Command {
         if (isArgument(activity, "listening", "l")) {
             String message = ArgumentParser.getMessage(args, 1);
             presence.setActivity(Activity.listening(message));
-            MessageSender.sendMessage(M_LISTENING + message, messageContext);
+            MessageSender.sendMessage(M_LISTENING + message, messageContext.getTextChannel());
             return;
         }
 
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
 
 
     }

@@ -35,6 +35,7 @@ public class ShowKeyword extends Command {
             tableBuilder.setRow(kw.getClass().getSimpleName(), "->", kw.toString());
         }
 
-        MessageSender.sendMessage(WordsLocale.KEYWORDS + System.lineSeparator() + tableBuilder, messageContext);
+        MessageSender.sendMessage(WordsLocale.KEYWORDS + System.lineSeparator() + tableBuilder,
+                messageContext.getTextChannel());
     }
 }

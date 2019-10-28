@@ -63,7 +63,7 @@ public class Greeting extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
     private void setMessage(String[] args, MessageEventDataWrapper messageContext) {
@@ -72,16 +72,16 @@ public class Greeting extends Command {
 
             if (GreetingData.setGreetingText(messageContext.getGuild(), message, messageContext)) {
                 MessageSender.sendMessage(M_SET_MESSAGE + lineSeparator()
-                        + message, messageContext);
+                        + message, messageContext.getTextChannel());
             }
             return;
         }
-        MessageSender.sendSimpleError(ErrorType.NO_MESSAGE_FOUND, messageContext);
+        MessageSender.sendSimpleError(ErrorType.NO_MESSAGE_FOUND, messageContext.getTextChannel());
     }
 
     private void removeChannel(MessageEventDataWrapper messageContext) {
         if (GreetingData.removeGreetingChannel(messageContext.getGuild(), messageContext)) {
-            MessageSender.sendMessage(M_REMOVED_CHANNEL.tag, messageContext);
+            MessageSender.sendMessage(M_REMOVED_CHANNEL.tag, messageContext.getTextChannel());
         }
     }
 
@@ -90,7 +90,7 @@ public class Greeting extends Command {
             if (GreetingData.setGreetingChannel(messageContext.getGuild(),
                     messageContext.getChannel(), messageContext)) {
                 MessageSender.sendMessage(M_SET_CHANNEL + " "
-                        + messageContext.getTextChannel().getAsMention(), messageContext);
+                        + messageContext.getTextChannel().getAsMention(), messageContext.getTextChannel());
             }
             return;
         } else if (args.length == 2) {
@@ -100,11 +100,11 @@ public class Greeting extends Command {
                 if (GreetingData.setGreetingChannel(messageContext.getGuild(), channel, messageContext)) {
                     MessageSender.sendMessage(
                             M_SET_CHANNEL + " "
-                                    + channel.getAsMention(), messageContext);
+                                    + channel.getAsMention(), messageContext.getTextChannel());
                 }
                 return;
             }
         }
-        MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext);
+        MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext.getTextChannel());
     }
 }

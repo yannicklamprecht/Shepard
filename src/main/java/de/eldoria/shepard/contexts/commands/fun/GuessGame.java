@@ -59,7 +59,7 @@ public class GuessGame extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         if (!isArgument(messageContext.getChannel().getName(),
                 "guessgame", "guess-game", "nsfwornot", "nsfw-or-not")) {
-            MessageSender.sendMessage(M_MINIGAME_CHANNEL.tag, messageContext);
+            MessageSender.sendMessage(M_MINIGAME_CHANNEL.tag, messageContext.getTextChannel());
             return;
         }
         if (args.length == 0) {
@@ -67,7 +67,7 @@ public class GuessGame extends Command {
             return;
         }
         if (args.length != 1) {
-            MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext);
+            MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext.getTextChannel());
             return;
         }
 
@@ -76,13 +76,13 @@ public class GuessGame extends Command {
         if (isArgument(cmd, "score", "s")) {
             int userScore = GuessGameData.getUserScore(messageContext.getGuild(),
                     messageContext.getAuthor(), messageContext);
-            MessageSender.sendMessage(M_SCORE + " **" + userScore + "**", messageContext);
+            MessageSender.sendMessage(M_SCORE + " **" + userScore + "**", messageContext.getTextChannel());
             return;
         }
 
         if (isArgument(cmd, "globalScore", "gs")) {
             int userScore = GuessGameData.getGlobalUserScore(messageContext.getAuthor(), messageContext);
-            MessageSender.sendMessage(M_SCORE_GLOBAL + " **" + userScore, messageContext);
+            MessageSender.sendMessage(M_SCORE_GLOBAL + " **" + userScore, messageContext.getTextChannel());
             return;
         }
 
@@ -103,14 +103,14 @@ public class GuessGame extends Command {
 
         String ranking = global ? M_GLOBAL_RANKING.tag : M_SERVER_RANKING.tag;
 
-        MessageSender.sendMessage("**" + ranking + "**" + lineSeparator() + rankTable, messageContext);
+        MessageSender.sendMessage("**" + ranking + "**" + lineSeparator() + rankTable, messageContext.getTextChannel());
     }
 
     private void startGame(MessageEventDataWrapper messageContext) {
         ChannelEvaluator<GuessGameEvaluator> channelEvaluator
                 = Evaluator.getGuessGame();
         if (channelEvaluator.isEvaluationActive(messageContext.getTextChannel())) {
-            MessageSender.sendMessage(M_ROUND_IN_PROGRESS.tag, messageContext);
+            MessageSender.sendMessage(M_ROUND_IN_PROGRESS.tag, messageContext.getTextChannel());
             return;
         }
 

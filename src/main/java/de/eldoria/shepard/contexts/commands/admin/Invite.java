@@ -44,7 +44,7 @@ public class Invite extends Command {
     public Invite() {
         commandName = "invite";
         commandDesc = DESCRIPTION.tag;
-        commandArgs = new CommandArg[]{
+        commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
                         new SubArg("add", C_ADD_INVITE.tag, true),
                         new SubArg("remove", C_REMOVE_INVITE.tag, true),
@@ -79,7 +79,7 @@ public class Invite extends Command {
             showInvites(messageContext);
             return;
         }
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
     private void showInvites(MessageEventDataWrapper messageContext) {
@@ -95,46 +95,45 @@ public class Invite extends Command {
             tableBuilder.setRow(invite.getCode(), invite.getUsedCount() + "", invite.getSource());
         }
         message.append(tableBuilder);
-        MessageSender.sendMessage(message.toString(), messageContext);
+        MessageSender.sendMessage(message.toString(), messageContext.getTextChannel());
     }
 
     private void refreshInvites(MessageEventDataWrapper messageContext) {
         messageContext.getGuild().retrieveInvites().queue(invites -> {
             if (InviteData.updateInvite(messageContext.getGuild(), invites, messageContext)) {
-                MessageSender.sendMessage(M_REMOVED_NON_EXISTENT_INVITES.tag, messageContext);
+                MessageSender.sendMessage(M_REMOVED_NON_EXISTENT_INVITES.tag, messageContext.getTextChannel());
             }
         });
     }
 
-    private void removeInvite(String[] args, MessageEventDataWrapper receivedEvent) {
+    private void removeInvite(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
-        List<DatabaseInvite> databaseInvites = InviteData.getInvites(receivedEvent.getGuild(), receivedEvent);
+        List<DatabaseInvite> databaseInvites = InviteData.getInvites(messageContext.getGuild(), messageContext);
 
         for (DatabaseInvite invite : databaseInvites) {
             if (invite.getCode().equals(args[1])) {
-                if (InviteData.removeInvite(receivedEvent.getGuild(), args[1], receivedEvent)) {
+                if (InviteData.removeInvite(messageContext.getGuild(), args[1], messageContext)) {
                     MessageSender.sendMessage(M_REMOVED_INVITE.tag + " **" + invite.getSource()
-                            + "**", receivedEvent);
+                            + "**", messageContext.getTextChannel());
                     return;
                 }
             }
         }
-        MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND,
-                receivedEvent);
+        MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext.getTextChannel());
     }
 
     private void addInvite(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
         }
 
         Matcher matcher = INVITE.matcher(args[1]);
         if (!matcher.find()) {
-            MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext);
+            MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext.getTextChannel());
         }
         String code = matcher.group(1);
 
@@ -149,12 +148,12 @@ public class Invite extends Command {
                                 messageContext.getGuild(),
                                 "**" + name + "**",
                                 "**" + invite.getCode() + "**",
-                                "**" + invite.getUses() + "**"), messageContext);
+                                "**" + invite.getUses() + "**"), messageContext.getTextChannel());
                     }
                     return;
                 }
             }
-            MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext);
+            MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, messageContext.getTextChannel());
         });
     }
 }

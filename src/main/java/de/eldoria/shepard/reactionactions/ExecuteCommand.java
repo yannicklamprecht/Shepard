@@ -32,7 +32,7 @@ public class ExecuteCommand extends Action {
                 }
             });
         } else {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
         }
     }
 }

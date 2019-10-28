@@ -51,7 +51,7 @@ public class UserInfo extends Command {
         }
 
         if (user == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext.getTextChannel());
             return;
         }
 

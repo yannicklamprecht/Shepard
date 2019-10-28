@@ -32,7 +32,7 @@ public class PrivateAnswer extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         if (messageContext.getChannel() != Normandy.getPrivateAnswerChannel()) {
-            MessageSender.sendSimpleError(ErrorType.EXCLUSIVE_CHANNEL, messageContext);
+            MessageSender.sendSimpleError(ErrorType.EXCLUSIVE_CHANNEL, messageContext.getTextChannel());
             return;
         }
 

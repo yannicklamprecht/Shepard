@@ -22,7 +22,7 @@ public class Owo extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         MessageSender.sendMessage(":regional_indicator_o::regional_indicator_w::regional_indicator_o:",
-                messageContext);
+                messageContext.getTextChannel());
 
         if (label.equalsIgnoreCase("owod")) {
             messageContext.getMessage().delete().queue();

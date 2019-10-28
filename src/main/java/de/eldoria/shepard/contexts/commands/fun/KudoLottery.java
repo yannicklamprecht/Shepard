@@ -35,7 +35,7 @@ public class KudoLottery extends Command {
                 messageContext.getAuthor(), 1, messageContext);
 
         if (!success) {
-            MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_KUDOS, messageContext);
+            MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_KUDOS, messageContext.getTextChannel());
             return;
         }
 
@@ -43,7 +43,7 @@ public class KudoLottery extends Command {
                 = Evaluator.getKudoLotteryScheduler();
 
         if (kudoLotteryScheduler.isEvaluationActive(messageContext.getTextChannel())) {
-            MessageSender.sendMessage(M_LOTTERY_RUNNING.tag, messageContext);
+            MessageSender.sendMessage(M_LOTTERY_RUNNING.tag, messageContext.getTextChannel());
             return;
         }
 

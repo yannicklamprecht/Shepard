@@ -24,12 +24,12 @@ public class MockingSpongebob extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 0) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
         }
         File image = FileHelper.getFileFromURL(BASE_URL + String.join("%20", args) + ".jpg");
         if (image == null) {
-            MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, messageContext);
+            MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, messageContext.getTextChannel());
         } else {
             messageContext.getChannel().sendFile(image).queue();
         }

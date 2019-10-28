@@ -27,7 +27,7 @@ public class ReminderScheduler implements Runnable {
                     || reminder.getGuild() == null
                     || reminder.getGuild().getMember(reminder.getUser()) == null) {
                 reminder.getUser().openPrivateChannel().queue(privateChannel ->
-                        MessageSender.sendMessage("I should remind you of something... Let me think... AH!"
+                        MessageSender.sendMessageToChannel("I should remind you of something... Let me think... AH!"
                                 + System.lineSeparator() + "**" + reminder.getText() + "**", privateChannel));
                 return;
             }

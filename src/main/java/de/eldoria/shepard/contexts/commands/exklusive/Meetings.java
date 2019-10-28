@@ -47,7 +47,7 @@ public class Meetings extends Command {
                     + calendarEvent.get(1).getSummary() + " am " + getDate.format(calendarEvent.get(1).getStart())
                     + " von " + getTime.format(calendarEvent.get(1).getStart()) + " bis "
                             + getTime.format(calendarEvent.get(1).getEnd()), false, messageContext));
-            MessageSender.sendTextBox(null, fields, messageContext);
+            MessageSender.sendTextBox(null, fields, messageContext.getTextChannel());
         } catch (IOException | GeneralSecurityException e) {
             messageContext.getChannel().sendMessage("**Exception** occurred :confused:").queue();
         }

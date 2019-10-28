@@ -37,9 +37,9 @@ public class ContextInfo extends Command {
 
             MessageSender.sendMessage("Information about context " + contextName.toUpperCase() + lineSeparator()
                     + "```yaml" + lineSeparator()
-                    + data.toString() + lineSeparator() + "```", messageContext);
+                    + data.toString() + lineSeparator() + "```", messageContext.getTextChannel());
         } else {
-            MessageSender.sendSimpleError(ErrorType.INVALID_CONTEXT, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_CONTEXT, messageContext.getTextChannel());
         }
     }
 }

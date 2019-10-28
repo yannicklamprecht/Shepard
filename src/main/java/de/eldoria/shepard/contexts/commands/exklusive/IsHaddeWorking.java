@@ -56,17 +56,17 @@ public class IsHaddeWorking extends Command {
                 if (currentDate.after(event.getStart()) && currentDate.before(event.getEnd())) {
                     fields.add(new LocalizedField("Ist Hadde arbeiten?", "Ja, bis "
                             + getTime.format(event.getEnd()) + " Uhr " + endDate, false, messageContext));
-                    MessageSender.sendTextBox(null, fields, messageContext);
+                    MessageSender.sendTextBox(null, fields, messageContext.getTextChannel());
                 } else {
                     fields.add(new LocalizedField("Ist Hadde arbeiten?", "Nein, er arbeitet "
                             + startDate + " von " + getTime.format(event.getStart()) + " Uhr bis "
                             + getTime.format(event.getEnd()) + " Uhr.", false, messageContext));
-                    MessageSender.sendTextBox(null, fields, messageContext);
+                    MessageSender.sendTextBox(null, fields, messageContext.getTextChannel());
                 }
             } else {
                 fields.add(new LocalizedField("Ist Hadde arbeiten?",
                         "Ich hab derzeit leider keine Arbeitszeiten", false, messageContext));
-                MessageSender.sendTextBox(null, fields, messageContext);
+                MessageSender.sendTextBox(null, fields, messageContext.getTextChannel());
 
             }
         } catch (IOException | GeneralSecurityException e) {

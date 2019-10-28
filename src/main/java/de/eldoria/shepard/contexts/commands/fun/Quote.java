@@ -44,13 +44,13 @@ public class Quote extends Command {
         }
 
         if (quotes.size() == 0) {
-            MessageSender.sendMessage(M_NO_QUOTE_FOUND.tag, messageContext);
+            MessageSender.sendMessage(M_NO_QUOTE_FOUND.tag, messageContext.getTextChannel());
             return;
         }
 
         Random rand = new Random();
         int i = rand.nextInt(quotes.size());
 
-        MessageSender.sendMessage(quotes.get(i).getQuote(), messageContext);
+        MessageSender.sendMessage(quotes.get(i).getQuote(), messageContext.getTextChannel());
     }
 }

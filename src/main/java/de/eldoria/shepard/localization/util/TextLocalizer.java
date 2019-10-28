@@ -4,6 +4,7 @@ import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,11 +48,11 @@ public class TextLocalizer {
      * Get a localized message back.
      *
      * @param message        String with localize codes coed must have format: $[a-zA-Z.]+?$
-     * @param messageContext messageContext
+     * @param channel messageContext
      * @return String where localize codes are replaced with guild language.
      */
-    public static String fastLocale(String message, MessageEventDataWrapper messageContext) {
-        return fastLocale(message, messageContext.getGuild());
+    public static String fastLocale(String message, TextChannel channel) {
+        return fastLocale(message, channel.getGuild());
     }
 
     /**

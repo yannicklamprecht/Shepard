@@ -76,7 +76,7 @@ public class ManageQuote extends Command {
 
         if (isArgument(cmd, "alter", "alt")) {
             if (args.length < 3) {
-                MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+                MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             }
 
             int quoteId = verifyId(args[1], messageContext);
@@ -89,14 +89,12 @@ public class ManageQuote extends Command {
 
             if (QuoteData.alterQuote(messageContext.getGuild(), quoteId, quote, messageContext)) {
                 MessageSender.sendSimpleTextBox(locale.getReplacedString(M_CHANGED_QUOTE.localeCode,
-                        messageContext.getGuild(),
-                        "**" + quoteId + "**"),
-                        quote, Color.blue, messageContext);
+                        messageContext.getGuild(), "**" + quoteId + "**"), quote, Color.blue, messageContext.getTextChannel());
             }
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
     private void showQuotes(String[] args, MessageEventDataWrapper messageContext) {
@@ -110,18 +108,18 @@ public class ManageQuote extends Command {
         }
 
         if (quotes.size() == 0) {
-            MessageSender.sendMessage(M_NO_QUOTES.tag, messageContext);
+            MessageSender.sendMessage(M_NO_QUOTES.tag, messageContext.getTextChannel());
         }
 
         String message = quotes.stream()
                 .map(quote -> "**" + quote.getQuoteId() + "** -> " + quote.getQuote() + lineSeparator())
                 .collect(Collectors.joining());
-        MessageSender.sendMessage(message, messageContext);
+        MessageSender.sendMessage(message, messageContext.getTextChannel());
     }
 
     private void removeQuote(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
         }
 
         int quoteId = verifyId(args[1], messageContext);
@@ -132,20 +130,20 @@ public class ManageQuote extends Command {
 
         if (QuoteData.removeQuote(messageContext.getGuild(), quoteId, messageContext)) {
             MessageSender.sendMessage(locale.getReplacedString(M_REMOVED_QUOTE.localeCode,
-                    messageContext.getGuild(), "**" + quoteId + "**"), messageContext);
+                    messageContext.getGuild(), "**" + quoteId + "**"), messageContext.getTextChannel());
         }
     }
 
     private void addQuote(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 1) {
-            MessageSender.sendSimpleError(ErrorType.NO_QUOTE_FOUND, messageContext);
+            MessageSender.sendSimpleError(ErrorType.NO_QUOTE_FOUND, messageContext.getTextChannel());
             return;
         }
 
         String quote = ArgumentParser.getMessage(args, 1);
 
         if (QuoteData.addQuote(messageContext.getGuild(), quote, messageContext)) {
-            MessageSender.sendSimpleTextBox(M_SAVED_QUOTE.tag, quote, Color.green, messageContext);
+            MessageSender.sendSimpleTextBox(M_SAVED_QUOTE.tag, quote, Color.green, messageContext.getTextChannel());
         }
     }
 
@@ -160,12 +158,12 @@ public class ManageQuote extends Command {
         int quotesCount = QuoteData.getQuotesCount(messageContext.getGuild(), messageContext);
         Integer quoteId = ArgumentParser.parseInt(number);
         if (quoteId == null) {
-            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext);
+            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
             return -1;
         }
 
         if (quoteId > quotesCount || quoteId < 0) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getTextChannel());
             return -1;
         }
         return quoteId;

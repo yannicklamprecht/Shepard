@@ -81,13 +81,13 @@ public class TicketSettings extends Command {
             if (ticket.isEmpty()) {
                 createType(args, messageContext, type);
             } else {
-                MessageSender.sendSimpleError(ErrorType.TYPE_ALREADY_DEFINED, messageContext);
+                MessageSender.sendSimpleError(ErrorType.TYPE_ALREADY_DEFINED, messageContext.getTextChannel());
             }
             return;
         }
 
         if (ticket.isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, messageContext);
+            MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, messageContext.getTextChannel());
             return;
         }
 
@@ -111,12 +111,12 @@ public class TicketSettings extends Command {
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+        MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
     }
 
     private void setCreationMessage(String[] args, MessageEventDataWrapper messageContext, TicketType scopeTicket) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
 
@@ -125,63 +125,61 @@ public class TicketSettings extends Command {
         if (TicketData.setCreationMessage(messageContext.getGuild(), scopeTicket.getKeyword(), message,
                 messageContext)) {
             MessageSender.sendSimpleTextBox(locale.getReplacedString(M_SET_CREATION_MESSAGE.localeCode,
-                    messageContext.getGuild(), scopeTicket.getKeyword()), message, messageContext);
+                    messageContext.getGuild(), scopeTicket.getKeyword()), message, messageContext.getTextChannel());
         }
     }
 
     private void setChannelCategory(String[] args, MessageEventDataWrapper messageContext, TicketType scopeTicket) {
         if (args.length != 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
 
         Category category = messageContext.getGuild().getCategoryById(args[2]);
 
         if (category == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_CATEGORY, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_CATEGORY, messageContext.getTextChannel());
             return;
         }
 
         if (TicketData.addType(messageContext.getGuild(), category, null,
                 scopeTicket.getKeyword(), messageContext)) {
             MessageSender.sendMessage(locale.getReplacedString(M_SET_CATEGORY.localeCode, messageContext.getGuild(),
-                    "**" + scopeTicket.getKeyword() + "**", category.getName()), messageContext);
+                    "**" + scopeTicket.getKeyword() + "**", category.getName()), messageContext.getTextChannel());
         }
     }
 
-    private void setRoles(String[] args, MessageEventDataWrapper receivedEvent, String cmd, TicketType scopeTicket) {
+    private void setRoles(String[] args, MessageEventDataWrapper messageContext, String cmd, TicketType scopeTicket) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
 
-        List<Role> validRoles = ArgumentParser.getRoles(receivedEvent.getGuild(),
+        List<Role> validRoles = ArgumentParser.getRoles(messageContext.getGuild(),
                 ArgumentParser.getRangeAsList(args, 2));
 
         String roleMentions = validRoles.stream().map(IMentionable::getAsMention)
                 .collect(Collectors.joining(lineSeparator()));
 
         if (cmd.equalsIgnoreCase("setOwnerRoles") || cmd.equalsIgnoreCase("sor")) {
-            if (TicketData.setTypeOwnerRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(),
-                    validRoles, receivedEvent)) {
+            if (TicketData.setTypeOwnerRoles(messageContext.getGuild(), scopeTicket.getKeyword(),
+                    validRoles, messageContext)) {
 
                 MessageSender.sendSimpleTextBox(M_SET_OWNER_ROLES.tag + " **"
-                                + scopeTicket.getKeyword() + "**:", roleMentions,
-                        receivedEvent);
+                        + scopeTicket.getKeyword() + "**:", roleMentions, messageContext.getTextChannel());
             }
 
-        } else if (TicketData.setTypeSupportRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(),
-                validRoles, receivedEvent)) {
+        } else if (TicketData.setTypeSupportRoles(messageContext.getGuild(), scopeTicket.getKeyword(),
+                validRoles, messageContext)) {
             MessageSender.sendSimpleTextBox(M_SET_SUPPORT_ROLES.tag + " **"
-                            + scopeTicket.getKeyword() + "**:", roleMentions,
-                    receivedEvent);
+                    + scopeTicket.getKeyword() + "**:", roleMentions, messageContext.getTextChannel());
         }
 
     }
 
     private void removeType(String[] args, MessageEventDataWrapper messageContext, TicketType scopeTicket) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
         List<TextChannel> validTextChannels = ArgumentParser.getTextChannels(messageContext.getGuild(),
@@ -213,27 +211,26 @@ public class TicketSettings extends Command {
                 channel.delete().queue();
             }
             MessageSender.sendMessage(locale.getReplacedString(M_REMOVE_TYPE.localeCode, messageContext.getGuild(),
-                    "**" + scopeTicket.getKeyword() + "**"),
-                    messageContext);
+                    "**" + scopeTicket.getKeyword() + "**"), messageContext.getTextChannel());
         }
     }
 
-    private void createType(String[] args, MessageEventDataWrapper receivedEvent, String type) {
+    private void createType(String[] args, MessageEventDataWrapper messageContext, String type) {
         if (args.length != 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, receivedEvent);
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
 
-        Category category = receivedEvent.getGuild().getCategoryById(args[2]);
+        Category category = messageContext.getGuild().getCategoryById(args[2]);
 
         if (category == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_CATEGORY, receivedEvent);
+            MessageSender.sendSimpleError(ErrorType.INVALID_CATEGORY, messageContext.getTextChannel());
             return;
         }
 
-        if (TicketData.addType(receivedEvent.getGuild(), category, "", type, receivedEvent)) {
+        if (TicketData.addType(messageContext.getGuild(), category, "", type, messageContext)) {
             MessageSender.sendMessage(M_CREATE_TYPE.tag + " **"
-                    + type.toLowerCase() + "**", receivedEvent);
+                    + type.toLowerCase() + "**", messageContext.getTextChannel());
         }
     }
 }

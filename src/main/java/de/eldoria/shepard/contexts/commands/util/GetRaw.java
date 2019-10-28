@@ -23,6 +23,7 @@ public class GetRaw extends Command {
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        MessageSender.sendMessage("`" + messageContext.getMessage().getContentRaw() + "`", messageContext);
+        MessageSender.sendMessage("`" + messageContext.getMessage().getContentRaw() + "`",
+                messageContext.getTextChannel());
     }
 }

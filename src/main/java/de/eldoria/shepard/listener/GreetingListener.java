@@ -1,5 +1,6 @@
 package de.eldoria.shepard.listener;
 
+import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.database.queries.GreetingData;
 import de.eldoria.shepard.database.queries.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
@@ -7,6 +8,7 @@ import de.eldoria.shepard.database.types.GreetingSettings;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -26,9 +28,9 @@ public class GreetingListener extends ListenerAdapter {
 
         if (greeting == null) return;
 
-        MessageChannel channel = greeting.getChannel();
+        TextChannel textChannel = ArgumentParser.getTextChannel(event.getGuild(), greeting.getChannel().getId());
 
-        if (channel == null) return;
+        if (textChannel == null) return;
 
         List<Invite> serverInvites = event.getGuild().retrieveInvites().complete();
 
@@ -40,13 +42,13 @@ public class GreetingListener extends ListenerAdapter {
                     for (int i = dInvite.getUsedCount(); i < sInvite.getUses(); i++) {
                         InviteData.upCountInvite(event.getGuild(), sInvite.getCode(), null);
                     }
-                    MessageSender.sendGreeting(event, greeting, dInvite.getSource(), channel);
+                    MessageSender.sendGreeting(event, greeting, dInvite.getSource(), textChannel);
                     return;
                 }
             }
         }
 
         //If no invite was found.
-        MessageSender.sendGreeting(event, greeting, null, channel);
+        MessageSender.sendGreeting(event, greeting, null, textChannel);
     }
 }

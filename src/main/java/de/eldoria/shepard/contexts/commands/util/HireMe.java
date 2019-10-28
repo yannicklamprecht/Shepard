@@ -33,11 +33,11 @@ public class HireMe extends Command {
         if (label.equalsIgnoreCase(commandName)) {
             MessageSender.sendTextBox(null, Collections.singletonList(new LocalizedField(HireMeLocale.M_HIRE_ME.tag,
                     "[" + HireMeLocale.M_TAKE_ME + "](http://bit.ly/shepardbot)",
-                    false, messageContext)), messageContext);
+                    false, messageContext)), messageContext.getTextChannel());
         } else {
             MessageSender.sendTextBox(null, Collections.singletonList(new LocalizedField(HireMeLocale.M_I_WANT_YOU.tag,
                     "[" + HireMeLocale.M_TAKE_ME + "](http://bit.ly/shepardbot)",
-                    false, messageContext)), messageContext);
+                    false, messageContext)), messageContext.getTextChannel());
         }
     }
 }

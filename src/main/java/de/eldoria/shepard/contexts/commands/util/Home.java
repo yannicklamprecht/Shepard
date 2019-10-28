@@ -25,8 +25,6 @@ public class Home extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         MessageSender.sendSimpleTextBox(HomeLocale.M_COME_ON_BOARD.tag,
                 "[" + HomeLocale.M_JOIN_NOW + "](https://discord.gg/AJyFGAj)",
-                Color.green,
-                ShepardReactions.CAT,
-                messageContext);
+                Color.green, ShepardReactions.CAT, messageContext.getTextChannel());
     }
 }
