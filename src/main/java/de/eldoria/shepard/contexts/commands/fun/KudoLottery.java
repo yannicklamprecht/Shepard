@@ -25,7 +25,7 @@ public class KudoLottery extends Command {
     public KudoLottery() {
         commandName = "kudoLottery";
         commandAliases = new String[] {"lottery", "kl"};
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         category = ContextCategory.FUN;
     }
 
@@ -43,14 +43,14 @@ public class KudoLottery extends Command {
                 = Evaluator.getKudoLotteryScheduler();
 
         if (kudoLotteryScheduler.isEvaluationActive(messageContext.getTextChannel())) {
-            MessageSender.sendMessage(M_LOTTERY_RUNNING.replacement, messageContext);
+            MessageSender.sendMessage(M_LOTTERY_RUNNING.tag, messageContext);
             return;
         }
 
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
-                .setTitle(M_EMBED_TITLE.replacement)
-                .setDescription(M_EMBED_DESCRIPTION.replacement)
-                .addField(M_EMBED_KUDOS_IN_POT.replacement,
+                .setTitle(M_EMBED_TITLE.tag)
+                .setDescription(M_EMBED_DESCRIPTION.tag)
+                .addField(M_EMBED_KUDOS_IN_POT.tag,
                         locale.getReplacedString(M_EMBED_EXPLANATION.localeCode,
                                 messageContext.getGuild(),
                                 EmoteCollection.INFINITY.getEmote().getAsMention(),

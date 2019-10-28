@@ -1,4 +1,4 @@
-package de.eldoria.shepard.localization.enums.admin;
+package de.eldoria.shepard.localization.enums.commands.admin;
 
 public enum InviteLocale {
     /**
@@ -65,16 +65,16 @@ public enum InviteLocale {
     /**
      * Get the escaped locale code for auto translation.
      */
-    public final String replacement;
+    public final String tag;
 
     InviteLocale(String localeCode) {
         this.localeCode = localeCode;
-        this.replacement = "$" + localeCode + "$";
+        this.tag = "$" + localeCode + "$";
     }
 
     @Override
     public String toString() {
-        return replacement;
+        return tag;
     }
 
 }

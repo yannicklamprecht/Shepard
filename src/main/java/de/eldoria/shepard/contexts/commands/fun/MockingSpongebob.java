@@ -16,7 +16,7 @@ public class MockingSpongebob extends Command {
 
     public MockingSpongebob() {
         this.commandName = "mockingSpongebob";
-        this.commandDesc = DESCRIPTION.replacement;
+        this.commandDesc = DESCRIPTION.tag;
         this.commandAliases = new String[] {"msb", "mock"};
         category = ContextCategory.FUN;
     }

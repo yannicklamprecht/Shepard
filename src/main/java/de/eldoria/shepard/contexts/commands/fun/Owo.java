@@ -14,7 +14,7 @@ public class Owo extends Command {
      */
     public Owo() {
         commandName = "owo";
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandAliases = new String[]{"owod"};
         category = ContextCategory.FUN;
     }

@@ -37,14 +37,14 @@ public class Kudos extends Command {
         commandDesc = "Give kudos to others, when they do good things. You earn one point every hour.";
         commandArgs = new CommandArg[] {
                 new CommandArg("action", false,
-                        new SubArg("leave empty", C_EMPTY.replacement, false),
-                        new SubArg("give", C_GIVE.replacement, true),
-                        new SubArg("top", C_TOP.replacement, true),
-                        new SubArg("topGlobal", C_TOP_GLOBAL.replacement, true)),
+                        new SubArg("leave empty", C_EMPTY.tag, false),
+                        new SubArg("give", C_GIVE.tag, true),
+                        new SubArg("top", C_TOP.tag, true),
+                        new SubArg("topGlobal", C_TOP_GLOBAL.tag, true)),
                 new CommandArg("values", false,
                         new SubArg("give", A_USER + " " + A_POINTS),
-                        new SubArg("top", A_EMPTY.replacement),
-                        new SubArg("topGlobal", A_EMPTY.replacement))
+                        new SubArg("top", A_EMPTY.tag),
+                        new SubArg("topGlobal", A_EMPTY.tag))
         };
         category = ContextCategory.FUN;
     }
@@ -140,7 +140,7 @@ public class Kudos extends Command {
 
         String rankTable = TextFormatting.getRankTable(ranks);
 
-        MessageSender.sendMessage("**" + (global ? M_GLOBAL_RANKING.replacement : M_SERVER_RANKING.replacement) + "**"
+        MessageSender.sendMessage("**" + (global ? M_GLOBAL_RANKING.tag : M_SERVER_RANKING.tag) + "**"
                 + lineSeparator() + rankTable, messageContext);
     }
 }

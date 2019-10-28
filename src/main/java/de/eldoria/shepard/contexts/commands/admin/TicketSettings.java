@@ -48,19 +48,19 @@ public class TicketSettings extends Command {
      */
     public TicketSettings() {
         commandName = "ticketSettings";
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandAliases = new String[] {"ts"};
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
-                        new SubArg("createType", C_CREATE_TYPE.replacement, true),
-                        new SubArg("removeType", C_REMOVE_TYPE.replacement, true),
-                        new SubArg("setOwnerRoles", C_SET_OWNER_ROLES.replacement, true),
-                        new SubArg("setSupportRoles", C_SET_SUPPORT_ROLES.replacement, true),
-                        new SubArg("setChannelCategory", C_SET_CATEGORY.replacement, true),
-                        new SubArg("setCreationMessage", C_SET_CREATION_MESSAGE.replacement, true)),
+                        new SubArg("createType", C_CREATE_TYPE.tag, true),
+                        new SubArg("removeType", C_REMOVE_TYPE.tag, true),
+                        new SubArg("setOwnerRoles", C_SET_OWNER_ROLES.tag, true),
+                        new SubArg("setSupportRoles", C_SET_SUPPORT_ROLES.tag, true),
+                        new SubArg("setChannelCategory", C_SET_CATEGORY.tag, true),
+                        new SubArg("setCreationMessage", C_SET_CREATION_MESSAGE.tag, true)),
                 new CommandArg("value", true,
                         new SubArg("createType", A_NAME + " " + A_CATEGORY),
-                        new SubArg("removeType", A_NAME.replacement),
+                        new SubArg("removeType", A_NAME.tag),
                         new SubArg("setOwnerRoles", A_NAME + " " + A_ROLES),
                         new SubArg("setSupportRoles", A_NAME + " " + A_ROLES),
                         new SubArg("setChannelCategory", A_NAME + " " + A_CATEGORY),
@@ -165,14 +165,14 @@ public class TicketSettings extends Command {
             if (TicketData.setTypeOwnerRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(),
                     validRoles, receivedEvent)) {
 
-                MessageSender.sendSimpleTextBox(M_SET_OWNER_ROLES.replacement + " **"
+                MessageSender.sendSimpleTextBox(M_SET_OWNER_ROLES.tag + " **"
                                 + scopeTicket.getKeyword() + "**:", roleMentions,
                         receivedEvent);
             }
 
         } else if (TicketData.setTypeSupportRoles(receivedEvent.getGuild(), scopeTicket.getKeyword(),
                 validRoles, receivedEvent)) {
-            MessageSender.sendSimpleTextBox(M_SET_SUPPORT_ROLES.replacement + " **"
+            MessageSender.sendSimpleTextBox(M_SET_SUPPORT_ROLES.tag + " **"
                             + scopeTicket.getKeyword() + "**:", roleMentions,
                     receivedEvent);
         }
@@ -232,7 +232,7 @@ public class TicketSettings extends Command {
         }
 
         if (TicketData.addType(receivedEvent.getGuild(), category, "", type, receivedEvent)) {
-            MessageSender.sendMessage(M_CREATE_TYPE.replacement + " **"
+            MessageSender.sendMessage(M_CREATE_TYPE.tag + " **"
                     + type.toLowerCase() + "**", receivedEvent);
         }
     }

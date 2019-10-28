@@ -20,10 +20,10 @@ import static de.eldoria.shepard.localization.enums.commands.fun.LargeEmoteLocal
 public class LargeEmote extends Command {
     public LargeEmote() {
         commandName = "largeEmote";
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("emotes", true,
-                new SubArg("emotes", A_EMOTE.replacement))};
+                new SubArg("emotes", A_EMOTE.tag))};
         commandAliases = new String[] {"lemote"};
         category = ContextCategory.FUN;
     }

@@ -1,4 +1,4 @@
-package de.eldoria.shepard.localization.enums.fun;
+package de.eldoria.shepard.localization.enums.commands.fun;
 
 public enum KudoLotteryLocale {
     /**
@@ -33,15 +33,15 @@ public enum KudoLotteryLocale {
     /**
      * Get the escaped locale code for auto translation.
      */
-    public final String replacement;
+    public final String tag;
 
     KudoLotteryLocale(String localeCode) {
         this.localeCode = localeCode;
-        this.replacement = "$" + localeCode + "$";
+        this.tag = "$" + localeCode + "$";
     }
 
     @Override
     public String toString() {
-        return replacement;
+        return tag;
     }
 }

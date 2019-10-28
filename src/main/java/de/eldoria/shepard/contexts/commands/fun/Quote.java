@@ -24,10 +24,10 @@ public class Quote extends Command {
      */
     public Quote() {
         commandName = "Quote";
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("keyword", false,
-                        new SubArg("keyword", A_EMPTY_OR_WORD.replacement))
+                        new SubArg("keyword", A_EMPTY_OR_WORD.tag))
         };
         category = ContextCategory.FUN;
     }
@@ -44,7 +44,7 @@ public class Quote extends Command {
         }
 
         if (quotes.size() == 0) {
-            MessageSender.sendMessage(M_NO_QUOTE_FOUND.replacement, messageContext);
+            MessageSender.sendMessage(M_NO_QUOTE_FOUND.tag, messageContext);
             return;
         }
 

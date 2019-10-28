@@ -1,10 +1,10 @@
-package de.eldoria.shepard.localization.enums.commands.botconfig;
+package de.eldoria.shepard.localization.enums.commands.util;
 
-public enum ContextInfoLocale {
+public enum GetRawLocale {
     /**
      * Localization key for description.
      */
-    DESCRIPTION("command.contextInfo.description");
+    DESCRIPTION("command.getRaw.description");
 
     /**
      * Get the normal locale code for direct translation.
@@ -15,7 +15,7 @@ public enum ContextInfoLocale {
      */
     public final String tag;
 
-    ContextInfoLocale(String localeCode) {
+    GetRawLocale(String localeCode) {
         this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
@@ -24,4 +24,5 @@ public enum ContextInfoLocale {
     public String toString() {
         return tag;
     }
+
 }

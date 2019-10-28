@@ -31,14 +31,14 @@ public class ManageContext extends Command {
         commandDesc = "Manage the settings of a context";
         commandArgs = new CommandArg[] {
                 new CommandArg("context name", true,
-                        new SubArg("context name", GeneralLocale.A_CONTEXT_NAME.replacement)),
+                        new SubArg("context name", GeneralLocale.A_CONTEXT_NAME.tag)),
                 new CommandArg("action", true,
-                        new SubArg("setNsfw", C_NSFW.replacement),
-                        new SubArg("setAdminOnly", C_ADMIN.replacement)),
+                        new SubArg("setNsfw", C_NSFW.tag),
+                        new SubArg("setAdminOnly", C_ADMIN.tag)),
                 new CommandArg("boolean", true, new SubArg("boolean",
-                        GeneralLocale.A_BOOLEAN.replacement))
+                        GeneralLocale.A_BOOLEAN.tag))
         };
-        category = ContextCategory.BOTCONFIG;
+        category = ContextCategory.BOT_CONFIG;
     }
 
     @Override

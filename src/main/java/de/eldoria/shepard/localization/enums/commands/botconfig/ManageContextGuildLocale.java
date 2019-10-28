@@ -1,4 +1,4 @@
-package de.eldoria.shepard.localization.enums.botconfig;
+package de.eldoria.shepard.localization.enums.commands.botconfig;
 
 public enum ManageContextGuildLocale {
     /**
@@ -53,15 +53,15 @@ public enum ManageContextGuildLocale {
     /**
      * Get the escaped locale code for auto translation.
      */
-    public final String replacement;
+    public final String tag;
 
     ManageContextGuildLocale(String localeCode) {
         this.localeCode = localeCode;
-        this.replacement = "$" + localeCode + "$";
+        this.tag = "$" + localeCode + "$";
     }
 
     @Override
     public String toString() {
-        return replacement;
+        return tag;
     }
 }

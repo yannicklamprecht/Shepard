@@ -52,7 +52,7 @@ public class MagicConch extends Command {
         word = decisions[rand.nextInt(decisions.length)];
 
         MessageSender.sendTextBox(null,
-                Collections.singletonList(new LocalizedField(M_ANSWER.replacement, word, false, messageContext)),
+                Collections.singletonList(new LocalizedField(M_ANSWER.tag, word, false, messageContext)),
                 messageContext);
 
     }

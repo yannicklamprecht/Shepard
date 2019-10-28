@@ -43,21 +43,21 @@ public class Monitoring extends Command {
     public Monitoring() {
         commandName = "monitoring";
         commandAliases = new String[] {"monitor"};
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
-                        new SubArg("add", C_ADD.replacement, true),
-                        new SubArg("remove", C_REMOVE.replacement, true),
-                        new SubArg("list", C_LIST.replacement, true),
-                        new SubArg("enable", C_ENABLE.replacement, true),
-                        new SubArg("disable", C_DISABLE.replacement, true)),
+                        new SubArg("add", C_ADD.tag, true),
+                        new SubArg("remove", C_REMOVE.tag, true),
+                        new SubArg("list", C_LIST.tag, true),
+                        new SubArg("enable", C_ENABLE.tag, true),
+                        new SubArg("disable", C_DISABLE.tag, true)),
                 new CommandArg("value", false,
                         new SubArg("add", A_ADDRESS + " " + A_NAME + " "
                                 + A_BOOLEAN_YES_NO + lineSeparator() + A_ADD_TEXT),
-                        new SubArg("remove", GeneralLocale.A_ID.replacement),
-                        new SubArg("list", GeneralLocale.A_EMPTY.replacement),
-                        new SubArg("enable", GeneralLocale.A_CHANNEL_MENTION_OR_EXECUTE.replacement),
-                        new SubArg("disable", A_EMPTY.replacement))
+                        new SubArg("remove", GeneralLocale.A_ID.tag),
+                        new SubArg("list", GeneralLocale.A_EMPTY.tag),
+                        new SubArg("enable", GeneralLocale.A_CHANNEL_MENTION_OR_EXECUTE.tag),
+                        new SubArg("disable", A_EMPTY.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -169,7 +169,7 @@ public class Monitoring extends Command {
 
     private void disable(MessageEventDataWrapper messageContext) {
         MonitoringData.removeMonitoringChannel(messageContext.getGuild(), messageContext);
-        MessageSender.sendMessage(M_REMOVED_CHANNEL.replacement, messageContext);
+        MessageSender.sendMessage(M_REMOVED_CHANNEL.tag, messageContext);
     }
 
     private void show(MessageEventDataWrapper messageContext) {
@@ -177,8 +177,8 @@ public class Monitoring extends Command {
                 messageContext.getGuild(), messageContext);
 
         TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(monitoringAddresses,
-                WordsLocale.ID.replacement, WordsLocale.NAME.replacement,
-                WordsLocale.ADDRESS.replacement, WordsLocale.MINECRAFT.replacement);
+                WordsLocale.ID.tag, WordsLocale.NAME.tag,
+                WordsLocale.ADDRESS.tag, WordsLocale.MINECRAFT.tag);
 
         for (Address address : monitoringAddresses) {
             tableBuilder.next();

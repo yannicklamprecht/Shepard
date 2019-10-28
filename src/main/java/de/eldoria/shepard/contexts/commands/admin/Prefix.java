@@ -25,14 +25,14 @@ public class Prefix extends Command {
      */
     public Prefix() {
         commandName = "prefix";
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
-                        new SubArg("set", C_SET.replacement, true),
-                        new SubArg("reset", C_RESET.replacement, true)),
+                        new SubArg("set", C_SET.tag, true),
+                        new SubArg("reset", C_RESET.tag, true)),
                 new CommandArg("value", false,
-                        new SubArg("set", A_PREFIX_FORMAT.replacement),
-                        new SubArg("reset", A_EMPTY.replacement))
+                        new SubArg("set", A_PREFIX_FORMAT.tag),
+                        new SubArg("reset", A_EMPTY.tag))
         };
         category = ContextCategory.ADMIN;
     }

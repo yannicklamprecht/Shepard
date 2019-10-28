@@ -47,24 +47,24 @@ public class Permission extends Command {
      */
     public Permission() {
         commandName = "permission";
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("context name", true,
-                        new SubArg("context name", A_CONTEXT_NAME.replacement)),
+                        new SubArg("context name", A_CONTEXT_NAME.tag)),
                 new CommandArg("action", true,
-                        new SubArg("addUser", C_ADD_USER.replacement, true),
-                        new SubArg("removeUser", C_REMOVE_USER.replacement, true),
-                        new SubArg("listUser", C_LIST_USER.replacement, true),
-                        new SubArg("addRole", C_ADD_ROLE.replacement, true),
-                        new SubArg("removeRole", C_REMOVE_ROLE.replacement, true),
-                        new SubArg("listRoles", C_LIST_ROLE.replacement, true)),
+                        new SubArg("addUser", C_ADD_USER.tag, true),
+                        new SubArg("removeUser", C_REMOVE_USER.tag, true),
+                        new SubArg("listUser", C_LIST_USER.tag, true),
+                        new SubArg("addRole", C_ADD_ROLE.tag, true),
+                        new SubArg("removeRole", C_REMOVE_ROLE.tag, true),
+                        new SubArg("listRoles", C_LIST_ROLE.tag, true)),
                 new CommandArg("value", false,
-                        new SubArg("addUser", A_USERS.replacement),
-                        new SubArg("removeUser", A_USERS.replacement),
-                        new SubArg("listUser", A_EMPTY.replacement),
-                        new SubArg("addRole", A_ROLES.replacement),
-                        new SubArg("removeRole", A_ROLES.replacement),
-                        new SubArg("listRoles", A_EMPTY.replacement)),
+                        new SubArg("addUser", A_USERS.tag),
+                        new SubArg("removeUser", A_USERS.tag),
+                        new SubArg("listUser", A_EMPTY.tag),
+                        new SubArg("addRole", A_ROLES.tag),
+                        new SubArg("removeRole", A_ROLES.tag),
+                        new SubArg("listRoles", A_EMPTY.tag)),
         };
         category = ContextCategory.ADMIN;
     }
@@ -90,7 +90,7 @@ public class Permission extends Command {
         }
 
         if (isArgument(cmd, "showUser", "su")) {
-            showMentions(messageContext, contextName, M_USER_ACCESS.replacement);
+            showMentions(messageContext, contextName, M_USER_ACCESS.tag);
             return;
         }
 
@@ -103,7 +103,7 @@ public class Permission extends Command {
         }
 
         if (isArgument(cmd, "showRole", "sr")) {
-            showMentions(messageContext, contextName, M_ROLE_ACCESS.replacement);
+            showMentions(messageContext, contextName, M_ROLE_ACCESS.tag);
             return;
         }
 

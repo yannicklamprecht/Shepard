@@ -46,11 +46,11 @@ public class GuessGame extends Command {
         commandDesc = "Game where you have to guess if a cropped image is part of a NSFW image or not.";
         commandArgs = new CommandArg[] {
                 new CommandArg("action", false,
-                        new SubArg("start game", C_START.replacement),
-                        new SubArg("score", C_SCORE.replacement, true),
-                        new SubArg("scoreGlobal", C_SCORE_GLOBAL.replacement, true),
-                        new SubArg("top", C_TOP.replacement, true),
-                        new SubArg("topGlobal", C_TOP_GLOBAL.replacement, true))
+                        new SubArg("start game", C_START.tag),
+                        new SubArg("score", C_SCORE.tag, true),
+                        new SubArg("scoreGlobal", C_SCORE_GLOBAL.tag, true),
+                        new SubArg("top", C_TOP.tag, true),
+                        new SubArg("topGlobal", C_TOP_GLOBAL.tag, true))
         };
         category = ContextCategory.FUN;
     }
@@ -59,7 +59,7 @@ public class GuessGame extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         if (!isArgument(messageContext.getChannel().getName(),
                 "guessgame", "guess-game", "nsfwornot", "nsfw-or-not")) {
-            MessageSender.sendMessage(M_MINIGAME_CHANNEL.replacement, messageContext);
+            MessageSender.sendMessage(M_MINIGAME_CHANNEL.tag, messageContext);
             return;
         }
         if (args.length == 0) {
@@ -101,7 +101,7 @@ public class GuessGame extends Command {
 
         String rankTable = TextFormatting.getRankTable(ranks);
 
-        String ranking = global ? M_GLOBAL_RANKING.replacement : M_SERVER_RANKING.replacement;
+        String ranking = global ? M_GLOBAL_RANKING.tag : M_SERVER_RANKING.tag;
 
         MessageSender.sendMessage("**" + ranking + "**" + lineSeparator() + rankTable, messageContext);
     }
@@ -110,7 +110,7 @@ public class GuessGame extends Command {
         ChannelEvaluator<GuessGameEvaluator> channelEvaluator
                 = Evaluator.getGuessGame();
         if (channelEvaluator.isEvaluationActive(messageContext.getTextChannel())) {
-            MessageSender.sendMessage(M_ROUND_IN_PROGRESS.replacement, messageContext);
+            MessageSender.sendMessage(M_ROUND_IN_PROGRESS.tag, messageContext);
             return;
         }
 
@@ -120,13 +120,13 @@ public class GuessGame extends Command {
         }
 
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
-                .setTitle(M_TITLE.replacement)
+                .setTitle(M_TITLE.tag)
                 .setDescription(locale.getReplacedString(M_GAME_DESCRIPTION.localeCode, messageContext.getGuild(),
                         EmoteCollection.ANIM_CHECKMARK.getEmote().getAsMention(),
                         EmoteCollection.ANIM_CROSS.getEmote().getAsMention(),
                         "30"))
                 .setImage(hentaiImage.getCroppedImage())
-                .setFooter(M_GAME_FOOTER.replacement);
+                .setFooter(M_GAME_FOOTER.tag);
 
         messageContext.getChannel().sendMessage(builder.build())
                 .queue(message -> {

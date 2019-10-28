@@ -19,12 +19,12 @@ public class PrivateAnswer extends Command {
     public PrivateAnswer() {
         commandName = "privateAnswer";
         commandAliases = new String[] {"reply", "answer"};
-        commandDesc = ANSWER_DESCRIPTION.replacement;
+        commandDesc = ANSWER_DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("name", true,
-                        new SubArg("name", A_NAME.replacement)),
+                        new SubArg("name", A_NAME.tag)),
                 new CommandArg("message", false,
-                        new SubArg("message",A_MESSAGE.replacement))
+                        new SubArg("message",A_MESSAGE.tag))
         };
         category = ContextCategory.ADMIN;
     }

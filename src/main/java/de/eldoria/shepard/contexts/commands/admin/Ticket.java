@@ -56,16 +56,16 @@ public class Ticket extends Command {
     public Ticket() {
         commandName = "ticket";
         commandAliases = new String[] {"t"};
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
-                        new SubArg("open", C_OPEN.replacement, true),
-                        new SubArg("close", C_CLOSE.replacement, true),
-                        new SubArg("info", C_INFO.replacement, true)),
+                        new SubArg("open", C_OPEN.tag, true),
+                        new SubArg("close", C_CLOSE.tag, true),
+                        new SubArg("info", C_INFO.tag, true)),
                 new CommandArg("value", false,
                         new SubArg("open", A_TICKET_TYPE + " " + GeneralLocale.A_USER),
-                        new SubArg("close", A_CLOSE.replacement),
-                        new SubArg("info", A_INFO.replacement))
+                        new SubArg("close", A_CLOSE.tag),
+                        new SubArg("info", A_INFO.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -140,7 +140,7 @@ public class Ticket extends Command {
         if (args.length == 1) {
 
             TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
-                    tickets, WordsLocale.KEYWORD.replacement, "", WordsLocale.CATEGORY.replacement);
+                    tickets, WordsLocale.KEYWORD.tag, "", WordsLocale.CATEGORY.tag);
 
             for (TicketType type : tickets) {
                 tableBuilder.next();
@@ -167,13 +167,13 @@ public class Ticket extends Command {
                     .stream().map(IMentionable::getAsMention).collect(Collectors.toList());
 
             List<LocalizedField> fields = new ArrayList<>();
-            fields.add(new LocalizedField(M_CHANNEL_CATEGORY.replacement, type.getCategory().getName(), false,
+            fields.add(new LocalizedField(M_CHANNEL_CATEGORY.tag, type.getCategory().getName(), false,
                     receivedEvent));
-            fields.add(new LocalizedField(M_CREATION_MESSAGE.replacement, type.getCreationMessage(), false,
+            fields.add(new LocalizedField(M_CREATION_MESSAGE.tag, type.getCreationMessage(), false,
                     receivedEvent));
-            fields.add(new LocalizedField(M_TICKET_OWNER_ROLES.replacement,
+            fields.add(new LocalizedField(M_TICKET_OWNER_ROLES.tag,
                     String.join(lineSeparator() + "", ownerMentions), false, receivedEvent));
-            fields.add(new LocalizedField(M_TICKET_SUPPORT_ROLES.replacement,
+            fields.add(new LocalizedField(M_TICKET_SUPPORT_ROLES.tag,
                     String.join(lineSeparator() + "", supporterMentions), false, receivedEvent));
 
             MessageSender.sendTextBox(M_TYPE_ABOUT + " **" + type.getKeyword() + "**",

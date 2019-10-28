@@ -22,11 +22,11 @@ public class ContextInfo extends Command {
      */
     public ContextInfo() {
         commandName = "contextInfo";
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandAliases = new String[] {"cinfo"};
         commandArgs = new CommandArg[] {new CommandArg("context name", true,
-                new SubArg("context name", GeneralLocale.A_CONTEXT_NAME.replacement))};
-        category = ContextCategory.BOTCONFIG;
+                new SubArg("context name", GeneralLocale.A_CONTEXT_NAME.tag))};
+        category = ContextCategory.BOT_CONFIG;
     }
 
     @Override

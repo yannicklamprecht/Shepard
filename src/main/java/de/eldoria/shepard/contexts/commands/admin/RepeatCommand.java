@@ -12,7 +12,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.RepeatCommand
 public class RepeatCommand extends Command {
     public RepeatCommand() {
         commandName = "repeatCommand";
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandAliases = new String[] {"repeat", "rc"};
         category = ContextCategory.ADMIN;
     }

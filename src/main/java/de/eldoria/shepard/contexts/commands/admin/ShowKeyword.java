@@ -19,7 +19,7 @@ public class ShowKeyword extends Command {
      */
     public ShowKeyword() {
         commandName = "showKeywords";
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         category = ContextCategory.ADMIN;
     }
 
@@ -28,7 +28,7 @@ public class ShowKeyword extends Command {
         List<Keyword> keywords = KeyWordCollection.getInstance().getKeywords();
 
         TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
-                keywords, WordsLocale.CONTEXT_NAME.replacement, WordsLocale.KEYWORDS.replacement);
+                keywords, WordsLocale.CONTEXT_NAME.tag, WordsLocale.KEYWORDS.tag);
 
         for (Keyword kw : keywords) {
             tableBuilder.next();

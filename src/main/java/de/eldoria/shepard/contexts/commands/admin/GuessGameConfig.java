@@ -39,21 +39,21 @@ public class GuessGameConfig extends Command {
     public GuessGameConfig() {
         commandName = "guessGameConfig";
         commandAliases = new String[] {"ggconfig"};
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
-                        new SubArg("addImage", C_ADD_IMAGE.replacement, true),
-                        new SubArg("removeImage", C_REMOVE_IMAGE.replacement, true),
-                        new SubArg("changeFlag", C_CHANGE_FLAG.replacement, true),
-                        new SubArg("showImageSet", C_SHOW_IMAGE_SET.replacement, true),
-                        new SubArg("cancelRegistration", C_CANCEL_REGISTRATION.replacement, true)),
+                        new SubArg("addImage", C_ADD_IMAGE.tag, true),
+                        new SubArg("removeImage", C_REMOVE_IMAGE.tag, true),
+                        new SubArg("changeFlag", C_CHANGE_FLAG.tag, true),
+                        new SubArg("showImageSet", C_SHOW_IMAGE_SET.tag, true),
+                        new SubArg("cancelRegistration", C_CANCEL_REGISTRATION.tag, true)),
                 new CommandArg("values", false,
-                        new SubArg("addImage", A_FLAG.replacement),
-                        new SubArg("removeImage", A_URL.replacement),
+                        new SubArg("addImage", A_FLAG.tag),
+                        new SubArg("removeImage", A_URL.tag),
                         new SubArg("changeFlag", A_URL + " "
                                 + A_FLAG),
-                        new SubArg("showImageSet", A_URL.replacement),
-                        new SubArg("cancelRegistration", A_EMPTY.replacement))
+                        new SubArg("showImageSet", A_URL.tag),
+                        new SubArg("cancelRegistration", A_EMPTY.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -72,7 +72,7 @@ public class GuessGameConfig extends Command {
         }
         if (isArgument(cmd, "cancelRegistration", "cr")) {
             ImageRegister.getInstance().cancelConfiguration(messageContext);
-            MessageSender.sendMessage(M_REGISTRATION_CANCELED.replacement, messageContext);
+            MessageSender.sendMessage(M_REGISTRATION_CANCELED.tag, messageContext);
             return;
         }
         if (isArgument(cmd, "changeFlag", "cf")) {
@@ -136,7 +136,7 @@ public class GuessGameConfig extends Command {
             return;
         }
         if (GuessGameData.removeHentaiImage(args[1], messageContext)) {
-            MessageSender.sendMessage(M_REMOVED_IMAGE.replacement, messageContext);
+            MessageSender.sendMessage(M_REMOVED_IMAGE.tag, messageContext);
         }
     }
 
@@ -152,6 +152,6 @@ public class GuessGameConfig extends Command {
         }
         ImageRegister.getInstance().startConfiguration(messageContext,
                 booleanState.stateAsBoolean);
-        MessageSender.sendMessage(M_STARTED_REGISTRATION.replacement, messageContext);
+        MessageSender.sendMessage(M_STARTED_REGISTRATION.tag, messageContext);
     }
 }

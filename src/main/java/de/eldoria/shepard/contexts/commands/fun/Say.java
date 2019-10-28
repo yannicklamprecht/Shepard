@@ -19,7 +19,7 @@ public class Say extends Command {
         commandDesc = "Let shepard say something - Use \"sayd\" to delete your command afterwards.";
         commandArgs = new CommandArg[] {
                 new CommandArg("Message", true,
-                        new SubArg("message", SayLocale.A_SAY.replacement))
+                        new SubArg("message", SayLocale.A_SAY.tag))
         };
         commandAliases = new String[] {"sayd"};
         category = ContextCategory.FUN;

@@ -32,17 +32,17 @@ public class BotPresence extends Command {
         commandDesc = "Set Shepards presence";
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
-                        new SubArg("playing", C_PLAYING.replacement, true),
-                        new SubArg("streaming", C_STREAMING.replacement, true),
-                        new SubArg("listening", C_LISTENING.replacement, true),
-                        new SubArg("clear", C_CLEAR.replacement, true)),
+                        new SubArg("playing", C_PLAYING.tag, true),
+                        new SubArg("streaming", C_STREAMING.tag, true),
+                        new SubArg("listening", C_LISTENING.tag, true),
+                        new SubArg("clear", C_CLEAR.tag, true)),
                 new CommandArg("values", false,
-                        new SubArg("playing", A_TEXT.replacement),
+                        new SubArg("playing", A_TEXT.tag),
                         new SubArg("streaming", A_TEXT + " " + A_TWITCH_URL),
-                        new SubArg("listening", A_TEXT.replacement),
-                        new SubArg("clear", A_EMPTY.replacement))
+                        new SubArg("listening", A_TEXT.tag),
+                        new SubArg("clear", A_EMPTY.tag))
         };
-        category = ContextCategory.BOTCONFIG;
+        category = ContextCategory.BOT_CONFIG;
     }
 
     @Override
@@ -57,7 +57,7 @@ public class BotPresence extends Command {
 
         if (isArgument(activity, "clear", "c")) {
             presence.setActivity(null);
-            MessageSender.sendMessage(M_CLEAR.replacement, messageContext);
+            MessageSender.sendMessage(M_CLEAR.tag, messageContext);
             return;
         }
 

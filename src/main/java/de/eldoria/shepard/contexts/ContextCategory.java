@@ -1,26 +1,28 @@
 package de.eldoria.shepard.contexts;
 
+import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
+
 public enum ContextCategory {
     /**
      * Context is a command of category bot administration.
      */
-    ADMIN("\u2699 Bot Administration"),
+    ADMIN("\u2699 " + HelpLocale.M_ADMIN),
     /**
      * Context is a command of category bot configuration.
      */
-    BOTCONFIG("\uD83D\uDD27 Bot Configuration"),
+    BOT_CONFIG("\uD83D\uDD27 " + HelpLocale.M_BOT_CONFIG),
     /**
      * Context is a command of category server exclusive.
      */
-    EXCLUSIVE("\uD83C\uDF89 Server exclusive Command"),
+    EXCLUSIVE("\uD83C\uDF89 " + HelpLocale.M_EXCLUSIVE),
     /**
      * Context is a command of category entertainment.
      */
-    FUN("\uD83D\uDD79 Entertainment Commands"),
+    FUN("\uD83D\uDD79 " + HelpLocale.M_FUN),
     /**
      * Context is a command of category utility.
      */
-    UTIL("\u2049 Utility Commands"),
+    UTIL("\u2049 " + HelpLocale.M_UTIL),
     /**
      * Context is keyword.
      */

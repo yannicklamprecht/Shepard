@@ -16,7 +16,7 @@ public class Oha extends Command {
      */
     public Oha() {
         commandName = "oha";
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandAliases = new String[] {"ohad"};
         category = ContextCategory.FUN;
     }

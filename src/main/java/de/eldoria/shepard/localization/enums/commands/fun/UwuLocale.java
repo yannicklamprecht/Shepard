@@ -1,4 +1,4 @@
-package de.eldoria.shepard.localization.enums.fun;
+package de.eldoria.shepard.localization.enums.commands.fun;
 
 public enum UwuLocale {
     /**
@@ -13,15 +13,15 @@ public enum UwuLocale {
     /**
      * Get the escaped locale code for auto translation.
      */
-    public final String replacement;
+    public final String tag;
 
     UwuLocale(String localeCode) {
         this.localeCode = localeCode;
-        this.replacement = "$" + localeCode + "$";
+        this.tag = "$" + localeCode + "$";
     }
 
     @Override
     public String toString() {
-        return replacement;
+        return tag;
     }
 }

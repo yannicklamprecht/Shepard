@@ -1,4 +1,4 @@
-package de.eldoria.shepard.localization.enums.fun;
+package de.eldoria.shepard.localization.enums.commands.fun;
 
 public enum SomeoneLocale {
     /**
@@ -21,16 +21,16 @@ public enum SomeoneLocale {
     /**
      * Get the escaped locale code for auto translation.
      */
-    public final String replacement;
+    public final String tag;
 
     SomeoneLocale(String localeCode) {
         this.localeCode = localeCode;
-        this.replacement = "$" + localeCode + "$";
+        this.tag = "$" + localeCode + "$";
     }
 
     @Override
     public String toString() {
-        return replacement;
+        return tag;
     }
 
 

@@ -3,7 +3,9 @@ package de.eldoria.shepard.contexts.commands;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.LatestCommandsCollection;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.localization.LanguageHandler;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.ContextSensitive;
@@ -169,7 +171,7 @@ public abstract class Command extends ContextSensitive {
      *
      * @param channel Channel where the usage should be send in.
      */
-    public void sendCommandUsage(MessageChannel channel) {
+    public void sendCommandUsage(MessageEventDataWrapper channel) {
         List<MessageEmbed.Field> fields = new ArrayList<>();
 
         fields.add(new MessageEmbed.Field(getCommandDesc(), "", false));
@@ -210,37 +212,6 @@ public abstract class Command extends ContextSensitive {
 
 
         MessageSender.sendTextBox("__**Help for command " + getCommandName() + "**__", fields, channel, Color.green);
-    }
-
-    /**
-     * Sends help for a specified command argument.
-     *
-     * @param argument Argument for which should be send some detailed informations
-     * @param channel  Channel where the usage should be send in.
-     */
-    public void sendCommandArgHelp(String argument, MessageChannel channel) {
-
-        if (commandArgs == null || commandArgs.length == 0) {
-            MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("No Argument found!",
-                    "This command, doesn't have any arguments.", false)}, channel);
-            return;
-        }
-
-        for (CommandArg arg : commandArgs) {
-            if (arg.getArgName().equalsIgnoreCase(argument)) {
-                List<MessageEmbed.Field> fields = new ArrayList<>();
-                fields.add(new MessageEmbed.Field("Description:", arg.getSubArgs(), false));
-                fields.add(new MessageEmbed.Field("Required", arg.isRequired() ? "true" : "false", false));
-                MessageSender.sendTextBox("Help for Argument: \"" + arg.getArgName() + "\" of command \""
-                        + getCommandName() + "\"", fields, channel);
-                return;
-            }
-        }
-
-        String argsAsString = Arrays.stream(commandArgs).map(CommandArg::getArgName).collect(Collectors.joining(" "));
-
-        MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Argument not found!",
-                "Try one of these: " + argsAsString, false)}, channel);
     }
 
     public double getSimilarityScore(String command) {

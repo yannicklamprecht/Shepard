@@ -14,7 +14,7 @@ public class Uwu extends Command {
      */
     public Uwu() {
         commandName = "uwu";
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandAliases = new String[] {"uwud"};
         category = ContextCategory.FUN;
     }

@@ -39,18 +39,18 @@ public class ManageQuote extends Command {
     public ManageQuote() {
         commandName = "manageQuotes";
         commandAliases = new String[] {"mq"};
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
-                        new SubArg("add", C_ADD.replacement, true),
-                        new SubArg("alter", C_ALTER.replacement, true),
-                        new SubArg("remove", C_REMOVE.replacement, true),
-                        new SubArg("list", C_LIST.replacement, true)),
+                        new SubArg("add", C_ADD.tag, true),
+                        new SubArg("alter", C_ALTER.tag, true),
+                        new SubArg("remove", C_REMOVE.tag, true),
+                        new SubArg("list", C_LIST.tag, true)),
                 new CommandArg("action", false,
-                        new SubArg("add", A_TEXT.replacement),
+                        new SubArg("add", A_TEXT.tag),
                         new SubArg("alter", A_QUOTE_ID + " " + A_TEXT),
-                        new SubArg("remove", A_QUOTE_ID.replacement),
-                        new SubArg("show", A_KEYWORD.replacement))
+                        new SubArg("remove", A_QUOTE_ID.tag),
+                        new SubArg("list", A_KEYWORD.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -110,7 +110,7 @@ public class ManageQuote extends Command {
         }
 
         if (quotes.size() == 0) {
-            MessageSender.sendMessage(M_NO_QUOTES.replacement, messageContext);
+            MessageSender.sendMessage(M_NO_QUOTES.tag, messageContext);
         }
 
         String message = quotes.stream()
@@ -145,7 +145,7 @@ public class ManageQuote extends Command {
         String quote = ArgumentParser.getMessage(args, 1);
 
         if (QuoteData.addQuote(messageContext.getGuild(), quote, messageContext)) {
-            MessageSender.sendSimpleTextBox(M_SAVED_QUOTE.replacement, quote, Color.green, messageContext);
+            MessageSender.sendSimpleTextBox(M_SAVED_QUOTE.tag, quote, Color.green, messageContext);
         }
     }
 

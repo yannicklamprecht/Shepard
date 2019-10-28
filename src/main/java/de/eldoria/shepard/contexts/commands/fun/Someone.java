@@ -19,7 +19,7 @@ import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.M
 public class Someone extends Command {
     public Someone() {
         commandName = "Someone";
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         category = ContextCategory.FUN;
     }
 
@@ -35,7 +35,7 @@ public class Someone extends Command {
                     .collect(Collectors.toList());
 
             if (members.size() == 0) {
-                MessageSender.sendMessage(M_NO_ONLINE.replacement, messageContext);
+                MessageSender.sendMessage(M_NO_ONLINE.tag, messageContext);
                 return;
             }
 

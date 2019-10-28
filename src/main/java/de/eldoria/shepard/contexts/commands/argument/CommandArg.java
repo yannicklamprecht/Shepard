@@ -1,5 +1,9 @@
 package de.eldoria.shepard.contexts.commands.argument;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * An argument of a command.
  */
@@ -17,8 +21,9 @@ public class CommandArg {
      */
     public CommandArg(String argName, boolean required, SubArg... subArgs) {
         this.argName = argName;
-        this.subArgs = subArgs;
         this.required = required;
+        this.subArgs = subArgs;
+        generateShortCommands();
     }
 
     /**
@@ -46,6 +51,27 @@ public class CommandArg {
      */
     public boolean isRequired() {
         return required;
+    }
+
+    private boolean areShortCommandsUnique() {
+        Set<String> shortCommands = new HashSet<>();
+        for (var subArg : subArgs) {
+            if (subArg.isSubCommand()) {
+                if (!shortCommands.add(subArg.getShortCommand())) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void generateShortCommands() {
+        int iteration = 0;
+        do {
+            int finalIteration = iteration;
+            Arrays.stream(subArgs).forEach(subArg -> subArg.generateShortCommand(finalIteration));
+            iteration++;
+        } while (!areShortCommandsUnique());
     }
 }
 

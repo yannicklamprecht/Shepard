@@ -138,7 +138,17 @@ public enum ErrorType {
     /**
      * Used when a command which is restricted to a specific channel is executed outside the channel.
      */
-    EXCLUSIVE_CHANNEL("This is only available in a specific channel!");
+    EXCLUSIVE_CHANNEL("This is only available in a specific channel!"),
+    /**
+     * Used when a argument help is executed on a command without arguments.
+     */
+    NO_ARGUMENT_FOUND("No Argument found!" + System.lineSeparator()
+            + "This command, doesn't have any arguments."),
+    /**
+     * Used when a command was not found.
+     */
+    COMMAND_NOT_FOUND("Command not found!" + System.lineSeparator()
+            + "Use help command for a full list of available commands!");
 
 
     /**

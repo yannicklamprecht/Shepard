@@ -43,18 +43,18 @@ public class Invite extends Command {
      */
     public Invite() {
         commandName = "invite";
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[]{
                 new CommandArg("action", true,
-                        new SubArg("addInvite", C_ADD_INVITE.replacement, true),
-                        new SubArg("removeInvite", C_REMOVE_INVITE.replacement, true),
-                        new SubArg("refreshInvites", C_REFRESH_INVITES.replacement, true),
-                        new SubArg("showInvites", C_SHOW_INVITES.replacement, true)),
+                        new SubArg("add", C_ADD_INVITE.tag, true),
+                        new SubArg("remove", C_REMOVE_INVITE.tag, true),
+                        new SubArg("refresh", C_REFRESH_INVITES.tag, true),
+                        new SubArg("show", C_SHOW_INVITES.tag, true)),
                 new CommandArg("values", false,
-                        new SubArg("addInvite", A_CODE.replacement + " " + A_INVITE_NAME.replacement),
-                        new SubArg("removeInvite", A_CODE.replacement),
-                        new SubArg("refreshInvite", A_EMPTY.replacement),
-                        new SubArg("showInvites", A_EMPTY.replacement))
+                        new SubArg("add", A_CODE.tag + " " + A_INVITE_NAME.tag),
+                        new SubArg("remove", A_CODE.tag),
+                        new SubArg("refresh", A_EMPTY.tag),
+                        new SubArg("show", A_EMPTY.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -86,10 +86,10 @@ public class Invite extends Command {
         List<DatabaseInvite> invites = InviteData.getInvites(messageContext.getGuild(), messageContext);
 
         StringBuilder message = new StringBuilder();
-        message.append(M_REGISTERED_INVITES.replacement).append(lineSeparator());
+        message.append(M_REGISTERED_INVITES.tag).append(lineSeparator());
 
         TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
-                invites, M_CODE.replacement, M_USAGE_COUNT.replacement, M_INVITE_NAME.replacement);
+                invites, M_CODE.tag, M_USAGE_COUNT.tag, M_INVITE_NAME.tag);
         for (DatabaseInvite invite : invites) {
             tableBuilder.next();
             tableBuilder.setRow(invite.getCode(), invite.getUsedCount() + "", invite.getSource());
@@ -101,7 +101,7 @@ public class Invite extends Command {
     private void refreshInvites(MessageEventDataWrapper messageContext) {
         messageContext.getGuild().retrieveInvites().queue(invites -> {
             if (InviteData.updateInvite(messageContext.getGuild(), invites, messageContext)) {
-                MessageSender.sendMessage(M_REMOVED_NON_EXISTENT_INVITES.replacement, messageContext);
+                MessageSender.sendMessage(M_REMOVED_NON_EXISTENT_INVITES.tag, messageContext);
             }
         });
     }
@@ -116,7 +116,7 @@ public class Invite extends Command {
         for (DatabaseInvite invite : databaseInvites) {
             if (invite.getCode().equals(args[1])) {
                 if (InviteData.removeInvite(receivedEvent.getGuild(), args[1], receivedEvent)) {
-                    MessageSender.sendMessage(M_REMOVED_INVITE.replacement + " **" + invite.getSource()
+                    MessageSender.sendMessage(M_REMOVED_INVITE.tag + " **" + invite.getSource()
                             + "**", receivedEvent);
                     return;
                 }

@@ -3,18 +3,18 @@ package de.eldoria.shepard.contexts.commands.argument;
 public class SubArg {
     private String shortCommand;
     private String argumentName;
-    private String localeCode;
+    private String localetag;
     private boolean isSubCommand;
 
     /**
      * Creates a new argument.
      *
      * @param argumentName name of the argument or subCommand
-     * @param localeCode   locale code for localization
+     * @param localetag    locale code for localization
      */
-    public SubArg(String argumentName, String localeCode) {
+    public SubArg(String argumentName, String localetag) {
         this.argumentName = argumentName;
-        this.localeCode = localeCode;
+        this.localetag = localetag;
         this.isSubCommand = false;
     }
 
@@ -22,12 +22,12 @@ public class SubArg {
      * Creates a new argument or subcommand.
      *
      * @param argumentName name of the argument or subCommand
-     * @param localeCode   locale code for localization
+     * @param localetag    locale code for localization
      * @param isSubCommand true if the command is a sub command.
      */
-    public SubArg(String argumentName, String localeCode, boolean isSubCommand) {
+    public SubArg(String argumentName, String localetag, boolean isSubCommand) {
         this.argumentName = argumentName;
-        this.localeCode = localeCode;
+        this.localetag = localetag;
         this.isSubCommand = isSubCommand;
     }
 
@@ -35,15 +35,69 @@ public class SubArg {
         return argumentName;
     }
 
-    public String getLocaleCode() {
-        return localeCode;
+    public String getLocaletag() {
+        return localetag;
     }
 
     public String getArgumentDesc() {
         if (!isSubCommand) {
-            return argumentName + " -> " + localeCode;
+            return argumentName + " -> " + localetag;
         }
         //TODO: COMMAND DESCRIPTION
         return "";
+    }
+
+    public boolean isSubCommand() {
+        return isSubCommand;
+    }
+
+    public String getShortCommand() {
+        return shortCommand;
+    }
+
+    public void setShortCommand(String shortCommand) {
+        this.shortCommand = shortCommand;
+    }
+
+    public String getCommandString() {
+        return argumentName + " | " + shortCommand;
+    }
+
+    /**
+     * Returns true if the cmd matches the argument name or the short command.
+     *
+     * @param cmd command to test
+     * @return true if a match is found. Always false if arg is not a command.
+     */
+    public boolean isSubCommand(String cmd) {
+        return isSubCommand && (cmd.equalsIgnoreCase(argumentName) || cmd.equalsIgnoreCase(shortCommand));
+    }
+
+    public void generateShortCommand(int additionalLength) {
+        char[] argumentName = getArgumentName().toCharArray();
+        StringBuilder shortCommand = new StringBuilder();
+        shortCommand.append(argumentName[0]);
+        for (int i = 0; i < additionalLength; i++) {
+            shortCommand.append(argumentName[i + 1]);
+        }
+        for (char c : argumentName) {
+            if (Character.isUpperCase(c)) {
+                shortCommand.append(c);
+            }
+        }
+        setShortCommand(shortCommand.toString());
+    }
+
+    /**
+     * Get the unlocalized help text. Contains replacement localization tags.
+     *
+     * @return help test with localization tags.
+     */
+    public String getHelpText() {
+        if (isSubCommand) {
+            return "**" + getCommandString() + "** -> " + localetag;
+        }
+        return "**" + argumentName + "** -> " + localetag;
+
     }
 }

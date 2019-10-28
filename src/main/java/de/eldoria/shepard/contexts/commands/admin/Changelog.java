@@ -40,20 +40,20 @@ public class Changelog extends Command {
     public Changelog() {
         commandName = "changelog";
         commandAliases = new String[] {"log"};
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
-                        new SubArg("addRole", C_ADD_ROLE.replacement, true),
-                        new SubArg("removeRole", C_REMOVE_ROLE.replacement, true),
-                        new SubArg("activate", C_ACTIVATE.replacement, true),
-                        new SubArg("deactivate", C_DEACTIVATE.replacement, true),
-                        new SubArg("roles", C_ROLES.replacement, true)),
+                        new SubArg("addRole", C_ADD_ROLE.tag, true),
+                        new SubArg("removeRole", C_REMOVE_ROLE.tag, true),
+                        new SubArg("activate", C_ACTIVATE.tag, true),
+                        new SubArg("deactivate", C_DEACTIVATE.tag, true),
+                        new SubArg("roles", C_ROLES.tag, true)),
                 new CommandArg("value", false,
-                        new SubArg("addRole", A_ROLE.replacement),
-                        new SubArg("removeRole", A_ROLE.replacement),
-                        new SubArg("activate", A_CHANNEL.replacement),
-                        new SubArg("deactivate", A_EMPTY.replacement),
-                        new SubArg("roles", A_EMPTY.replacement))
+                        new SubArg("addRole", A_ROLE.tag),
+                        new SubArg("removeRole", A_ROLE.tag),
+                        new SubArg("activate", A_CHANNEL.tag),
+                        new SubArg("deactivate", A_EMPTY.tag),
+                        new SubArg("roles", A_EMPTY.tag))
         };
 
         category = ContextCategory.ADMIN;
@@ -90,13 +90,13 @@ public class Changelog extends Command {
                 ChangelogData.getRoles(receivedEvent.getGuild(), receivedEvent))
                 .stream().map(IMentionable::getAsMention).collect(Collectors.toList());
 
-        MessageSender.sendSimpleTextBox(M_LOGGED_ROLES.replacement,
+        MessageSender.sendSimpleTextBox(M_LOGGED_ROLES.tag,
                 String.join(lineSeparator(), collect), receivedEvent);
     }
 
     private void deactivate(MessageEventDataWrapper receivedEvent) {
         if (ChangelogData.removeChannel(receivedEvent.getGuild(), receivedEvent)) {
-            MessageSender.sendMessage(M_DEACTIVATED.replacement,
+            MessageSender.sendMessage(M_DEACTIVATED.tag,
                     receivedEvent);
         }
     }

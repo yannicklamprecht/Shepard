@@ -19,12 +19,12 @@ public class SendPrivateMessage extends Command {
     public SendPrivateMessage() {
         commandName = "privateMessage";
         commandAliases = new String[] {"pm", "sendMessage"};
-        commandDesc = MESSAGE_DESCRIPTION.replacement;
+        commandDesc = MESSAGE_DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("name", true,
-                        new SubArg("name", A_USER.replacement)),
+                        new SubArg("name", A_USER.tag)),
                 new CommandArg("message", false,
-                        new SubArg("message", A_MESSAGE.replacement))
+                        new SubArg("message", A_MESSAGE.tag))
         };
         category = ContextCategory.ADMIN;
     }

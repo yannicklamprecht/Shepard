@@ -30,16 +30,16 @@ public class Greeting extends Command {
      */
     public Greeting() {
         commandName = "greeting";
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
-                        new SubArg("setChannel", C_SET_CHANNEL.replacement, true),
-                        new SubArg("removeChannel", C_REMOVE_CHANNEL.replacement, true),
-                        new SubArg("setMessage", C_SET_MESSAGE.replacement, true)),
+                        new SubArg("setChannel", C_SET_CHANNEL.tag, true),
+                        new SubArg("removeChannel", C_REMOVE_CHANNEL.tag, true),
+                        new SubArg("setMessage", C_SET_MESSAGE.tag, true)),
                 new CommandArg("value", false,
-                        new SubArg("setChannel", A_CHANNEL_MENTION_OR_EXECUTE.replacement),
-                        new SubArg("removeChannel", A_EMPTY.replacement),
-                        new SubArg("setMessage", A_MESSAGE_MENTION.replacement))
+                        new SubArg("setChannel", A_CHANNEL_MENTION_OR_EXECUTE.tag),
+                        new SubArg("removeChannel", A_EMPTY.tag),
+                        new SubArg("setMessage", A_MESSAGE_MENTION.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -81,7 +81,7 @@ public class Greeting extends Command {
 
     private void removeChannel(MessageEventDataWrapper messageContext) {
         if (GreetingData.removeGreetingChannel(messageContext.getGuild(), messageContext)) {
-            MessageSender.sendMessage(M_REMOVED_CHANNEL.replacement, messageContext);
+            MessageSender.sendMessage(M_REMOVED_CHANNEL.tag, messageContext);
         }
     }
 

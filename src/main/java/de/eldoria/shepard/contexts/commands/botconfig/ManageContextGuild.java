@@ -39,22 +39,22 @@ public class ManageContextGuild extends Command {
     public ManageContextGuild() {
         commandName = "manageContextGuild";
         commandAliases = new String[] {"mcg"};
-        commandDesc = DESCRIPTION.replacement;
+        commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("context name", true,
-                        new SubArg("context name", A_CONTEXT_NAME.replacement)),
+                        new SubArg("context name", A_CONTEXT_NAME.tag)),
                 new CommandArg("action", true,
-                        new SubArg("setActive", C_SET_ACTIVE.replacement, true),
-                        new SubArg("setListType", C_SET_LIST_TYPE.replacement, true),
-                        new SubArg("addGuild", C_ADD_GUILD.replacement, true),
-                        new SubArg("removeGuild", C_REMOVE_GUILD.replacement, true)),
+                        new SubArg("setActive", C_SET_ACTIVE.tag, true),
+                        new SubArg("setListType", C_SET_LIST_TYPE.tag, true),
+                        new SubArg("addGuild", C_ADD_GUILD.tag, true),
+                        new SubArg("removeGuild", C_REMOVE_GUILD.tag, true)),
                 new CommandArg("value", true,
-                        new SubArg("setActive", A_BOOLEAN.replacement),
-                        new SubArg("setListType", A_LIST_TYPE.replacement),
-                        new SubArg("addGuild", A_GUILDS.replacement),
-                        new SubArg("removeGuild", A_GUILDS.replacement))
+                        new SubArg("setActive", A_BOOLEAN.tag),
+                        new SubArg("setListType", A_LIST_TYPE.tag),
+                        new SubArg("addGuild", A_GUILDS.tag),
+                        new SubArg("removeGuild", A_GUILDS.tag))
         };
-        category = ContextCategory.BOTCONFIG;
+        category = ContextCategory.BOT_CONFIG;
     }
 
     @Override
@@ -89,7 +89,6 @@ public class ManageContextGuild extends Command {
         }
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext);
-        sendCommandArgHelp("action", messageContext.getChannel());
 
     }
 
@@ -159,7 +158,7 @@ public class ManageContextGuild extends Command {
 
         if (ContextData.setContextGuildCheckActive(contextName, state, messageContext)) {
             if (state) {
-                MessageSender.sendMessage(M_ACTIVATED_CHECK.replacement + "**"
+                MessageSender.sendMessage(M_ACTIVATED_CHECK.tag + "**"
                         + contextName.toUpperCase() + "**", messageContext);
             } else {
                 MessageSender.sendMessage(M_DEACTIVATED_CHECK + "**"
