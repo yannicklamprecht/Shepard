@@ -39,12 +39,19 @@ public class SubArg {
         return localetag;
     }
 
+    /**
+     * Returns the argument description in format:
+     * If argument: "[argument] -> [description]"
+     * If subcommand: "[argument] | [shortCommand] -> [description]".
+     *
+     * * @return Argument description.
+     */
     public String getArgumentDesc() {
         if (!isSubCommand) {
             return argumentName + " -> " + localetag;
         }
-        //TODO: COMMAND DESCRIPTION
-        return "";
+
+        return getCommandString() + " -> " + getLocaletag();
     }
 
     public boolean isSubCommand() {

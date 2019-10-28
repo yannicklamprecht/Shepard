@@ -4,8 +4,12 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.ReminderData;
 import de.eldoria.shepard.database.types.ReminderSimple;
+import de.eldoria.shepard.localization.enums.WordsLocale;
+import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
+import de.eldoria.shepard.localization.enums.commands.util.ReminderLocal;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.TextFormatting;
@@ -15,8 +19,8 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.WordsLocale.*;
 import static de.eldoria.shepard.util.Verifier.isArgument;
-import static java.lang.System.lineSeparator;
 
 public class Reminder extends Command {
     private static final Pattern INTERVAL = Pattern.compile("in\\s([0-9])+\\s(((min|hour|day|week)s?)|month)",
@@ -27,19 +31,16 @@ public class Reminder extends Command {
     public Reminder() {
         commandName = "remind";
         commandAliases = new String[] {"reminder"};
-        commandDesc = "Set a reminder in a specified time.";
+        commandDesc = ReminderLocal.DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
-                new CommandArg("action",
-                        "**__a__dd** -> Create a new reminder." + lineSeparator()
-                                + "**__r__emove** -> Remove a reminder" + lineSeparator()
-                                + "**__s__how** -> Show your reminder.",
-                        true),
-                new CommandArg("value",
-                        "**__a__dd** -> [message] [number] [min|hour|day|week|month]" + lineSeparator()
-                                + "**__r__emove** -> [id]" + lineSeparator()
-                                + "**__s__how** -> leave empty",
-                        false
-                )
+                new CommandArg("action", true,
+                        new SubArg("add", ReminderLocal.C_ADD.tag, true),
+                        new SubArg("remove", ReminderLocal.C_REMOVE.tag, true),
+                        new SubArg("list", ReminderLocal.C_LIST.tag, true)),
+                new CommandArg("value", false,
+                        new SubArg("add", ReminderLocal.M_FORMAT.tag),
+                        new SubArg("remove", "[" + GeneralLocale.A_ID + "]"),
+                        new SubArg("list", GeneralLocale.A_EMPTY.tag))
         };
         category = ContextCategory.UTIL;
     }
@@ -53,7 +54,7 @@ public class Reminder extends Command {
         }
 
         if (args.length < 2) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
             return;
         }
 
@@ -64,28 +65,26 @@ public class Reminder extends Command {
 
 
         if (args.length < 4) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
             return;
         }
 
         if (isArgument(cmd, "add", "a")) {
             add(args, messageContext);
         }
-
-
     }
 
     private void remove(String[] args, MessageEventDataWrapper messageContext) {
         Integer number = ArgumentParser.parseInt(args[2]);
         if (number == null) {
-            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext);
             return;
         }
 
         List<ReminderSimple> userReminder = ReminderData.getUserReminder(messageContext.getGuild(),
                 messageContext.getAuthor(), messageContext);
         if (number > userReminder.size()) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext);
             return;
         }
 
@@ -95,18 +94,17 @@ public class Reminder extends Command {
         ReminderData.removeUserReminder(messageContext.getGuild(), messageContext.getAuthor(),
                 number, messageContext);
 
-        MessageSender.sendMessage("Removed reminder " + reminder.getReminderId() + ": \""
-                        + TextFormatting.cropText(reminder.getText(), "...", 20, true)
-                        + System.lineSeparator()
-                        + "Which would be send at " + reminder.getTime(),
-                messageContext.getTextChannel());
+        MessageSender.sendMessage(locale.getReplacedString(ReminderLocal.M_REMOVED.localeCode, messageContext.getGuild(),
+                reminder.getReminderId() + "",
+                TextFormatting.cropText(reminder.getText(), "...", 20, true),
+                reminder.getTime()), messageContext);
     }
 
     private void show(MessageEventDataWrapper messageContext) {
         List<ReminderSimple> reminders = ReminderData.getUserReminder(messageContext.getGuild(),
                 messageContext.getAuthor(), messageContext);
         TextFormatting.TableBuilder tableBuilder
-                = TextFormatting.getTableBuilder(reminders, "ID", "Message", "Time");
+                = TextFormatting.getTableBuilder(reminders, ID.tag, MESSAGE.tag, TIME.tag);
         for (ReminderSimple reminder : reminders) {
             tableBuilder.next();
             tableBuilder.setRow(
@@ -115,14 +113,14 @@ public class Reminder extends Command {
                     reminder.getTime());
         }
 
-        MessageSender.sendMessage("Your current reminders: " + System.lineSeparator() + tableBuilder,
-                messageContext.getTextChannel());
+        MessageSender.sendMessage(ReminderLocal.M_CURRENT_REMINDERS + System.lineSeparator() + tableBuilder,
+                messageContext);
     }
 
     private void add(String[] args, MessageEventDataWrapper messageContext) {
         String command = ArgumentParser.getMessage(args, 0, 0);
         if (!DATE.matcher(command).find() && !INTERVAL.matcher(command).find()) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_TIME, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_TIME, messageContext);
             return;
         }
 
@@ -133,9 +131,8 @@ public class Reminder extends Command {
 
             if (ReminderData.addReminderDate(messageContext.getGuild(), messageContext.getAuthor(),
                     messageContext.getTextChannel(), message, date, time, messageContext)) {
-                MessageSender.sendMessage("I will remind you of " + date + " at " + time
-                        + " with the following text:" + System.lineSeparator()
-                        + message, messageContext.getTextChannel());
+                MessageSender.sendMessage(locale.getReplacedString(ReminderLocal.M_REMIND_DATE.localeCode,
+                        messageContext.getGuild(), date, time) + System.lineSeparator() + message, messageContext);
             }
             return;
         }
@@ -145,9 +142,8 @@ public class Reminder extends Command {
 
         if (ReminderData.addReminderInterval(messageContext.getGuild(), messageContext.getAuthor(),
                 messageContext.getTextChannel(), message, interval, messageContext)) {
-            MessageSender.sendMessage("I will remind you in " + interval
-                    + " with the following text:" + System.lineSeparator()
-                    + message, messageContext.getTextChannel());
+            MessageSender.sendMessage(locale.getReplacedString(ReminderLocal.M_REMIND_TIME.localeCode,
+                    messageContext.getGuild(), interval) + System.lineSeparator() + message, messageContext);
         }
     }
 }

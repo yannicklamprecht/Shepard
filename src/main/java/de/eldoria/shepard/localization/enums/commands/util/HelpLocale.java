@@ -16,7 +16,13 @@ public enum HelpLocale {
     M_MAYBE_USEFUL("command.help.message.maybeUseful"),
     M_INVITE_ME("command.help.message.inviteMe"),
     M_SUPPORT_SERVER("command.help.message.supportServer"),
-    M_COMMANDS("command.help.message.commands");
+    M_COMMANDS("command.help.message.commands"),
+    M_HELP_FOR_COMMAND("command.help.message.helpForCommand"),
+    W_ARGUMENTS("command.help.word.arguments"),
+    W_USAGE("command.help.word.usage"),
+    W_REQUIRED("command.help.word.required"),
+    W_OPTIONAL("command.help.word.optional"),
+    W_ALIASES("command.help.word.Aliases");
 
     /**
      * Get the normal locale code for direct translation.

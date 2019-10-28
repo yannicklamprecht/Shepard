@@ -1,8 +1,15 @@
 package de.eldoria.shepard.contexts.commands.argument;
 
+import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import static de.eldoria.shepard.localization.enums.commands.util.HelpLocale.W_OPTIONAL;
+import static de.eldoria.shepard.localization.enums.commands.util.HelpLocale.W_REQUIRED;
+import static java.lang.System.lineSeparator;
 
 /**
  * An argument of a command.
@@ -65,6 +72,29 @@ public class CommandArg {
         return true;
     }
 
+    /**
+     * Get the argument name.
+     *
+     * @return
+     */
+    public String getHelpString() {
+        if (isRequired()) {
+            return "[" + getArgName().toUpperCase() + "]";
+        } else {
+            return "<" + getArgName().toUpperCase() + ">";
+        }
+    }
+
+    /**
+     * Argument name with subarguments.
+     *
+     * @return string with more information
+     */
+    public String getArgHelpString() {
+        return "**" + getArgName().toUpperCase() + "**" + (isRequired() ? W_REQUIRED : W_OPTIONAL) + lineSeparator()
+                + "> " + getSubArgHelpString();
+    }
+
     private void generateShortCommands() {
         int iteration = 0;
         do {
@@ -72,6 +102,10 @@ public class CommandArg {
             Arrays.stream(subArgs).forEach(subArg -> subArg.generateShortCommand(finalIteration));
             iteration++;
         } while (!areShortCommandsUnique());
+    }
+
+    public String getSubArgHelpString() {
+        return Arrays.stream(subArgs).map(SubArg::getArgumentDesc).collect(Collectors.joining(lineSeparator()));
     }
 }
 

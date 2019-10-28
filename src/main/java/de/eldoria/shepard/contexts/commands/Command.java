@@ -5,6 +5,8 @@ import de.eldoria.shepard.collections.LatestCommandsCollection;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.localization.LanguageHandler;
+import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
+import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -20,11 +22,13 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import static java.lang.System.lineSeparator;
+import static java.lang.System.mapLibraryName;
+
 /**
  * An abstract class for commands.
  */
 public abstract class Command extends ContextSensitive {
-
     /**
      * Language handler instance.
      */
@@ -169,49 +173,37 @@ public abstract class Command extends ContextSensitive {
     /**
      * Send the usage of the command to a channel.
      *
-     * @param channel Channel where the usage should be send in.
+     * @param messageContext Channel where the usage should be send in.
      */
-    public void sendCommandUsage(MessageEventDataWrapper channel) {
-        List<MessageEmbed.Field> fields = new ArrayList<>();
+    public void sendCommandUsage(MessageEventDataWrapper messageContext) {
+        List<LocalizedField> fields = new ArrayList<>();
 
-        fields.add(new MessageEmbed.Field(getCommandDesc(), "", false));
+        fields.add(new LocalizedField(getCommandDesc(), "", false, messageContext));
 
+        // Set aliases
         if (getCommandAliases() != null && getCommandAliases().length != 0) {
-            fields.add(new MessageEmbed.Field("__**Aliases:**__", String.join(", ", getCommandAliases()), false));
+            fields.add(new LocalizedField("__**" + HelpLocale.W_ALIASES + ":**__", String.join(", ",
+                    getCommandAliases()), false, messageContext));
         }
+
+        String args = Arrays.stream(getCommandArgs()).map(CommandArg::getHelpString)
+                .collect(Collectors.joining(" "));
+
+
+        fields.add(new LocalizedField("__**" + HelpLocale.W_USAGE + ":**__", getCommandName() + " " + args,
+                false, messageContext));
 
         StringBuilder desc = new StringBuilder();
-
-        desc.append(getCommandName()).append(" ");
-        if (getCommandArgs() != null) {
-            for (CommandArg arg : getCommandArgs()) {
-                if (arg.isRequired()) {
-                    desc.append("[").append(arg.getArgName().toUpperCase()).append("] ");
-                } else {
-                    desc.append("<").append(arg.getArgName().toUpperCase()).append("> ");
-                }
-            }
-        }
-
-        fields.add(new MessageEmbed.Field("__**Usage:**__", desc.toString(), false));
-
-        desc.setLength(0);
         if (commandArgs.length != 0) {
-
             for (CommandArg arg : commandArgs) {
-                desc.append("**").append(arg.getArgName().toUpperCase()).append("**")
-                        .append(arg.isRequired() ? " REQUIRED" : " OPTIONAL")
-                        .append(System.lineSeparator())
-                        .append("> ").append(arg.getSubArgs()
-                        .replace(System.lineSeparator(), System.lineSeparator() + "> "))
-                        .append(System.lineSeparator())
-                        .append(System.lineSeparator());
+                desc.append(arg.getArgHelpString()).append(lineSeparator()).append(lineSeparator());
             }
-            fields.add(new MessageEmbed.Field("__**Arguments:**__", desc.toString(), false));
+            fields.add(new LocalizedField("__**" + HelpLocale.W_ARGUMENTS + ":**__", desc.toString(),
+                    false, messageContext));
         }
 
-
-        MessageSender.sendTextBox("__**Help for command " + getCommandName() + "**__", fields, channel, Color.green);
+        MessageSender.sendTextBox("__**" + HelpLocale.M_HELP_FOR_COMMAND + " " + getCommandName()
+                + "**__", fields, messageContext, Color.green);
     }
 
     public double getSimilarityScore(String command) {

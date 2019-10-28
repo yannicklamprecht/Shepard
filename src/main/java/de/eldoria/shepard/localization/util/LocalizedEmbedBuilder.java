@@ -122,7 +122,7 @@ public class LocalizedEmbedBuilder extends EmbedBuilder {
 
     @Nonnull
     @Override
-    public EmbedBuilder setThumbnail(@Nullable String url) {
+    public LocalizedEmbedBuilder setThumbnail(@Nullable String url) {
         super.setThumbnail(url);
         return this;
     }
@@ -168,4 +168,5 @@ public class LocalizedEmbedBuilder extends EmbedBuilder {
         super.clearFields();
         return this;
     }
+
 }

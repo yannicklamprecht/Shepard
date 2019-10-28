@@ -38,7 +38,6 @@ import de.eldoria.shepard.contexts.commands.util.GetRaw;
 import de.eldoria.shepard.contexts.commands.util.Help;
 import de.eldoria.shepard.contexts.commands.util.HireMe;
 import de.eldoria.shepard.contexts.commands.util.Home;
-import de.eldoria.shepard.contexts.commands.util.ListServer;
 import de.eldoria.shepard.contexts.commands.util.Reminder;
 import de.eldoria.shepard.contexts.commands.util.SystemInfo;
 import de.eldoria.shepard.contexts.commands.util.Test;
@@ -79,7 +78,6 @@ public final class ContextRegister {
         new HireMe();
         new Home();
         new SystemInfo();
-        new ListServer();
         new GetRaw();
         new Test();
     }

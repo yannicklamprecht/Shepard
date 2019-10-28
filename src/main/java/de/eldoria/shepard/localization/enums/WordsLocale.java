@@ -30,6 +30,14 @@ public enum WordsLocale {
      */
     KEYWORD("words.keyword"),
     /**
+     * Localization key for word "Keyword".
+     */
+    MESSAGE("words.message"),
+    /**
+     * Localization key for word "Keyword".
+     */
+    TIME("words.time"),
+    /**
      * Localization key for word "Category".
      */
     CATEGORY("words.category");
