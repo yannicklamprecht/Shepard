@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class LanguageLoader {
-    private static final String BUNDLE_PATH = "de.eldoria.shepard.localization.bundles.";
+    private static final String BUNDLE_PATH = "locale";
 
     public static void initialize(LanguageHandler handler) {
         for (LanguageCode code : LanguageCode.values()) {

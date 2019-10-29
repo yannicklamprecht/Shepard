@@ -18,6 +18,8 @@ public class LanguageHandler {
         } else {
             instance = new LanguageHandler();
         }
+
+        LanguageLoader.initialize(instance);
         //TODO: Load languages
     }
 
