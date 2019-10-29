@@ -22,7 +22,7 @@ public enum HelpLocale {
     W_USAGE("command.help.word.usage"),
     W_REQUIRED("command.help.word.required"),
     W_OPTIONAL("command.help.word.optional"),
-    W_ALIASES("command.help.word.Aliases");
+    W_ALIASES("command.help.word.aliases");
 
     /**
      * Get the normal locale code for direct translation.

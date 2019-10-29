@@ -1,12 +1,16 @@
 package de.eldoria.shepard.contexts.commands;
 
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.LatestCommandsCollection;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -70,7 +74,11 @@ public abstract class Command extends ContextSensitive {
      */
     @Deprecated
     public final void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        internalExecute(label, args, messageContext);
+        try {
+            internalExecute(label, args, messageContext);
+        } catch (Throwable e) {
+            ShepardBot.getLogger().error(e);
+        }
         MessageSender.logCommand(label, args, messageContext);
         LatestCommandsCollection.getInstance().saveLatestCommand(messageContext.getGuild(), messageContext.getAuthor(),
                 this, label, args);
@@ -177,34 +185,40 @@ public abstract class Command extends ContextSensitive {
      * @param channel Channel where the usage should be send in.
      */
     public void sendCommandUsage(TextChannel channel) {
-        List<LocalizedField> fields = new ArrayList<>();
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild());
 
-        fields.add(new LocalizedField(getCommandDesc(), "", false, channel));
+        builder.setDescription(getCommandDesc());
 
         // Set aliases
         if (getCommandAliases() != null && getCommandAliases().length != 0) {
-            fields.add(new LocalizedField("__**" + HelpLocale.W_ALIASES + ":**__", String.join(", ",
-                    getCommandAliases()), false, channel));
+            builder.appendDescription(lineSeparator() + "__**" + HelpLocale.W_ALIASES + ":**__ "
+                    + String.join(", ", getCommandAliases()));
         }
 
         String args = Arrays.stream(getCommandArgs()).map(CommandArg::getHelpString)
                 .collect(Collectors.joining(" "));
 
 
-        fields.add(new LocalizedField("__**" + HelpLocale.W_USAGE + ":**__", getCommandName() + " " + args,
+        builder.addField(new LocalizedField("__**" + HelpLocale.W_USAGE + ":**__",
+                PrefixData.getPrefix(channel.getGuild(), null) + getCommandName() + " " + args,
                 false, channel));
 
         StringBuilder desc = new StringBuilder();
         if (commandArgs.length != 0) {
+            String title = "__**" + HelpLocale.W_ARGUMENTS + ":**__";
             for (CommandArg arg : commandArgs) {
-                desc.append(arg.getArgHelpString()).append(lineSeparator()).append(lineSeparator());
+                desc.setLength(0);
+                desc.append(">>> ").append(TextLocalizer.fastLocale(arg.getArgHelpString(), channel.getGuild()))
+                        .append(lineSeparator()).append(lineSeparator());
+                builder.addField(new LocalizedField(title, desc.toString(),
+                        false, channel));
+                title = "";
             }
-            fields.add(new LocalizedField("__**" + HelpLocale.W_ARGUMENTS + ":**__", desc.toString(),
-                    false, channel));
         }
+        builder.setTitle("__**" + HelpLocale.M_HELP_FOR_COMMAND + " " + getCommandName() + "**__")
+                .setColor(Color.green);
 
-        MessageSender.sendTextBox("__**" + HelpLocale.M_HELP_FOR_COMMAND + " " + getCommandName()
-                + "**__", fields, channel, Color.green);
+        channel.sendMessage(builder.build()).queue();
     }
 
     public double getSimilarityScore(String command) {

@@ -94,7 +94,7 @@ public class CommandListener extends ListenerAdapter {
                             messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
                                     MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));
                         }
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         ShepardBot.getLogger().error(e);
                     }
                 } else {

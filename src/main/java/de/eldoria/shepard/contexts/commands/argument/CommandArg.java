@@ -91,8 +91,8 @@ public class CommandArg {
      * @return string with more information
      */
     public String getArgHelpString() {
-        return "**" + getArgName().toUpperCase() + "**" + (isRequired() ? W_REQUIRED : W_OPTIONAL) + lineSeparator()
-                + "> " + getSubArgHelpString();
+        return "**" + getArgName().toUpperCase() + "** " + (isRequired() ? W_REQUIRED : W_OPTIONAL) + lineSeparator()
+                + getSubArgHelpString();
     }
 
     private void generateShortCommands() {
@@ -105,7 +105,8 @@ public class CommandArg {
     }
 
     public String getSubArgHelpString() {
-        return Arrays.stream(subArgs).map(SubArg::getArgumentDesc).collect(Collectors.joining(lineSeparator()));
+        return Arrays.stream(subArgs).map(SubArg::getArgumentDesc)
+                .collect(Collectors.joining(lineSeparator()));
     }
 }
 

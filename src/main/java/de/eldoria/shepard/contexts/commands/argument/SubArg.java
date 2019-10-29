@@ -43,15 +43,15 @@ public class SubArg {
      * Returns the argument description in format:
      * If argument: "[argument] -> [description]"
      * If subcommand: "[argument] | [shortCommand] -> [description]".
-     *
+     * <p>
      * * @return Argument description.
      */
     public String getArgumentDesc() {
         if (!isSubCommand) {
-            return argumentName + " -> " + localetag;
+            return "**" + argumentName + "** -> " + localetag;
         }
 
-        return getCommandString() + " -> " + getLocaletag();
+        return "**" + getCommandString() + "** -> " + localetag;
     }
 
     public boolean isSubCommand() {
@@ -67,7 +67,7 @@ public class SubArg {
     }
 
     public String getCommandString() {
-        return argumentName + " | " + shortCommand;
+        return argumentName + " | " + shortCommand.toLowerCase();
     }
 
     /**

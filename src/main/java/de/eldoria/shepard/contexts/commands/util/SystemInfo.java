@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.util;
 
 import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -30,8 +31,7 @@ public class SystemInfo extends Command {
         builder.addField(SystemInfoLocale.M_SERVICE_INFO.tag,
                 SystemInfoLocale.M_SERVERS + " " + guildSize + System.lineSeparator()
                         + SystemInfoLocale.M_USERS + " " + userSize, false);
-
-
         messageContext.getChannel().sendMessage(builder.build()).queue();
+        category = ContextCategory.UTIL;
     }
 }
