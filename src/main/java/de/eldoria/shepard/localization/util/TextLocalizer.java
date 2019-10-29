@@ -47,7 +47,7 @@ public class TextLocalizer {
     /**
      * Get a localized message back.
      *
-     * @param message        String with localize codes coed must have format: $[a-zA-Z.]+?$
+     * @param message String with localize codes coed must have format: $[a-zA-Z.]+?$
      * @param channel messageContext
      * @return String where localize codes are replaced with guild language.
      */
@@ -63,6 +63,9 @@ public class TextLocalizer {
      * @return String where localize codes are replaced with guild language.
      */
     public static String fastLocale(String message, Guild guild) {
+        if (message == null) {
+            return null;
+        }
         LanguageHandler locale = LanguageHandler.getInstance();
 
         Matcher matcher = LOCALIZATION_CODE.matcher(message);
@@ -74,7 +77,7 @@ public class TextLocalizer {
         String result = message;
         for (String match : matches) {
             String languageString = locale.getLanguageString(guild, match);
-            result = result.replace(match, languageString);
+            result = result.replace("$" + match + "$", languageString);
         }
         return result;
 
