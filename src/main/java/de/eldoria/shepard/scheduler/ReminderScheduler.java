@@ -2,6 +2,8 @@ package de.eldoria.shepard.scheduler;
 
 import de.eldoria.shepard.database.queries.ReminderData;
 import de.eldoria.shepard.database.types.ReminderComplex;
+import de.eldoria.shepard.localization.LanguageHandler;
+import de.eldoria.shepard.localization.enums.scheduler.ReminderLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
 
 import java.util.List;
@@ -32,12 +34,10 @@ public class ReminderScheduler implements Runnable {
                 return;
             }
 
-            MessageSender.sendMessage("Hey " + reminder.getUser().getAsMention()
-                    + "! I should remind you of something... Let me think... AH!" + System.lineSeparator()
-                    + "**" +  reminder.getText() + "**", reminder.getChannel());
-
+            LanguageHandler locale = LanguageHandler.getInstance();
+            MessageSender.sendMessage(locale.getReplacedString(ReminderLocale.M_REMINDER.localeCode,
+                    reminder.getGuild(), reminder.getUser().getAsMention()) + System.lineSeparator()
+                    + "**" + reminder.getText() + "**", reminder.getChannel());
         }
     }
-
-
 }
