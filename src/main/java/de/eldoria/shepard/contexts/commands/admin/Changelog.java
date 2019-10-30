@@ -62,22 +62,23 @@ public class Changelog extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        if (isArgument(cmd, "addrole", "ar", "removeRole", "rr")) {
+        CommandArg arg = commandArgs[0];
+        if (arg.isSubCommand(cmd, 0) || arg.isSubCommand(cmd, 1)) {
             modifyRoles(args, messageContext, cmd);
             return;
         }
 
-        if (isArgument(cmd, "activate, a")) {
+        if (arg.isSubCommand(cmd, 2)) {
             activate(args, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "deactivate", "d")) {
+        if (arg.isSubCommand(cmd, 3)) {
             deactivate(messageContext);
             return;
         }
 
-        if (isArgument(cmd, "roles", "r")) {
+        if (arg.isSubCommand(cmd, 4)) {
             showRoles(messageContext);
             return;
         }

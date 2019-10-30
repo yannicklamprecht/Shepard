@@ -63,19 +63,20 @@ public class Invite extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        if (isArgument(cmd, "addInvite", "ai")) {
+        CommandArg arg = commandArgs[0];
+        if (arg.isSubCommand(cmd,0)) {
             addInvite(args, messageContext);
             return;
         }
-        if (isArgument(cmd, "removeInvite", "remi")) {
+        if (arg.isSubCommand(cmd,1)) {
             removeInvite(args, messageContext);
             return;
         }
-        if (isArgument(cmd, "refreshInvites", "refi")) {
+        if (arg.isSubCommand(cmd,2)) {
             refreshInvites(messageContext);
             return;
         }
-        if (isArgument(cmd, "showInvites", "si")) {
+        if (arg.isSubCommand(cmd,3)) {
             showInvites(messageContext);
             return;
         }

@@ -2,13 +2,12 @@ package de.eldoria.shepard.contexts.commands.argument;
 
 import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static de.eldoria.shepard.localization.enums.commands.util.HelpLocale.W_OPTIONAL;
 import static de.eldoria.shepard.localization.enums.commands.util.HelpLocale.W_REQUIRED;
+import static java.lang.System.console;
 import static java.lang.System.lineSeparator;
 
 /**
@@ -99,14 +98,48 @@ public class CommandArg {
         int iteration = 0;
         do {
             int finalIteration = iteration;
-            Arrays.stream(subArgs).forEach(subArg -> subArg.generateShortCommand(finalIteration));
+            if (finalIteration != 0) {
+                getNotUniqueSubArgs().forEach(subArg -> subArg.generateShortCommand(finalIteration));
+            } else {
+                Arrays.stream(subArgs).forEach(subArg -> subArg.generateShortCommand(finalIteration));
+            }
             iteration++;
-        } while (!areShortCommandsUnique());
+        } while (!getNotUniqueSubArgs().isEmpty());
     }
 
     public String getSubArgHelpString() {
         return Arrays.stream(subArgs).map(SubArg::getArgumentDesc)
                 .collect(Collectors.joining(lineSeparator()));
+    }
+
+    public boolean isSubCommand(String cmd, int index) {
+        if (index >= subArgs.length || index < 0) {
+            return false;
+        }
+        return subArgs[index].isSubCommand(cmd);
+    }
+
+    public boolean isSubCommand(String cmd, String subCommand) {
+        for (SubArg arg : subArgs) {
+            if (arg.getArgumentName().equalsIgnoreCase(subCommand)) {
+                return arg.isSubCommand(cmd);
+            }
+        }
+        return false;
+    }
+
+    private Set<SubArg> getNotUniqueSubArgs() {
+        Set<SubArg> result = new HashSet<>();
+        for (SubArg arg : subArgs) {
+            if (arg.isSubCommand()) {
+                for (SubArg otherArg : subArgs) {
+                    if (arg != otherArg && arg.getShortCommand().equals(otherArg.getShortCommand())) {
+                        result.add(otherArg);
+                    }
+                }
+            }
+        }
+        return result;
     }
 }
 

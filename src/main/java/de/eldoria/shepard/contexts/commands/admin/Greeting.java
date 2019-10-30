@@ -48,17 +48,18 @@ public class Greeting extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        if (isArgument(cmd, "setChannel", "sc")) {
+        CommandArg arg = commandArgs[0];
+        if (arg.isSubCommand(cmd, 0)) {
             setChannel(args, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "removeChannel", "rc")) {
+        if (arg.isSubCommand(cmd, 1)) {
             removeChannel(messageContext);
             return;
         }
 
-        if (isArgument(cmd, "setMessage", "sm")) {
+        if (arg.isSubCommand(cmd, 3)) {
             setMessage(args, messageContext);
             return;
         }

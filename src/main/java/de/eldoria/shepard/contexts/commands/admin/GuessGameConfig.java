@@ -61,48 +61,54 @@ public class GuessGameConfig extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        if (isArgument(cmd, "addImage", "a")) {
+        CommandArg arg = commandArgs[0];
+        if (arg.isSubCommand(cmd,0)) {
             addImage(args, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "removeImage", "r")) {
+        if (arg.isSubCommand(cmd,1)) {
             removeImage(args, messageContext);
             return;
         }
-        if (isArgument(cmd, "cancelRegistration", "cr")) {
-            ImageRegister.getInstance().cancelConfiguration(messageContext);
-            MessageSender.sendMessage(M_REGISTRATION_CANCELED.tag, messageContext.getTextChannel());
-            return;
-        }
-        if (isArgument(cmd, "changeFlag", "cf")) {
+        if (arg.isSubCommand(cmd,2)) {
             changeFlag(args, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "showImageSet", "s")) {
-            if (args.length != 2) {
-                MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
-                return;
-            }
-            GuessGameImage hentaiImage = GuessGameData.getHentaiImage(args[1], messageContext);
-            if (hentaiImage == null) {
-                MessageSender.sendSimpleError(ErrorType.INVALID_IMAGE_URL, messageContext.getTextChannel());
-                return;
-            }
-
-            EmbedBuilder builder = new EmbedBuilder()
-                    .setTitle(locale.getReplacedString(M_DISPLAY_IMAGE.localeCode,
-                            messageContext.getGuild(), hentaiImage.isNsfw() ? "NSFW" : "SFW"))
-                    .setThumbnail(hentaiImage.getCroppedImage())
-                    .setImage(hentaiImage.getFullImage())
-                    .setColor(hentaiImage.isNsfw() ? Color.red : Color.green);
-
-            messageContext.getChannel().sendMessage(builder.build()).queue();
+        if (arg.isSubCommand(cmd,3)) {
+            showImageSet(args, messageContext);
+            return;
+        }
+        if (arg.isSubCommand(cmd,4)) {
+            ImageRegister.getInstance().cancelConfiguration(messageContext);
+            MessageSender.sendMessage(M_REGISTRATION_CANCELED.tag, messageContext.getTextChannel());
             return;
         }
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
+    }
+
+    private void showImageSet(String[] args, MessageEventDataWrapper messageContext) {
+        if (args.length != 2) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            return;
+        }
+        GuessGameImage hentaiImage = GuessGameData.getHentaiImage(args[1], messageContext);
+        if (hentaiImage == null) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_IMAGE_URL, messageContext.getTextChannel());
+            return;
+        }
+
+        EmbedBuilder builder = new EmbedBuilder()
+                .setTitle(locale.getReplacedString(M_DISPLAY_IMAGE.localeCode,
+                        messageContext.getGuild(), hentaiImage.isNsfw() ? "NSFW" : "SFW"))
+                .setThumbnail(hentaiImage.getCroppedImage())
+                .setImage(hentaiImage.getFullImage())
+                .setColor(hentaiImage.isNsfw() ? Color.red : Color.green);
+
+        messageContext.getChannel().sendMessage(builder.build()).queue();
+        return;
     }
 
     private void changeFlag(String[] args, MessageEventDataWrapper messageContext) {
