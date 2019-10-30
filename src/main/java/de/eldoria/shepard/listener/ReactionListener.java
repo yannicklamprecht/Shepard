@@ -1,7 +1,7 @@
 package de.eldoria.shepard.listener;
 
 import de.eldoria.shepard.collections.ReactionActionCollection;
-import de.eldoria.shepard.collections.UniqueMessageIdentifier;
+import de.eldoria.shepard.util.UniqueMessageIdentifier;
 import de.eldoria.shepard.minigames.ChannelEvaluator;
 import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.guessgame.GuessGameEvaluator;

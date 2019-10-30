@@ -1,6 +1,8 @@
 package de.eldoria.shepard.collections;
 
 import de.eldoria.shepard.reactionactions.Action;
+import de.eldoria.shepard.util.ActionRemover;
+import de.eldoria.shepard.util.UniqueMessageIdentifier;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -46,7 +48,7 @@ public final class ReactionActionCollection {
         executorService.schedule(new ActionRemover(umi, action), action.getSecondsValid(), TimeUnit.SECONDS);
     }
 
-    void removeAction(UniqueMessageIdentifier umi, Action action) {
+    public void removeAction(UniqueMessageIdentifier umi, Action action) {
         if (reactionActions.containsKey(umi)) {
             reactionActions.get(umi).removeIf(action::equals);
         }

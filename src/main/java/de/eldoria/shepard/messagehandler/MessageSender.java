@@ -63,7 +63,7 @@ public final class MessageSender {
      * @param title       Title of text box
      * @param description Text of textbox
      * @param reaction    Reaction for thumbnail
-     * @param channel channel
+     * @param channel     channel
      */
     public static void sendSimpleTextBox(String title, String description,
                                          ShepardReactions reaction, TextChannel channel) {
@@ -75,7 +75,7 @@ public final class MessageSender {
      *
      * @param title       Title of text box
      * @param description Text of textbox
-     * @param channel channel
+     * @param channel     channel
      */
     public static void sendSimpleTextBox(String title, String description, TextChannel channel) {
         sendSimpleTextBox(title, description, Color.gray, ShepardReactions.NONE, channel);
@@ -87,7 +87,7 @@ public final class MessageSender {
      * @param title       Title of text box
      * @param description Text of textbox
      * @param color       Color of the text box
-     * @param channel channel
+     * @param channel     channel
      */
     public static void sendSimpleTextBox(String title, String description, Color color,
                                          TextChannel channel) {
@@ -97,11 +97,11 @@ public final class MessageSender {
     /**
      * Send a simple text box with title and text.
      *
-     * @param title          Title of text box
-     * @param description    Text of textbox
-     * @param color          Color of the text box
-     * @param reaction       Reaction for thumbnail
-     * @param channel channel to send
+     * @param title       Title of text box
+     * @param description Text of textbox
+     * @param color       Color of the text box
+     * @param reaction    Reaction for thumbnail
+     * @param channel     channel to send
      */
     public static void sendSimpleTextBox(String title, String description, Color color,
                                          ShepardReactions reaction, TextChannel channel) {
@@ -167,7 +167,36 @@ public final class MessageSender {
     }
 
     /**
-     * sends a greeting text.
+     * Sends a simple error to a channel.
+     *
+     * @param error   Error message
+     * @param channel channel
+     */
+    public static void handlePermissionException(InsufficientPermissionException error, TextChannel channel) {
+        EmbedBuilder builder = new EmbedBuilder()
+                .setTitle("ERROR!")
+                .setDescription("There was an Error, while doing my job. Please check the following error.")
+                .addField("Error", error.getMessage(), false)
+                .setColor(Color.red)
+                .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
+        try {
+            channel.sendMessage(builder.build()).queue();
+        } catch (InsufficientPermissionException e) {
+            channel.getGuild().getOwner().getUser().openPrivateChannel().queue(a -> {
+                EmbedBuilder privateBuilder = new EmbedBuilder()
+                        .setTitle("ERROR!")
+                        .setDescription("There was an Error on your server **" + channel.getGuild().getName()
+                                + "** in Channel **" + channel.getName() + "**, while doing my job.")
+                        .addField("Error", error.getMessage(), false)
+                        .setColor(Color.red)
+                        .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
+                a.sendMessage(privateBuilder.build()).queue();
+            });
+        }
+    }
+
+    /**
+     * Sends a greeting text.
      *
      * @param event    event to log
      * @param channel  channel to log
@@ -228,6 +257,7 @@ public final class MessageSender {
 
     /**
      * Sends a message to a channel. No auto localisation is provided.
+     *
      * @param message Message to send.
      * @param channel channel to send
      */

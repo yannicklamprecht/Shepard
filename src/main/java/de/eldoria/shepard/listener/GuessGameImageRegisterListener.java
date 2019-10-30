@@ -1,5 +1,7 @@
 package de.eldoria.shepard.listener;
 
+import de.eldoria.shepard.localization.enums.listener.GuessGameImageRegisterListenerLocale;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.guessgame.ConfigurationType;
 import de.eldoria.shepard.minigames.guessgame.ImageConfiguration;
@@ -12,7 +14,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import javax.annotation.Nonnull;
 import java.awt.Color;
 
-public class HentaiImageRegisterListener extends ListenerAdapter {
+import static de.eldoria.shepard.localization.enums.listener.GuessGameImageRegisterListenerLocale.*;
+
+public class GuessGameImageRegisterListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
         MessageEventDataWrapper wrapper = new MessageEventDataWrapper(event);
@@ -21,8 +25,7 @@ public class HentaiImageRegisterListener extends ListenerAdapter {
         if (configurationState != ConfigurationType.NONE) {
             if (event.getMessage().getAttachments().size() == 1) {
                 if (configurationState == ConfigurationType.CROPPED) {
-                    MessageSender.sendMessage("Cropped Image Registered." + System.lineSeparator()
-                            + "Please send the full image", event.getChannel());
+                    MessageSender.sendMessage(M_COPPED_REGISTERED.tag, event.getChannel());
                 }
                 register.addImage(wrapper,
                         event.getMessage().getAttachments().get(0).getUrl());
@@ -34,12 +37,11 @@ public class HentaiImageRegisterListener extends ListenerAdapter {
             ImageConfiguration configuration = register.getConfiguration(wrapper);
 
             if (register.registerConfiguration(wrapper)) {
-                EmbedBuilder builder = new EmbedBuilder()
-                        .setTitle("Added new " + (configuration.isHentai() ? "hentai" : "non hentai")
-                                + " image set.")
+                LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(event.getGuild())
+                        .setTitle(configuration.isHentai() ? M_ADDED_NSFW.tag : M_ADDED_SFW.tag)
                         .setThumbnail(configuration.getCroppedImage())
                         .setImage(configuration.getFullImage())
-                        .setDescription("Registered with thumbnail and full image.")
+                        .setDescription(M_SET_REGISTERED.tag)
                         .setColor(Color.green);
 
                 event.getChannel().sendMessage(builder.build()).queue();

@@ -4,31 +4,26 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.LatestCommandsCollection;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.exceptions.CommandException;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.util.TextLocalizer;
-import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.ContextSensitive;
 import info.debatty.java.stringsimilarity.JaroWinkler;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static java.lang.System.lineSeparator;
-import static java.lang.System.mapLibraryName;
 
 /**
  * An abstract class for commands.
@@ -76,6 +71,9 @@ public abstract class Command extends ContextSensitive {
     public final void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
         try {
             internalExecute(label, args, messageContext);
+        } catch (InsufficientPermissionException e) {
+            messageContext.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel ->
+                    MessageSender.handlePermissionException(e, messageContext.getTextChannel()));
         } catch (Throwable e) {
             ShepardBot.getLogger().error(e);
         }

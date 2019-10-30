@@ -2,6 +2,7 @@ package de.eldoria.shepard.scheduler.monitoring;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.Address;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.util.PingMinecraftServer;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -9,6 +10,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.Color;
 
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.*;
 import static de.eldoria.shepard.util.TextFormatting.getTimeAsString;
 
 public class ReconnectAnalyzer extends Analyzer {
@@ -26,16 +28,17 @@ public class ReconnectAnalyzer extends Analyzer {
         if (address.isMinecraftIp()) {
             PingMinecraftServer.MinecraftPing minecraftPing = checkMinecraftServer();
             if (minecraftPing != null && minecraftPing.isOnline()) {
-                EmbedBuilder builder = new EmbedBuilder()
-                        .setTitle("Server " + address.getName() + " is reachable again!")
+                LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
+                        .setTitle(locale.getReplacedString(M_SERVER_REACHABLE.tag, channel.getGuild(),
+                                "**" + address.getName() + "**"))
                         .addField("IP", minecraftPing.getIp() + "", true)
                         .addField("PORT", minecraftPing.getPort() + "", true)
                         .addField("HOST", minecraftPing.getHostname() + "", true)
                         .addField("MOTD", String.join(System.lineSeparator(),
                                 minecraftPing.getMotd().getClean()), false)
-                        .addField("PLAYER COUNT", minecraftPing.getPlayers().getOnline() + "/"
+                        .addField(M_PLAYER_COUNT.tag, minecraftPing.getPlayers().getOnline() + "/"
                                 + minecraftPing.getPlayers().getMax(), false)
-                        .addField("VERSION", minecraftPing.getVersion().replace("Requires MC ", "")
+                        .addField(M_VERSION.tag, minecraftPing.getVersion().replace("Requires MC ", "")
                                 + "", false)
                         .setColor(Color.green)
                         .setFooter(getTimeAsString())
@@ -54,8 +57,9 @@ public class ReconnectAnalyzer extends Analyzer {
             boolean addressReachable = isAddressReachable();
             if (addressReachable) {
                 EmbedBuilder builder = new EmbedBuilder()
-                        .setTitle("Service " + address.getName() + " is back again!")
-                        .setDescription("Service Address: " + address.getFullAddress())
+                        .setTitle(locale.getReplacedString(M_SERVICE_REACHABLE.localeCode, channel.getGuild(),
+                                "**" + address.getName() + "**"))
+                        .setDescription(M_SERVICE_ADDRESS + address.getFullAddress())
                         .setFooter(getTimeAsString())
                         .setThumbnail(ShepardReactions.WINK.thumbnail);
                 channel.sendMessage(builder.build()).queue();

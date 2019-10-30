@@ -3,6 +3,8 @@ package de.eldoria.shepard.contexts.commands.fun;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.database.queries.KudoData;
+import de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale;
+import de.eldoria.shepard.localization.enums.minigames.KudoLotteryEvaluatorLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -15,10 +17,6 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import java.awt.Color;
 
 import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_EMBED_DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_EMBED_EXPLANATION;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_EMBED_KUDOS_IN_POT;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_EMBED_TITLE;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_LOTTERY_RUNNING;
 
 public class KudoLottery extends Command {
@@ -48,10 +46,12 @@ public class KudoLottery extends Command {
         }
 
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
-                .setTitle(M_EMBED_TITLE.tag)
-                .setDescription(M_EMBED_DESCRIPTION.tag)
-                .addField(M_EMBED_KUDOS_IN_POT.tag,
-                        locale.getReplacedString(M_EMBED_EXPLANATION.localeCode,
+                .setTitle(KudoLotteryLocale.M_EMBED_TITLE.tag)
+                .setDescription(locale.getReplacedString(KudoLotteryLocale.M_EMBED_DESCRIPTION.localeCode,
+                        messageContext.getGuild(), "3"))
+                .addField(locale.getReplacedString(KudoLotteryLocale.M_EMBED_KUDOS_IN_POT.localeCode,
+                        messageContext.getGuild(), "1"),
+                        locale.getReplacedString(KudoLotteryLocale.M_EMBED_EXPLANATION.localeCode,
                                 messageContext.getGuild(),
                                 EmoteCollection.INFINITY.getEmote().getAsMention(),
                                 EmoteCollection.PLUS_X.getEmote().getAsMention(),

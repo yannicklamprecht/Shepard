@@ -23,7 +23,7 @@ public class GuessGameImage {
         return fullImage;
     }
 
-    public boolean isHentai() {
+    public boolean isNsfw() {
         return hentai;
     }
 }

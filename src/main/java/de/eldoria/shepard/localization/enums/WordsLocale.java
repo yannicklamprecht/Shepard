@@ -40,7 +40,16 @@ public enum WordsLocale {
     /**
      * Localization key for word "Category".
      */
-    CATEGORY("words.category");
+    CATEGORY("words.category"),
+    /**
+     * Localization key for word "Point".
+     */
+    M_POINT("command.home.message.comeOnBoard"),
+    /**
+     * Localization key for word "Points".
+     */
+    M_POINTS("command.home.message.comeOnBoard");
+
 
     /**
      * Get the normal locale code for direct translation.

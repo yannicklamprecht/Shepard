@@ -1,6 +1,8 @@
 package de.eldoria.shepard.scheduler.monitoring;
 
 import de.eldoria.shepard.database.types.Address;
+import de.eldoria.shepard.localization.LanguageHandler;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.util.PingMinecraftServer;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -10,6 +12,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.net.Socket;
 
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.*;
 import static de.eldoria.shepard.util.TextFormatting.getTimeAsString;
 
 class Analyzer implements Runnable {
@@ -22,14 +25,20 @@ class Analyzer implements Runnable {
      */
     protected final TextChannel channel;
     /**
+     * language handler instance.
+     */
+    protected final LanguageHandler locale;
+    /**
      * Only Report Errors.
      */
     private final boolean onlyError;
+
 
     Analyzer(Address address, TextChannel channel, boolean onlyError) {
         this.address = address;
         this.channel = channel;
         this.onlyError = onlyError;
+        this.locale = LanguageHandler.getInstance();
     }
 
     @Override
@@ -49,25 +58,25 @@ class Analyzer implements Runnable {
 
         if (minecraftPing.isOnline() && !onlyError) {
 
-            EmbedBuilder builder = new EmbedBuilder()
-                    .setTitle("Status of " + address.getName())
+            LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
+                    .setTitle(M_STATUS_OF + " " + address.getName())
                     .addField("IP", minecraftPing.getIp() + "", true)
                     .addField("PORT", minecraftPing.getPort() + "", true)
                     .addField("HOST", minecraftPing.getHostname() + "", true)
-                    .addField("MOTD", String.join(System.lineSeparator(), minecraftPing.getMotd().getClean()), false)
-                    .addField("PLAYER COUNT", minecraftPing.getPlayers().getOnline() + "/"
+                    .addField("MotD", String.join(System.lineSeparator(), minecraftPing.getMotd().getClean()), false)
+                    .addField(M_PLAYER_COUNT.tag, minecraftPing.getPlayers().getOnline() + "/"
                             + minecraftPing.getPlayers().getMax(), false)
-                    .addField("VERSION", minecraftPing.getVersion().replace("Requires MC ", "")
+                    .addField(M_VERSION.tag, minecraftPing.getVersion().replace("Requires MC ", "")
                             + "", false)
                     .setColor(Color.green)
                     .setFooter(getTimeAsString())
                     .setThumbnail(ShepardReactions.EXCITED.thumbnail);
             channel.sendMessage(builder.build()).queue();
         } else if (!minecraftPing.isOnline()) {
-            EmbedBuilder builder = new EmbedBuilder()
-                    .setTitle("WARNING: SERVER DOWN")
-                    .setDescription("Server **" + address.getName() + "** under IP " + address.getFullAddress()
-                            + " is currently unavailable!")
+            LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
+                    .setTitle(M_SERVER_DOWN.tag)
+                    .setDescription(locale.getReplacedString(M_SERVER_DOWN_MESSAGE.localeCode, channel.getGuild(),
+                            "**" + address.getName() + "**", "**" + address.getAddress() + "**"))
                     .setColor(Color.red)
                     .setThumbnail(ShepardReactions.SHULKY.thumbnail)
                     .setFooter(getTimeAsString());
@@ -84,8 +93,9 @@ class Analyzer implements Runnable {
     private void analyzeNonMinecraftAddress() {
         if (!isAddressReachable()) {
             EmbedBuilder builder = new EmbedBuilder()
-                    .setTitle("Service **" + address.getName() + "** is unavailable!")
-                    .setDescription("Service under: " + address.getFullAddress())
+                    .setTitle(locale.getReplacedString(M_SERVICE_NAME_UNAVAILABLE.localeCode, channel.getGuild(),
+                            "**" + address.getName() + "**"))
+                    .setDescription(M_SERVICE_ADDRESS + " " + address.getFullAddress())
                     .setThumbnail(ShepardReactions.SHULKY.thumbnail);
             channel.sendMessage(builder.build()).queue();
             MonitoringScheduler.getInstance().markAsUnreachable(channel.getGuild().getIdLong(), address);

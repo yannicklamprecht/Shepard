@@ -1,6 +1,6 @@
 package de.eldoria.shepard.minigames;
 
-import de.eldoria.shepard.collections.UniqueMessageIdentifier;
+import de.eldoria.shepard.util.UniqueMessageIdentifier;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 

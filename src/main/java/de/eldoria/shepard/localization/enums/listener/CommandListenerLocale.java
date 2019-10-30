@@ -1,0 +1,29 @@
+package de.eldoria.shepard.localization.enums.listener;
+
+public enum CommandListenerLocale {
+    M_BOT_ANSWER("listener.commandListener.message.botAnswer"),
+    M_INSUFFICIENT_PERMISSION("listener.commandListener.message.insufficientPermission"),
+    M_COMMAND_NOT_FOUND("listener.commandListener.message.commandNotFound"),
+    M_SUGGESTION("listener.commandListener.message.suggestion"),
+    M_HELP_COMMAND("listener.commandListener.message.helpCommand");
+
+    /**
+     * Get the normal locale code for direct translation.
+     */
+    public final String localeCode;
+    /**
+     * Get the escaped locale code for auto translation.
+     */
+    public final String tag;
+
+    CommandListenerLocale(String localeCode) {
+        this.localeCode = localeCode;
+        this.tag = "$" + localeCode + "$";
+    }
+
+    @Override
+    public String toString() {
+        return tag;
+    }
+
+}

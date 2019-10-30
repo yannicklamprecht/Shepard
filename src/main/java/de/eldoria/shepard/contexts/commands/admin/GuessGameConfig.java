@@ -93,10 +93,10 @@ public class GuessGameConfig extends Command {
 
             EmbedBuilder builder = new EmbedBuilder()
                     .setTitle(locale.getReplacedString(M_DISPLAY_IMAGE.localeCode,
-                            messageContext.getGuild(), hentaiImage.isHentai() ? "NSFW" : "SFW"))
+                            messageContext.getGuild(), hentaiImage.isNsfw() ? "NSFW" : "SFW"))
                     .setThumbnail(hentaiImage.getCroppedImage())
                     .setImage(hentaiImage.getFullImage())
-                    .setColor(hentaiImage.isHentai() ? Color.red : Color.green);
+                    .setColor(hentaiImage.isNsfw() ? Color.red : Color.green);
 
             messageContext.getChannel().sendMessage(builder.build()).queue();
             return;

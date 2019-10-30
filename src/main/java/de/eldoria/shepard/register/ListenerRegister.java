@@ -3,7 +3,7 @@ package de.eldoria.shepard.register;
 import de.eldoria.shepard.listener.ChangelogListener;
 import de.eldoria.shepard.listener.CommandListener;
 import de.eldoria.shepard.listener.GreetingListener;
-import de.eldoria.shepard.listener.HentaiImageRegisterListener;
+import de.eldoria.shepard.listener.GuessGameImageRegisterListener;
 import de.eldoria.shepard.listener.KeywordListener;
 import de.eldoria.shepard.listener.LogListener;
 import de.eldoria.shepard.listener.PrivateMessageListener;
@@ -32,7 +32,7 @@ public final class ListenerRegister {
         listener.add(new LogListener());
         listener.add(new TicketCleanupListener());
         listener.add(new ReactionListener());
-        listener.add(new HentaiImageRegisterListener());
+        listener.add(new GuessGameImageRegisterListener());
         listener.add(new PrivateMessageListener());
         InviteScheduler.initialize();
         MonitoringScheduler.initialize();

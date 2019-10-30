@@ -4,14 +4,13 @@ public enum SystemInfoLocale {
     /**
      * Localization key for description.
      */
-    DESCRIPTION("command.userInfo.description"),
-    M_TITLE(""),
-    M_AVAILABLE_CORES(""),
-    M_MEMORY(""),
-    M_USED_MEMORY(""),
-    M_SERVICE_INFO(""),
-    M_SERVERS(""),
-    M_USERS("");
+    DESCRIPTION("command.systemInfo.description"),
+    M_TITLE("command.systemInfo.message.title"),
+    M_AVAILABLE_CORES("command.systemInfo.message.availableCore"),
+    M_MEMORY("command.systemInfo.message.memory"),
+    M_USED_MEMORY("command.systemInfo.message.usedMemory"),
+    M_SERVICE_INFO("command.systemInfo.message.serviceInfo"),
+    M_SERVICE_INFO_MESSAGE("command.systemInfo.message.serviceInfoText");
 
     /**
      * Get the normal locale code for direct translation.

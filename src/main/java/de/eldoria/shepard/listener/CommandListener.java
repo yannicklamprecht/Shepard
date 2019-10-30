@@ -4,6 +4,8 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.PrefixData;
+import de.eldoria.shepard.localization.LanguageHandler;
+import de.eldoria.shepard.localization.enums.listener.CommandListenerLocale;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.InteractableMessageSender;
@@ -26,8 +28,11 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.*;
+
 
 public class CommandListener extends ListenerAdapter {
+    private LanguageHandler locale = LanguageHandler.getInstance();
 
     @Override
     public void onGuildMessageUpdate(@Nonnull GuildMessageUpdateEvent event) {
@@ -52,6 +57,7 @@ public class CommandListener extends ListenerAdapter {
             isCommand = true;
             args[0] = args[0].replaceFirst(PrefixData.getPrefix(messageContext.getGuild(), messageContext), "");
 
+            //Check if the message is a command executed by a mention of the bot.
         } else if (DbUtil.getIdRaw(args[0]).contentEquals(ShepardBot.getJDA().getSelfUser().getId())) {
             args = Arrays.copyOfRange(args, 1, args.length);
             isCommand = true;
@@ -59,81 +65,73 @@ public class CommandListener extends ListenerAdapter {
 
         String label = args[0];
 
-        if (isCommand) {
-            //BotCheck
-            if (messageContext.getAuthor().getIdLong() == ShepardBot.getJDA().getSelfUser().getIdLong()) {
-                return;
-            }
-            if (messageContext.getAuthor().isBot()) {
-                MessageSender.sendMessage("I'm not allowed to talk to you " + messageContext.getAuthor().getName()
-                        + ". Please leave me alone ._.", messageContext.getTextChannel());
-                return;
-            }
+        if (!isCommand) return;
 
-            //Command execution
-            Command command = CommandCollection.getInstance().getCommand(label);
-
-            if (args.length > 1) {
-                args = Arrays.copyOfRange(args, 1, args.length);
-            } else {
-                args = new String[0];
-            }
-            if (command != null && command.isContextValid(messageContext)) {
-                if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
-                    command.sendCommandUsage(messageContext.getTextChannel());
-                    return;
-                }
-                if (command.checkArguments(args)) {
-                    try {
-                        command.executeAsync(label, args, messageContext);
-                    } catch (InsufficientPermissionException | CommandException e) {
-                        try {
-                            MessageSender.sendSimpleErrorEmbed(e.getMessage(), messageContext.getTextChannel());
-
-                        } catch (InsufficientPermissionException ex) {
-                            messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
-                                    MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));
-                        }
-                    } catch (Throwable e) {
-                        ShepardBot.getLogger().error(e);
-                    }
-                } else {
-                    try {
-                        MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
-                    } catch (InsufficientPermissionException ex) {
-                        messageContext.getAuthor().openPrivateChannel().queue(privateChannel ->
-                                MessageSender.sendSimpleErrorEmbed(ex.getMessage(), privateChannel));
-                    }
-                }
-                return;
-            } else if (command != null && command.canBeExecutedHere(messageContext)) {
-                MessageSender.sendMessage("Insufficient permission for context **"
-                        + command.getClass().getSimpleName().toUpperCase()
-                        + "**. Ask a Server Administrator for permission.", messageContext.getTextChannel());
-                return;
-            }
-
-            List<Command> similarCommand = CommandCollection.getInstance().getSimilarCommands(label);
-            if (similarCommand.size() != 0) {
-                for (Command cmd : similarCommand) {
-                    if (cmd.isContextValid(messageContext)) {
-                        InteractableMessageSender.sendSimpleTextBox("Command not found!",
-                                "I don't have a command with this name. Maybe you meant: "
-                                        + System.lineSeparator() + "**" + cmd.getCommandName() + "**",
-                                Color.green, ShepardReactions.WINK, messageContext.getTextChannel(),
-                                new ExecuteCommand(messageContext.getAuthor(), cmd, args, messageContext),
-                                new SendCommandHelp(cmd));
-                        return;
-                    }
-                }
-            }
-
-            MessageSender.sendError(new LocalizedField[] {new LocalizedField("Command not found!",
-                            "Type " + PrefixData.getPrefix(messageContext.getGuild(), messageContext)
-                                    + "help for a full list of available commands!", false, messageContext)},
-                    messageContext.getTextChannel());
-
+        // Ignore if the command is send by shepard
+        if (messageContext.getAuthor().getIdLong() == ShepardBot.getJDA().getSelfUser().getIdLong()) {
+            return;
         }
+
+        //Return if command is send by another bot
+        if (messageContext.getAuthor().isBot()) {
+            MessageSender.sendMessage(locale.getReplacedString(M_BOT_ANSWER.localeCode, messageContext.getGuild(),
+                    "**" + messageContext.getAuthor().getName() + "**"), messageContext.getTextChannel());
+            return;
+        }
+
+        // Find the executed command.
+        Command command = CommandCollection.getInstance().getCommand(label);
+
+        if (args.length > 1) {
+            args = Arrays.copyOfRange(args, 1, args.length);
+        } else {
+            args = new String[0];
+        }
+
+        if (command != null && command.isContextValid(messageContext)) {
+            if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
+                command.sendCommandUsage(messageContext.getTextChannel());
+                return;
+            }
+            if (command.checkArguments(args)) {
+                command.executeAsync(label, args, messageContext);
+            } else {
+                try {
+                    MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
+                } catch (InsufficientPermissionException ex) {
+                    messageContext.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel ->
+                            MessageSender.handlePermissionException(ex, messageContext.getTextChannel()));
+                }
+            }
+            return;
+        } else if (command != null && command.canBeExecutedHere(messageContext)) {
+            MessageSender.sendMessage(locale.getReplacedString(M_INSUFFICIENT_PERMISSION.localeCode,
+                    messageContext.getGuild(), command.getContextName()), messageContext.getTextChannel());
+            return;
+        }
+
+        List<Command> similarCommand = CommandCollection.getInstance().getSimilarCommands(label);
+        if (similarCommand.size() != 0) {
+            for (Command cmd : similarCommand) {
+                if (!cmd.isContextValid(messageContext)) continue;
+
+                InteractableMessageSender.sendSimpleTextBox(M_COMMAND_NOT_FOUND.tag,
+                        M_SUGGESTION + System.lineSeparator() + "**" + cmd.getCommandName() + "**",
+                        Color.green, ShepardReactions.WINK, messageContext.getTextChannel(),
+                        new ExecuteCommand(messageContext.getAuthor(), cmd, args, messageContext),
+                        new SendCommandHelp(cmd));
+                return;
+            }
+        }
+
+        MessageSender.sendError(
+                new LocalizedField[] {
+                        new LocalizedField(M_COMMAND_NOT_FOUND.tag,
+                                locale.getReplacedString(M_HELP_COMMAND.localeCode, messageContext.getGuild(),
+                                        "`" + PrefixData.getPrefix(messageContext.getGuild(), messageContext) + "help`"),
+                                false, messageContext)},
+                messageContext.getTextChannel());
+
     }
 }
 

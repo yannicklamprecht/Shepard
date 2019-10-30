@@ -1,4 +1,4 @@
-package de.eldoria.shepard.collections;
+package de.eldoria.shepard.util;
 
 import net.dv8tion.jda.api.entities.TextChannel;
 
