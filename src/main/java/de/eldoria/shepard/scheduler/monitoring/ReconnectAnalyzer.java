@@ -5,12 +5,16 @@ import de.eldoria.shepard.database.types.Address;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.util.PingMinecraftServer;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.Color;
 
-import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.*;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_PLAYER_COUNT;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVER_REACHABLE;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVICE_ADDRESS;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVICE_REACHABLE;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVICE_STILL_DOWN;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_VERSION;
 import static de.eldoria.shepard.util.TextFormatting.getTimeAsString;
 
 public class ReconnectAnalyzer extends Analyzer {
@@ -56,7 +60,7 @@ public class ReconnectAnalyzer extends Analyzer {
         } else {
             boolean addressReachable = isAddressReachable();
             if (addressReachable) {
-                EmbedBuilder builder = new EmbedBuilder()
+                LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
                         .setTitle(locale.getReplacedString(M_SERVICE_REACHABLE.localeCode, channel.getGuild(),
                                 "**" + address.getName() + "**"))
                         .setDescription(M_SERVICE_ADDRESS + address.getFullAddress())
@@ -68,6 +72,15 @@ public class ReconnectAnalyzer extends Analyzer {
                     ShepardBot.getLogger().info("Service is reachable again: " + address.getFullAddress());
                 }
             } else {
+                LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
+                        .setTitle(locale.getReplacedString(M_SERVICE_STILL_DOWN.localeCode, channel.getGuild(),
+                                "**" + address.getName() + "**"))
+                        .setDescription(M_SERVICE_ADDRESS + address.getFullAddress())
+                        .setFooter(getTimeAsString())
+                        .setThumbnail(ShepardReactions.WINK.thumbnail);
+                channel.sendMessage(builder.build()).queue();
+                MonitoringScheduler.getInstance().markAsReachable(channel.getGuild().getIdLong(), address);
+
                 if (ShepardBot.getConfig().debugActive()) {
                     ShepardBot.getLogger().info("Service is still down: " + address.getFullAddress());
                 }

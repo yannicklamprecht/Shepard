@@ -5,8 +5,17 @@ public enum HireMeLocale {
      * Localization key for description.
      */
     DESCRIPTION("command.hireMe.description"),
+    /**
+     * Localization key for message hire me.
+     */
     M_HIRE_ME("command.hireMe.message.hireMe"),
+    /**
+     * Localization key for message i want you.
+     */
     M_I_WANT_YOU("command.hireMe.message.iWantyou"),
+    /**
+     * Localization key for message take me.
+     */
     M_TAKE_ME("command.hireMe.message.takeMe");
 
     /**

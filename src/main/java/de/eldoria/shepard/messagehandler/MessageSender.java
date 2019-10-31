@@ -18,8 +18,6 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.Color;
 import java.io.File;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 
 import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocale;
@@ -140,7 +138,7 @@ public final class MessageSender {
      */
     public static void sendSimpleError(ErrorType type, TextChannel channel) {
         if (type.isEmbed) {
-            sendSimpleErrorEmbed(type.message, channel);
+            sendSimpleErrorEmbed(fastLocale(type.message, channel.getGuild()), channel);
         } else {
             sendMessage(type.message, channel);
         }

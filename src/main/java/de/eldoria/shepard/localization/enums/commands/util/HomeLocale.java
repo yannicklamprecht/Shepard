@@ -5,7 +5,13 @@ public enum HomeLocale {
      * Localization key for description.
      */
     DESCRIPTION("command.home.description"),
+    /**
+     * Localization key for message come on board.
+     */
     M_COME_ON_BOARD("command.home.message.comeOnBoard"),
+    /**
+     * Localization key for message join now.
+     */
     M_JOIN_NOW("command.home.message.joinNow");
 
     /**

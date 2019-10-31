@@ -1,20 +1,21 @@
 package de.eldoria.shepard.listener;
 
-import de.eldoria.shepard.localization.enums.listener.GuessGameImageRegisterListenerLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.guessgame.ConfigurationType;
 import de.eldoria.shepard.minigames.guessgame.ImageConfiguration;
 import de.eldoria.shepard.minigames.guessgame.ImageRegister;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
 import java.awt.Color;
 
-import static de.eldoria.shepard.localization.enums.listener.GuessGameImageRegisterListenerLocale.*;
+import static de.eldoria.shepard.localization.enums.listener.GuessGameImageRegisterListenerLocale.M_ADDED_NSFW;
+import static de.eldoria.shepard.localization.enums.listener.GuessGameImageRegisterListenerLocale.M_ADDED_SFW;
+import static de.eldoria.shepard.localization.enums.listener.GuessGameImageRegisterListenerLocale.M_COPPED_REGISTERED;
+import static de.eldoria.shepard.localization.enums.listener.GuessGameImageRegisterListenerLocale.M_SET_REGISTERED;
 
 public class GuessGameImageRegisterListener extends ListenerAdapter {
     @Override

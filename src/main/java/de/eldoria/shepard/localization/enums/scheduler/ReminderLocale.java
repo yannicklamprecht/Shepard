@@ -1,8 +1,10 @@
 package de.eldoria.shepard.localization.enums.scheduler;
 
 public enum ReminderLocale {
-    M_REMINDER("reminderScheduler.message.reminder"),
-    M_REMINDER_DIRECT_MESSAGE("reminderScheduler.message.reminderDirectMessage");
+    /**
+     * Localization key for message reminder.
+     */
+    M_REMINDER("reminderScheduler.message.reminder");
 
     /**
      * Get the normal locale code for direct translation.

@@ -5,13 +5,11 @@ import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.localization.LanguageHandler;
-import de.eldoria.shepard.localization.enums.listener.CommandListenerLocale;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.InteractableMessageSender;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.exceptions.CommandException;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.reactionactions.ExecuteCommand;
 import de.eldoria.shepard.reactionactions.SendCommandHelp;
@@ -28,7 +26,11 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.*;
+import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_BOT_ANSWER;
+import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_COMMAND_NOT_FOUND;
+import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_HELP_COMMAND;
+import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_INSUFFICIENT_PERMISSION;
+import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_SUGGESTION;
 
 
 public class CommandListener extends ListenerAdapter {
@@ -63,7 +65,6 @@ public class CommandListener extends ListenerAdapter {
             isCommand = true;
         }
 
-        String label = args[0];
 
         if (!isCommand) return;
 
@@ -79,6 +80,7 @@ public class CommandListener extends ListenerAdapter {
             return;
         }
 
+        String label = args[0];
         // Find the executed command.
         Command command = CommandCollection.getInstance().getCommand(label);
 
@@ -126,10 +128,10 @@ public class CommandListener extends ListenerAdapter {
 
         MessageSender.sendError(
                 new LocalizedField[] {
-                        new LocalizedField(M_COMMAND_NOT_FOUND.tag,
-                                locale.getReplacedString(M_HELP_COMMAND.localeCode, messageContext.getGuild(),
-                                        "`" + PrefixData.getPrefix(messageContext.getGuild(), messageContext) + "help`"),
-                                false, messageContext)},
+                        new LocalizedField(M_COMMAND_NOT_FOUND.tag, locale.getReplacedString(M_HELP_COMMAND.localeCode,
+                                messageContext.getGuild(),
+                                "`" + PrefixData.getPrefix(messageContext.getGuild(),
+                                        messageContext) + "help`"), false, messageContext)},
                 messageContext.getTextChannel());
 
     }

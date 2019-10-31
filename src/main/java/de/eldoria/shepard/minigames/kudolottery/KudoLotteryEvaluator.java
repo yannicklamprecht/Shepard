@@ -4,13 +4,11 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale;
-import de.eldoria.shepard.localization.enums.minigames.KudoLotteryEvaluatorLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.BaseEvaluator;
 import de.eldoria.shepard.util.reactions.EmoteCollection;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -23,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static de.eldoria.shepard.localization.enums.minigames.KudoLotteryEvaluatorLocale.*;
-import static java.lang.System.lineSeparator;
+import static de.eldoria.shepard.localization.enums.minigames.KudoLotteryEvaluatorLocale.M_CONGRATULATION;
+import static de.eldoria.shepard.localization.enums.minigames.KudoLotteryEvaluatorLocale.M_NO_WINNER;
 
 public class KudoLotteryEvaluator extends BaseEvaluator {
     private final Map<Long, Integer> bet = new HashMap<>();

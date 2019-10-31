@@ -12,6 +12,7 @@ public class LocalizedField {
                 TextLocalizer.fastLocale(description, messageContext.getGuild()),
                 inline);
     }
+
     public LocalizedField(String title, String description, boolean inline, TextChannel channel) {
         field = new MessageEmbed.Field(TextLocalizer.fastLocale(title, channel.getGuild()),
                 TextLocalizer.fastLocale(description, channel.getGuild()),

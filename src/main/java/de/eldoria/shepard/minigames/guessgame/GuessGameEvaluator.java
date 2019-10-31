@@ -5,7 +5,6 @@ import de.eldoria.shepard.database.queries.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.enums.WordsLocale;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.BaseEvaluator;
@@ -20,7 +19,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.minigames.GuessGameEvaluatorLocale.*;
+import static de.eldoria.shepard.localization.enums.minigames.GuessGameEvaluatorLocale.M_CONGRATULATION;
+import static de.eldoria.shepard.localization.enums.minigames.GuessGameEvaluatorLocale.M_EARN;
+import static de.eldoria.shepard.localization.enums.minigames.GuessGameEvaluatorLocale.M_IMAGE_NOT_DISPLAYED;
+import static de.eldoria.shepard.localization.enums.minigames.GuessGameEvaluatorLocale.M_MORE_USER;
+import static de.eldoria.shepard.localization.enums.minigames.GuessGameEvaluatorLocale.M_NO_WINNER;
+import static de.eldoria.shepard.localization.enums.minigames.GuessGameEvaluatorLocale.M_TITLE_NSFW;
+import static de.eldoria.shepard.localization.enums.minigames.GuessGameEvaluatorLocale.M_TITLE_SFW;
 import static java.lang.System.lineSeparator;
 
 public class GuessGameEvaluator extends BaseEvaluator {

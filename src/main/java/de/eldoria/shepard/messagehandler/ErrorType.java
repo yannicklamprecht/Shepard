@@ -4,151 +4,147 @@ public enum ErrorType {
     /**
      * Used when a database error occurs.
      */
-    DATABASE_ERROR("Ups. Looks like my Database has a small hickup." + System.lineSeparator()
-            + "Can you give me another try, pls?" + System.lineSeparator()
-            + "IF error persists contact Bot Support", true),
+    DATABASE_ERROR("error.databaseError", true),
     /**
      * Used when a (web) service isn't available at the moment, e.g. http response code 4xx or 5xx.
      */
-    SERVICE_UNAVAILABLE("Oh. This doesn't work right now. Try again later."),
+    SERVICE_UNAVAILABLE("error.serviceUnavailable"),
     /**
      * Used when a command argument is not valid.
      */
-    INVALID_ARGUMENT("Invalid argument!"),
+    INVALID_ARGUMENT("error.invalidArgument"),
     /**
      * Used when a command action is not valid.
      */
-    INVALID_ACTION("Invalid action!"),
+    INVALID_ACTION("error.invalidAction"),
     /**
      * Used when too many arguments are passed.
      */
-    TOO_MANY_ARGUMENTS("Too many arguments!"),
+    TOO_MANY_ARGUMENTS("error.tooManyArguments"),
     /**
      * Used when too few arguments are passed.
      */
-    TOO_FEW_ARGUMENTS("Too few arguments!"),
+    TOO_FEW_ARGUMENTS("error.tooFewArguments"),
     /**
      * Used when a number parse failed.
      */
-    NOT_A_NUMBER("This is not a number!"),
+    NOT_A_NUMBER("error.notANumber"),
     /**
      * Used when the user has not enough Kudos.
      */
-    NOT_ENOUGH_KUDOS("You dont have enough Kudos!"),
+    NOT_ENOUGH_KUDOS("error.notEnoughKudos"),
     /**
      * Used when a channel is not a guild text channel.
      */
-    NOT_GUILD_TEXT_CHANNEL("This is not a guild text channel!"),
+    NOT_GUILD_TEXT_CHANNEL("error.notGuildTextChannel"),
     /**
      * Used when a category was passed but not found.
      */
-    INVALID_CATEGORY("This is not a valid category!"),
+    INVALID_CATEGORY("error.invalidCategory"),
     /**
      * Used when a channel was passed but not found.
      */
-    INVALID_CHANNEL("This is not a valid channel!"),
+    INVALID_CHANNEL("error.invalidChannel"),
     /**
      * Used when a role was passed but not found.
      */
-    INVALID_ROLE("This is not a valid role!"),
+    INVALID_ROLE("error.invalidRole"),
     /**
      * Used when a user was passed but not found.
      */
-    INVALID_USER("This is not a valid user!"),
+    INVALID_USER("error.invalidUser"),
     /**
      * Used when a id was found but the id is out of range.
      */
-    INVALID_ID("This is not a valid id!"),
+    INVALID_ID("error.invalidId"),
     /**
      * Used when the prefix is to long.
      */
-    INVALID_PREFIX_LENGTH("Invalid prefix length. Only one or two Chars are allowed as prefix!"),
+    INVALID_PREFIX_LENGTH("error.invalidPrefixLength"),
     /**
      * Used when a context was not found while command parsing.
      */
-    INVALID_CONTEXT("Invalid Context!"),
+    INVALID_CONTEXT("error.invalidContext"),
     /**
      * Used when a boolean could not be parsed.
      */
-    INVALID_BOOLEAN("Invalid input! Only 'true' and 'false' are valid inputs!"),
+    INVALID_BOOLEAN("error.invalidBoolean"),
     /**
      * Used when the list type could not be parsed.
      */
-    INVALID_LIST_TYPE("Invalid Input. Only 'blacklist' or 'whitelist are valid inputs"),
+    INVALID_LIST_TYPE("error.invalidListType"),
     /**
      * Used when the list type could not be parsed.
      */
-    INVALID_ADDRESS("Invalid Input. The Address must be a ipv4/6 or a domain."),
+    INVALID_ADDRESS("error.invalidAddress"),
     /**
      * Used when a time doesn't have a valid time formatting.
      */
-    INVALID_TIME("Invalid time."),
+    INVALID_TIME("error.invalidTime"),
     /**
      * Used when no message was found.
      */
-    NO_MESSAGE_FOUND("No message found!"),
+    NO_MESSAGE_FOUND("error.noMessageFound"),
     /**
      * Used when no invite was found while registering.
      */
-    NO_INVITE_FOUND("No invite found with this code!"),
+    NO_INVITE_FOUND("error.noInviteFound"),
     /**
      * Used when no quote was found.
      */
-    NO_QUOTE_FOUND("No quote found!"),
+    NO_QUOTE_FOUND("error.noQuoteFound"),
     /**
      * Used when a ticket type is already defined.
      */
-    TYPE_ALREADY_DEFINED("This type is already defined!"),
+    TYPE_ALREADY_DEFINED("error.typeAlreadyDefined"),
     /**
      * Used when a ticket type is not found.
      */
-    TYPE_NOT_FOUND("Ticket type not found!"),
+    TYPE_NOT_FOUND("error.typeNotFound"),
     /**
      * Used when someone tries to open a ticket for himself.
      */
-    TICKET_SELF_ASSIGNMENT("You can't open a ticket for yourself!"),
+    TICKET_SELF_ASSIGNMENT("error.ticketSelfAssignment"),
     /**
      * Used when a ticket close command is executed in a non ticket channel.
      */
-    NOT_TICKET_CHANNEL("This is not a ticket channel!"),
+    NOT_TICKET_CHANNEL("error.notTicketChannel"),
     /**
      * Used when a context is not found.
      */
-    CONTEXT_NOT_FOUND("Context not found. Please use the context name or an alias!"),
+    CONTEXT_NOT_FOUND("error.contextNotFound"),
     /**
      * Used when no emote was found.
      */
-    NO_EMOTE_FOUND("No emote was found."),
+    NO_EMOTE_FOUND("error.noEmoteFound"),
     /**
      * Used when a user executes a command on himself, when he is not allowed to do it!.
      */
-    SELF_ASSIGNMENT("You can't do this to yourself!"),
+    SELF_ASSIGNMENT("error.selfAssignment"),
     /**
      * Used when no last command was found.
      */
-    NO_LAST_COMMAND_FOUND("There is no last used Command saved!"),
+    NO_LAST_COMMAND_FOUND("error.noLastCommandFound"),
     /**
      * Used when no guess game image was found.
      */
-    INVALID_IMAGE_URL("Invalid image url."),
+    INVALID_IMAGE_URL("error.invalidImageUrl"),
     /**
      * Used when there is no defined ticket type on a guild.
      */
-    NO_TICKET_TYPES_DEFINED("No ticket types defined"),
+    NO_TICKET_TYPES_DEFINED("error.noTicketTypesDefined"),
     /**
      * Used when a command which is restricted to a specific channel is executed outside the channel.
      */
-    EXCLUSIVE_CHANNEL("This is only available in a specific channel!"),
+    EXCLUSIVE_CHANNEL("error.exclusiveChannel"),
     /**
      * Used when a argument help is executed on a command without arguments.
      */
-    NO_ARGUMENT_FOUND("No Argument found!" + System.lineSeparator()
-            + "This command, doesn't have any arguments."),
+    NO_ARGUMENT_FOUND("error.noArgumentFound"),
     /**
      * Used when a command was not found.
      */
-    COMMAND_NOT_FOUND("Command not found!" + System.lineSeparator()
-            + "Use help command for a full list of available commands!");
+    COMMAND_NOT_FOUND("error.commandNotFound");
 
 
     /**
@@ -163,9 +159,9 @@ public enum ErrorType {
 
     ErrorType(String message, boolean embed) {
         if (embed) {
-            this.message = message;
+            this.message = "$" + message + "$";
         } else {
-            this.message = "**ERROR**" + System.lineSeparator() + message;
+            this.message = "**ERROR**" + System.lineSeparator() + "$" + message + "$";
         }
         this.isEmbed = embed;
     }

@@ -7,7 +7,6 @@ import de.eldoria.shepard.database.types.DatabaseInvite;
 import de.eldoria.shepard.database.types.GreetingSettings;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.Invite;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

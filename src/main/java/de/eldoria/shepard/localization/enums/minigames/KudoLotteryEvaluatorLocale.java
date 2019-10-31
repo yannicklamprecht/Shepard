@@ -1,12 +1,14 @@
 package de.eldoria.shepard.localization.enums.minigames;
 
 public enum KudoLotteryEvaluatorLocale {
+    /**
+     * Localization key for message .
+     */
     M_NO_WINNER("evaluator.kudoLottery.message.noWinner"),
-    M_CONGRATULATION("evaluator.kudoLottery.message.congratulation"),
-    M_TITLE("evaluator.kudoLottery.message.title"),
-    M_DESCRIPTION("evaluator.kudoLottery.message.description"),
-    M_FIELD_TITLE("evaluator.kudoLottery.message.fieldTitle"),
-    M_FIELD_TEXT("evaluator.kudoLottery.message.fieldText");
+    /**
+     * Localization key for message congratulation.
+     */
+    M_CONGRATULATION("evaluator.kudoLottery.message.congratulation");
 
     /**
      * Get the normal locale code for direct translation.
