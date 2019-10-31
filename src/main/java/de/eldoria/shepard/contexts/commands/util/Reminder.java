@@ -7,7 +7,6 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.ReminderData;
 import de.eldoria.shepard.database.types.ReminderSimple;
-import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.util.ReminderLocal;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -19,8 +18,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.WordsLocale.*;
-import static de.eldoria.shepard.util.Verifier.isArgument;
+import static de.eldoria.shepard.localization.enums.WordsLocale.ID;
+import static de.eldoria.shepard.localization.enums.WordsLocale.MESSAGE;
+import static de.eldoria.shepard.localization.enums.WordsLocale.TIME;
 
 public class Reminder extends Command {
     private static final Pattern INTERVAL = Pattern.compile("in\\s([0-9])+\\s(((min|hour|day|week)s?)|month)",
@@ -48,8 +48,10 @@ public class Reminder extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        if (isArgument(cmd, "show", "s")) {
-            show(messageContext);
+        CommandArg arg = commandArgs[0];
+
+        if (arg.isSubCommand(cmd, 2)) {
+            list(messageContext);
             return;
         }
 
@@ -58,7 +60,7 @@ public class Reminder extends Command {
             return;
         }
 
-        if (isArgument(cmd, "remove", "r")) {
+        if (arg.isSubCommand(cmd, 1)) {
             remove(args, messageContext);
             return;
         }
@@ -69,7 +71,7 @@ public class Reminder extends Command {
             return;
         }
 
-        if (isArgument(cmd, "add", "a")) {
+        if (arg.isSubCommand(cmd, 0)) {
             add(args, messageContext);
         }
     }
@@ -94,13 +96,13 @@ public class Reminder extends Command {
         ReminderData.removeUserReminder(messageContext.getGuild(), messageContext.getAuthor(),
                 number, messageContext);
 
-        MessageSender.sendMessage(locale.getReplacedString(ReminderLocal.M_REMOVED.localeCode, messageContext.getGuild(),
-                reminder.getReminderId() + "",
+        MessageSender.sendMessage(locale.getReplacedString(ReminderLocal.M_REMOVED.localeCode,
+                messageContext.getGuild(), reminder.getReminderId() + "",
                 TextFormatting.cropText(reminder.getText(), "...", 20, true),
                 reminder.getTime()), messageContext.getTextChannel());
     }
 
-    private void show(MessageEventDataWrapper messageContext) {
+    private void list(MessageEventDataWrapper messageContext) {
         List<ReminderSimple> reminders = ReminderData.getUserReminder(messageContext.getGuild(),
                 messageContext.getAuthor(), messageContext);
         TextFormatting.TableBuilder tableBuilder
@@ -132,7 +134,8 @@ public class Reminder extends Command {
             if (ReminderData.addReminderDate(messageContext.getGuild(), messageContext.getAuthor(),
                     messageContext.getTextChannel(), message, date, time, messageContext)) {
                 MessageSender.sendMessage(locale.getReplacedString(ReminderLocal.M_REMIND_DATE.localeCode,
-                        messageContext.getGuild(), date, time) + System.lineSeparator() + message, messageContext.getTextChannel());
+                        messageContext.getGuild(), date, time) + System.lineSeparator() + message,
+                        messageContext.getTextChannel());
             }
             return;
         }
@@ -143,7 +146,8 @@ public class Reminder extends Command {
         if (ReminderData.addReminderInterval(messageContext.getGuild(), messageContext.getAuthor(),
                 messageContext.getTextChannel(), message, interval, messageContext)) {
             MessageSender.sendMessage(locale.getReplacedString(ReminderLocal.M_REMIND_TIME.localeCode,
-                    messageContext.getGuild(), interval) + System.lineSeparator() + message, messageContext.getTextChannel());
+                    messageContext.getGuild(), interval) + System.lineSeparator() + message,
+                    messageContext.getTextChannel());
         }
     }
 }

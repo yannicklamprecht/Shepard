@@ -3,11 +3,16 @@ package de.eldoria.shepard.contexts.commands.util;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.M_AVAILABLE_CORES;
+import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.M_MEMORY;
+import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.M_SERVICE_INFO;
+import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.M_SERVICE_INFO_MESSAGE;
+import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.M_TITLE;
+import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.M_USED_MEMORY;
 
 public class SystemInfo extends Command {
     public SystemInfo() {

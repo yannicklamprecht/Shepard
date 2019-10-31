@@ -30,7 +30,6 @@ import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageCon
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.M_CHANGED_LIST_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.M_DEACTIVATED_CHECK;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.M_REMOVED_GUILDS;
-import static de.eldoria.shepard.util.Verifier.isArgument;
 
 public class ManageContextGuild extends Command {
     /**
@@ -60,6 +59,8 @@ public class ManageContextGuild extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[1];
+        CommandArg arg = commandArgs[1];
+
         String contextName = ArgumentParser.getContextName(args[0], messageContext);
 
         if (contextName == null) {
@@ -67,22 +68,22 @@ public class ManageContextGuild extends Command {
             return;
         }
 
-        if (isArgument(cmd, "setActive", "a")) {
+        if (arg.isSubCommand(cmd, 0)) {
             setActive(args, contextName, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "setListType", "lt")) {
+        if (arg.isSubCommand(cmd, 1)) {
             setListType(args, contextName, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "addGuild", "ag")) {
+        if (arg.isSubCommand(cmd, 2)) {
             addGuild(args, contextName, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "removeGuild", "rg")) {
+        if (arg.isSubCommand(cmd, 3)) {
             removeGuild(args, contextName, messageContext);
             return;
         }

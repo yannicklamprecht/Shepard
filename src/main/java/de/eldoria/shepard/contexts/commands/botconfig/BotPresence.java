@@ -23,7 +23,6 @@ import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresen
 import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.M_LISTENING;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.M_PLAYING;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.M_STREAMING;
-import static de.eldoria.shepard.util.Verifier.isArgument;
 
 public class BotPresence extends Command {
 
@@ -54,8 +53,10 @@ public class BotPresence extends Command {
         Presence presence = ShepardBot.getJDA().getPresence();
 
         String activity = args[0];
+        CommandArg arg = commandArgs[0];
 
-        if (isArgument(activity, "clear", "c")) {
+
+        if (arg.isSubCommand(activity, 3)) {
             presence.setActivity(null);
             MessageSender.sendMessage(M_CLEAR.tag, messageContext.getTextChannel());
             return;
@@ -66,13 +67,13 @@ public class BotPresence extends Command {
             return;
         }
 
-        if (isArgument(activity, "playing", "p")) {
+        if (arg.isSubCommand(activity, 0)) {
             String message = ArgumentParser.getMessage(args, 1);
             presence.setActivity(Activity.playing(message));
             MessageSender.sendMessage(M_PLAYING + message, messageContext.getTextChannel());
             return;
         }
-        if (isArgument(activity, "streaming", "s")) {
+        if (arg.isSubCommand(activity, 1)) {
             if (args.length > 2) {
                 String message = ArgumentParser.getMessage(args, 1, -1);
                 String url = ArgumentParser.getMessage(args, -1);
@@ -93,7 +94,7 @@ public class BotPresence extends Command {
             return;
         }*/
 
-        if (isArgument(activity, "listening", "l")) {
+        if (arg.isSubCommand(activity, 2)) {
             String message = ArgumentParser.getMessage(args, 1);
             presence.setActivity(Activity.listening(message));
             MessageSender.sendMessage(M_LISTENING + message, messageContext.getTextChannel());

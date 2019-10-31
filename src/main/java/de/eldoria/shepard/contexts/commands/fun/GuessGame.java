@@ -72,24 +72,25 @@ public class GuessGame extends Command {
         }
 
         String cmd = args[0];
+        CommandArg arg = commandArgs[0];
 
-        if (isArgument(cmd, "score", "s")) {
+        if (arg.isSubCommand(cmd, 1)) {
             int userScore = GuessGameData.getUserScore(messageContext.getGuild(),
                     messageContext.getAuthor(), messageContext);
             MessageSender.sendMessage(M_SCORE + " **" + userScore + "**", messageContext.getTextChannel());
             return;
         }
 
-        if (isArgument(cmd, "globalScore", "gs")) {
+        if (arg.isSubCommand(cmd, 2)) {
             int userScore = GuessGameData.getGlobalUserScore(messageContext.getAuthor(), messageContext);
             MessageSender.sendMessage(M_SCORE_GLOBAL + " **" + userScore, messageContext.getTextChannel());
             return;
         }
 
-        if (isArgument(cmd, "top", "t")) {
+        if (arg.isSubCommand(cmd, 3)) {
             sendTopScores(false, messageContext);
         }
-        if (isArgument(cmd, "globalTop", "gt")) {
+        if (arg.isSubCommand(cmd, 4)) {
             sendTopScores(true, messageContext);
         }
     }

@@ -11,7 +11,6 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -43,8 +42,6 @@ public class Help extends Command {
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        String prefix = PrefixData.getPrefix(messageContext.getGuild(), messageContext);
-
         //Command List
         if (args.length == 0) {
             listCommands(messageContext);
@@ -63,6 +60,7 @@ public class Help extends Command {
             return;
         }
 
+        String prefix = PrefixData.getPrefix(messageContext.getGuild(), messageContext);
         MessageSender.sendMessage(locale.getReplacedString(HelpLocale.M_USAGE.localeCode, messageContext.getGuild(),
                 prefix), messageContext.getTextChannel());
     }
@@ -102,7 +100,8 @@ public class Help extends Command {
 
         fields.removeIf(Objects::isNull);
 
-        MessageSender.sendTextBox("__**" + HelpLocale.M_COMMANDS + "**__", fields, messageContext.getTextChannel(), Color.green);
+        MessageSender.sendTextBox("__**" + HelpLocale.M_COMMANDS + "**__", fields, messageContext.getTextChannel(),
+                Color.green);
     }
 
     private String getCommandNames(List<Command> commands) {

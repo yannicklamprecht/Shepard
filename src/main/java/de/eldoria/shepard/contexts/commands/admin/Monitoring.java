@@ -36,7 +36,6 @@ import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLoc
 import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REGISTERED_CHANNEL;
 import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REMOVED_ADDRESS;
 import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REMOVED_CHANNEL;
-import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class Monitoring extends Command {
@@ -70,40 +69,41 @@ public class Monitoring extends Command {
         }
 
         String cmd = args[0];
+        CommandArg arg = commandArgs[0];
+        if (arg.isSubCommand(cmd, 2)) {
+            list(messageContext);
+            return;
+        }
 
-        if (isArgument(cmd, "disable", "d")) {
+        if (arg.isSubCommand(cmd, 3)) {
+            if (easyEnable(messageContext)) return;
+        }
+
+        if (arg.isSubCommand(cmd, 4)) {
             disable(messageContext);
             return;
         }
 
-        if (isArgument(cmd, "show", "s")) {
-            show(messageContext);
-            return;
-        }
-
-        if (isArgument(cmd, "enable", "e")) {
-            if (easyEnable(messageContext)) return;
-        }
-
         if (args.length < 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
         }
 
-        if (isArgument(cmd, "remove", "r")) {
+        if (arg.isSubCommand(cmd, 0)) {
+            add(args, messageContext);
+            return;
+        }
+
+        if (arg.isSubCommand(cmd, 1)) {
             remove(args[1], messageContext);
             return;
         }
 
-        if (isArgument(cmd, "enable", "e")) {
+        if (arg.isSubCommand(cmd, 3)) {
             enable(args[1], messageContext);
             return;
         }
 
-        if (isArgument(cmd, "add", "a")) {
-            add(args, messageContext);
-            return;
-        }
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
@@ -172,7 +172,7 @@ public class Monitoring extends Command {
         MessageSender.sendMessage(M_REMOVED_CHANNEL.tag, messageContext.getTextChannel());
     }
 
-    private void show(MessageEventDataWrapper messageContext) {
+    private void list(MessageEventDataWrapper messageContext) {
         List<Address> monitoringAddresses = MonitoringData.getMonitoringAddressesForGuild(
                 messageContext.getGuild(), messageContext);
 

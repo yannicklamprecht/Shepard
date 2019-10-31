@@ -18,7 +18,6 @@ import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageCon
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_ACTIVATED_NSFW;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_DEACTIVATED_ADMIN;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_DEACTIVATED_NSFW;
-import static de.eldoria.shepard.util.Verifier.isArgument;
 
 public class ManageContext extends Command {
 
@@ -45,18 +44,19 @@ public class ManageContext extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String contextName = ArgumentParser.getContextName(args[0], messageContext);
         String cmd = args[1];
+        CommandArg arg = commandArgs[1];
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND, messageContext.getTextChannel());
             return;
         }
 
-        if (isArgument(cmd, "setNSFW", "nsfw")) {
+        if (arg.isSubCommand(cmd, 0)) {
             setNsfw(args, contextName, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "setAdminOnly", "admin")) {
+        if (arg.isSubCommand(cmd, 1)) {
             setAdminOnly(args, contextName, messageContext);
             return;
         }

@@ -28,7 +28,6 @@ import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLo
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_NO_QUOTES;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_REMOVED_QUOTE;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_SAVED_QUOTE;
-import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class ManageQuote extends Command {
@@ -58,46 +57,52 @@ public class ManageQuote extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-
-        if (isArgument(cmd, "add", "a")) {
-            addQuote(args, messageContext);
+        CommandArg arg = commandArgs[0];
+        if (arg.isSubCommand(cmd, 0)) {
+            add(args, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "remove", "r")) {
-            removeQuote(args, messageContext);
+        if (arg.isSubCommand(cmd, 1)) {
+            alter(args, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "list", "l")) {
-            showQuotes(args, messageContext);
+        if (arg.isSubCommand(cmd, 2)) {
+            remove(args, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "alter", "alt")) {
-            if (args.length < 3) {
-                MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
-            }
-
-            int quoteId = verifyId(args[1], messageContext);
-
-            if (quoteId == -1) {
-                return;
-            }
-
-            String quote = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-
-            if (QuoteData.alterQuote(messageContext.getGuild(), quoteId, quote, messageContext)) {
-                MessageSender.sendSimpleTextBox(locale.getReplacedString(M_CHANGED_QUOTE.localeCode,
-                        messageContext.getGuild(), "**" + quoteId + "**"), quote, Color.blue, messageContext.getTextChannel());
-            }
+        if (arg.isSubCommand(cmd, 3)) {
+            list(args, messageContext);
             return;
         }
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
-    private void showQuotes(String[] args, MessageEventDataWrapper messageContext) {
+    private void alter(String[] args, MessageEventDataWrapper messageContext) {
+        if (args.length < 3) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+        }
+
+        int quoteId = verifyId(args[1], messageContext);
+
+        if (quoteId == -1) {
+            return;
+        }
+
+        String quote = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+
+        if (QuoteData.alterQuote(messageContext.getGuild(), quoteId, quote, messageContext)) {
+            MessageSender.sendSimpleTextBox(locale.getReplacedString(M_CHANGED_QUOTE.localeCode,
+                    messageContext.getGuild(), "**" + quoteId + "**"), quote, Color.blue,
+                    messageContext.getTextChannel());
+        }
+        return;
+    }
+
+    private void list(String[] args, MessageEventDataWrapper messageContext) {
         List<QuoteElement> quotes;
         if (args.length > 1) {
             quotes = QuoteData.getQuotesByKeyword(messageContext.getGuild(),
@@ -117,7 +122,7 @@ public class ManageQuote extends Command {
         MessageSender.sendMessage(message, messageContext.getTextChannel());
     }
 
-    private void removeQuote(String[] args, MessageEventDataWrapper messageContext) {
+    private void remove(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 2) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
         }
@@ -134,7 +139,7 @@ public class ManageQuote extends Command {
         }
     }
 
-    private void addQuote(String[] args, MessageEventDataWrapper messageContext) {
+    private void add(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 1) {
             MessageSender.sendSimpleError(ErrorType.NO_QUOTE_FOUND, messageContext.getTextChannel());
             return;

@@ -1,17 +1,13 @@
 package de.eldoria.shepard.contexts.commands.util;
 
-import com.mysql.cj.xdevapi.Collection;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.localization.enums.commands.util.HireMeLocale;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import org.mortbay.util.SingletonList;
 
 import java.util.Collections;
-import java.util.List;
 
 /**
  * A command for retrieving a invite link for this bot.

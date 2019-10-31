@@ -1,13 +1,12 @@
 package de.eldoria.shepard.contexts.commands.argument;
 
-import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static de.eldoria.shepard.localization.enums.commands.util.HelpLocale.W_OPTIONAL;
 import static de.eldoria.shepard.localization.enums.commands.util.HelpLocale.W_REQUIRED;
-import static java.lang.System.console;
 import static java.lang.System.lineSeparator;
 
 /**
@@ -72,9 +71,10 @@ public class CommandArg {
     }
 
     /**
-     * Get the argument name.
+     * Get the argument name. Adds [] or <> to indicate if a argument is required or not.
+     * The argument name is all upper case.
      *
-     * @return
+     * @return String of the argument type.
      */
     public String getHelpString() {
         if (isRequired()) {

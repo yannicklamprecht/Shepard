@@ -59,9 +59,6 @@ public class SubArg {
         return "**" + getCommandString() + "** -> " + localeTag;
     }
 
-    public boolean isSubCommand() {
-        return isSubCommand;
-    }
 
     public String getShortCommand() {
         return shortCommand;
@@ -83,6 +80,10 @@ public class SubArg {
      */
     public boolean isSubCommand(String cmd) {
         return isSubCommand && (cmd.equalsIgnoreCase(argumentName) || cmd.equalsIgnoreCase(shortCommand));
+    }
+
+    public boolean isSubCommand() {
+        return isSubCommand;
     }
 
     public void generateShortCommand(int additionalLength) {

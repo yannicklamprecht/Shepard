@@ -16,7 +16,9 @@ import de.eldoria.shepard.util.BooleanState;
 import java.util.ArrayList;
 import java.util.List;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USERS;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.A_LIST_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.C_ADD_USER;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.C_REMOVE_USER;
@@ -28,7 +30,6 @@ import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageCon
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_CHANGED_LIST_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_DEACTIVATED_CHECK;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_REMOVED_USERS;
-import static de.eldoria.shepard.util.Verifier.isArgument;
 
 public class ManageContextUsers extends Command {
     /**
@@ -59,28 +60,29 @@ public class ManageContextUsers extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String contextName = ArgumentParser.getContextName(args[0], messageContext);
         String cmd = args[1];
+        CommandArg arg = commandArgs[1];
 
         if (contextName == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND, messageContext.getTextChannel());
             return;
         }
 
-        if (isArgument(cmd, "setActive", "a")) {
+        if (arg.isSubCommand(cmd, 0)) {
             setActive(args, contextName, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "setListType", "lt")) {
+        if (arg.isSubCommand(cmd, 1)) {
             setListType(args, contextName, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "addUser", "au")) {
+        if (arg.isSubCommand(cmd, 2)) {
             addUser(args, contextName, messageContext);
             return;
         }
 
-        if (isArgument("removeUser", "ru")) {
+        if (arg.isSubCommand(cmd, 3)) {
             removeUser(args, contextName, messageContext);
             return;
         }

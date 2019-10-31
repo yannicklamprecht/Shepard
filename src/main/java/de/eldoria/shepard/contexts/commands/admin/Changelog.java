@@ -30,7 +30,6 @@ import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLoca
 import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_DEACTIVATED;
 import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_LOGGED_ROLES;
 import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_REMOVED_ROLE;
-import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class Changelog extends Command {
@@ -132,8 +131,9 @@ public class Changelog extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ROLE, messageContext.getTextChannel());
             return;
         }
+        CommandArg arg = commandArgs[0];
 
-        if (isArgument(cmd, "addRole", "ar")) {
+        if (arg.isSubCommand(cmd, 0)) {
             if (ChangelogData.addRole(messageContext.getGuild(), role, messageContext)) {
                 MessageSender.sendMessage(locale.getReplacedString(M_ADDED_ROLE.localeCode,
                         messageContext.getGuild(),

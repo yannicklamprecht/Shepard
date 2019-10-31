@@ -32,7 +32,6 @@ import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConf
 import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_REGISTRATION_CANCELED;
 import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_REMOVED_IMAGE;
 import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_STARTED_REGISTRATION;
-import static de.eldoria.shepard.util.Verifier.isArgument;
 
 public class GuessGameConfig extends Command {
 
@@ -131,7 +130,8 @@ public class GuessGameConfig extends Command {
 
         if (GuessGameData.changeImageFlag(args[1], booleanState.stateAsBoolean, messageContext)) {
             MessageSender.sendMessage(locale.getReplacedString(M_CHANGED_FLAG.localeCode,
-                    messageContext.getGuild(), booleanState.stateAsBoolean ? "NSFW" : "SFW"), messageContext.getTextChannel());
+                    messageContext.getGuild(), booleanState.stateAsBoolean ? "NSFW" : "SFW"),
+                    messageContext.getTextChannel());
             messageContext.getChannel().sendFile(fileFromURL).queue();
         }
     }

@@ -28,7 +28,6 @@ import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_D
 import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_GLOBAL_RANKING;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_RECEIVED_KUDOS;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_SERVER_RANKING;
-import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class Kudos extends Command {
@@ -70,20 +69,21 @@ public class Kudos extends Command {
         }
 
         String cmd = args[0];
+        CommandArg arg = commandArgs[0];
 
-        if (isArgument(cmd, "top", "t")) {
+        if (arg.isSubCommand(cmd, 0)) {
+            give(label, args, messageContext);
+            return;
+        }
+
+        if (arg.isSubCommand(cmd, 1)) {
             sendTopScores(false, messageContext);
 
             return;
         }
 
-        if (isArgument(cmd, "topGlobal", "tg")) {
+        if (arg.isSubCommand(cmd, 2)) {
             sendTopScores(true, messageContext);
-            return;
-        }
-
-        if (isArgument(cmd, "give", "g")) {
-            give(label, args, messageContext);
             return;
         }
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());

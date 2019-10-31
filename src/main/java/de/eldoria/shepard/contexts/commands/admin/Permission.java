@@ -38,7 +38,6 @@ import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLoc
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_ACCESS;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_ACCESS_GRANTED;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_ACCESS_REVOKED;
-import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class Permission extends Command {
@@ -81,28 +80,32 @@ public class Permission extends Command {
             return;
         }
 
-        if (isArgument(cmd, "addUser", "au", "removeUser", "ru")) {
-            ModifyType modifyType = cmd.equalsIgnoreCase("addUser") || cmd.equalsIgnoreCase("au")
-                    ? ModifyType.ADD : ModifyType.REMOVE;
+        CommandArg arg = commandArgs[1];
 
-            modifyUsers(args, messageContext, contextName, modifyType);
+        if (arg.isSubCommand(cmd, 0)) {
+            modifyUsers(args, messageContext, contextName, ModifyType.ADD);
+            return;
+        }
+        if (arg.isSubCommand(cmd, 1)) {
+            modifyUsers(args, messageContext, contextName, ModifyType.REMOVE);
             return;
         }
 
-        if (isArgument(cmd, "showUser", "su")) {
+        if (arg.isSubCommand(cmd, 2)) {
             showMentions(messageContext, contextName, M_USER_ACCESS.tag);
             return;
         }
 
-        if (isArgument(cmd, "addRole", "ar", "removeRole", "rr")) {
-            ModifyType modifyType = cmd.equalsIgnoreCase("addRole") || cmd.equalsIgnoreCase("ar")
-                    ? ModifyType.ADD : ModifyType.REMOVE;
-
-            modifyRoles(args, messageContext, contextName, modifyType);
+        if (arg.isSubCommand(cmd, 3)) {
+            modifyRoles(args, messageContext, contextName, ModifyType.ADD);
+            return;
+        }
+        if (arg.isSubCommand(cmd, 4)) {
+            modifyRoles(args, messageContext, contextName, ModifyType.REMOVE);
             return;
         }
 
-        if (isArgument(cmd, "showRole", "sr")) {
+        if (arg.isSubCommand(cmd, 5)) {
             showMentions(messageContext, contextName, M_ROLE_ACCESS.tag);
             return;
         }

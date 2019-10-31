@@ -16,7 +16,6 @@ import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.
 import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.C_SET;
 import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.M_CHANGED;
-import static de.eldoria.shepard.util.Verifier.isArgument;
 
 public class Prefix extends Command {
 
@@ -40,11 +39,12 @@ public class Prefix extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        if (isArgument(cmd, "set", "s")) {
+        CommandArg arg = commandArgs[0];
+        if (arg.isSubCommand(cmd, 0)) {
             set(args, messageContext);
             return;
         }
-        if (isArgument(cmd, "reset", "r")) {
+        if (arg.isSubCommand(cmd, 1)) {
             reset(messageContext);
             return;
         }

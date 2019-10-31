@@ -39,7 +39,6 @@ import static de.eldoria.shepard.localization.enums.commands.admin.TicketSetting
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.M_SET_CREATION_MESSAGE;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.M_SET_OWNER_ROLES;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.M_SET_SUPPORT_ROLES;
-import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class TicketSettings extends Command {
@@ -76,8 +75,10 @@ public class TicketSettings extends Command {
         Optional<TicketType> ticket = TicketData.getTypes(messageContext.getGuild(), messageContext).stream()
                 .filter(ticketType -> ticketType.getKeyword().equalsIgnoreCase(type)).findFirst();
 
+        CommandArg arg = commandArgs[0];
+
         //All validation operations are inside the method except when they are needed for more than one method.
-        if (isArgument(cmd, "createType", "ct")) {
+        if (arg.isSubCommand(cmd, 0)) {
             if (ticket.isEmpty()) {
                 createType(args, messageContext, type);
             } else {
@@ -91,22 +92,22 @@ public class TicketSettings extends Command {
             return;
         }
 
-        if (isArgument(cmd, "removeType", "rt")) {
+        if (arg.isSubCommand(cmd, 1)) {
             removeType(args, messageContext, ticket.get());
             return;
         }
 
-        if (isArgument(cmd, "setOwnerRoles", "sor", "setSupportRoles", "ssr")) {
+        if (arg.isSubCommand(cmd, 2) || arg.isSubCommand(cmd, 3)) {
             setRoles(args, messageContext, cmd, ticket.get());
             return;
         }
 
-        if (isArgument("setChannelCategory") || cmd.equalsIgnoreCase("scc")) {
+        if (arg.isSubCommand(cmd, 4) || cmd.equalsIgnoreCase("scc")) {
             setChannelCategory(args, messageContext, ticket.get());
             return;
         }
 
-        if (isArgument(cmd, "setCreationMessage", "scm")) {
+        if (arg.isSubCommand(cmd, 5)) {
             setCreationMessage(args, messageContext, ticket.get());
             return;
         }
@@ -161,7 +162,7 @@ public class TicketSettings extends Command {
         String roleMentions = validRoles.stream().map(IMentionable::getAsMention)
                 .collect(Collectors.joining(lineSeparator()));
 
-        if (cmd.equalsIgnoreCase("setOwnerRoles") || cmd.equalsIgnoreCase("sor")) {
+        if (commandArgs[0].isSubCommand(cmd, 2)) {
             if (TicketData.setTypeOwnerRoles(messageContext.getGuild(), scopeTicket.getKeyword(),
                     validRoles, messageContext)) {
 

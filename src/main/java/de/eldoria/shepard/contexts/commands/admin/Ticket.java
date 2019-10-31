@@ -45,7 +45,6 @@ import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.M_TICKET_SUPPORT_ROLES;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.M_TYPE_ABOUT;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.M_TYPE_LIST;
-import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class Ticket extends Command {
@@ -73,18 +72,20 @@ public class Ticket extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        if (isArgument(cmd, "open", "o")) {
-            openTicket(args, messageContext);
+        CommandArg arg = commandArgs[0];
+
+        if (arg.isSubCommand(cmd, 0)) {
+            open(args, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "close", "c")) {
+        if (arg.isSubCommand(cmd, 1)) {
             close(args, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "list", "l")) {
-            typeInfo(args, messageContext);
+        if (arg.isSubCommand(cmd, 2)) {
+            info(args, messageContext);
             return;
         }
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
@@ -129,7 +130,7 @@ public class Ticket extends Command {
     }
 
 
-    private void typeInfo(String[] args, MessageEventDataWrapper messageContext) {
+    private void info(String[] args, MessageEventDataWrapper messageContext) {
         List<TicketType> tickets = TicketData.getTypes(messageContext.getGuild(), messageContext);
         if (tickets.isEmpty()) {
             MessageSender.sendSimpleError(ErrorType.NO_TICKET_TYPES_DEFINED, messageContext.getTextChannel());
@@ -181,7 +182,7 @@ public class Ticket extends Command {
         }
     }
 
-    private void openTicket(String[] args, MessageEventDataWrapper messageContext) {
+    private void open(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 3) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
         }

@@ -82,7 +82,7 @@ public class UserInfo extends Command {
             String roles = member.getRoles().stream().map(IMentionable::getAsMention).collect(Collectors.joining(", "));
             builder.addField(UserInfoLocale.W_ROLES.tag, roles, false);
         }
-        builder.setFooter(UserInfoLocale.W_UNKOWN + " " + getIntervalString(user.getTimeCreated(), messageContext));
+        builder.setFooter(UserInfoLocale.M_CREATED + " " + getIntervalString(user.getTimeCreated(), messageContext));
 
         messageContext.getChannel().sendMessage(builder.build()).queue();
     }
@@ -97,7 +97,7 @@ public class UserInfo extends Command {
         int days = period.getDays();
         String year = years != 1 ? UserInfoLocale.W_YEARS.tag : UserInfoLocale.W_YEAR.tag;
         String day = days != 1 ? UserInfoLocale.W_DAYS.tag : UserInfoLocale.W_DAY.tag;
-        return locale.getReplacedString(UserInfoLocale.W_MESSAGE.localeCode, messageContext.getGuild(),
+        return locale.getReplacedString(UserInfoLocale.M_JOINED.localeCode, messageContext.getGuild(),
                 formatted, years + " " + year, months + "", days + day);
     }
 }
