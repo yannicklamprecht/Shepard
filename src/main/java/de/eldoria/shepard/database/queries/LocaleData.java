@@ -21,26 +21,26 @@ public class LocaleData {
     }
 
     /**
-     * Sets the prefix for a guild.
+     * Sets the locale_code for a guild.
      *
-     * @param guild          Guild for which the prefix should be set
-     * @param prefix         prefix to set.
+     * @param guild          Guild for which the locale_code should be set
+     * @param locale_code         locale_code to set.
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setLanguage(Guild guild, String prefix, MessageEventDataWrapper messageContext) {
+    public static boolean setLanguage(Guild guild, String locale_code, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_language(?,?)")) {
             statement.setString(1, guild.getId());
-            statement.setString(2, prefix);
+            statement.setString(2, locale_code);
             statement.execute();
-            languages.put(guild.getIdLong(), prefix);
+            languages.put(guild.getIdLong(), locale_code);
         } catch (SQLException e) {
             handleExceptionAndIgnore(e, messageContext);
             return false;
         }
 
-        ShepardBot.getLogger().info("Changed prefix of server " + guild.getName() + " to " + prefix);
+        ShepardBot.getLogger().info("Changed locale_code of server " + guild.getName() + " to " + locale_code);
         return true;
     }
 
@@ -66,7 +66,7 @@ public class LocaleData {
             ResultSet result = statement.executeQuery();
             languages.clear();
             if (result.next()) {
-                String prefix = result.getString("prefix");
+                String prefix = result.getString("locale_code");
                 languages.put(guild.getIdLong(), prefix);
             }
             cacheDirty.put(guild.getIdLong(), false);
