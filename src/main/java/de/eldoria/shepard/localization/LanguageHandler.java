@@ -55,6 +55,7 @@ public class LanguageHandler {
      * @param replacements array of replacements for message placeholder.
      * @return localized message with replace placeholder.
      */
+    @Deprecated
     public String getReplacedString(String localeCode, Guild guild, String... replacements) {
         String languageString = getLanguageString(guild, localeCode);
         for (int i = 0; i < replacements.length; i++) {

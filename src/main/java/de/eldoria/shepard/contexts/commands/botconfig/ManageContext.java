@@ -7,17 +7,14 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
+import de.eldoria.shepard.localization.util.TextLocalizer;
+import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.BooleanState;
 
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_ADMIN;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_NSFW;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_ACTIVATED_ADMIN;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_ACTIVATED_NSFW;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_DEACTIVATED_ADMIN;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_DEACTIVATED_NSFW;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.*;
 
 public class ManageContext extends Command {
 
@@ -79,12 +76,14 @@ public class ManageContext extends Command {
         }
 
         if (state) {
-            MessageSender.sendMessage("**" + M_ACTIVATED_ADMIN
-                    + " \"" + contextName.toUpperCase() + "\"**", messageContext.getTextChannel());
+            MessageSender.sendMessage(TextLocalizer.fastLocaleAndReplace("**" + M_ACTIVATED_ADMIN + "**",
+                    messageContext.getGuild(), "\"" + contextName.toUpperCase() + "\""),
+                    messageContext.getTextChannel());
 
         } else {
-            MessageSender.sendMessage("**" + M_DEACTIVATED_ADMIN
-                    + " \"" + contextName.toUpperCase() + "\"**", messageContext.getTextChannel());
+            MessageSender.sendMessage(TextLocalizer.fastLocaleAndReplace("**" + M_DEACTIVATED_ADMIN + "**",
+                    messageContext.getGuild(), "\"" + contextName.toUpperCase() + "\""),
+                    messageContext.getTextChannel());
         }
     }
 
@@ -103,11 +102,13 @@ public class ManageContext extends Command {
         }
 
         if (state) {
-            MessageSender.sendMessage("**" + M_ACTIVATED_NSFW + " \"" + contextName.toUpperCase() + "\"**",
+            MessageSender.sendMessage(TextLocalizer.fastLocaleAndReplace("**" + M_ACTIVATED_NSFW + "**",
+                    messageContext.getGuild(), "\"" + contextName.toUpperCase() + "\""),
                     messageContext.getTextChannel());
 
         } else {
-            MessageSender.sendMessage("**" + M_DEACTIVATED_NSFW + " \"" + contextName.toUpperCase() + "\"**",
+            MessageSender.sendMessage(TextLocalizer.fastLocaleAndReplace("**" + M_DEACTIVATED_NSFW + "**",
+                    messageContext.getGuild(), "\"" + contextName.toUpperCase() + "\""),
                     messageContext.getTextChannel());
         }
     }

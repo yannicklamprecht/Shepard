@@ -63,6 +63,19 @@ public class TextLocalizer {
      * @return String where localize codes are replaced with guild language.
      */
     public static String fastLocale(String message, Guild guild) {
+        return fastLocaleAndReplace(message, guild);
+    }
+
+    /**
+     * Translates a String with Placeholders.
+     * Can handle multiple messages with replacements. Add replacements in the right order.
+     *
+     * @param message Message to translate
+     * @param guild guild for locale detection
+     * @param replacements Replacements in the right order.
+     * @return Replaced Messages
+     */
+    public static String fastLocaleAndReplace(String message, Guild guild, String... replacements) {
         if (message == null) {
             return null;
         }
@@ -75,12 +88,24 @@ public class TextLocalizer {
         }
 
         String result = message;
+        int replacementIndex = 0;
         for (String match : matches) {
+            //Replace current placeholders with replacements
             String languageString = locale.getLanguageString(guild, match);
             result = result.replace("$" + match + "$", languageString);
+
+            //Search for replacement
+            for (int i = 0; i < replacements.length; i++) {
+                //Search till no replacement is found!
+                if (languageString.contains("%" + i + "%")) {
+                    languageString = languageString.replace("%" + i + "%", replacements[replacementIndex]);
+                    replacementIndex++;
+                } else {
+                    break;
+                }
+            }
         }
         return result;
-
     }
 
 }
