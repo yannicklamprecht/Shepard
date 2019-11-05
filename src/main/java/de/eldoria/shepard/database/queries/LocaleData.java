@@ -68,7 +68,7 @@ public class LocaleData {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
             if (result.next()) {
-                LocaleCode localeCode = LocaleCode.parse(result.getString("locale_code"));
+                LocaleCode localeCode = LocaleCode.parse(result.getString(1));
                 languages.put(guild.getIdLong(), Objects.requireNonNullElse(localeCode, LocaleCode.EN_US));
             }
             cacheDirty.put(guild.getIdLong(), false);

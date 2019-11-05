@@ -68,6 +68,8 @@ public final class PrefixData {
             if (result.next()) {
                 String prefix = result.getString(1);
                 if (prefix != null) {
+                    prefixes.put(guild.getIdLong(), prefix);
+                } else {
                     prefixes.put(guild.getIdLong(), ShepardBot.getConfig().getPrefix());
                 }
             }
