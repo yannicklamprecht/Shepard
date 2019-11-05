@@ -3,7 +3,7 @@ package de.eldoria.shepard.configuration;
 public class Config {
     private String token = null;
     private boolean debug = false;
-    private BotList botList = null;
+    private BotList botlist = null;
     private Database database = null;
     private String prefix = null;
 
@@ -72,11 +72,11 @@ public class Config {
         this.debug = debug;
     }
 
-    public BotList getBotList() {
-        return botList;
+    public BotList getBotlist() {
+        return botlist;
     }
 
-    public void setBotList(BotList botList) {
-        this.botList = botList;
+    public void setBotlist(BotList botlist) {
+        this.botlist = botlist;
     }
 }

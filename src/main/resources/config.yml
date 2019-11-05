@@ -2,7 +2,8 @@ debug: false
 prefix: "&"
 token: ""
 botlist:
-  
+  token:
+  authorization:
 database:
   username: ""
   password: ""

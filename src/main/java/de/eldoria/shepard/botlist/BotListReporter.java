@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
+import static spark.Spark.port;
 import static spark.Spark.post;
 
 public final class BotListReporter {
@@ -20,7 +21,7 @@ public final class BotListReporter {
 
     private BotListReporter() {
         api = new DiscordBotListAPI.Builder()
-                .token(ShepardBot.getConfig().getBotList().getToken())
+                .token(ShepardBot.getConfig().getBotlist().getToken())
                 .botId(ShepardBot.getJDA().getSelfUser().getId())
                 .build();
         eventHandlers = new ArrayList<>();
@@ -63,9 +64,11 @@ public final class BotListReporter {
     }
 
     private void defineRoutes() {
+        port(34555);
+
         post("/votes/", (request, response) -> {
             String authorization = request.headers("Authorization");
-            if (!authorization.equals(ShepardBot.getConfig().getBotList().getAuthorization())) {
+            if (!authorization.equals(ShepardBot.getConfig().getBotlist().getAuthorization())) {
                 return HttpStatusCodes.STATUS_CODE_UNAUTHORIZED;
             }
 
