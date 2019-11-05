@@ -6,11 +6,13 @@ import de.eldoria.shepard.database.queries.LocaleData;
 import de.eldoria.shepard.localization.util.LocaleCode;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.Guild;
-import org.apache.commons.lang.exception.ExceptionUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class LanguageHandler {
     private static final String BUNDLE_PATH = "locale";
@@ -75,6 +77,20 @@ public class LanguageHandler {
         }
 
         ShepardBot.getLogger().info("Loaded " + languages.size() + " languages!");
-    }
+        List<String> keys = new ArrayList<>();
+        getLanguageResource(LocaleCode.EN_US).getKeys().asIterator().forEachRemaining(keys::add);
 
+        for (LocaleCode code : LocaleCode.values()) {
+            if (code == LocaleCode.EN_US) {
+                continue;
+            }
+
+            ResourceBundle languageResource = getLanguageResource(code);
+            List<String> missingKeys = keys.stream()
+                    .filter(k -> !languageResource.containsKey(k)).collect(Collectors.toUnmodifiableList());
+            MessageSender.sendSimpleErrorEmbed("Found missing keys in language pack " + code.code
+                            + System.lineSeparator() + String.join(System.lineSeparator(), missingKeys),
+                    Normandy.getErrorChannel());
+        }
+    }
 }
