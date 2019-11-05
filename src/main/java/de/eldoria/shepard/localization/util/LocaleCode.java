@@ -1,6 +1,6 @@
 package de.eldoria.shepard.localization.util;
 
-public enum LanguageCode {
+public enum LocaleCode {
     /**
      * English language code.
      */
@@ -15,7 +15,16 @@ public enum LanguageCode {
      */
     public final String code;
 
-    LanguageCode(String code) {
+    LocaleCode(String code) {
         this.code = code;
+    }
+
+    public static LocaleCode parse(String codeString) {
+        for (LocaleCode code : LocaleCode.values()) {
+            if (code.code.equalsIgnoreCase(codeString)) {
+                return code;
+            }
+        }
+        return null;
     }
 }
