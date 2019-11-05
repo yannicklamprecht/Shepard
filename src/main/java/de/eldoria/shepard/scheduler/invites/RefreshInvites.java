@@ -43,6 +43,11 @@ class RefreshInvites implements Runnable {
                     ShepardBot.getLogger().info("Cleaned up Invites");
                 }
             });
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                return;
+            }
         }
     }
 }
