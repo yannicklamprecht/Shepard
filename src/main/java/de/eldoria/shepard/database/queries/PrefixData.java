@@ -1,7 +1,6 @@
 package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.contexts.commands.util.SystemInfo;
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.util.DefaultMap;

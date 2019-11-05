@@ -14,6 +14,9 @@ public enum LocaleCode {
      * Get the locale code with pattern [a-z]{2}_[A-Z]{2}.
      */
     public final String code;
+    /**
+     * Get the full language name.
+     */
     public final String languageName;
 
     LocaleCode(String code, String languageName) {

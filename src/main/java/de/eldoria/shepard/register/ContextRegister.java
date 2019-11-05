@@ -1,6 +1,20 @@
 package de.eldoria.shepard.register;
 
-import de.eldoria.shepard.contexts.commands.admin.*;
+import de.eldoria.shepard.contexts.commands.admin.Changelog;
+import de.eldoria.shepard.contexts.commands.admin.Greeting;
+import de.eldoria.shepard.contexts.commands.admin.GuessGameConfig;
+import de.eldoria.shepard.contexts.commands.admin.Invite;
+import de.eldoria.shepard.contexts.commands.admin.Language;
+import de.eldoria.shepard.contexts.commands.admin.ManageQuote;
+import de.eldoria.shepard.contexts.commands.admin.Monitoring;
+import de.eldoria.shepard.contexts.commands.admin.Permission;
+import de.eldoria.shepard.contexts.commands.admin.Prefix;
+import de.eldoria.shepard.contexts.commands.admin.PrivateAnswer;
+import de.eldoria.shepard.contexts.commands.admin.RepeatCommand;
+import de.eldoria.shepard.contexts.commands.admin.SendPrivateMessage;
+import de.eldoria.shepard.contexts.commands.admin.ShowKeyword;
+import de.eldoria.shepard.contexts.commands.admin.Ticket;
+import de.eldoria.shepard.contexts.commands.admin.TicketSettings;
 import de.eldoria.shepard.contexts.commands.botconfig.BotPresence;
 import de.eldoria.shepard.contexts.commands.botconfig.ContextInfo;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContext;

@@ -16,7 +16,7 @@ import java.util.Objects;
 
 import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
-public class LocaleData {
+public final class LocaleData {
     private static final Map<Long, LocaleCode> languages = new HashMap<>();
     private static final DefaultMap<Long, Boolean> cacheDirty = new DefaultMap<>(true);
 
