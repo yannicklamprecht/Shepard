@@ -1,34 +1,33 @@
 package de.eldoria.shepard.localization;
 
-import de.eldoria.shepard.localization.util.LanguageCode;
+import de.eldoria.shepard.database.queries.LocaleData;
+import de.eldoria.shepard.localization.util.LocaleCode;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
-import static de.eldoria.shepard.database.queries.LanguageData.getGuildLanguage;
-
 public class LanguageHandler {
+    private static final String BUNDLE_PATH = "locale";
     private static LanguageHandler instance;
-    private HashMap<LanguageCode, ResourceBundle> languages = new HashMap<>();
+    private HashMap<LocaleCode, ResourceBundle> languages = new HashMap<>();
 
-    public static void initialize() {
+    private static void initialize() {
         if (instance != null) {
             return;
         } else {
             instance = new LanguageHandler();
         }
-
-        LanguageLoader.initialize(instance);
-        //TODO: Load languages
+        instance.loadLanguages();
     }
 
-    public ResourceBundle getLanguage(LanguageCode languageCode) {
-        return languages.getOrDefault(languageCode, languages.get(LanguageCode.EN_US));
+    private ResourceBundle getLanguageResource(LocaleCode localeCode) {
+        return languages.getOrDefault(localeCode, languages.get(LocaleCode.EN_US));
     }
 
     public String getLanguageString(Guild guild, String localeCode) {
-        return getLanguage(getGuildLanguage(guild)).getString(localeCode);
+        return getLanguageResource(LocaleData.getLanguage(guild, null)).getString(localeCode);
     }
 
     /**
@@ -52,7 +51,13 @@ public class LanguageHandler {
         return instance;
     }
 
-    public void registerLanguageFile(LanguageCode languageCode, ResourceBundle resourceBundle) {
-        languages.put(languageCode, resourceBundle);
+    private void loadLanguages() {
+        for (LocaleCode code : LocaleCode.values()) {
+            String[] s = code.code.split("_");
+            Locale locale = new Locale(s[0], s[1]);
+            ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_PATH, locale);
+            languages.put(code, bundle);
+        }
     }
+
 }
