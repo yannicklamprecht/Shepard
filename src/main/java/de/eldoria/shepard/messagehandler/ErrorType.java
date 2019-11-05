@@ -86,6 +86,10 @@ public enum ErrorType {
      */
     INVALID_TIME("error.invalidTime"),
     /**
+     * Used when a time doesn't have a valid time formatting.
+     */
+    INVALID_LOCALE_CODE("error.invalidTime"),
+    /**
      * Used when no message was found.
      */
     NO_MESSAGE_FOUND("error.noMessageFound"),
