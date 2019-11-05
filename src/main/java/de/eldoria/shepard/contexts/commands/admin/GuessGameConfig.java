@@ -7,6 +7,7 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.guessgame.ImageRegister;
@@ -32,6 +33,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConf
 import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_REGISTRATION_CANCELED;
 import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_REMOVED_IMAGE;
 import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_STARTED_REGISTRATION;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 public class GuessGameConfig extends Command {
 
@@ -100,7 +102,7 @@ public class GuessGameConfig extends Command {
         }
 
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(locale.getReplacedString(M_DISPLAY_IMAGE.localeCode,
+                .setTitle(fastLocaleAndReplace(M_DISPLAY_IMAGE.tag,
                         messageContext.getGuild(), hentaiImage.isNsfw() ? "NSFW" : "SFW"))
                 .setThumbnail(hentaiImage.getCroppedImage())
                 .setImage(hentaiImage.getFullImage())
@@ -129,7 +131,7 @@ public class GuessGameConfig extends Command {
         }
 
         if (GuessGameData.changeImageFlag(args[1], booleanState.stateAsBoolean, messageContext)) {
-            MessageSender.sendMessage(locale.getReplacedString(M_CHANGED_FLAG.localeCode,
+            MessageSender.sendMessage(fastLocaleAndReplace(M_CHANGED_FLAG.tag,
                     messageContext.getGuild(), booleanState.stateAsBoolean ? "NSFW" : "SFW"),
                     messageContext.getTextChannel());
             messageContext.getChannel().sendFile(fileFromURL).queue();

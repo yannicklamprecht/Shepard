@@ -4,12 +4,15 @@ import de.eldoria.shepard.database.queries.ReminderData;
 import de.eldoria.shepard.database.types.ReminderComplex;
 import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.enums.scheduler.ReminderLocale;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.MessageSender;
 
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 public class ReminderScheduler implements Runnable {
     public void initialize() {
@@ -35,7 +38,7 @@ public class ReminderScheduler implements Runnable {
             }
 
             LanguageHandler locale = LanguageHandler.getInstance();
-            MessageSender.sendMessage(locale.getReplacedString(ReminderLocale.M_REMINDER.localeCode,
+            MessageSender.sendMessage(fastLocaleAndReplace(ReminderLocale.M_REMINDER.tag,
                     reminder.getGuild(), reminder.getUser().getAsMention()) + System.lineSeparator()
                     + "**" + reminder.getText() + "**", reminder.getChannel());
         }

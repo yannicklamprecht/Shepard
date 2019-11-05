@@ -6,6 +6,7 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.ChangelogData;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -30,6 +31,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLoca
 import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_DEACTIVATED;
 import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_LOGGED_ROLES;
 import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_REMOVED_ROLE;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 import static java.lang.System.lineSeparator;
 
 public class Changelog extends Command {
@@ -135,13 +137,13 @@ public class Changelog extends Command {
 
         if (arg.isSubCommand(cmd, 0)) {
             if (ChangelogData.addRole(messageContext.getGuild(), role, messageContext)) {
-                MessageSender.sendMessage(locale.getReplacedString(M_ADDED_ROLE.localeCode,
+                MessageSender.sendMessage(fastLocaleAndReplace(M_ADDED_ROLE.tag,
                         messageContext.getGuild(),
                         "**" + role.getName() + "**"), messageContext.getTextChannel());
             }
         } else {
             if (ChangelogData.removeRole(messageContext.getGuild(), role, messageContext)) {
-                MessageSender.sendMessage(locale.getReplacedString(M_REMOVED_ROLE.localeCode, messageContext.getGuild(),
+                MessageSender.sendMessage(fastLocaleAndReplace(M_REMOVED_ROLE.tag, messageContext.getGuild(),
                         "**" + role.getName() + "**"), messageContext.getTextChannel());
             }
         }

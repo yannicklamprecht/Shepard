@@ -2,6 +2,7 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.M_NO_ONLINE;
 import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.M_SOMEONE;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 public class Someone extends Command {
     public Someone() {
@@ -43,7 +45,7 @@ public class Someone extends Command {
 
             Member member = members.get(rand.nextInt(members.size()));
 
-            MessageSender.sendMessage(locale.getReplacedString(M_SOMEONE.localeCode, messageContext.getGuild(),
+            MessageSender.sendMessage(fastLocaleAndReplace(M_SOMEONE.tag, messageContext.getGuild(),
                     member.getAsMention()), messageContext.getTextChannel());
         }
     }

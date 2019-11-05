@@ -3,6 +3,7 @@ package de.eldoria.shepard.contexts.commands.util;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -13,6 +14,7 @@ import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLoca
 import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.M_SERVICE_INFO_MESSAGE;
 import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.M_TITLE;
 import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.M_USED_MEMORY;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 public class SystemInfo extends Command {
     public SystemInfo() {
@@ -36,7 +38,7 @@ public class SystemInfo extends Command {
         long guildSize = ShepardBot.getJDA().getGuildCache().size();
         long userSize = ShepardBot.getJDA().getUserCache().size();
         builder.addField(M_SERVICE_INFO.tag,
-                locale.getReplacedString(M_SERVICE_INFO_MESSAGE.tag, messageContext.getGuild(),
+                fastLocaleAndReplace(M_SERVICE_INFO_MESSAGE.tag, messageContext.getGuild(),
                         guildSize + "", userSize + ""), false);
         messageContext.getChannel().sendMessage(builder.build()).queue();
         category = ContextCategory.UTIL;

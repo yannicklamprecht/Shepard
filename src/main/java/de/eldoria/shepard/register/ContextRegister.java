@@ -20,8 +20,6 @@ import de.eldoria.shepard.contexts.commands.botconfig.ContextInfo;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContext;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContextGuild;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContextUsers;
-import de.eldoria.shepard.contexts.commands.exklusive.IsHaddeWorking;
-import de.eldoria.shepard.contexts.commands.exklusive.Meetings;
 import de.eldoria.shepard.contexts.commands.fun.GuessGame;
 import de.eldoria.shepard.contexts.commands.fun.KudoLottery;
 import de.eldoria.shepard.contexts.commands.fun.Kudos;
@@ -100,8 +98,8 @@ public final class ContextRegister {
     }
 
     private static void registerExclusiveCommands() {
-        new IsHaddeWorking();
-        new Meetings();
+        //new IsHaddeWorking();
+        //new Meetings();
     }
 
     private static void registerBotConfigCommands() {

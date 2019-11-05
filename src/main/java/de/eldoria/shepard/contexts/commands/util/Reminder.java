@@ -9,6 +9,7 @@ import de.eldoria.shepard.database.queries.ReminderData;
 import de.eldoria.shepard.database.types.ReminderSimple;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.util.ReminderLocal;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.TextFormatting;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 import static de.eldoria.shepard.localization.enums.WordsLocale.ID;
 import static de.eldoria.shepard.localization.enums.WordsLocale.MESSAGE;
 import static de.eldoria.shepard.localization.enums.WordsLocale.TIME;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 public class Reminder extends Command {
     private static final Pattern INTERVAL = Pattern.compile("in\\s([0-9])+\\s(((min|hour|day|week)s?)|month)",
@@ -96,7 +98,7 @@ public class Reminder extends Command {
         ReminderData.removeUserReminder(messageContext.getGuild(), messageContext.getAuthor(),
                 number, messageContext);
 
-        MessageSender.sendMessage(locale.getReplacedString(ReminderLocal.M_REMOVED.localeCode,
+        MessageSender.sendMessage(fastLocaleAndReplace(ReminderLocal.M_REMOVED.tag,
                 messageContext.getGuild(), reminder.getReminderId() + "",
                 TextFormatting.cropText(reminder.getText(), "...", 20, true),
                 reminder.getTime()), messageContext.getTextChannel());
@@ -133,7 +135,7 @@ public class Reminder extends Command {
 
             if (ReminderData.addReminderDate(messageContext.getGuild(), messageContext.getAuthor(),
                     messageContext.getTextChannel(), message, date, time, messageContext)) {
-                MessageSender.sendMessage(locale.getReplacedString(ReminderLocal.M_REMIND_DATE.localeCode,
+                MessageSender.sendMessage(fastLocaleAndReplace(ReminderLocal.M_REMIND_DATE.tag,
                         messageContext.getGuild(), date, time) + System.lineSeparator() + message,
                         messageContext.getTextChannel());
             }
@@ -145,7 +147,7 @@ public class Reminder extends Command {
 
         if (ReminderData.addReminderInterval(messageContext.getGuild(), messageContext.getAuthor(),
                 messageContext.getTextChannel(), message, interval, messageContext)) {
-            MessageSender.sendMessage(locale.getReplacedString(ReminderLocal.M_REMIND_TIME.localeCode,
+            MessageSender.sendMessage(fastLocaleAndReplace(ReminderLocal.M_REMIND_TIME.tag,
                     messageContext.getGuild(), interval) + System.lineSeparator() + message,
                     messageContext.getTextChannel());
         }

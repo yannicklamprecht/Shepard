@@ -7,6 +7,7 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.database.types.Rank;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.TextFormatting;
@@ -28,6 +29,7 @@ import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_D
 import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_GLOBAL_RANKING;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_RECEIVED_KUDOS;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_SERVER_RANKING;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 import static java.lang.System.lineSeparator;
 
 public class Kudos extends Command {
@@ -57,10 +59,10 @@ public class Kudos extends Command {
                     messageContext.getGuild(), messageContext.getAuthor(), messageContext);
             int globalUserPoints = KudoData.getGlobalUserScore(messageContext.getAuthor(), messageContext);
 
-            String message = locale.getReplacedString(M_DESCRIPTION_GENERAL.localeCode, messageContext.getGuild(),
+            String message = fastLocaleAndReplace(M_DESCRIPTION_GENERAL.tag, messageContext.getGuild(),
                     "**" + freePoints + "**", "**100**", "1", "**" + userPoints + "**");
             message = userPoints != globalUserPoints
-                    ? message + lineSeparator() + locale.getReplacedString(M_DESCRIPTION_EXTENDED.localeCode,
+                    ? message + lineSeparator() + fastLocaleAndReplace(M_DESCRIPTION_EXTENDED.tag,
                     messageContext.getGuild(), "**" + globalUserPoints + "**")
                     : message;
 
@@ -128,7 +130,7 @@ public class Kudos extends Command {
                 messageContext.getGuild(), member.getUser(), points, messageContext)) {
             return;
         }
-        MessageSender.sendMessage(locale.getReplacedString(M_RECEIVED_KUDOS.localeCode, messageContext.getGuild(),
+        MessageSender.sendMessage(fastLocaleAndReplace(M_RECEIVED_KUDOS.tag, messageContext.getGuild(),
                 member.getAsMention(), "**" + points + "**", messageContext.getAuthor().getAsMention()),
                 messageContext.getTextChannel());
     }

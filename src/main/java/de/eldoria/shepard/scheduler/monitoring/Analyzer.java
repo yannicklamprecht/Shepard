@@ -3,6 +3,7 @@ package de.eldoria.shepard.scheduler.monitoring;
 import de.eldoria.shepard.database.types.Address;
 import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.util.PingMinecraftServer;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -19,6 +20,7 @@ import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_S
 import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVICE_NAME_UNAVAILABLE;
 import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_STATUS_OF;
 import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_VERSION;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 import static de.eldoria.shepard.util.TextFormatting.getTimeAsString;
 
 class Analyzer implements Runnable {
@@ -81,7 +83,7 @@ class Analyzer implements Runnable {
         } else if (!minecraftPing.isOnline()) {
             LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
                     .setTitle(M_SERVER_DOWN.tag)
-                    .setDescription(locale.getReplacedString(M_SERVER_DOWN_MESSAGE.localeCode, channel.getGuild(),
+                    .setDescription(fastLocaleAndReplace(M_SERVER_DOWN_MESSAGE.tag, channel.getGuild(),
                             "**" + address.getName() + "**", "**" + address.getAddress() + "**"))
                     .setColor(Color.red)
                     .setThumbnail(ShepardReactions.SHULKY.thumbnail)
@@ -99,7 +101,7 @@ class Analyzer implements Runnable {
     private void analyzeNonMinecraftAddress() {
         if (!isAddressReachable()) {
             EmbedBuilder builder = new EmbedBuilder()
-                    .setTitle(locale.getReplacedString(M_SERVICE_NAME_UNAVAILABLE.localeCode, channel.getGuild(),
+                    .setTitle(fastLocaleAndReplace(M_SERVICE_NAME_UNAVAILABLE.tag, channel.getGuild(),
                             "**" + address.getName() + "**"))
                     .setDescription(M_SERVICE_ADDRESS + " " + address.getFullAddress())
                     .setThumbnail(ShepardReactions.SHULKY.thumbnail);

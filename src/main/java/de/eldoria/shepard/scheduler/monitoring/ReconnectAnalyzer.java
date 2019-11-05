@@ -3,6 +3,7 @@ package de.eldoria.shepard.scheduler.monitoring;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.Address;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.util.PingMinecraftServer;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -15,6 +16,7 @@ import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_S
 import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVICE_REACHABLE;
 import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVICE_STILL_DOWN;
 import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_VERSION;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 import static de.eldoria.shepard.util.TextFormatting.getTimeAsString;
 
 public class ReconnectAnalyzer extends Analyzer {
@@ -33,7 +35,7 @@ public class ReconnectAnalyzer extends Analyzer {
             PingMinecraftServer.MinecraftPing minecraftPing = checkMinecraftServer();
             if (minecraftPing != null && minecraftPing.isOnline()) {
                 LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
-                        .setTitle(locale.getReplacedString(M_SERVER_REACHABLE.tag, channel.getGuild(),
+                        .setTitle(fastLocaleAndReplace(M_SERVER_REACHABLE.tag, channel.getGuild(),
                                 "**" + address.getName() + "**"))
                         .addField("IP", minecraftPing.getIp() + "", true)
                         .addField("PORT", minecraftPing.getPort() + "", true)
@@ -61,7 +63,7 @@ public class ReconnectAnalyzer extends Analyzer {
             boolean addressReachable = isAddressReachable();
             if (addressReachable) {
                 LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
-                        .setTitle(locale.getReplacedString(M_SERVICE_REACHABLE.localeCode, channel.getGuild(),
+                        .setTitle(fastLocaleAndReplace(M_SERVICE_REACHABLE.tag, channel.getGuild(),
                                 "**" + address.getName() + "**"))
                         .setDescription(M_SERVICE_ADDRESS + address.getFullAddress())
                         .setFooter(getTimeAsString())
@@ -73,7 +75,7 @@ public class ReconnectAnalyzer extends Analyzer {
                 }
             } else {
                 LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
-                        .setTitle(locale.getReplacedString(M_SERVICE_STILL_DOWN.localeCode, channel.getGuild(),
+                        .setTitle(fastLocaleAndReplace(M_SERVICE_STILL_DOWN.tag, channel.getGuild(),
                                 "**" + address.getName() + "**"))
                         .setDescription(M_SERVICE_ADDRESS + address.getFullAddress())
                         .setFooter(getTimeAsString())

@@ -6,6 +6,7 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -31,6 +32,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.
 import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_REMOVED_INVITE;
 import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_REMOVED_NON_EXISTENT_INVITES;
 import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_USAGE_COUNT;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 import static java.lang.System.lineSeparator;
 
 public class Invite extends Command {
@@ -144,7 +146,7 @@ public class Invite extends Command {
                     String name = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
                     if (InviteData.addInvite(messageContext.getGuild(), invite.getCode(), name,
                             invite.getUses(), messageContext)) {
-                        MessageSender.sendMessage(locale.getReplacedString(M_ADDED_INVITE.localeCode,
+                        MessageSender.sendMessage(fastLocaleAndReplace(M_ADDED_INVITE.tag,
                                 messageContext.getGuild(),
                                 "**" + name + "**",
                                 "**" + invite.getCode() + "**",

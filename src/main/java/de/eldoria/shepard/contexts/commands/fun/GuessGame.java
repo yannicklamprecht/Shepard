@@ -8,6 +8,7 @@ import de.eldoria.shepard.database.queries.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.database.types.Rank;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.ChannelEvaluator;
@@ -33,6 +34,7 @@ import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_SCORE_GLOBAL;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_SERVER_RANKING;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_TITLE;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -122,7 +124,7 @@ public class GuessGame extends Command {
 
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
                 .setTitle(M_TITLE.tag)
-                .setDescription(locale.getReplacedString(M_GAME_DESCRIPTION.localeCode, messageContext.getGuild(),
+                .setDescription(fastLocaleAndReplace(M_GAME_DESCRIPTION.tag, messageContext.getGuild(),
                         EmoteCollection.ANIM_CHECKMARK.getEmote().getAsMention(),
                         EmoteCollection.ANIM_CROSS.getEmote().getAsMention(),
                         "30"))

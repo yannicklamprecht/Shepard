@@ -7,6 +7,7 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.QuoteData;
 import de.eldoria.shepard.database.types.QuoteElement;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -28,6 +29,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLo
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_NO_QUOTES;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_REMOVED_QUOTE;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_SAVED_QUOTE;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 import static java.lang.System.lineSeparator;
 
 public class ManageQuote extends Command {
@@ -95,7 +97,7 @@ public class ManageQuote extends Command {
         String quote = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
 
         if (QuoteData.alterQuote(messageContext.getGuild(), quoteId, quote, messageContext)) {
-            MessageSender.sendSimpleTextBox(locale.getReplacedString(M_CHANGED_QUOTE.localeCode,
+            MessageSender.sendSimpleTextBox(fastLocaleAndReplace(M_CHANGED_QUOTE.tag,
                     messageContext.getGuild(), "**" + quoteId + "**"), quote, Color.blue,
                     messageContext.getTextChannel());
         }
@@ -134,7 +136,7 @@ public class ManageQuote extends Command {
         }
 
         if (QuoteData.removeQuote(messageContext.getGuild(), quoteId, messageContext)) {
-            MessageSender.sendMessage(locale.getReplacedString(M_REMOVED_QUOTE.localeCode,
+            MessageSender.sendMessage(fastLocaleAndReplace(M_REMOVED_QUOTE.tag,
                     messageContext.getGuild(), "**" + quoteId + "**"), messageContext.getTextChannel());
         }
     }

@@ -6,6 +6,7 @@ import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.util.LocalizedField;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.InteractableMessageSender;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -31,6 +32,7 @@ import static de.eldoria.shepard.localization.enums.listener.CommandListenerLoca
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_HELP_COMMAND;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_INSUFFICIENT_PERMISSION;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_SUGGESTION;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 
 public class CommandListener extends ListenerAdapter {
@@ -75,7 +77,7 @@ public class CommandListener extends ListenerAdapter {
 
         //Return if command is send by another bot
         if (messageContext.getAuthor().isBot()) {
-            MessageSender.sendMessage(locale.getReplacedString(M_BOT_ANSWER.localeCode, messageContext.getGuild(),
+            MessageSender.sendMessage(fastLocaleAndReplace(M_BOT_ANSWER.tag, messageContext.getGuild(),
                     "**" + messageContext.getAuthor().getName() + "**"), messageContext.getTextChannel());
             return;
         }
@@ -107,7 +109,7 @@ public class CommandListener extends ListenerAdapter {
             }
             return;
         } else if (command != null && command.canBeExecutedHere(messageContext)) {
-            MessageSender.sendMessage(locale.getReplacedString(M_INSUFFICIENT_PERMISSION.localeCode,
+            MessageSender.sendMessage(fastLocaleAndReplace(M_INSUFFICIENT_PERMISSION.tag,
                     messageContext.getGuild(), command.getContextName()), messageContext.getTextChannel());
             return;
         }
@@ -128,9 +130,8 @@ public class CommandListener extends ListenerAdapter {
 
         MessageSender.sendError(
                 new LocalizedField[] {
-                        new LocalizedField(M_COMMAND_NOT_FOUND.tag, locale.getReplacedString(M_HELP_COMMAND.localeCode,
-                                messageContext.getGuild(),
-                                "`" + PrefixData.getPrefix(messageContext.getGuild(),
+                        new LocalizedField(M_COMMAND_NOT_FOUND.tag, fastLocaleAndReplace(M_HELP_COMMAND.tag,
+                                messageContext.getGuild(), "`" + PrefixData.getPrefix(messageContext.getGuild(),
                                         messageContext) + "help`"), false, messageContext)},
                 messageContext.getTextChannel());
 

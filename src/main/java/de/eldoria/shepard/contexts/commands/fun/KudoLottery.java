@@ -5,6 +5,7 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.ChannelEvaluator;
@@ -17,6 +18,7 @@ import java.awt.Color;
 
 import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_LOTTERY_RUNNING;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 public class KudoLottery extends Command {
     public KudoLottery() {
@@ -46,11 +48,11 @@ public class KudoLottery extends Command {
 
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
                 .setTitle(KudoLotteryLocale.M_EMBED_TITLE.tag)
-                .setDescription(locale.getReplacedString(KudoLotteryLocale.M_EMBED_DESCRIPTION.localeCode,
+                .setDescription(fastLocaleAndReplace(KudoLotteryLocale.M_EMBED_DESCRIPTION.tag,
                         messageContext.getGuild(), "3"))
-                .addField(locale.getReplacedString(KudoLotteryLocale.M_EMBED_KUDOS_IN_POT.localeCode,
+                .addField(fastLocaleAndReplace(KudoLotteryLocale.M_EMBED_KUDOS_IN_POT.tag,
                         messageContext.getGuild(), "1"),
-                        locale.getReplacedString(KudoLotteryLocale.M_EMBED_EXPLANATION.localeCode,
+                        fastLocaleAndReplace(KudoLotteryLocale.M_EMBED_EXPLANATION.tag,
                                 messageContext.getGuild(),
                                 EmoteCollection.INFINITY.getEmote().getAsMention(),
                                 EmoteCollection.PLUS_X.getEmote().getAsMention(),

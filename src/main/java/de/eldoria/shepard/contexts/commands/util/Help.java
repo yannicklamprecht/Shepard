@@ -6,6 +6,7 @@ import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
 import de.eldoria.shepard.localization.util.LocalizedField;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -20,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 /**
  * A command for listing all possible commands.
@@ -61,7 +64,7 @@ public class Help extends Command {
         }
 
         String prefix = PrefixData.getPrefix(messageContext.getGuild(), messageContext);
-        MessageSender.sendMessage(locale.getReplacedString(HelpLocale.M_USAGE.localeCode, messageContext.getGuild(),
+        MessageSender.sendMessage(fastLocaleAndReplace(HelpLocale.M_USAGE.tag, messageContext.getGuild(),
                 prefix), messageContext.getTextChannel());
     }
 
@@ -89,7 +92,7 @@ public class Help extends Command {
         fields.add(getCommandField(commands, ContextCategory.EXCLUSIVE, messageContext));
         fields.add(getCommandField(commands, ContextCategory.FUN, messageContext));
         fields.add(getCommandField(commands, ContextCategory.UTIL, messageContext));
-        fields.add(new LocalizedField("", locale.getReplacedString(HelpLocale.M_LIST_COMMANDS.localeCode,
+        fields.add(new LocalizedField("", fastLocaleAndReplace(HelpLocale.M_LIST_COMMANDS.tag,
                 messageContext.getGuild(),
                 "`" + PrefixData.getPrefix(messageContext.getGuild(), messageContext) + "<command> help`"),
                 false, messageContext));

@@ -5,6 +5,7 @@ import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.BaseEvaluator;
@@ -23,6 +24,8 @@ import java.util.Random;
 
 import static de.eldoria.shepard.localization.enums.minigames.KudoLotteryEvaluatorLocale.M_CONGRATULATION;
 import static de.eldoria.shepard.localization.enums.minigames.KudoLotteryEvaluatorLocale.M_NO_WINNER;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocale;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 public class KudoLotteryEvaluator extends BaseEvaluator {
     private final Map<Long, Integer> bet = new HashMap<>();
@@ -78,8 +81,8 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
         KudoData.addFreeRubberPoints(guildChannel.getGuild(), userById, winnerPoints, null);
 
         LanguageHandler locale = LanguageHandler.getInstance();
-        MessageSender.sendMessage("**" + locale.getReplacedString(M_CONGRATULATION.localeCode, guildChannel.getGuild(),
-                userById.getAsMention() + "**", "**" + sum + "**"), guildChannel);
+        MessageSender.sendMessage(fastLocaleAndReplace(M_CONGRATULATION.tag, guildChannel.getGuild(),
+                "**" + userById.getAsMention() + "**", "**" + sum + "**"), guildChannel);
 
         Evaluator.getKudoLotteryScheduler().evaluationDone(guildChannel);
     }
@@ -124,11 +127,11 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
         LanguageHandler locale = LanguageHandler.getInstance();
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(textChannel.getGuild())
                 .setTitle(KudoLotteryLocale.M_EMBED_TITLE.tag)
-                .setDescription(locale.getReplacedString(KudoLotteryLocale.M_EMBED_DESCRIPTION.localeCode,
+                .setDescription(fastLocaleAndReplace(KudoLotteryLocale.M_EMBED_DESCRIPTION.tag,
                         textChannel.getGuild(), "3"))
-                .addField(locale.getReplacedString(KudoLotteryLocale.M_EMBED_KUDOS_IN_POT.localeCode,
+                .addField(fastLocaleAndReplace(KudoLotteryLocale.M_EMBED_KUDOS_IN_POT.tag,
                         textChannel.getGuild(), sum + ""),
-                        locale.getReplacedString(KudoLotteryLocale.M_EMBED_EXPLANATION.localeCode,
+                        fastLocaleAndReplace(KudoLotteryLocale.M_EMBED_EXPLANATION.tag,
                                 textChannel.getGuild(),
                                 EmoteCollection.INFINITY.getEmote().getAsMention(),
                                 EmoteCollection.PLUS_X.getEmote().getAsMention(),

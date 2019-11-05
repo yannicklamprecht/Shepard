@@ -7,6 +7,7 @@ import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.util.UserInfoLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -22,6 +23,8 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
+
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 /**
  * A command to get important information about a user.
@@ -97,7 +100,7 @@ public class UserInfo extends Command {
         int days = period.getDays();
         String year = years != 1 ? UserInfoLocale.W_YEARS.tag : UserInfoLocale.W_YEAR.tag;
         String day = days != 1 ? UserInfoLocale.W_DAYS.tag : UserInfoLocale.W_DAY.tag;
-        return locale.getReplacedString(UserInfoLocale.M_JOINED.localeCode, messageContext.getGuild(),
+        return fastLocaleAndReplace(UserInfoLocale.M_JOINED.tag, messageContext.getGuild(),
                 formatted, years + " " + year, months + "", days + day);
     }
 }

@@ -6,6 +6,7 @@ import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -23,6 +24,7 @@ import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresen
 import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.M_LISTENING;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.M_PLAYING;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.M_STREAMING;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 public class BotPresence extends Command {
 
@@ -78,7 +80,7 @@ public class BotPresence extends Command {
                 String message = ArgumentParser.getMessage(args, 1, -1);
                 String url = ArgumentParser.getMessage(args, -1);
                 presence.setActivity(Activity.streaming(message, url));
-                MessageSender.sendMessage(locale.getReplacedString(M_STREAMING.localeCode, messageContext.getGuild(),
+                MessageSender.sendMessage(fastLocaleAndReplace(M_STREAMING.tag, messageContext.getGuild(),
                         message) + url + "!", messageContext.getTextChannel());
                 return;
             } else {

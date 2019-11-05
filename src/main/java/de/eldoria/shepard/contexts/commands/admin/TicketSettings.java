@@ -7,6 +7,7 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -39,6 +40,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.TicketSetting
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.M_SET_CREATION_MESSAGE;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.M_SET_OWNER_ROLES;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.M_SET_SUPPORT_ROLES;
+import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 import static java.lang.System.lineSeparator;
 
 public class TicketSettings extends Command {
@@ -125,7 +127,7 @@ public class TicketSettings extends Command {
 
         if (TicketData.setCreationMessage(messageContext.getGuild(), scopeTicket.getKeyword(), message,
                 messageContext)) {
-            MessageSender.sendSimpleTextBox(locale.getReplacedString(M_SET_CREATION_MESSAGE.localeCode,
+            MessageSender.sendSimpleTextBox(fastLocaleAndReplace(M_SET_CREATION_MESSAGE.tag,
                     messageContext.getGuild(), scopeTicket.getKeyword()), message, messageContext.getTextChannel());
         }
     }
@@ -145,7 +147,7 @@ public class TicketSettings extends Command {
 
         if (TicketData.addType(messageContext.getGuild(), category, null,
                 scopeTicket.getKeyword(), messageContext)) {
-            MessageSender.sendMessage(locale.getReplacedString(M_SET_CATEGORY.localeCode, messageContext.getGuild(),
+            MessageSender.sendMessage(fastLocaleAndReplace(M_SET_CATEGORY.tag, messageContext.getGuild(),
                     "**" + scopeTicket.getKeyword() + "**", category.getName()), messageContext.getTextChannel());
         }
     }
@@ -211,7 +213,7 @@ public class TicketSettings extends Command {
             for (TextChannel channel : validTextChannels) {
                 channel.delete().queue();
             }
-            MessageSender.sendMessage(locale.getReplacedString(M_REMOVE_TYPE.localeCode, messageContext.getGuild(),
+            MessageSender.sendMessage(fastLocaleAndReplace(M_REMOVE_TYPE.tag, messageContext.getGuild(),
                     "**" + scopeTicket.getKeyword() + "**"), messageContext.getTextChannel());
         }
     }
