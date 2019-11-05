@@ -1,8 +1,12 @@
 package de.eldoria.shepard.localization;
 
+import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.database.queries.LocaleData;
 import de.eldoria.shepard.localization.util.LocaleCode;
+import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.Guild;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -27,7 +31,18 @@ public class LanguageHandler {
     }
 
     public String getLanguageString(Guild guild, String localeCode) {
-        return getLanguageResource(LocaleData.getLanguage(guild, null)).getString(localeCode);
+        LocaleCode language = LocaleData.getLanguage(guild, null);
+        if (getLanguageResource(language).containsKey(localeCode)) {
+            return getLanguageResource(language).getString(localeCode);
+        } else {
+            ShepardBot.getLogger().error("Missing localization for key: " + localeCode + " in language pack: "
+                    + language.code + ". Using Fallback Language en_US");
+            MessageSender.sendSimpleErrorEmbed("Missing localization for key: " + localeCode + " in language pack: "
+                    + language.code + ". Using Fallback Language en_US", Normandy.getErrorChannel());
+
+            return getLanguageResource(LocaleCode.EN_US).getString(localeCode);
+        }
+
     }
 
     /**
@@ -58,6 +73,8 @@ public class LanguageHandler {
             ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_PATH, locale);
             languages.put(code, bundle);
         }
+
+        ShepardBot.getLogger().info("Loaded " + languages.size() + " languages!");
     }
 
 }
