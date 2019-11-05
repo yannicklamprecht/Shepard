@@ -32,8 +32,8 @@ public class ManageContext extends Command {
                 new CommandArg("context name", true,
                         new SubArg("context name", GeneralLocale.A_CONTEXT_NAME.tag)),
                 new CommandArg("action", true,
-                        new SubArg("setNsfw", C_NSFW.tag),
-                        new SubArg("setAdminOnly", C_ADMIN.tag)),
+                        new SubArg("setNsfw", C_NSFW.tag, true),
+                        new SubArg("setAdminOnly", C_ADMIN.tag, true)),
                 new CommandArg("boolean", true, new SubArg("boolean",
                         GeneralLocale.A_BOOLEAN.tag))
         };
@@ -80,11 +80,11 @@ public class ManageContext extends Command {
 
         if (state) {
             MessageSender.sendMessage("**" + M_ACTIVATED_ADMIN
-                    + "\"" + contextName.toUpperCase() + "\"**", messageContext.getTextChannel());
+                    + " \"" + contextName.toUpperCase() + "\"**", messageContext.getTextChannel());
 
         } else {
             MessageSender.sendMessage("**" + M_DEACTIVATED_ADMIN
-                    + "\"" + contextName.toUpperCase() + "\"**", messageContext.getTextChannel());
+                    + " \"" + contextName.toUpperCase() + "\"**", messageContext.getTextChannel());
         }
     }
 
@@ -103,11 +103,11 @@ public class ManageContext extends Command {
         }
 
         if (state) {
-            MessageSender.sendMessage("**" + M_ACTIVATED_NSFW + "\"" + contextName.toUpperCase() + "\"**",
+            MessageSender.sendMessage("**" + M_ACTIVATED_NSFW + " \"" + contextName.toUpperCase() + "\"**",
                     messageContext.getTextChannel());
 
         } else {
-            MessageSender.sendMessage("**" + M_DEACTIVATED_NSFW + "\"" + contextName.toUpperCase() + "\"**",
+            MessageSender.sendMessage("**" + M_DEACTIVATED_NSFW + " \"" + contextName.toUpperCase() + "\"**",
                     messageContext.getTextChannel());
         }
     }
