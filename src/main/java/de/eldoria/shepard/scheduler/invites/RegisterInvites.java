@@ -31,7 +31,7 @@ class RegisterInvites implements Runnable {
             } catch (IllegalArgumentException e) {
                 return;
             }
-            int sleepDuration = guilds.size() / 10000;
+            int sleepDuration =  10000 / guilds.size();
 
             if (ShepardBot.getConfig().debugActive()) {
                 ShepardBot.getLogger().info("Looking for unregistered invites.");
