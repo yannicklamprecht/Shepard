@@ -2,6 +2,10 @@ package de.eldoria.shepard.messagehandler;
 
 public enum ErrorType {
     /**
+     * Used for general error pasting.
+     */
+    GENERAL("error.general"),
+    /**
      * Used when a database error occurs.
      */
     DATABASE_ERROR("error.databaseError", true),

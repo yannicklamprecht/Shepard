@@ -3,6 +3,7 @@ package de.eldoria.shepard.messagehandler;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.database.types.GreetingSettings;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -171,9 +172,9 @@ public final class MessageSender {
      * @param channel channel
      */
     public static void handlePermissionException(InsufficientPermissionException error, TextChannel channel) {
-        EmbedBuilder builder = new EmbedBuilder()
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
                 .setTitle("ERROR!")
-                .setDescription("There was an Error, while doing my job. Please check the following error.")
+                .setDescription(ErrorType.GENERAL.message)
                 .addField("Error", error.getMessage(), false)
                 .setColor(Color.red)
                 .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
