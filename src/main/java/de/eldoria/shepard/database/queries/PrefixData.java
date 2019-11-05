@@ -1,6 +1,7 @@
 package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.contexts.commands.util.SystemInfo;
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.util.DefaultMap;
@@ -9,13 +10,14 @@ import net.dv8tion.jda.api.entities.Guild;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 
 import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public final class PrefixData {
-    private static final Map<Long, String> prefixes = new DefaultMap<>(ShepardBot.getConfig().getPrefix());
-    private static final Map<Long, Boolean> cacheDirty = new DefaultMap<>(true);
+    private static final Map<Long, String> prefixes = new HashMap<>();
+    private static final DefaultMap<Long, Boolean> cacheDirty = new DefaultMap<>(true);
 
     private PrefixData() {
     }
@@ -55,7 +57,6 @@ public final class PrefixData {
         if (!prefixes.containsKey(guild.getIdLong()) || cacheDirty.get(guild.getIdLong())) {
             loadPrefix(guild);
         }
-
         return prefixes.get(guild.getIdLong());
     }
 
@@ -64,13 +65,12 @@ public final class PrefixData {
                 .prepareStatement("SELECT * from shepard_func.get_prefix(?)")) {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
-            prefixes.clear();
             if (result.next()) {
-                String prefix = result.getString("prefix");
-
-                prefixes.put(guild.getIdLong(), prefix);
+                String prefix = result.getString(1);
+                if (prefix != null) {
+                    prefixes.put(guild.getIdLong(), ShepardBot.getConfig().getPrefix());
+                }
             }
-
             cacheDirty.put(guild.getIdLong(), false);
 
         } catch (SQLException e) {

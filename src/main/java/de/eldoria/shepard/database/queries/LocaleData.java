@@ -2,6 +2,7 @@ package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.DatabaseConnector;
+import de.eldoria.shepard.localization.util.LocaleCode;
 import de.eldoria.shepard.util.DefaultMap;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
@@ -9,38 +10,40 @@ import net.dv8tion.jda.api.entities.Guild;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public class LocaleData {
-    private static final Map<Long, String> languages = new DefaultMap<>(ShepardBot.getConfig().getPrefix());
-    private static final Map<Long, Boolean> cacheDirty = new DefaultMap<>(true);
+    private static final Map<Long, LocaleCode> languages = new HashMap<>();
+    private static final DefaultMap<Long, Boolean> cacheDirty = new DefaultMap<>(true);
 
     private LocaleData() {
     }
 
     /**
-     * Sets the locale_code for a guild.
+     * Sets the languageCode for a guild.
      *
-     * @param guild          Guild for which the locale_code should be set
-     * @param locale_code         locale_code to set.
+     * @param guild          Guild for which the languageCode should be set
+     * @param localeCode     languageCode to set.
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setLanguage(Guild guild, String locale_code, MessageEventDataWrapper messageContext) {
+    public static boolean setLanguage(Guild guild, LocaleCode localeCode, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_language(?,?)")) {
             statement.setString(1, guild.getId());
-            statement.setString(2, locale_code);
+            statement.setString(2, localeCode.code);
             statement.execute();
-            languages.put(guild.getIdLong(), locale_code);
+            languages.put(guild.getIdLong(), localeCode);
         } catch (SQLException e) {
             handleExceptionAndIgnore(e, messageContext);
             return false;
         }
 
-        ShepardBot.getLogger().info("Changed locale_code of server " + guild.getName() + " to " + locale_code);
+        ShepardBot.getLogger().info("Changed languageCode of server " + guild.getName() + " to " + localeCode);
         return true;
     }
 
@@ -51,7 +54,7 @@ public class LocaleData {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Prefix as string
      */
-    public static String getLanguage(Guild guild, MessageEventDataWrapper messageContext) {
+    public static LocaleCode getLanguage(Guild guild, MessageEventDataWrapper messageContext) {
         if (!languages.containsKey(guild.getIdLong()) || cacheDirty.get(guild.getIdLong())) {
             loadLanguage(guild);
         }
@@ -64,10 +67,9 @@ public class LocaleData {
                 .prepareStatement("SELECT * from shepard_func.get_language(?)")) {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
-            languages.clear();
             if (result.next()) {
-                String prefix = result.getString("locale_code");
-                languages.put(guild.getIdLong(), prefix);
+                LocaleCode localeCode = LocaleCode.parse(result.getString("locale_code"));
+                languages.put(guild.getIdLong(), Objects.requireNonNullElse(localeCode, LocaleCode.EN_US));
             }
             cacheDirty.put(guild.getIdLong(), false);
         } catch (SQLException e) {
