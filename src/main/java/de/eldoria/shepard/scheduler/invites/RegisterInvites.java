@@ -24,28 +24,36 @@ class RegisterInvites implements Runnable {
 
     @Override
     public void run() {
-        List<Guild> guilds;
-        try {
-            guilds = ShepardBot.getJDA().getGuilds();
-        } catch (IllegalArgumentException e) {
-            return;
-        }
-
-        if (ShepardBot.getConfig().debugActive()) {
-            ShepardBot.getLogger().info("Looking for unregistered invites.");
-        }
-
-        for (Guild guild : guilds) {
-            if (!Objects.requireNonNull(guild.getMember(ShepardBot.getJDA()
-                    .getSelfUser())).hasPermission(Permission.MANAGE_SERVER)) {
-                continue;
+        while (true) {
+            List<Guild> guilds;
+            try {
+                guilds = ShepardBot.getJDA().getGuilds();
+            } catch (IllegalArgumentException e) {
+                return;
             }
-            if (invites.containsKey(guild.getIdLong())) {
-                guild.retrieveInvites().queue(createInviteListConsumer(guild));
-            } else {
-                invites.put(guild.getIdLong(), InviteData.getInvites(guild, null).stream()
-                        .map(DatabaseInvite::getCode)
-                        .collect(Collectors.toSet()));
+            int sleepDuration = guilds.size() / 10000;
+
+            if (ShepardBot.getConfig().debugActive()) {
+                ShepardBot.getLogger().info("Looking for unregistered invites.");
+            }
+
+            for (Guild guild : guilds) {
+                if (!Objects.requireNonNull(guild.getMember(ShepardBot.getJDA()
+                        .getSelfUser())).hasPermission(Permission.MANAGE_SERVER)) {
+                    continue;
+                }
+                if (invites.containsKey(guild.getIdLong())) {
+                    guild.retrieveInvites().queue(createInviteListConsumer(guild));
+                } else {
+                    invites.put(guild.getIdLong(), InviteData.getInvites(guild, null).stream()
+                            .map(DatabaseInvite::getCode)
+                            .collect(Collectors.toSet()));
+                }
+                try {
+                    Thread.sleep(sleepDuration);
+                } catch (InterruptedException e) {
+                    return;
+                }
             }
         }
     }
