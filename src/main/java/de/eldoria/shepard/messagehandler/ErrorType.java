@@ -154,7 +154,7 @@ public enum ErrorType {
     /**
      * Get the error message of the error type.
      */
-    public final String localeCode;
+    public final String taggedMessage;
 
     /**
      * True if the error should be send as an embed.
@@ -163,9 +163,9 @@ public enum ErrorType {
 
     ErrorType(String message, boolean embed) {
         if (embed) {
-            this.localeCode = "$" + message + "$";
+            this.taggedMessage = "$" + message + "$";
         } else {
-            this.localeCode = "**ERROR**" + System.lineSeparator() + "$" + message + "$";
+            this.taggedMessage = "**ERROR**" + System.lineSeparator() + "$" + message + "$";
         }
         this.isEmbed = embed;
     }
