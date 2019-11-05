@@ -30,16 +30,12 @@ public final class PrivateMessageCollection {
      */
     public void addUser(User user) {
         MessageUser messageUser = new MessageUser(user.getName(), user.getIdLong());
-
         lastMessageUsers.remove(messageUser);
-
         lastMessageUsers.add(0, messageUser);
-
         int size = lastMessageUsers.size();
         if (size > 50) {
             lastMessageUsers.remove(50);
         }
-
     }
 
     /**

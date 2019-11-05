@@ -11,7 +11,6 @@ public class Normandy extends Keyword {
      */
     public Normandy() {
         keywords = new String[] {"normandy"};
-
     }
 
     @Override

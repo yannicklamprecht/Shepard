@@ -56,6 +56,4 @@ public class GelbooruPost {
     public String shareUrl(String baseUrl) {
         return baseUrl + "index.php?page=post&s=view&id=" + id;
     }
-
-
 }
