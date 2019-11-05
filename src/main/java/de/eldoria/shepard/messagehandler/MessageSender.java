@@ -139,9 +139,9 @@ public final class MessageSender {
      */
     public static void sendSimpleError(ErrorType type, TextChannel channel) {
         if (type.isEmbed) {
-            sendSimpleErrorEmbed(fastLocale(type.message, channel.getGuild()), channel);
+            sendSimpleErrorEmbed(fastLocale(type.localeCode, channel.getGuild()), channel);
         } else {
-            sendMessage(type.message, channel);
+            sendMessage(type.localeCode, channel);
         }
 
     }
@@ -174,7 +174,7 @@ public final class MessageSender {
     public static void handlePermissionException(InsufficientPermissionException error, TextChannel channel) {
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
                 .setTitle("ERROR!")
-                .setDescription(ErrorType.GENERAL.message)
+                .setDescription(ErrorType.GENERAL.localeCode)
                 .addField("Error", error.getMessage(), false)
                 .setColor(Color.red)
                 .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
