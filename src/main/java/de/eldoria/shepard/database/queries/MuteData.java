@@ -51,7 +51,7 @@ public final class MuteData {
         return true;
     }
 
-    private static boolean refreshGuildData(Guild guild, MessageEventDataWrapper messageContext) {
+    private static void refreshGuildData(Guild guild, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_muted_users(?)")) {
             statement.setString(1, guild.getId());
@@ -62,9 +62,7 @@ public final class MuteData {
             }
         } catch (SQLException e) {
             handleExceptionAndIgnore(e, messageContext);
-            return false;
         }
-        return true;
     }
 
     /**

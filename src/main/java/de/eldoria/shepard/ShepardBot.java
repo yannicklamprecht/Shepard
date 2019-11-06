@@ -108,7 +108,7 @@ public final class ShepardBot {
         jda.awaitReady();
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+            Class.forName("com.mysql.cj.jdbc.Driver").getConstructor().newInstance();
         } catch (Exception e) {
             ShepardBot.getLogger().error(e.getMessage());
         }

@@ -2,9 +2,9 @@ package de.eldoria.shepard.contexts.commands.argument;
 
 public class SubArg {
     private String shortCommand;
-    private String argumentName;
-    private String localeTag;
-    private boolean isSubCommand;
+    private final String argumentName;
+    private final String localeTag;
+    private final boolean isSubCommand;
 
     /**
      * Creates a new argument.
@@ -40,10 +40,6 @@ public class SubArg {
         return argumentName;
     }
 
-    public String getLocaleTag() {
-        return localeTag;
-    }
-
     /**
      * Returns the argument description in format:
      * If argument: "[argument] -> [description]"
@@ -64,11 +60,11 @@ public class SubArg {
         return shortCommand;
     }
 
-    public void setShortCommand(String shortCommand) {
+    private void setShortCommand(String shortCommand) {
         this.shortCommand = shortCommand;
     }
 
-    public String getCommandString() {
+    private String getCommandString() {
         return argumentName + " | " + shortCommand.toLowerCase();
     }
 
@@ -99,18 +95,5 @@ public class SubArg {
             }
         }
         setShortCommand(shortCommand.toString());
-    }
-
-    /**
-     * Get the unlocalized help text. Contains replacement localization tags.
-     *
-     * @return help test with localization tags.
-     */
-    public String getHelpText() {
-        if (isSubCommand) {
-            return "**" + getCommandString() + "** -> " + localeTag;
-        }
-        return "**" + argumentName + "** -> " + localeTag;
-
     }
 }

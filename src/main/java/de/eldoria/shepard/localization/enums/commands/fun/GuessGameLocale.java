@@ -63,16 +63,11 @@ public enum GuessGameLocale {
     M_GAME_FOOTER("command.guessGame.message.embed.gameFooter");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     GuessGameLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

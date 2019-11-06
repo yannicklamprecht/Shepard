@@ -1,9 +1,7 @@
 package de.eldoria.shepard.localization.util;
 
 import de.eldoria.shepard.localization.LanguageHandler;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.ArrayList;
@@ -13,36 +11,6 @@ import java.util.regex.Pattern;
 
 public class TextLocalizer {
     private static final Pattern LOCALIZATION_CODE = Pattern.compile("\\$([a-zA-Z.]+?)\\$");
-
-    /**
-     * Creates a localized field.
-     *
-     * @param title          Title with optional language replacement.
-     * @param description    description with optional language replacement.
-     * @param inline         true if field should be inline
-     * @param messageContext message Context.
-     * @return localized message embed field
-     */
-    public static MessageEmbed.Field getLocalizedField(String title, String description, boolean inline,
-                                                       MessageEventDataWrapper messageContext) {
-        return getLocalizedField(title, description, inline, messageContext.getGuild());
-    }
-
-    /**
-     * Creates a localized field.
-     *
-     * @param title       Title with optional language replacement.
-     * @param description description with optional language replacement.
-     * @param inline      true if field should be inline
-     * @param guild       guild for localization.
-     * @return localized message embed field
-     */
-    public static MessageEmbed.Field getLocalizedField(String title, String description, boolean inline, Guild guild) {
-        return new MessageEmbed.Field(fastLocale(title, guild),
-                fastLocale(description, guild),
-                inline);
-    }
-
 
     /**
      * Get a localized message back.
@@ -97,8 +65,8 @@ public class TextLocalizer {
             //Search for replacement
             for (int i = 0; i < replacements.length; i++) {
                 //Search till no replacement is found!
-                if (languageString.contains("%" + i + "%")) {
-                    languageString = languageString.replace("%" + i + "%", replacements[replacementIndex]);
+                if (result.contains("%" + i + "%")) {
+                    result = result.replace("%" + i + "%", replacements[replacementIndex]);
                     replacementIndex++;
                 } else {
                     break;

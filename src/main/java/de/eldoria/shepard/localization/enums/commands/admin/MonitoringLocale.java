@@ -55,16 +55,11 @@ public enum MonitoringLocale {
     M_REGISTERED_ADDRESSES("command.monitoring.message.registeredAddresses");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     MonitoringLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

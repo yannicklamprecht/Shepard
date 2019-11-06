@@ -32,16 +32,11 @@ public enum ManageContextLocale {
 
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     ManageContextLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

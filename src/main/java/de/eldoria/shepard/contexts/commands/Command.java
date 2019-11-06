@@ -32,7 +32,7 @@ public abstract class Command extends ContextSensitive {
     /**
      * Language handler instance.
      */
-    protected LanguageHandler locale;
+    protected final LanguageHandler locale;
     /**
      * Name of the command.
      */

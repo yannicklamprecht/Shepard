@@ -79,16 +79,11 @@ public enum HelpLocale {
     W_ALIASES("command.help.word.aliases");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     HelpLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

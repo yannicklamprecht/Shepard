@@ -17,7 +17,7 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocale;
  * Wrapper for auto localization of embeds.
  */
 public class LocalizedEmbedBuilder extends EmbedBuilder {
-    private Guild guild;
+    private final Guild guild;
 
     public LocalizedEmbedBuilder(MessageEventDataWrapper messageContext) {
         this.guild = messageContext.getGuild();

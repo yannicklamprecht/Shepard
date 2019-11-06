@@ -43,16 +43,11 @@ public enum AnalyzerLocale {
     M_SERVICE_STILL_DOWN("monitoringAnalyzer.message.serviceStillDown");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     AnalyzerLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

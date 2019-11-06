@@ -32,42 +32,12 @@ public class CommandArg {
     }
 
     /**
-     * Get the name of the argument.
-     *
-     * @return the name.
-     */
-    public String getArgName() {
-        return argName;
-    }
-
-    /**
-     * Get the description of the argument.
-     *
-     * @return the description.
-     */
-    public SubArg[] getSubArgs() {
-        return subArgs;
-    }
-
-    /**
      * Get whether the argument is required or not.
      *
      * @return {@code true} if the argument is required, {@code false} otherwise.
      */
     public boolean isRequired() {
         return required;
-    }
-
-    private boolean areShortCommandsUnique() {
-        Set<String> shortCommands = new HashSet<>();
-        for (var subArg : subArgs) {
-            if (subArg.isSubCommand()) {
-                if (!shortCommands.add(subArg.getShortCommand())) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     /**
@@ -78,9 +48,9 @@ public class CommandArg {
      */
     public String getHelpString() {
         if (isRequired()) {
-            return "[" + getArgName().toUpperCase() + "]";
+            return "[" + argName.toUpperCase() + "]";
         } else {
-            return "<" + getArgName().toUpperCase() + ">";
+            return "<" + argName.toUpperCase() + ">";
         }
     }
 
@@ -90,7 +60,7 @@ public class CommandArg {
      * @return string with more information
      */
     public String getArgHelpString() {
-        return "**" + getArgName().toUpperCase() + "** " + (isRequired() ? W_REQUIRED : W_OPTIONAL) + lineSeparator()
+        return "**" + argName.toUpperCase() + "** " + (isRequired() ? W_REQUIRED : W_OPTIONAL) + lineSeparator()
                 + getSubArgHelpString();
     }
 
@@ -107,7 +77,7 @@ public class CommandArg {
         } while (!getNotUniqueSubArgs().isEmpty());
     }
 
-    public String getSubArgHelpString() {
+    private String getSubArgHelpString() {
         return Arrays.stream(subArgs).map(SubArg::getArgumentDesc)
                 .collect(Collectors.joining(lineSeparator()));
     }

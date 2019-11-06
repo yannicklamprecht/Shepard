@@ -19,16 +19,11 @@ public enum PrivateMessageLocale {
     A_MESSAGE("command.privateMessage.argument.message");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     PrivateMessageLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

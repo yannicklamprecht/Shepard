@@ -140,10 +140,9 @@ public final class GuessGameData {
      * @param users          List of users where the score should be applied
      * @param score          The score which should be applied
      * @param messageContext messageContext from command sending for error handling. Can be null.
-     * @return true if the query execution was successful
      */
-    public static boolean addVoteScore(Guild guild, List<User> users, int score,
-                                       MessageEventDataWrapper messageContext) {
+    public static void addVoteScore(Guild guild, List<User> users, int score,
+                                    MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_guess_game_score(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -154,9 +153,7 @@ public final class GuessGameData {
             statement.execute();
         } catch (SQLException e) {
             handleExceptionAndIgnore(e, messageContext);
-            return false;
         }
-        return true;
     }
 
     /**

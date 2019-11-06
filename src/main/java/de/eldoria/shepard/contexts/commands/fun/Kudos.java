@@ -7,7 +7,6 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.database.types.Rank;
-import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.TextFormatting;
@@ -19,23 +18,14 @@ import java.util.List;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USER;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.A_POINTS;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.C_EMPTY;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.C_GIVE;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.C_TOP;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.C_TOP_GLOBAL;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_DESCRIPTION_EXTENDED;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_DESCRIPTION_GENERAL;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_GLOBAL_RANKING;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_RECEIVED_KUDOS;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_SERVER_RANKING;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 import static java.lang.System.lineSeparator;
 
 public class Kudos extends Command {
     public Kudos() {
         commandName = "kudos";
-        commandDesc = "Give kudos to others, when they do good things. You earn one point every hour.";
+        commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", false,
                         new SubArg("leave empty", C_EMPTY.tag, false),
@@ -74,7 +64,7 @@ public class Kudos extends Command {
         CommandArg arg = commandArgs[0];
 
         if (arg.isSubCommand(cmd, 0)) {
-            give(label, args, messageContext);
+            give(args, messageContext);
             return;
         }
 
@@ -91,7 +81,7 @@ public class Kudos extends Command {
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
-    private void give(String label, String[] args, MessageEventDataWrapper messageContext) {
+    private void give(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 3) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
         }

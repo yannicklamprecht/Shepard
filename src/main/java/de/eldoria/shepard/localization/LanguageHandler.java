@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class LanguageHandler {
     private static final String BUNDLE_PATH = "locale";
     private static LanguageHandler instance;
-    private HashMap<LocaleCode, ResourceBundle> languages = new HashMap<>();
+    private final HashMap<LocaleCode, ResourceBundle> languages = new HashMap<>();
 
     private static void initialize() {
         if (instance != null) {
@@ -33,7 +33,7 @@ public class LanguageHandler {
     }
 
     public String getLanguageString(Guild guild, String localeCode) {
-        LocaleCode language = LocaleData.getLanguage(guild, null);
+        LocaleCode language = LocaleData.getLanguage(guild);
         if (getLanguageResource(language).containsKey(localeCode)) {
             return getLanguageResource(language).getString(localeCode);
         } else {

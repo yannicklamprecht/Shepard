@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 public class LocalizedField {
-    private MessageEmbed.Field field;
+    private final MessageEmbed.Field field;
 
     public LocalizedField(String title, String description, boolean inline, MessageEventDataWrapper messageContext) {
         field = new MessageEmbed.Field(TextLocalizer.fastLocale(title, messageContext.getGuild()),

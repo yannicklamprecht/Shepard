@@ -7,7 +7,6 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
-import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.guessgame.ImageRegister;
@@ -109,7 +108,6 @@ public class GuessGameConfig extends Command {
                 .setColor(hentaiImage.isNsfw() ? Color.red : Color.green);
 
         messageContext.getChannel().sendMessage(builder.build()).queue();
-        return;
     }
 
     private void changeFlag(String[] args, MessageEventDataWrapper messageContext) {

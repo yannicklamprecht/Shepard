@@ -6,7 +6,6 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
-import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;

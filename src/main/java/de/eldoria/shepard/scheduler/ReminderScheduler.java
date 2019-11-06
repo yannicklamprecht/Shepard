@@ -2,9 +2,7 @@ package de.eldoria.shepard.scheduler;
 
 import de.eldoria.shepard.database.queries.ReminderData;
 import de.eldoria.shepard.database.types.ReminderComplex;
-import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.enums.scheduler.ReminderLocale;
-import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.MessageSender;
 
 import java.util.List;
@@ -37,7 +35,6 @@ public class ReminderScheduler implements Runnable {
                 return;
             }
 
-            LanguageHandler locale = LanguageHandler.getInstance();
             MessageSender.sendMessage(fastLocaleAndReplace(ReminderLocale.M_REMINDER.tag,
                     reminder.getGuild(), reminder.getUser().getAsMention()) + System.lineSeparator()
                     + "**" + reminder.getText() + "**", reminder.getChannel());

@@ -4,9 +4,7 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.PrefixData;
-import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.util.LocalizedField;
-import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.InteractableMessageSender;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -36,8 +34,6 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndRe
 
 
 public class CommandListener extends ListenerAdapter {
-    private LanguageHandler locale = LanguageHandler.getInstance();
-
     @Override
     public void onGuildMessageUpdate(@Nonnull GuildMessageUpdateEvent event) {
         if (event.getMessage().getTimeCreated().isAfter(OffsetDateTime.now().minusMinutes(5))) {

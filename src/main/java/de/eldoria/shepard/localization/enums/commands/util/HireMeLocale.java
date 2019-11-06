@@ -19,16 +19,11 @@ public enum HireMeLocale {
     M_TAKE_ME("command.hireMe.message.takeMe");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     HireMeLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

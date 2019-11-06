@@ -7,13 +7,19 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
+import de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.BooleanState;
 
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_ADMIN;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_NSFW;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_ACTIVATED_ADMIN;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_ACTIVATED_NSFW;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_DEACTIVATED_ADMIN;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_DEACTIVATED_NSFW;
 
 public class ManageContext extends Command {
 
@@ -23,7 +29,7 @@ public class ManageContext extends Command {
     public ManageContext() {
         commandName = "manageContext";
         commandAliases = new String[] {"mc"};
-        commandDesc = "Manage the settings of a context";
+        commandDesc = ManageContextLocale.DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("context name", true,
                         new SubArg("context name", GeneralLocale.A_CONTEXT_NAME.tag)),

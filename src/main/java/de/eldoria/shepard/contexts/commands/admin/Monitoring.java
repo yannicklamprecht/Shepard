@@ -9,7 +9,6 @@ import de.eldoria.shepard.database.queries.MonitoringData;
 import de.eldoria.shepard.database.types.Address;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.WordsLocale;
-import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.AddressType;
@@ -170,8 +169,9 @@ public class Monitoring extends Command {
     }
 
     private void disable(MessageEventDataWrapper messageContext) {
-        MonitoringData.removeMonitoringChannel(messageContext.getGuild(), messageContext);
-        MessageSender.sendMessage(M_REMOVED_CHANNEL.tag, messageContext.getTextChannel());
+        if (MonitoringData.removeMonitoringChannel(messageContext.getGuild(), messageContext)) {
+            MessageSender.sendMessage(M_REMOVED_CHANNEL.tag, messageContext.getTextChannel());
+        }
     }
 
     private void list(MessageEventDataWrapper messageContext) {

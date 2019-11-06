@@ -43,16 +43,11 @@ public enum BotPresenceLocale {
     M_CLEAR("command.botPresence.message.clear");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     BotPresenceLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

@@ -31,16 +31,11 @@ public enum GreetingsLocale {
     M_SET_MESSAGE("command.greeting.messages.setMessage");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     GreetingsLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

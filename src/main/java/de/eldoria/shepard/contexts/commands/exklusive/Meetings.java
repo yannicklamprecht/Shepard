@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static de.eldoria.shepard.calendar.CalendarQuickstart.getEldoriaMeetings;
@@ -32,9 +31,6 @@ public class Meetings extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         try {
-            java.util.Calendar cal = java.util.Calendar.getInstance();
-            Date currentDate = cal.getTime();
-
             List<CalendarEvent> calendarEvent = getEldoriaMeetings();
             SimpleDateFormat getTime = new SimpleDateFormat("HH:mm");
             SimpleDateFormat getDate = new SimpleDateFormat("dd.MM.yyyy");

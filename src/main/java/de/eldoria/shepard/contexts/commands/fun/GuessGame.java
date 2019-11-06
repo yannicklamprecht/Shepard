@@ -7,8 +7,8 @@ import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.database.types.Rank;
+import de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
-import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.ChannelEvaluator;
@@ -40,12 +40,10 @@ import static java.lang.System.lineSeparator;
 
 public class GuessGame extends Command {
 
-    private static final String TITLE = "NSFW or not! Guess now!";
-
     public GuessGame() {
         commandName = "guessGame";
         commandAliases = new String[] {"nsfwornot"};
-        commandDesc = "Game where you have to guess if a cropped image is part of a NSFW image or not.";
+        commandDesc = GuessGameLocale.DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", false,
                         new SubArg("start game", C_START.tag),

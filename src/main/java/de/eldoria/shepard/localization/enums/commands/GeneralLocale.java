@@ -34,10 +34,6 @@ public enum GeneralLocale {
      */
     A_GUILDS("command.general.argument.guilds"),
     /**
-     * Localization key for argument [message].
-     */
-    A_MESSAGE("command.general.argument.message"),
-    /**
      * Localization key for argument [message] \n Supported Placeholders: {user_tag} {user_name} {user_mention}.
      */
     A_MESSAGE_MENTION("command.general.argument.messageMention"),
@@ -71,16 +67,11 @@ public enum GeneralLocale {
     A_BOOLEAN_YES_NO("command.general.argument.booleanYesNo");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     GeneralLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

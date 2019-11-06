@@ -59,16 +59,11 @@ public enum TicketLocale {
     M_TICKET_SUPPORT_ROLES("command.ticket.message.ticketSupporterRoles");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     TicketLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

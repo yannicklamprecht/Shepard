@@ -55,16 +55,11 @@ public enum PermissionLocale {
     M_ROLE_ACCESS_REVOKED("command.permission.message.roleAccessRevoked");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     PermissionLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

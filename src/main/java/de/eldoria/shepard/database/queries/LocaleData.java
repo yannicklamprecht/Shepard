@@ -51,10 +51,9 @@ public final class LocaleData {
      * Get the prefix for a guild.
      *
      * @param guild          Guild object for lookup
-     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Prefix as string
      */
-    public static LocaleCode getLanguage(Guild guild, MessageEventDataWrapper messageContext) {
+    public static LocaleCode getLanguage(Guild guild) {
         if (!languages.containsKey(guild.getIdLong()) || cacheDirty.get(guild.getIdLong())) {
             loadLanguage(guild);
         }

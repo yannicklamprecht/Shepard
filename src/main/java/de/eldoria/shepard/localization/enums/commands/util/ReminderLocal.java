@@ -39,16 +39,11 @@ public enum ReminderLocal {
     M_REMIND_TIME("command.reminder.message.remindTime");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     ReminderLocal(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

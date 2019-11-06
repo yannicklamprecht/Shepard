@@ -3,7 +3,6 @@ package de.eldoria.shepard.scheduler.monitoring;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.Address;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
-import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.util.PingMinecraftServer;
 import net.dv8tion.jda.api.entities.TextChannel;

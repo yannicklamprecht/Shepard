@@ -36,7 +36,7 @@ final class TicketHelper {
         Set<Role> newRoleSet = new HashSet<>();
         for (TextChannel channel : channels) {
             List<Role> roles = ArgumentParser.getRoles(messageContext.getGuild(),
-                    getChannelOwnerRoles(messageContext.getGuild(), channel, messageContext));
+                    getChannelOwnerRoles(messageContext.getGuild(), channel));
             newRoleSet.addAll(roles);
         }
 

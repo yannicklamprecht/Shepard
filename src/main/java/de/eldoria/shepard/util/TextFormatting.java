@@ -203,8 +203,8 @@ public final class TextFormatting {
             int[] length = new int[table[0].length];
             for (int column = 0; column < length.length; column++) {
                 int max = 0;
-                for (int row = 0; row < table.length; row++) {
-                    max = Math.max(max, table[row][column].length());
+                for (String[] strings : table) {
+                    max = Math.max(max, strings[column].length());
                 }
                 length[column] = max;
             }

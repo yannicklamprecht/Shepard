@@ -138,7 +138,6 @@ public final class QuoteData {
      * @return List of Quote objects
      */
     public static int getQuotesCount(Guild guild, MessageEventDataWrapper messageContext) {
-        List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_quote_count(?)")) {
             statement.setString(1, guild.getId());
@@ -161,7 +160,6 @@ public final class QuoteData {
      * @return List of Quote objects
      */
     public static int getQuotesCountByKeyword(Guild guild, String keyword, MessageEventDataWrapper messageContext) {
-        List<QuoteElement> quotes = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_quote_count_by_keyword(?,?)")) {
             statement.setString(1, guild.getId());

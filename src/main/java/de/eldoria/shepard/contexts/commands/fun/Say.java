@@ -16,7 +16,7 @@ public class Say extends Command {
      */
     public Say() {
         commandName = "say";
-        commandDesc = "Let shepard say something - Use \"sayd\" to delete your command afterwards.";
+        commandDesc = SayLocale.DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("Message", true,
                         new SubArg("message", SayLocale.A_SAY.tag))

@@ -31,16 +31,11 @@ public enum SystemInfoLocale {
     M_SERVICE_INFO_MESSAGE("command.systemInfo.message.serviceInfoText");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     SystemInfoLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

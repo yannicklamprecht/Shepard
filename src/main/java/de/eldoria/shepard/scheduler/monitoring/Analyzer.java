@@ -1,9 +1,7 @@
 package de.eldoria.shepard.scheduler.monitoring;
 
 import de.eldoria.shepard.database.types.Address;
-import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
-import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.util.PingMinecraftServer;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -33,10 +31,6 @@ class Analyzer implements Runnable {
      */
     protected final TextChannel channel;
     /**
-     * language handler instance.
-     */
-    protected final LanguageHandler locale;
-    /**
      * Only Report Errors.
      */
     private final boolean onlyError;
@@ -46,7 +40,6 @@ class Analyzer implements Runnable {
         this.address = address;
         this.channel = channel;
         this.onlyError = onlyError;
-        this.locale = LanguageHandler.getInstance();
     }
 
     @Override

@@ -55,16 +55,11 @@ public enum TicketSettingsLocale {
     M_SET_CREATION_MESSAGE("command.ticketSettings.message.setCreationMessage");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     TicketSettingsLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

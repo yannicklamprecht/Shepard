@@ -10,7 +10,7 @@ public abstract class BaseEvaluator implements Runnable {
      */
     protected final long channelId;
 
-    public BaseEvaluator(long messageId, long channelId) {
+    protected BaseEvaluator(long messageId, long channelId) {
         this.messageId = messageId;
         this.channelId = channelId;
     }

@@ -19,16 +19,11 @@ public enum GuessGameImageRegisterListenerLocale {
     M_SET_REGISTERED("listener.guessGameImageRegisterListener.message.setRegistered");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     GuessGameImageRegisterListenerLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

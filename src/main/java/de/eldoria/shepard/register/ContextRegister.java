@@ -41,23 +41,13 @@ import de.eldoria.shepard.contexts.commands.util.Reminder;
 import de.eldoria.shepard.contexts.commands.util.SystemInfo;
 import de.eldoria.shepard.contexts.commands.util.Test;
 import de.eldoria.shepard.contexts.commands.util.UserInfo;
-import de.eldoria.shepard.contexts.keywords.keyword.AmIRight;
-import de.eldoria.shepard.contexts.keywords.keyword.CommanderQuestion;
-import de.eldoria.shepard.contexts.keywords.keyword.Communism;
-import de.eldoria.shepard.contexts.keywords.keyword.DariNope;
-import de.eldoria.shepard.contexts.keywords.keyword.DariYes;
-import de.eldoria.shepard.contexts.keywords.keyword.Mlp;
-import de.eldoria.shepard.contexts.keywords.keyword.Normandy;
-import de.eldoria.shepard.contexts.keywords.keyword.Nudes;
-import de.eldoria.shepard.contexts.keywords.keyword.SomeoneKeyword;
-import de.eldoria.shepard.contexts.keywords.keyword.Thing;
 
 public final class ContextRegister {
 
     private ContextRegister() {
     }
 
-    private static void registerKeywords() {
+    /*private static void registerKeywords() {
         new AmIRight();
         new CommanderQuestion();
         new Communism();
@@ -68,7 +58,7 @@ public final class ContextRegister {
         new Nudes();
         new Thing();
         new SomeoneKeyword();
-    }
+    }*/
 
     private static void registerUtilCommands() {
         new Reminder();

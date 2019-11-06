@@ -47,16 +47,11 @@ public enum ManageQuoteLocale {
     M_NO_QUOTES("command.manageQuote.message.noQuotes");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     ManageQuoteLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

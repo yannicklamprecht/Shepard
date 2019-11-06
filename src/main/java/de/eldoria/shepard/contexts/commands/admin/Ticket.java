@@ -10,7 +10,6 @@ import de.eldoria.shepard.database.types.TicketType;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.WordsLocale;
-import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -234,8 +233,11 @@ public class Ticket extends Command {
 
                     //Saves channel in database
 
-                    TicketData.createChannel(messageContext.getGuild(), channel,
-                            member.getUser(), ticket.getKeyword(), messageContext);
+                    if (!TicketData.createChannel(messageContext.getGuild(), channel,
+                            member.getUser(), ticket.getKeyword(), messageContext)) {
+                        channel.delete().queue();
+                        return;
+                    }
 
                     //Get ticket support and owner roles
                     List<Role> supportRoles = ArgumentParser.getRoles(messageContext.getGuild(),

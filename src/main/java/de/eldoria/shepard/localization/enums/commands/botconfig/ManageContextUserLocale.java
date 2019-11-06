@@ -47,16 +47,11 @@ public enum ManageContextUserLocale {
     M_DEACTIVATED_CHECK("command.manageContextUser.message.deactivatedCheck");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     ManageContextUserLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

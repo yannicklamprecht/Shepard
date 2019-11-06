@@ -32,16 +32,11 @@ public enum GuessGameEvaluatorLocale {
     M_IMAGE_NOT_DISPLAYED("evaluator.guessGame.message.imageNotDisplayed");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     GuessGameEvaluatorLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 

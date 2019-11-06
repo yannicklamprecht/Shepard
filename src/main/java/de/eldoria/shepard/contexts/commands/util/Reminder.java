@@ -9,7 +9,6 @@ import de.eldoria.shepard.database.queries.ReminderData;
 import de.eldoria.shepard.database.types.ReminderSimple;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.util.ReminderLocal;
-import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.TextFormatting;
@@ -95,13 +94,13 @@ public class Reminder extends Command {
         ReminderSimple reminder = userReminder.stream().filter(reminderSimple ->
                 reminderSimple.getReminderId() == number).collect(Collectors.toList()).get(0);
 
-        ReminderData.removeUserReminder(messageContext.getGuild(), messageContext.getAuthor(),
-                number, messageContext);
-
-        MessageSender.sendMessage(fastLocaleAndReplace(ReminderLocal.M_REMOVED.tag,
-                messageContext.getGuild(), reminder.getReminderId() + "",
-                TextFormatting.cropText(reminder.getText(), "...", 20, true),
-                reminder.getTime()), messageContext.getTextChannel());
+        if (ReminderData.removeUserReminder(messageContext.getGuild(), messageContext.getAuthor(),
+                number, messageContext)) {
+            MessageSender.sendMessage(fastLocaleAndReplace(ReminderLocal.M_REMOVED.tag,
+                    messageContext.getGuild(), reminder.getReminderId() + "",
+                    TextFormatting.cropText(reminder.getText(), "...", 20, true),
+                    reminder.getTime()), messageContext.getTextChannel());
+        }
     }
 
     private void list(MessageEventDataWrapper messageContext) {

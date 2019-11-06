@@ -2,10 +2,8 @@ package de.eldoria.shepard.minigames.kudolottery;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.KudoData;
-import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
-import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.BaseEvaluator;
@@ -24,7 +22,6 @@ import java.util.Random;
 
 import static de.eldoria.shepard.localization.enums.minigames.KudoLotteryEvaluatorLocale.M_CONGRATULATION;
 import static de.eldoria.shepard.localization.enums.minigames.KudoLotteryEvaluatorLocale.M_NO_WINNER;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocale;
 import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 public class KudoLotteryEvaluator extends BaseEvaluator {
@@ -80,7 +77,6 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
 
         KudoData.addFreeRubberPoints(guildChannel.getGuild(), userById, winnerPoints, null);
 
-        LanguageHandler locale = LanguageHandler.getInstance();
         MessageSender.sendMessage(fastLocaleAndReplace(M_CONGRATULATION.tag, guildChannel.getGuild(),
                 "**" + userById.getAsMention() + "**", "**" + sum + "**"), guildChannel);
 
@@ -124,7 +120,6 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
 
         int sum = bet.values().stream().mapToInt(Integer::intValue).sum();
 
-        LanguageHandler locale = LanguageHandler.getInstance();
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(textChannel.getGuild())
                 .setTitle(KudoLotteryLocale.M_EMBED_TITLE.tag)
                 .setDescription(fastLocaleAndReplace(KudoLotteryLocale.M_EMBED_DESCRIPTION.tag,
@@ -140,8 +135,6 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
                 .setColor(Color.orange);
 
         textChannel.retrieveMessageById(messageId)
-                .queue(a -> {
-                    a.editMessage(builder.build()).queue();
-                });
+                .queue(a -> a.editMessage(builder.build()).queue());
     }
 }

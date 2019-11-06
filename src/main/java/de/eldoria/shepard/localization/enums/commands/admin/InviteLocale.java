@@ -59,16 +59,11 @@ public enum InviteLocale {
     M_ADDED_INVITE("command.invite.messages.addedInvite");
 
     /**
-     * Get the normal locale code for direct translation.
-     */
-    public final String localeCode;
-    /**
      * Get the escaped locale code for auto translation.
      */
     public final String tag;
 
     InviteLocale(String localeCode) {
-        this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";
     }
 
