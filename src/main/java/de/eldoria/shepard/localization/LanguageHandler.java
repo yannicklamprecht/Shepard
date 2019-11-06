@@ -89,9 +89,11 @@ public class LanguageHandler {
             ResourceBundle languageResource = getLanguageResource(code);
             List<String> missingKeys = keys.stream()
                     .filter(k -> !languageResource.containsKey(k)).collect(Collectors.toUnmodifiableList());
-            MessageSender.sendSimpleErrorEmbed("Found missing keys in language pack " + code.code
-                            + System.lineSeparator() + String.join(System.lineSeparator(), missingKeys),
-                    Normandy.getErrorChannel());
+            if (!missingKeys.isEmpty()) {
+                MessageSender.sendSimpleErrorEmbed("Found missing keys in language pack " + code.code
+                                + System.lineSeparator() + String.join(System.lineSeparator(), missingKeys),
+                        Normandy.getErrorChannel());
+            }
         }
     }
 }
