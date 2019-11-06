@@ -44,11 +44,11 @@ public enum WordsLocale {
     /**
      * Localization key for word "Point".
      */
-    M_POINT("command.home.message.comeOnBoard"),
+    POINT("words.point"),
     /**
      * Localization key for word "Points".
      */
-    M_POINTS("command.home.message.comeOnBoard");
+    POINTS("words.points");
 
 
     /**
