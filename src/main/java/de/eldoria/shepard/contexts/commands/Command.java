@@ -10,6 +10,7 @@ import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.util.TextLocalizer;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.ContextSensitive;
@@ -75,6 +76,8 @@ public abstract class Command extends ContextSensitive {
                     MessageSender.handlePermissionException(e, messageContext.getTextChannel()));
         } catch (Throwable e) {
             ShepardBot.getLogger().error(e);
+            MessageSender.sendSimpleError(ErrorType.INTERNAL_ERROR, messageContext.getTextChannel());
+            return;
         }
         MessageSender.logCommand(label, args, messageContext);
         LatestCommandsCollection.getInstance().saveLatestCommand(messageContext.getGuild(), messageContext.getAuthor(),

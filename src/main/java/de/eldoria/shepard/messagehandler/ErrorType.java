@@ -10,6 +10,10 @@ public enum ErrorType {
      */
     DATABASE_ERROR("error.databaseError", true),
     /**
+     * Used when a database error occurs.
+     */
+    INTERNAL_ERROR("error.internalError", true),
+    /**
      * Used when a (web) service isn't available at the moment, e.g. http response code 4xx or 5xx.
      */
     SERVICE_UNAVAILABLE("error.serviceUnavailable"),
