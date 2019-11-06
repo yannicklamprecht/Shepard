@@ -50,6 +50,14 @@ public enum UserInfoLocale {
      */
     W_YEARS("command.userInfo.words.years"),
     /**
+     * Localization key for word "Year".
+     */
+    W_MONTH("command.userInfo.words.month"),
+    /**
+     * Localization key for word "Years".
+     */
+    W_MONTHS("command.userInfo.words.months"),
+    /**
      * Localization key for word "Day".
      */
     W_DAY("command.userInfo.words.day"),
