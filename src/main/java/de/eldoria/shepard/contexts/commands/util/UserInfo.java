@@ -100,7 +100,8 @@ public class UserInfo extends Command {
         int days = period.getDays();
         String year = years != 1 ? UserInfoLocale.W_YEARS.tag : UserInfoLocale.W_YEAR.tag;
         String day = days != 1 ? UserInfoLocale.W_DAYS.tag : UserInfoLocale.W_DAY.tag;
+        String month = months != 1 ? UserInfoLocale.W_MONTHS.tag : UserInfoLocale.W_MONTH.tag;
         return fastLocaleAndReplace(UserInfoLocale.M_JOINED.tag, messageContext.getGuild(),
-                formatted, years + " " + year, months + "", days + day);
+                formatted, years + " " + year, months + " " + month, days + " " + day);
     }
 }

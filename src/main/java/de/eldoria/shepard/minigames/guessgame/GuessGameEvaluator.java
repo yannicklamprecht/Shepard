@@ -3,7 +3,6 @@ package de.eldoria.shepard.minigames.guessgame;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
-import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
@@ -80,7 +79,7 @@ public class GuessGameEvaluator extends BaseEvaluator {
                     ? lineSeparator() + TextLocalizer.fastLocaleAndReplace(M_MORE_USER.tag, guildChannel.getGuild(),
                     winners.size() - 5 + "")
                     : "") + lineSeparator()
-                    + M_EARN + " " + votePoints + " " + (votePoints > 1 ? WordsLocale.M_POINTS : WordsLocale.M_POINT);
+                    + M_EARN + " " + votePoints + " " + (votePoints > 1 ? WordsLocale.POINTS : WordsLocale.POINT);
 
             builder.addField(M_CONGRATULATION.tag, names + moreWinner, false);
         } else {
