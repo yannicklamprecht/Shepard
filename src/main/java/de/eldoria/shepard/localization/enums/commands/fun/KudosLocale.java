@@ -51,6 +51,10 @@ public enum KudosLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     KudosLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

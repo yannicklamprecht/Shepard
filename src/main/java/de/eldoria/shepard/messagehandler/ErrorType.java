@@ -169,16 +169,26 @@ public enum ErrorType {
      */
     public final boolean isEmbed;
 
-    ErrorType(String message, boolean embed) {
+    /**
+     * Create a new error type.
+     *
+     * @param tag   locale tag for error
+     * @param embed true if error should be send as embed
+     */
+    ErrorType(String tag, boolean embed) {
         if (embed) {
-            this.taggedMessage = "$" + message + "$";
+            this.taggedMessage = "$" + tag + "$";
         } else {
-            this.taggedMessage = "**ERROR**" + System.lineSeparator() + "$" + message + "$";
+            this.taggedMessage = "**ERROR**" + System.lineSeparator() + "$" + tag + "$";
         }
         this.isEmbed = embed;
     }
 
-    ErrorType(String message) {
-        this(message, false);
+    /**
+     * Create a new error type. Default not embed.
+     * @param tag locale tag for error
+     */
+    ErrorType(String tag) {
+        this(tag, false);
     }
 }

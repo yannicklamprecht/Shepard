@@ -28,6 +28,9 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndRe
 
 public class BotPresence extends Command {
 
+    /**
+     * Creates a new bot presence command object.
+     */
     public BotPresence() {
         commandName = "presence";
         commandDesc = BotPresenceLocale.DESCRIPTION.tag;

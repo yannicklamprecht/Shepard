@@ -32,6 +32,10 @@ public enum MagicConchLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     MagicConchLocale(String localeCode) {
         this.localeCode = localeCode;
         this.tag = "$" + localeCode + "$";

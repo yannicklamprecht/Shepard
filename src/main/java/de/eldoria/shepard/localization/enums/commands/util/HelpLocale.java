@@ -83,6 +83,10 @@ public enum HelpLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     HelpLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

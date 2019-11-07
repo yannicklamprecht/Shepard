@@ -10,7 +10,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.ChannelEvaluator;
 import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.kudolottery.KudoLotteryEvaluator;
-import de.eldoria.shepard.util.reactions.EmoteCollection;
+import de.eldoria.shepard.util.reactions.ShepardEmote;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.awt.Color;
@@ -20,6 +20,9 @@ import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLoca
 import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 public class KudoLottery extends Command {
+    /**
+     * Creates a new kudo lottery command object.
+     */
     public KudoLottery() {
         commandName = "kudoLottery";
         commandAliases = new String[] {"lottery", "kl"};
@@ -53,16 +56,16 @@ public class KudoLottery extends Command {
                         messageContext.getGuild(), "1"),
                         fastLocaleAndReplace(KudoLotteryLocale.M_EMBED_EXPLANATION.tag,
                                 messageContext.getGuild(),
-                                EmoteCollection.INFINITY.getEmote().getAsMention(),
-                                EmoteCollection.PLUS_X.getEmote().getAsMention(),
-                                EmoteCollection.PLUS_I.getEmote().getAsMention()),
+                                ShepardEmote.INFINITY.getEmote().getAsMention(),
+                                ShepardEmote.PLUS_X.getEmote().getAsMention(),
+                                ShepardEmote.PLUS_I.getEmote().getAsMention()),
                         true)
                 .setColor(Color.orange);
 
         messageContext.getChannel().sendMessage(builder.build()).queue(message -> {
-            message.addReaction(EmoteCollection.INFINITY.getEmote()).queue();
-            message.addReaction(EmoteCollection.PLUS_X.getEmote()).queue();
-            message.addReaction(EmoteCollection.PLUS_I.getEmote()).queue();
+            message.addReaction(ShepardEmote.INFINITY.getEmote()).queue();
+            message.addReaction(ShepardEmote.PLUS_X.getEmote()).queue();
+            message.addReaction(ShepardEmote.PLUS_I.getEmote()).queue();
             kudoLotteryScheduler.scheduleEvaluation(message, 180,
                     new KudoLotteryEvaluator(message, messageContext.getAuthor()));
         });

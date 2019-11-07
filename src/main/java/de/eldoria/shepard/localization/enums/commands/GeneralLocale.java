@@ -71,6 +71,10 @@ public enum GeneralLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     GeneralLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

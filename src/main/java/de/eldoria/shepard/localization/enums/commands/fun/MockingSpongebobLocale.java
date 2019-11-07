@@ -11,6 +11,10 @@ public enum MockingSpongebobLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     MockingSpongebobLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

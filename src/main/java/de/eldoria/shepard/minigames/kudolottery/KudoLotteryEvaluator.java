@@ -7,7 +7,7 @@ import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.BaseEvaluator;
-import de.eldoria.shepard.util.reactions.EmoteCollection;
+import de.eldoria.shepard.util.reactions.ShepardEmote;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -27,6 +27,12 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndRe
 public class KudoLotteryEvaluator extends BaseEvaluator {
     private final Map<Long, Integer> bet = new HashMap<>();
 
+    /**
+     * Creates a new Kudo lottery evaluator.
+     *
+     * @param message message for evaluation
+     * @param user    user for first bet.
+     */
     public KudoLotteryEvaluator(Message message, User user) {
         super(message.getIdLong(), message.getChannel().getIdLong());
         bet.put(user.getIdLong(), 1);
@@ -128,9 +134,9 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
                         textChannel.getGuild(), sum + ""),
                         fastLocaleAndReplace(KudoLotteryLocale.M_EMBED_EXPLANATION.tag,
                                 textChannel.getGuild(),
-                                EmoteCollection.INFINITY.getEmote().getAsMention(),
-                                EmoteCollection.PLUS_X.getEmote().getAsMention(),
-                                EmoteCollection.PLUS_I.getEmote().getAsMention()),
+                                ShepardEmote.INFINITY.getEmote().getAsMention(),
+                                ShepardEmote.PLUS_X.getEmote().getAsMention(),
+                                ShepardEmote.PLUS_I.getEmote().getAsMention()),
                         true)
                 .setColor(Color.orange);
 

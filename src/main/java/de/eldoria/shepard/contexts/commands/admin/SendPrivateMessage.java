@@ -16,6 +16,9 @@ import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessag
 import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.MESSAGE_DESCRIPTION;
 
 public class SendPrivateMessage extends Command {
+    /**
+     * Creates a new private message command object.
+     */
     public SendPrivateMessage() {
         commandName = "privateMessage";
         commandAliases = new String[] {"pm", "sendMessage"};

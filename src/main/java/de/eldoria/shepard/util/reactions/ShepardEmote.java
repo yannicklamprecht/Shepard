@@ -4,7 +4,7 @@ import de.eldoria.shepard.ShepardBot;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 
-public enum EmoteCollection {
+public enum ShepardEmote {
     /**
      * +1 emote.
      */
@@ -64,10 +64,18 @@ public enum EmoteCollection {
 
     private final long id;
 
-    EmoteCollection(long id) {
+    /**
+     * Creates a new emote.
+     * @param id id of the emote.
+     */
+    ShepardEmote(long id) {
         this.id = id;
     }
 
+    /**
+     * Get the emote object.
+     * @return emote object or null if emote was not found.
+     */
     public Emote getEmote() {
         Guild guildById = ShepardBot.getJDA().getGuildById(635460587341479951L);
 

@@ -19,6 +19,10 @@ public enum QuoteLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     QuoteLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

@@ -11,6 +11,10 @@ public enum RepeatCommandLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     RepeatCommandLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

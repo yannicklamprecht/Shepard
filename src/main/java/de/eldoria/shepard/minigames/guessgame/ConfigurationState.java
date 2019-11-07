@@ -1,6 +1,6 @@
 package de.eldoria.shepard.minigames.guessgame;
 
-public enum ConfigurationType {
+public enum ConfigurationState {
     /**
      * Object does not exist. No configuration process is running.
      */

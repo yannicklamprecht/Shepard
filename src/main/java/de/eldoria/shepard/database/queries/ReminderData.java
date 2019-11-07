@@ -21,6 +21,16 @@ public final class ReminderData {
     private ReminderData() {
     }
 
+    /**
+     * Add a new reminder in a interval.
+     * @param guild guild for savind
+     * @param user user which created the invite
+     * @param channel channel where the invite was created
+     * @param message message for reminder
+     * @param interval reminder interval
+     * @param messageContext
+     * @return true if the query was executed successfully
+     */
     public static boolean addReminderInterval(Guild guild, User user, TextChannel channel,
                                               String message, String interval,
                                               MessageEventDataWrapper messageContext) {
@@ -70,7 +80,13 @@ public final class ReminderData {
         return true;
     }
 
-
+    /**
+     * Get the reminder of the user on a guild.
+     * @param guild guild of the user.
+     * @param user user
+     * @param messageContext
+     * @return list of reminder of the user on the guild
+     */
     public static List<ReminderSimple> getUserReminder(Guild guild, User user, MessageEventDataWrapper messageContext) {
         List<ReminderSimple> result;
         try (PreparedStatement statement = getConn()
@@ -94,6 +110,15 @@ public final class ReminderData {
         return result;
     }
 
+    /**
+     * Remove a reminder of a user by id.
+     *
+     * @param guild guild in which the reminder should be deleted.
+     * @param user user which created the invite
+     * @param id id of the reminder
+     * @param messageContext
+     * @return true if the query was executed successfully
+     */
     public static boolean removeUserReminder(Guild guild, User user, int id, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = getConn()
                 .prepareStatement("SELECT * from shepard_func.remove_reminder(?,?,?)")) {
@@ -108,6 +133,12 @@ public final class ReminderData {
         return true;
     }
 
+    /**
+     * Get the expired reminders and delete them on database.
+     *
+     * @param messageContext
+     * @return list of expired reminder
+     */
     public static List<ReminderComplex> getAndDeleteExpiredReminder(MessageEventDataWrapper messageContext) {
         List<ReminderComplex> result;
         try (PreparedStatement statement = getConn()

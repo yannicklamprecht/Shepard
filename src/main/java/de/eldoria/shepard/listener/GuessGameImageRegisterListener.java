@@ -2,7 +2,7 @@ package de.eldoria.shepard.listener;
 
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.minigames.guessgame.ConfigurationType;
+import de.eldoria.shepard.minigames.guessgame.ConfigurationState;
 import de.eldoria.shepard.minigames.guessgame.ImageConfiguration;
 import de.eldoria.shepard.minigames.guessgame.ImageRegister;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -22,10 +22,10 @@ public class GuessGameImageRegisterListener extends ListenerAdapter {
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
         MessageEventDataWrapper wrapper = new MessageEventDataWrapper(event);
         ImageRegister register = ImageRegister.getInstance();
-        ConfigurationType configurationState = register.getConfigurationState(wrapper);
-        if (configurationState != ConfigurationType.NONE) {
+        ConfigurationState configurationState = register.getConfigurationState(wrapper);
+        if (configurationState != ConfigurationState.NONE) {
             if (event.getMessage().getAttachments().size() == 1) {
-                if (configurationState == ConfigurationType.CROPPED) {
+                if (configurationState == ConfigurationState.CROPPED) {
                     MessageSender.sendMessage(M_COPPED_REGISTERED.tag, event.getChannel());
                 }
                 register.addImage(wrapper,
@@ -34,12 +34,12 @@ public class GuessGameImageRegisterListener extends ListenerAdapter {
             }
         }
 
-        if (register.getConfigurationState(wrapper) == ConfigurationType.CONFIGURED) {
+        if (register.getConfigurationState(wrapper) == ConfigurationState.CONFIGURED) {
             ImageConfiguration configuration = register.getConfiguration(wrapper);
 
             if (register.registerConfiguration(wrapper)) {
                 LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(event.getGuild())
-                        .setTitle(configuration.isHentai() ? M_ADDED_NSFW.tag : M_ADDED_SFW.tag)
+                        .setTitle(configuration.isNsfw() ? M_ADDED_NSFW.tag : M_ADDED_SFW.tag)
                         .setThumbnail(configuration.getCroppedImage())
                         .setImage(configuration.getFullImage())
                         .setDescription(M_SET_REGISTERED.tag)

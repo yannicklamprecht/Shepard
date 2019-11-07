@@ -6,7 +6,7 @@ import de.eldoria.shepard.minigames.ChannelEvaluator;
 import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.guessgame.GuessGameEvaluator;
 import de.eldoria.shepard.minigames.kudolottery.KudoLotteryEvaluator;
-import de.eldoria.shepard.util.reactions.EmoteCollection;
+import de.eldoria.shepard.util.reactions.ShepardEmote;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -44,9 +44,9 @@ public class ReactionListener extends ListenerAdapter {
 
             Emote emote = event.getReaction().getReactionEmote().getEmote();
 
-            if (equalSnowflake(emote, EmoteCollection.ANIM_CHECKMARK.getEmote())) {
+            if (equalSnowflake(emote, ShepardEmote.ANIM_CHECKMARK.getEmote())) {
                 channelEvaluator.addVote(event.getUser(), true);
-            } else if (equalSnowflake(emote, EmoteCollection.ANIM_CROSS.getEmote())) {
+            } else if (equalSnowflake(emote, ShepardEmote.ANIM_CROSS.getEmote())) {
                 channelEvaluator.addVote(event.getUser(), false);
             }
 
@@ -68,13 +68,13 @@ public class ReactionListener extends ListenerAdapter {
 
             Emote emote = event.getReaction().getReactionEmote().getEmote();
 
-            if (equalSnowflake(emote, EmoteCollection.PLUS_X.getEmote())) {
+            if (equalSnowflake(emote, ShepardEmote.PLUS_X.getEmote())) {
                 channelEvaluator.addBet(event.getGuild(), event.getUser(), 10);
             }
-            if (equalSnowflake(emote, EmoteCollection.PLUS_I.getEmote())) {
+            if (equalSnowflake(emote, ShepardEmote.PLUS_I.getEmote())) {
                 channelEvaluator.addBet(event.getGuild(), event.getUser(), 1);
             }
-            if (equalSnowflake(emote, EmoteCollection.INFINITY.getEmote())) {
+            if (equalSnowflake(emote, ShepardEmote.INFINITY.getEmote())) {
                 channelEvaluator.addBet(event.getGuild(), event.getUser(), -1);
             }
 

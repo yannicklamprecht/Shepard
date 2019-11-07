@@ -55,7 +55,10 @@ public class SubArg {
         return "**" + getCommandString() + "** -> " + localeTag;
     }
 
-
+    /**
+     * Get the short command of the subcommand.
+     * @return short command or null if it is not a sub command.
+     */
     public String getShortCommand() {
         return shortCommand;
     }
@@ -78,10 +81,18 @@ public class SubArg {
         return isSubCommand && (cmd.equalsIgnoreCase(argumentName) || cmd.equalsIgnoreCase(shortCommand));
     }
 
+    /**
+     * Checks if the argument is a subcommand.
+     * @return true if it is a subcommand
+     */
     public boolean isSubCommand() {
         return isSubCommand;
     }
 
+    /**
+     * Generate the short command with additional length.
+     * @param additionalLength length of short command.
+     */
     public void generateShortCommand(int additionalLength) {
         char[] argumentName = getArgumentName().toCharArray();
         StringBuilder shortCommand = new StringBuilder();

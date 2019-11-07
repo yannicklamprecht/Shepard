@@ -27,6 +27,10 @@ public enum CommandListenerLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     CommandListenerLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

@@ -32,6 +32,11 @@ public class GuessGameEvaluator extends BaseEvaluator {
     private final GuessGameImage image;
     private final Map<Long, Boolean> votes = new HashMap<>();
 
+    /**
+     * Creates a new guess game evaluator.
+     * @param message message for evaluation
+     * @param image image for evaluation.
+     */
     public GuessGameEvaluator(Message message, GuessGameImage image) {
         super(message.getIdLong(), message.getChannel().getIdLong());
         this.image = image;
@@ -104,6 +109,11 @@ public class GuessGameEvaluator extends BaseEvaluator {
         Evaluator.getGuessGame().evaluationDone(guildChannel);
     }
 
+    /**
+     * Adds a vote or overrides the old vote.
+     * @param user voted user
+     * @param voteValue vote value
+     */
     public void addVote(User user, boolean voteValue) {
         votes.put(user.getIdLong(), voteValue);
     }

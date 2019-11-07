@@ -16,6 +16,9 @@ import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLoca
 import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 public class SystemInfo extends Command {
+    /**
+     * Creates a new system info command object.
+     */
     public SystemInfo() {
         commandName = "systemInfo";
         commandAliases = new String[] {"system"};

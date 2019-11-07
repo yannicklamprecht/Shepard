@@ -10,6 +10,9 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import static de.eldoria.shepard.localization.enums.commands.admin.RepeatCommandLocale.DESCRIPTION;
 
 public class RepeatCommand extends Command {
+    /**
+     * Creates a new repeat command object.
+     */
     public RepeatCommand() {
         commandName = "repeatCommand";
         commandDesc = DESCRIPTION.tag;

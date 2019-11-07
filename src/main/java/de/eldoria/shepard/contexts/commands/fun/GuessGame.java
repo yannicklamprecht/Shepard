@@ -15,7 +15,7 @@ import de.eldoria.shepard.minigames.ChannelEvaluator;
 import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.guessgame.GuessGameEvaluator;
 import de.eldoria.shepard.util.TextFormatting;
-import de.eldoria.shepard.util.reactions.EmoteCollection;
+import de.eldoria.shepard.util.reactions.ShepardEmote;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.util.List;
@@ -40,6 +40,9 @@ import static java.lang.System.lineSeparator;
 
 public class GuessGame extends Command {
 
+    /**
+     * Create a new guess game command.
+     */
     public GuessGame() {
         commandName = "guessGame";
         commandAliases = new String[] {"nsfwornot"};
@@ -123,16 +126,16 @@ public class GuessGame extends Command {
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
                 .setTitle(M_TITLE.tag)
                 .setDescription(fastLocaleAndReplace(M_GAME_DESCRIPTION.tag, messageContext.getGuild(),
-                        EmoteCollection.ANIM_CHECKMARK.getEmote().getAsMention(),
-                        EmoteCollection.ANIM_CROSS.getEmote().getAsMention(),
+                        ShepardEmote.ANIM_CHECKMARK.getEmote().getAsMention(),
+                        ShepardEmote.ANIM_CROSS.getEmote().getAsMention(),
                         "30"))
                 .setImage(hentaiImage.getCroppedImage())
                 .setFooter(M_GAME_FOOTER.tag);
 
         messageContext.getChannel().sendMessage(builder.build())
                 .queue(message -> {
-                    message.addReaction(EmoteCollection.ANIM_CHECKMARK.getEmote()).queue();
-                    message.addReaction(EmoteCollection.ANIM_CROSS.getEmote()).queue();
+                    message.addReaction(ShepardEmote.ANIM_CHECKMARK.getEmote()).queue();
+                    message.addReaction(ShepardEmote.ANIM_CROSS.getEmote()).queue();
                     channelEvaluator.scheduleEvaluation(message, 30, new GuessGameEvaluator(message, hentaiImage));
                 });
     }

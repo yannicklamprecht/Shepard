@@ -111,6 +111,11 @@ public final class TextFormatting {
         return new TableBuilder(collection, columnNames);
     }
 
+    /**
+     * Get a rank table.
+     * @param ranks list of ranks for table
+     * @return table of ranks
+     */
     public static String getRankTable(List<Rank> ranks) {
         TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(ranks, "Rank", "User", "Score");
 
@@ -139,6 +144,11 @@ public final class TextFormatting {
         private int padding = 1;
         private int rowPointer = 0;
 
+        /**
+         * Create a new tablebuilder.
+         * @param collection collection for row amount
+         * @param columnNames column names for column amount
+         */
         TableBuilder(Collection collection, String... columnNames) {
             table = new String[collection.size() + 1][columnNames.length];
             table[0] = columnNames;

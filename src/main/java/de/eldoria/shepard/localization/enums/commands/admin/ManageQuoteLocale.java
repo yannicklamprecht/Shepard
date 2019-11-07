@@ -51,6 +51,10 @@ public enum ManageQuoteLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     ManageQuoteLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

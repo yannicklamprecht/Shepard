@@ -167,6 +167,11 @@ public final class ShepardBot {
         System.exit(0);
     }
 
+    /**
+     * Get the logger instance.
+     *
+     * @return logger
+     */
     public static Logger getLogger() {
         return logger;
     }

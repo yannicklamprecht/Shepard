@@ -221,6 +221,11 @@ public abstract class Command extends ContextSensitive {
         channel.sendMessage(builder.build()).queue();
     }
 
+    /**
+     * Get the highest similarity score between command string and command name and aliases.
+     * @param command command to check
+     * @return score between 0 and 1
+     */
     public double getSimilarityScore(String command) {
         String lowerCommand = command.toLowerCase();
         double cmdScore = similarity.similarity(commandName.toLowerCase(),

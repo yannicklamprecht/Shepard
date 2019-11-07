@@ -47,6 +47,10 @@ public enum AnalyzerLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     AnalyzerLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

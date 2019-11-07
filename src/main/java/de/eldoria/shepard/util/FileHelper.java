@@ -10,6 +10,12 @@ import java.io.InputStream;
 import java.net.URL;
 
 public class FileHelper {
+    /**
+     * Get every file from a url.
+     *
+     * @param url url for download
+     * @return file object or null if the url could not be found.
+     */
     public static File getFileFromURL(String url) {
         try {
             InputStream inputStream = new URL(url).openStream();

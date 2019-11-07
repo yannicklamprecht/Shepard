@@ -111,28 +111,10 @@ public class Verifier {
     }
 
     /**
-     * Returns from a list of text user ids all valid user.
-     *
-     * @param args array of role id
-     * @return list of valid roles
+     * Get the valid users by id.
+     * @param collect list of long ids
+     * @return list of valid users.
      */
-    public static List<User> getValidUserByString(List<String> args) {
-        return getValidUserByString(args.toArray(String[]::new));
-    }
-
-    /**
-     * Returns from a list of user ids all valid user.
-     *
-     * @param args array of channel ids
-     * @return list of valid channels
-     */
-    public static List<User> getValidUserByString(String[] args) {
-        return Arrays.stream(args)
-                .map(channelId -> ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(channelId)))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-    }
-
     public static List<User> getValidUserByLong(List<Long> collect) {
         return collect.stream()
                 .map(id -> ShepardBot.getJDA().getUserById(id))

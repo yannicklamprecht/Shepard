@@ -35,7 +35,13 @@ class Analyzer implements Runnable {
      */
     private final boolean onlyError;
 
-
+    /**
+     * Creates a new analyzer.
+     *
+     * @param address   address to analyze
+     * @param channel   channel where the result should be posted
+     * @param onlyError true if only error results should be posted
+     */
     Analyzer(Address address, TextChannel channel, boolean onlyError) {
         this.address = address;
         this.channel = channel;
@@ -106,7 +112,12 @@ class Analyzer implements Runnable {
         }
     }
 
-    boolean isAddressReachable() {
+    /**
+     * Check if a address is reachable.
+     *
+     * @return true if the address is reachable
+     */
+    protected boolean isAddressReachable() {
         Socket checker = null;
         boolean reachable = false;
         try {
@@ -126,6 +137,10 @@ class Analyzer implements Runnable {
         return reachable;
     }
 
+    /**
+     * Get the minecraft ping.
+     * @return ping object or null if ping was unsuccessful.
+     */
     PingMinecraftServer.MinecraftPing checkMinecraftServer() {
         return PingMinecraftServer.pingServer(address.getFullAddress());
     }

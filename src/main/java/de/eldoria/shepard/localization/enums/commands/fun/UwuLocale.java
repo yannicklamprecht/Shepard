@@ -11,6 +11,10 @@ public enum UwuLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     UwuLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

@@ -16,6 +16,9 @@ public final class InviteScheduler {
         refreshInvites.scheduleAtFixedRate(new RefreshInvites(), 0, 60, TimeUnit.MINUTES);
     }
 
+    /**
+     * Initializes the invite scheduler if not active.
+     */
     public static void initialize() {
         if (instance == null) {
             instance = new InviteScheduler();

@@ -11,6 +11,10 @@ public enum ContextInfoLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     ContextInfoLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

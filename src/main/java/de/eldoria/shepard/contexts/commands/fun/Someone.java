@@ -18,6 +18,9 @@ import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.M
 import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 public class Someone extends Command {
+    /**
+     * Creates a new someone command object.
+     */
     public Someone() {
         commandName = "Someone";
         commandDesc = DESCRIPTION.tag;

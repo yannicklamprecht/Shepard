@@ -11,6 +11,10 @@ public enum GetRawLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     GetRawLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

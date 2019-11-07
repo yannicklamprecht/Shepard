@@ -43,6 +43,10 @@ public enum ReminderLocal {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     ReminderLocal(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

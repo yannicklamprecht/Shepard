@@ -67,6 +67,10 @@ public enum GuessGameLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     GuessGameLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

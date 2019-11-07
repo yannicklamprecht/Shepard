@@ -16,6 +16,9 @@ import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessag
 import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.A_NAME;
 
 public class PrivateAnswer extends Command {
+    /**
+     * Create a new private answer command object.
+     */
     public PrivateAnswer() {
         commandName = "privateAnswer";
         commandAliases = new String[] {"reply", "answer"};

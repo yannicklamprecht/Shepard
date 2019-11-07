@@ -63,6 +63,10 @@ public enum InviteLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     InviteLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

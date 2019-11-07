@@ -82,6 +82,13 @@ public class CommandArg {
                 .collect(Collectors.joining(lineSeparator()));
     }
 
+    /**
+     * Checks if a string matches the command or alias of a subcommand.
+     *
+     * @param cmd   command to check
+     * @param index index of subcommand.
+     * @return true if the command or alias matches. case ignore
+     */
     public boolean isSubCommand(String cmd, int index) {
         if (index >= subArgs.length || index < 0) {
             return false;
@@ -89,6 +96,13 @@ public class CommandArg {
         return subArgs[index].isSubCommand(cmd);
     }
 
+    /**
+     * Checks if a string matches the command or alias of a subcommand.
+     *
+     * @param cmd        command to check
+     * @param subCommand name of the subcommand.
+     * @return true if the command or alias matches. case ignore
+     */
     public boolean isSubCommand(String cmd, String subCommand) {
         for (SubArg arg : subArgs) {
             if (arg.getArgumentName().equalsIgnoreCase(subCommand)) {

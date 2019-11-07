@@ -15,6 +15,10 @@ public enum KudoLotteryEvaluatorLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     KudoLotteryEvaluatorLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

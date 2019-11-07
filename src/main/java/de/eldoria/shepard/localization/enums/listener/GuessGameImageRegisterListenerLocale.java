@@ -23,6 +23,10 @@ public enum GuessGameImageRegisterListenerLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     GuessGameImageRegisterListenerLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

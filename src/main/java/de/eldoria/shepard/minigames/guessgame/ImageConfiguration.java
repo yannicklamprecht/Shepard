@@ -3,14 +3,24 @@ package de.eldoria.shepard.minigames.guessgame;
 import de.eldoria.shepard.database.queries.GuessGameData;
 
 public class ImageConfiguration {
-    private final boolean hentai;
+    private final boolean nsfw;
     private String croppedImage;
     private String fullImage;
 
-    ImageConfiguration(boolean hentai) {
-        this.hentai = hentai;
+    /**
+     * Create a new image configuration.
+     *
+     * @param nsfw true if nsfw
+     */
+    ImageConfiguration(boolean nsfw) {
+        this.nsfw = nsfw;
     }
 
+    /**
+     * add a image.
+     *
+     * @param url url of cropped or full image. cropped first!
+     */
     void addImage(String url) {
         if (croppedImage == null) {
             croppedImage = url;
@@ -21,29 +31,48 @@ public class ImageConfiguration {
         }
     }
 
-
+    /**
+     * Register the images at database.
+     * @return true if registration was successfully
+     */
     boolean registerAtDatabase() {
-        return GuessGameData.addHentaiImage(croppedImage, fullImage, hentai,null);
+        return GuessGameData.addHentaiImage(croppedImage, fullImage, nsfw, null);
     }
 
-    ConfigurationType getConfigurationState() {
+    /**
+     * Configuration state.
+     * @return configuration state of the current registration.
+     */
+    ConfigurationState getConfigurationState() {
         if (croppedImage == null) {
-            return ConfigurationType.CROPPED;
+            return ConfigurationState.CROPPED;
         }
         if (fullImage == null) {
-            return ConfigurationType.FULL;
+            return ConfigurationState.FULL;
         }
-        return ConfigurationType.CONFIGURED;
+        return ConfigurationState.CONFIGURED;
     }
 
-    public boolean isHentai() {
-        return hentai;
+    /**
+     * Check if the image ist nsfw.
+     * @return true if nsfw.
+     */
+    public boolean isNsfw() {
+        return nsfw;
     }
 
+    /**
+     * Get the cropped image url.
+     * @return copped image url.
+     */
     public String getCroppedImage() {
         return croppedImage;
     }
 
+    /**
+     * Get the full image url.
+     * @return full image url.
+     */
     public String getFullImage() {
         return fullImage;
     }

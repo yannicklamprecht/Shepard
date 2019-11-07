@@ -13,6 +13,9 @@ import java.util.concurrent.TimeUnit;
 import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
 
 public class ReminderScheduler implements Runnable {
+    /**
+     * Creates a new reminder scheduler.
+     */
     public void initialize() {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(this, 1, 1, TimeUnit.MINUTES);

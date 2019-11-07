@@ -1,6 +1,6 @@
 package de.eldoria.shepard.util.reactions;
 
-public enum EmojiCollection {
+public enum Emoji {
     /**
      * :white_check_mark: emoji.
      */
@@ -35,10 +35,10 @@ public enum EmojiCollection {
     public final String unicode;
 
     /**
-     * Create a new emoji
-     * @param unicode
+     * Create a new emoji.
+     * @param unicode unicode of emoji.
      */
-    EmojiCollection(String unicode) {
+    Emoji(String unicode) {
         this.unicode = unicode;
     }
 }

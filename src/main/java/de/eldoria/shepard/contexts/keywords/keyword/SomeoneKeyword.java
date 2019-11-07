@@ -7,6 +7,9 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 public class SomeoneKeyword extends Keyword {
+    /**
+     * Creates a new someone keyword.
+     */
     public SomeoneKeyword() {
         keywords = new String[] {"@someone"};
     }

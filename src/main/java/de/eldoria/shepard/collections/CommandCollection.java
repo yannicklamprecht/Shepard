@@ -105,6 +105,11 @@ public final class CommandCollection {
          */
         final Command command;
 
+        /**
+         * Creates a new ranked command.
+         * @param rank rank of command
+         * @param command command
+         */
         RankedCommand(double rank, Command command) {
             this.rank = rank;
             this.command = command;

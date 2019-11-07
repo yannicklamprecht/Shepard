@@ -59,6 +59,10 @@ public enum TicketSettingsLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     TicketSettingsLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

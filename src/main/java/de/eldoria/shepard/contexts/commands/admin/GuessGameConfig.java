@@ -36,6 +36,9 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndRe
 
 public class GuessGameConfig extends Command {
 
+    /**
+     * Creates a new guess game config command object.
+     */
     public GuessGameConfig() {
         commandName = "guessGameConfig";
         commandAliases = new String[] {"ggconfig"};

@@ -27,6 +27,10 @@ public enum PrefixLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     PrefixLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

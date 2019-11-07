@@ -51,6 +51,10 @@ public enum ManageContextUserLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     ManageContextUserLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

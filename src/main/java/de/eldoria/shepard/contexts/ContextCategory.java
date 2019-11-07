@@ -33,7 +33,12 @@ public enum ContextCategory {
      */
     public final String categoryName;
 
-    ContextCategory(String categoryName) {
-        this.categoryName = categoryName;
+    /**
+     * Creates a new context category.
+     *
+     * @param tag locale tag of the category
+     */
+    ContextCategory(String tag) {
+        this.categoryName = tag;
     }
 }
