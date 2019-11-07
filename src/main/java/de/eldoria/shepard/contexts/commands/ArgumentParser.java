@@ -113,7 +113,7 @@ public final class ArgumentParser {
             Optional<User> first = jda.getUserCache().stream()
                     .filter(cu -> cu.getName().toLowerCase().startsWith(userString.toLowerCase())).findFirst();
             if (first.isPresent()) {
-                return first.get();
+                user = first.get();
             }
         }
         return user;
