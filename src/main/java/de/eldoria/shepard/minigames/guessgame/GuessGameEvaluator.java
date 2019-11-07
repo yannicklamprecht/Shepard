@@ -81,7 +81,7 @@ public class GuessGameEvaluator extends BaseEvaluator {
             String names = firstWinner.stream().map(IMentionable::getAsMention)
                     .collect(Collectors.joining(lineSeparator()));
             String moreWinner = (winners.size() > 5
-                    ? lineSeparator() + TextLocalizer.fastLocaleAndReplace(M_MORE_USER.tag, guildChannel.getGuild(),
+                    ? lineSeparator() + TextLocalizer.localizeAllAndReplace(M_MORE_USER.tag, guildChannel.getGuild(),
                     winners.size() - 5 + "")
                     : "") + lineSeparator()
                     + M_EARN + " " + votePoints + " " + (votePoints > 1 ? WordsLocale.POINTS : WordsLocale.POINT);

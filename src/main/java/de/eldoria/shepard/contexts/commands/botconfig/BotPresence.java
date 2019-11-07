@@ -24,7 +24,7 @@ import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresen
 import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.M_LISTENING;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.M_PLAYING;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.M_STREAMING;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 public class BotPresence extends Command {
 
@@ -83,7 +83,7 @@ public class BotPresence extends Command {
                 String message = ArgumentParser.getMessage(args, 1, -1);
                 String url = ArgumentParser.getMessage(args, -1);
                 presence.setActivity(Activity.streaming(message, url));
-                MessageSender.sendMessage(fastLocaleAndReplace(M_STREAMING.tag, messageContext.getGuild(),
+                MessageSender.sendMessage(localizeAllAndReplace(M_STREAMING.tag, messageContext.getGuild(),
                         message) + url + "!", messageContext.getTextChannel());
                 return;
             } else {

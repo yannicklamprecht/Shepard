@@ -8,14 +8,14 @@ public class LocalizedField {
     private final MessageEmbed.Field field;
 
     public LocalizedField(String title, String description, boolean inline, MessageEventDataWrapper messageContext) {
-        field = new MessageEmbed.Field(TextLocalizer.fastLocale(title, messageContext.getGuild()),
-                TextLocalizer.fastLocale(description, messageContext.getGuild()),
+        field = new MessageEmbed.Field(TextLocalizer.localizeAll(title, messageContext.getGuild()),
+                TextLocalizer.localizeAll(description, messageContext.getGuild()),
                 inline);
     }
 
     public LocalizedField(String title, String description, boolean inline, TextChannel channel) {
-        field = new MessageEmbed.Field(TextLocalizer.fastLocale(title, channel.getGuild()),
-                TextLocalizer.fastLocale(description, channel.getGuild()),
+        field = new MessageEmbed.Field(TextLocalizer.localizeAll(title, channel.getGuild()),
+                TextLocalizer.localizeAll(description, channel.getGuild()),
                 inline);
     }
 

@@ -28,7 +28,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLo
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_NO_QUOTES;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_REMOVED_QUOTE;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_SAVED_QUOTE;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
 public class ManageQuote extends Command {
@@ -96,7 +96,7 @@ public class ManageQuote extends Command {
         String quote = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
 
         if (QuoteData.alterQuote(messageContext.getGuild(), quoteId, quote, messageContext)) {
-            MessageSender.sendSimpleTextBox(fastLocaleAndReplace(M_CHANGED_QUOTE.tag,
+            MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_CHANGED_QUOTE.tag,
                     messageContext.getGuild(), "**" + quoteId + "**"), quote, Color.blue,
                     messageContext.getTextChannel());
         }
@@ -134,7 +134,7 @@ public class ManageQuote extends Command {
         }
 
         if (QuoteData.removeQuote(messageContext.getGuild(), quoteId, messageContext)) {
-            MessageSender.sendMessage(fastLocaleAndReplace(M_REMOVED_QUOTE.tag,
+            MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED_QUOTE.tag,
                     messageContext.getGuild(), "**" + quoteId + "**"), messageContext.getTextChannel());
         }
     }

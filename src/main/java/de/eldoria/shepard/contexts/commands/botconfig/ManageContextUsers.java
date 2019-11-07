@@ -30,7 +30,7 @@ import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageCon
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_CHANGED_LIST_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_DEACTIVATED_CHECK;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_REMOVED_USERS;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 public class ManageContextUsers extends Command {
     /**
@@ -112,11 +112,11 @@ public class ManageContextUsers extends Command {
         String names = String.join(System.lineSeparator(), mentions);
 
         if (modifyType == ModifyType.ADD) {
-            MessageSender.sendSimpleTextBox(fastLocaleAndReplace(M_ADDED_USERS.tag, messageContext.getGuild(),
+            MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_ADDED_USERS.tag, messageContext.getGuild(),
                     " **" + contextName.toUpperCase() + "**"), names, messageContext.getTextChannel());
 
         } else {
-            MessageSender.sendSimpleTextBox(fastLocaleAndReplace(M_REMOVED_USERS.tag, messageContext.getGuild(),
+            MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_REMOVED_USERS.tag, messageContext.getGuild(),
                     " **" + contextName.toUpperCase() + "**"), names, messageContext.getTextChannel());
         }
     }
@@ -138,7 +138,7 @@ public class ManageContextUsers extends Command {
         }
 
         if (ContextData.setContextUserListType(contextName, type, messageContext)) {
-            MessageSender.sendMessage(fastLocaleAndReplace(M_CHANGED_LIST_TYPE.tag,
+            MessageSender.sendMessage(localizeAllAndReplace(M_CHANGED_LIST_TYPE.tag,
                     messageContext.getGuild(), "**" + contextName.toUpperCase() + "**"
                             + "**" + type.toString() + "**"), messageContext.getTextChannel());
         }
@@ -159,10 +159,10 @@ public class ManageContextUsers extends Command {
         }
 
         if (state) {
-            MessageSender.sendMessage(fastLocaleAndReplace(M_ACTIVATED_CHECK.tag, messageContext.getGuild(),
+            MessageSender.sendMessage(localizeAllAndReplace(M_ACTIVATED_CHECK.tag, messageContext.getGuild(),
                     "**" + contextName.toUpperCase() + "**"), messageContext.getTextChannel());
         } else {
-            MessageSender.sendMessage(fastLocaleAndReplace(M_DEACTIVATED_CHECK.tag, messageContext.getGuild(),
+            MessageSender.sendMessage(localizeAllAndReplace(M_DEACTIVATED_CHECK.tag, messageContext.getGuild(),
                     "**" + contextName.toUpperCase() + "**"), messageContext.getTextChannel());
         }
     }

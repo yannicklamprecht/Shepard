@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 public class ReminderScheduler implements Runnable {
     /**
@@ -38,7 +38,7 @@ public class ReminderScheduler implements Runnable {
                 return;
             }
 
-            MessageSender.sendMessage(fastLocaleAndReplace(ReminderLocale.M_REMINDER.tag,
+            MessageSender.sendMessage(localizeAllAndReplace(ReminderLocale.M_REMINDER.tag,
                     reminder.getGuild(), reminder.getUser().getAsMention()) + System.lineSeparator()
                     + "**" + reminder.getText() + "**", reminder.getChannel());
         }

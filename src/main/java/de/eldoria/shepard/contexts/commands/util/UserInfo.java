@@ -23,7 +23,7 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**
  * A command to get important information about a user.
@@ -100,7 +100,7 @@ public class UserInfo extends Command {
         String year = years != 1 ? UserInfoLocale.W_YEARS.tag : UserInfoLocale.W_YEAR.tag;
         String day = days != 1 ? UserInfoLocale.W_DAYS.tag : UserInfoLocale.W_DAY.tag;
         String month = months != 1 ? UserInfoLocale.W_MONTHS.tag : UserInfoLocale.W_MONTH.tag;
-        return fastLocaleAndReplace(UserInfoLocale.M_JOINED.tag, messageContext.getGuild(),
+        return localizeAllAndReplace(UserInfoLocale.M_JOINED.tag, messageContext.getGuild(),
                 formatted, years + " " + year, months + " " + month, days + " " + day);
     }
 }

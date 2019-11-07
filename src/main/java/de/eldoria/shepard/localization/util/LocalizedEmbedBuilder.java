@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 import java.awt.Color;
 import java.time.temporal.TemporalAccessor;
 
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocale;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
 
 /**
  * Wrapper for auto localization of embeds.
@@ -30,7 +30,7 @@ public class LocalizedEmbedBuilder extends EmbedBuilder {
     @Nonnull
     @Override
     public LocalizedEmbedBuilder addField(@Nullable String name, @Nullable String value, boolean inline) {
-        super.addField(fastLocale(name, guild), fastLocale(value, guild), inline);
+        super.addField(localizeAll(name, guild), localizeAll(value, guild), inline);
         return this;
     }
 
@@ -49,28 +49,28 @@ public class LocalizedEmbedBuilder extends EmbedBuilder {
     @Nonnull
     @Override
     public LocalizedEmbedBuilder setTitle(@Nullable String title) {
-        super.setTitle(fastLocale(title, guild));
+        super.setTitle(localizeAll(title, guild));
         return this;
     }
 
     @Nonnull
     @Override
     public LocalizedEmbedBuilder setTitle(@Nullable String title, @Nullable String url) {
-        super.setTitle(fastLocale(title, guild), url);
+        super.setTitle(localizeAll(title, guild), url);
         return this;
     }
 
     @Nonnull
     @Override
     public LocalizedEmbedBuilder setFooter(@Nullable String text) {
-        super.setFooter(fastLocale(text, guild));
+        super.setFooter(localizeAll(text, guild));
         return this;
     }
 
     @Nonnull
     @Override
     public LocalizedEmbedBuilder setFooter(@Nullable String text, @Nullable String iconUrl) {
-        super.setFooter(fastLocale(text, guild), iconUrl);
+        super.setFooter(localizeAll(text, guild), iconUrl);
         return this;
     }
 
@@ -81,14 +81,14 @@ public class LocalizedEmbedBuilder extends EmbedBuilder {
      * @return the builder after the description has been set
      */
     public LocalizedEmbedBuilder setDescription(String text) {
-        super.setDescription(fastLocale(text, guild));
+        super.setDescription(localizeAll(text, guild));
         return this;
     }
 
     @Nonnull
     @Override
     public LocalizedEmbedBuilder appendDescription(@Nonnull CharSequence description) {
-        super.appendDescription(fastLocale(description.toString(), guild));
+        super.appendDescription(localizeAll(description.toString(), guild));
         return this;
     }
 
@@ -137,21 +137,21 @@ public class LocalizedEmbedBuilder extends EmbedBuilder {
     @Nonnull
     @Override
     public LocalizedEmbedBuilder setAuthor(@Nullable String name) {
-        super.setAuthor(fastLocale(name, guild));
+        super.setAuthor(localizeAll(name, guild));
         return this;
     }
 
     @Nonnull
     @Override
     public LocalizedEmbedBuilder setAuthor(@Nullable String name, @Nullable String url) {
-        super.setAuthor(fastLocale(name, guild), url);
+        super.setAuthor(localizeAll(name, guild), url);
         return this;
     }
 
     @Nonnull
     @Override
     public LocalizedEmbedBuilder setAuthor(@Nullable String name, @Nullable String url, @Nullable String iconUrl) {
-        super.setAuthor(fastLocale(name, guild), url, iconUrl);
+        super.setAuthor(localizeAll(name, guild), url, iconUrl);
         return this;
     }
 

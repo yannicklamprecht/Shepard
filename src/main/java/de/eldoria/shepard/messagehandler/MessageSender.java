@@ -5,6 +5,7 @@ import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.database.types.GreetingSettings;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.util.Replacer;
@@ -21,7 +22,7 @@ import java.awt.Color;
 import java.io.File;
 import java.util.List;
 
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocale;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
 
 public final class MessageSender {
 
@@ -48,7 +49,7 @@ public final class MessageSender {
     public static void sendTextBox(String title, List<LocalizedField> fields, TextChannel channel,
                                    Color color) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(fastLocale(title, channel))
+                .setTitle(TextLocalizer.localizeAll(title, channel))
                 .setColor(color);
         for (LocalizedField field : fields) {
             builder.addField(field.getField());
@@ -105,9 +106,9 @@ public final class MessageSender {
     public static void sendSimpleTextBox(String title, String description, Color color,
                                          ShepardReactions reaction, TextChannel channel) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(fastLocale(title, channel))
+                .setTitle(TextLocalizer.localizeAll(title, channel))
                 .setColor(color)
-                .setDescription(fastLocale(description, channel));
+                .setDescription(TextLocalizer.localizeAll(description, channel));
         if (reaction != ShepardReactions.NONE) {
             builder.setThumbnail(reaction.thumbnail);
         }
@@ -139,7 +140,7 @@ public final class MessageSender {
      */
     public static void sendSimpleError(ErrorType type, TextChannel channel) {
         if (type.isEmbed) {
-            sendSimpleErrorEmbed(fastLocale(type.taggedMessage, channel.getGuild()), channel);
+            sendSimpleErrorEmbed(localizeAll(type.taggedMessage, channel.getGuild()), channel);
         } else {
             sendMessage(type.taggedMessage, channel);
         }
@@ -237,7 +238,7 @@ public final class MessageSender {
     public static void sendMessage(String message, TextChannel channel) {
         if (message.isEmpty()) return;
 
-        String localizedMessage = fastLocale(message, channel);
+        String localizedMessage = TextLocalizer.localizeAll(message, channel);
 
         String[] messageParts = localizedMessage.split(System.lineSeparator());
         StringBuilder messagePart = new StringBuilder();

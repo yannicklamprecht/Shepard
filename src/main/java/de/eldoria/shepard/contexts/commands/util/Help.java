@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**
  * A command for listing all possible commands.
@@ -63,7 +63,7 @@ public class Help extends Command {
         }
 
         String prefix = PrefixData.getPrefix(messageContext.getGuild(), messageContext);
-        MessageSender.sendMessage(fastLocaleAndReplace(HelpLocale.M_USAGE.tag, messageContext.getGuild(),
+        MessageSender.sendMessage(localizeAllAndReplace(HelpLocale.M_USAGE.tag, messageContext.getGuild(),
                 prefix), messageContext.getTextChannel());
     }
 
@@ -91,7 +91,7 @@ public class Help extends Command {
         fields.add(getCommandField(commands, ContextCategory.EXCLUSIVE, messageContext));
         fields.add(getCommandField(commands, ContextCategory.FUN, messageContext));
         fields.add(getCommandField(commands, ContextCategory.UTIL, messageContext));
-        fields.add(new LocalizedField("", fastLocaleAndReplace(HelpLocale.M_LIST_COMMANDS.tag,
+        fields.add(new LocalizedField("", localizeAllAndReplace(HelpLocale.M_LIST_COMMANDS.tag,
                 messageContext.getGuild(),
                 "`" + PrefixData.getPrefix(messageContext.getGuild(), messageContext) + "<command> help`"),
                 false, messageContext));

@@ -32,7 +32,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConf
 import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_REGISTRATION_CANCELED;
 import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_REMOVED_IMAGE;
 import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_STARTED_REGISTRATION;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 public class GuessGameConfig extends Command {
 
@@ -104,7 +104,7 @@ public class GuessGameConfig extends Command {
         }
 
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(fastLocaleAndReplace(M_DISPLAY_IMAGE.tag,
+                .setTitle(localizeAllAndReplace(M_DISPLAY_IMAGE.tag,
                         messageContext.getGuild(), hentaiImage.isNsfw() ? "NSFW" : "SFW"))
                 .setThumbnail(hentaiImage.getCroppedImage())
                 .setImage(hentaiImage.getFullImage())
@@ -132,7 +132,7 @@ public class GuessGameConfig extends Command {
         }
 
         if (GuessGameData.changeImageFlag(args[1], booleanState.stateAsBoolean, messageContext)) {
-            MessageSender.sendMessage(fastLocaleAndReplace(M_CHANGED_FLAG.tag,
+            MessageSender.sendMessage(localizeAllAndReplace(M_CHANGED_FLAG.tag,
                     messageContext.getGuild(), booleanState.stateAsBoolean ? "NSFW" : "SFW"),
                     messageContext.getTextChannel());
             messageContext.getChannel().sendFile(fileFromURL).queue();

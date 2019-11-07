@@ -34,7 +34,7 @@ import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_SCORE_GLOBAL;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_SERVER_RANKING;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_TITLE;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
@@ -125,7 +125,7 @@ public class GuessGame extends Command {
 
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
                 .setTitle(M_TITLE.tag)
-                .setDescription(fastLocaleAndReplace(M_GAME_DESCRIPTION.tag, messageContext.getGuild(),
+                .setDescription(localizeAllAndReplace(M_GAME_DESCRIPTION.tag, messageContext.getGuild(),
                         ShepardEmote.ANIM_CHECKMARK.getEmote().getAsMention(),
                         ShepardEmote.ANIM_CROSS.getEmote().getAsMention(),
                         "30"))

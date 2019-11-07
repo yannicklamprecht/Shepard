@@ -13,7 +13,7 @@ import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLoca
 import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.M_SERVICE_INFO_MESSAGE;
 import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.M_TITLE;
 import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.M_USED_MEMORY;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 public class SystemInfo extends Command {
     /**
@@ -40,7 +40,7 @@ public class SystemInfo extends Command {
         long guildSize = ShepardBot.getJDA().getGuildCache().size();
         long userSize = ShepardBot.getJDA().getUserCache().size();
         builder.addField(M_SERVICE_INFO.tag,
-                fastLocaleAndReplace(M_SERVICE_INFO_MESSAGE.tag, messageContext.getGuild(),
+                localizeAllAndReplace(M_SERVICE_INFO_MESSAGE.tag, messageContext.getGuild(),
                         guildSize + "", userSize + ""), false);
         messageContext.getChannel().sendMessage(builder.build()).queue();
         category = ContextCategory.UTIL;

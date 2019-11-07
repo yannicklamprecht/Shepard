@@ -19,8 +19,8 @@ public class TextLocalizer {
      * @param channel messageContext
      * @return String where localize codes are replaced with guild language.
      */
-    public static String fastLocale(String message, TextChannel channel) {
-        return fastLocale(message, channel.getGuild());
+    public static String localizeAll(String message, TextChannel channel) {
+        return localizeAll(message, channel.getGuild());
     }
 
     /**
@@ -30,8 +30,8 @@ public class TextLocalizer {
      * @param guild   guild for message localization
      * @return String where localize codes are replaced with guild language.
      */
-    public static String fastLocale(String message, Guild guild) {
-        return fastLocaleAndReplace(message, guild);
+    public static String localizeAll(String message, Guild guild) {
+        return localizeAllAndReplace(message, guild);
     }
 
     /**
@@ -43,7 +43,7 @@ public class TextLocalizer {
      * @param replacements Replacements in the right order.
      * @return Replaced Messages
      */
-    public static String fastLocaleAndReplace(String message, Guild guild, String... replacements) {
+    public static String localizeAllAndReplace(String message, Guild guild, String... replacements) {
         if (message == null) {
             return null;
         }

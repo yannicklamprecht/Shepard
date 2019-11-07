@@ -36,7 +36,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLoc
 import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REGISTERED_CHANNEL;
 import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REMOVED_ADDRESS;
 import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REMOVED_CHANNEL;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
 public class Monitoring extends Command {
@@ -127,7 +127,7 @@ public class Monitoring extends Command {
         String name = ArgumentParser.getMessage(args, 2, -1);
         if (MonitoringData.addMonitoringAddress(
                 messageContext.getGuild(), args[1], name, booleanState.stateAsBoolean, messageContext)) {
-            MessageSender.sendMessage(fastLocaleAndReplace(M_REGISTERED_ADDRESS.tag,
+            MessageSender.sendMessage(localizeAllAndReplace(M_REGISTERED_ADDRESS.tag,
                     messageContext.getGuild(), "**" + args[1] + "**", "**" + name + "**"),
                     messageContext.getTextChannel());
         }
@@ -137,7 +137,7 @@ public class Monitoring extends Command {
         TextChannel channel = ArgumentParser.getTextChannel(messageContext.getGuild(), channelString);
         if (channel != null) {
             if (MonitoringData.setMonitoringChannel(messageContext.getGuild(), channel, messageContext)) {
-                MessageSender.sendMessage(fastLocaleAndReplace(M_REGISTERED_CHANNEL.tag,
+                MessageSender.sendMessage(localizeAllAndReplace(M_REGISTERED_CHANNEL.tag,
                         messageContext.getGuild(), channel.getAsMention()), messageContext.getTextChannel());
             }
         } else {
@@ -152,7 +152,7 @@ public class Monitoring extends Command {
             return;
         }
         if (MonitoringData.removeMonitoringAddressByIndex(messageContext.getGuild(), integer, messageContext)) {
-            MessageSender.sendMessage(fastLocaleAndReplace(M_REMOVED_ADDRESS.tag, messageContext.getGuild(),
+            MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED_ADDRESS.tag, messageContext.getGuild(),
                     "**" + integer + "**"), messageContext.getTextChannel());
         }
     }
@@ -160,7 +160,7 @@ public class Monitoring extends Command {
     private boolean easyEnable(MessageEventDataWrapper messageContext) {
         if (MonitoringData.setMonitoringChannel(messageContext.getGuild(),
                 messageContext.getTextChannel(), messageContext)) {
-            MessageSender.sendMessage(fastLocaleAndReplace(M_REGISTERED_CHANNEL.tag,
+            MessageSender.sendMessage(localizeAllAndReplace(M_REGISTERED_CHANNEL.tag,
                     messageContext.getGuild(), messageContext.getTextChannel().getAsMention()),
                     messageContext.getTextChannel());
             return true;

@@ -39,7 +39,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.TicketSetting
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.M_SET_CREATION_MESSAGE;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.M_SET_OWNER_ROLES;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.M_SET_SUPPORT_ROLES;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
 public class TicketSettings extends Command {
@@ -126,7 +126,7 @@ public class TicketSettings extends Command {
 
         if (TicketData.setCreationMessage(messageContext.getGuild(), scopeTicket.getKeyword(), message,
                 messageContext)) {
-            MessageSender.sendSimpleTextBox(fastLocaleAndReplace(M_SET_CREATION_MESSAGE.tag,
+            MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_SET_CREATION_MESSAGE.tag,
                     messageContext.getGuild(), scopeTicket.getKeyword()), message, messageContext.getTextChannel());
         }
     }
@@ -146,7 +146,7 @@ public class TicketSettings extends Command {
 
         if (TicketData.addType(messageContext.getGuild(), category, null,
                 scopeTicket.getKeyword(), messageContext)) {
-            MessageSender.sendMessage(fastLocaleAndReplace(M_SET_CATEGORY.tag, messageContext.getGuild(),
+            MessageSender.sendMessage(localizeAllAndReplace(M_SET_CATEGORY.tag, messageContext.getGuild(),
                     "**" + scopeTicket.getKeyword() + "**", category.getName()), messageContext.getTextChannel());
         }
     }
@@ -212,7 +212,7 @@ public class TicketSettings extends Command {
             for (TextChannel channel : validTextChannels) {
                 channel.delete().queue();
             }
-            MessageSender.sendMessage(fastLocaleAndReplace(M_REMOVE_TYPE.tag, messageContext.getGuild(),
+            MessageSender.sendMessage(localizeAllAndReplace(M_REMOVE_TYPE.tag, messageContext.getGuild(),
                     "**" + scopeTicket.getKeyword() + "**"), messageContext.getTextChannel());
         }
     }

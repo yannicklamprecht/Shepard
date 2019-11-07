@@ -30,7 +30,7 @@ import static de.eldoria.shepard.localization.enums.listener.CommandListenerLoca
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_HELP_COMMAND;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_INSUFFICIENT_PERMISSION;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_SUGGESTION;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 
 public class CommandListener extends ListenerAdapter {
@@ -73,7 +73,7 @@ public class CommandListener extends ListenerAdapter {
 
         //Return if command is send by another bot
         if (messageContext.getAuthor().isBot()) {
-            MessageSender.sendMessage(fastLocaleAndReplace(M_BOT_ANSWER.tag, messageContext.getGuild(),
+            MessageSender.sendMessage(localizeAllAndReplace(M_BOT_ANSWER.tag, messageContext.getGuild(),
                     "**" + messageContext.getAuthor().getName() + "**"), messageContext.getTextChannel());
             return;
         }
@@ -105,7 +105,7 @@ public class CommandListener extends ListenerAdapter {
             }
             return;
         } else if (command != null && command.canBeExecutedHere(messageContext)) {
-            MessageSender.sendMessage(fastLocaleAndReplace(M_INSUFFICIENT_PERMISSION.tag,
+            MessageSender.sendMessage(localizeAllAndReplace(M_INSUFFICIENT_PERMISSION.tag,
                     messageContext.getGuild(), command.getContextName()), messageContext.getTextChannel());
             return;
         }
@@ -126,7 +126,7 @@ public class CommandListener extends ListenerAdapter {
 
         MessageSender.sendError(
                 new LocalizedField[] {
-                        new LocalizedField(M_COMMAND_NOT_FOUND.tag, fastLocaleAndReplace(M_HELP_COMMAND.tag,
+                        new LocalizedField(M_COMMAND_NOT_FOUND.tag, localizeAllAndReplace(M_HELP_COMMAND.tag,
                                 messageContext.getGuild(), "`" + PrefixData.getPrefix(messageContext.getGuild(),
                                         messageContext) + "help`"), false, messageContext)},
                 messageContext.getTextChannel());

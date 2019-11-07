@@ -29,7 +29,7 @@ import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_D
 import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_GLOBAL_RANKING;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_RECEIVED_KUDOS;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_SERVER_RANKING;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
 public class Kudos extends Command {
@@ -62,10 +62,10 @@ public class Kudos extends Command {
                     messageContext.getGuild(), messageContext.getAuthor(), messageContext);
             int globalUserPoints = KudoData.getGlobalUserScore(messageContext.getAuthor(), messageContext);
 
-            String message = fastLocaleAndReplace(M_DESCRIPTION_GENERAL.tag, messageContext.getGuild(),
+            String message = localizeAllAndReplace(M_DESCRIPTION_GENERAL.tag, messageContext.getGuild(),
                     "**" + freePoints + "**", "**100**", "1", "**" + userPoints + "**");
             message = userPoints != globalUserPoints
-                    ? message + lineSeparator() + fastLocaleAndReplace(M_DESCRIPTION_EXTENDED.tag,
+                    ? message + lineSeparator() + localizeAllAndReplace(M_DESCRIPTION_EXTENDED.tag,
                     messageContext.getGuild(), "**" + globalUserPoints + "**")
                     : message;
 
@@ -133,7 +133,7 @@ public class Kudos extends Command {
                 messageContext.getGuild(), member.getUser(), points, messageContext)) {
             return;
         }
-        MessageSender.sendMessage(fastLocaleAndReplace(M_RECEIVED_KUDOS.tag, messageContext.getGuild(),
+        MessageSender.sendMessage(localizeAllAndReplace(M_RECEIVED_KUDOS.tag, messageContext.getGuild(),
                 member.getAsMention(), "**" + points + "**", messageContext.getAuthor().getAsMention()),
                 messageContext.getTextChannel());
     }

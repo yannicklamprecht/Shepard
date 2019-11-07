@@ -208,7 +208,7 @@ public abstract class Command extends ContextSensitive {
             String title = "__**" + HelpLocale.W_ARGUMENTS + ":**__";
             for (CommandArg arg : commandArgs) {
                 desc.setLength(0);
-                desc.append(">>> ").append(TextLocalizer.fastLocale(arg.getArgHelpString(), channel.getGuild()))
+                desc.append(">>> ").append(TextLocalizer.localizeAll(arg.getArgHelpString(), channel.getGuild()))
                         .append(lineSeparator()).append(lineSeparator());
                 builder.addField(new LocalizedField(title, desc.toString(),
                         false, channel));

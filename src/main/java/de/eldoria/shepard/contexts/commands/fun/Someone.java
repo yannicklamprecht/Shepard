@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.M_NO_ONLINE;
 import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.M_SOMEONE;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 public class Someone extends Command {
     /**
@@ -47,7 +47,7 @@ public class Someone extends Command {
 
             Member member = members.get(rand.nextInt(members.size()));
 
-            MessageSender.sendMessage(fastLocaleAndReplace(M_SOMEONE.tag, messageContext.getGuild(),
+            MessageSender.sendMessage(localizeAllAndReplace(M_SOMEONE.tag, messageContext.getGuild(),
                     member.getAsMention()), messageContext.getTextChannel());
         }
     }

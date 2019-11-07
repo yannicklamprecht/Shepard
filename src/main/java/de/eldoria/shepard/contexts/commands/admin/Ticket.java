@@ -45,7 +45,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.M_TICKET_SUPPORT_ROLES;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.M_TYPE_ABOUT;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.M_TYPE_LIST;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
 public class Ticket extends Command {
@@ -260,7 +260,7 @@ public class Ticket extends Command {
                             Replacer.applyUserPlaceholder(member.getUser(), ticket.getCreationMessage()),
                             channel);
 
-                    MessageSender.sendMessage(fastLocaleAndReplace(M_OPEN.tag, messageContext.getGuild(),
+                    MessageSender.sendMessage(localizeAllAndReplace(M_OPEN.tag, messageContext.getGuild(),
                             channel.getAsMention(), member.getAsMention()), messageContext.getTextChannel());
                 });
     }

@@ -22,7 +22,7 @@ import java.util.Random;
 
 import static de.eldoria.shepard.localization.enums.minigames.KudoLotteryEvaluatorLocale.M_CONGRATULATION;
 import static de.eldoria.shepard.localization.enums.minigames.KudoLotteryEvaluatorLocale.M_NO_WINNER;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 public class KudoLotteryEvaluator extends BaseEvaluator {
     private final Map<Long, Integer> bet = new HashMap<>();
@@ -83,7 +83,7 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
 
         KudoData.addFreeRubberPoints(guildChannel.getGuild(), userById, winnerPoints, null);
 
-        MessageSender.sendMessage(fastLocaleAndReplace(M_CONGRATULATION.tag, guildChannel.getGuild(),
+        MessageSender.sendMessage(localizeAllAndReplace(M_CONGRATULATION.tag, guildChannel.getGuild(),
                 "**" + userById.getAsMention() + "**", "**" + sum + "**"), guildChannel);
 
         Evaluator.getKudoLotteryScheduler().evaluationDone(guildChannel);
@@ -128,11 +128,11 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
 
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(textChannel.getGuild())
                 .setTitle(KudoLotteryLocale.M_EMBED_TITLE.tag)
-                .setDescription(fastLocaleAndReplace(KudoLotteryLocale.M_EMBED_DESCRIPTION.tag,
+                .setDescription(localizeAllAndReplace(KudoLotteryLocale.M_EMBED_DESCRIPTION.tag,
                         textChannel.getGuild(), "3"))
-                .addField(fastLocaleAndReplace(KudoLotteryLocale.M_EMBED_KUDOS_IN_POT.tag,
+                .addField(localizeAllAndReplace(KudoLotteryLocale.M_EMBED_KUDOS_IN_POT.tag,
                         textChannel.getGuild(), sum + ""),
-                        fastLocaleAndReplace(KudoLotteryLocale.M_EMBED_EXPLANATION.tag,
+                        localizeAllAndReplace(KudoLotteryLocale.M_EMBED_EXPLANATION.tag,
                                 textChannel.getGuild(),
                                 ShepardEmote.INFINITY.getEmote().getAsMention(),
                                 ShepardEmote.PLUS_X.getEmote().getAsMention(),

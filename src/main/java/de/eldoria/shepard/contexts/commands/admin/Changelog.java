@@ -30,7 +30,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLoca
 import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_DEACTIVATED;
 import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_LOGGED_ROLES;
 import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_REMOVED_ROLE;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
 public class Changelog extends Command {
@@ -136,13 +136,13 @@ public class Changelog extends Command {
 
         if (arg.isSubCommand(cmd, 0)) {
             if (ChangelogData.addRole(messageContext.getGuild(), role, messageContext)) {
-                MessageSender.sendMessage(fastLocaleAndReplace(M_ADDED_ROLE.tag,
+                MessageSender.sendMessage(localizeAllAndReplace(M_ADDED_ROLE.tag,
                         messageContext.getGuild(),
                         "**" + role.getName() + "**"), messageContext.getTextChannel());
             }
         } else {
             if (ChangelogData.removeRole(messageContext.getGuild(), role, messageContext)) {
-                MessageSender.sendMessage(fastLocaleAndReplace(M_REMOVED_ROLE.tag, messageContext.getGuild(),
+                MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED_ROLE.tag, messageContext.getGuild(),
                         "**" + role.getName() + "**"), messageContext.getTextChannel());
             }
         }

@@ -81,12 +81,12 @@ public class ManageContext extends Command {
         }
 
         if (state) {
-            MessageSender.sendMessage(TextLocalizer.fastLocaleAndReplace("**" + M_ACTIVATED_ADMIN + "**",
+            MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace("**" + M_ACTIVATED_ADMIN + "**",
                     messageContext.getGuild(), "\"" + contextName.toUpperCase() + "\""),
                     messageContext.getTextChannel());
 
         } else {
-            MessageSender.sendMessage(TextLocalizer.fastLocaleAndReplace("**" + M_DEACTIVATED_ADMIN + "**",
+            MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace("**" + M_DEACTIVATED_ADMIN + "**",
                     messageContext.getGuild(), "\"" + contextName.toUpperCase() + "\""),
                     messageContext.getTextChannel());
         }
@@ -107,12 +107,12 @@ public class ManageContext extends Command {
         }
 
         if (state) {
-            MessageSender.sendMessage(TextLocalizer.fastLocaleAndReplace("**" + M_ACTIVATED_NSFW + "**",
+            MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace("**" + M_ACTIVATED_NSFW + "**",
                     messageContext.getGuild(), "\"" + contextName.toUpperCase() + "\""),
                     messageContext.getTextChannel());
 
         } else {
-            MessageSender.sendMessage(TextLocalizer.fastLocaleAndReplace("**" + M_DEACTIVATED_NSFW + "**",
+            MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace("**" + M_DEACTIVATED_NSFW + "**",
                     messageContext.getGuild(), "\"" + contextName.toUpperCase() + "\""),
                     messageContext.getTextChannel());
         }

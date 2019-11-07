@@ -30,7 +30,7 @@ import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageCon
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.M_CHANGED_LIST_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.M_DEACTIVATED_CHECK;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.M_REMOVED_GUILDS;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 public class ManageContextGuild extends Command {
     /**
@@ -121,12 +121,12 @@ public class ManageContextGuild extends Command {
         String names = String.join(System.lineSeparator(), mentions);
 
         if (modifyType == ModifyType.ADD) {
-            MessageSender.sendSimpleTextBox(fastLocaleAndReplace(M_ADDED_GUILDS.tag,
+            MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_ADDED_GUILDS.tag,
                     messageContext.getGuild(), "**" + contextName.toUpperCase() + "**"),
                     names, messageContext.getTextChannel());
 
         } else {
-            MessageSender.sendSimpleTextBox(fastLocaleAndReplace(M_REMOVED_GUILDS.tag,
+            MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_REMOVED_GUILDS.tag,
                     messageContext.getGuild(), "**" + contextName.toUpperCase() + "**"),
                     names, messageContext.getTextChannel());
         }
@@ -142,7 +142,7 @@ public class ManageContextGuild extends Command {
         }
 
         if (ContextData.setContextGuildListType(contextName, type, messageContext)) {
-            MessageSender.sendMessage(fastLocaleAndReplace(M_CHANGED_LIST_TYPE.tag,
+            MessageSender.sendMessage(localizeAllAndReplace(M_CHANGED_LIST_TYPE.tag,
                     messageContext.getGuild(), "**" + contextName.toUpperCase() + "**",
                     "**" + type.toString() + "**"), messageContext.getTextChannel());
         }
@@ -161,10 +161,10 @@ public class ManageContextGuild extends Command {
 
         if (ContextData.setContextGuildCheckActive(contextName, state, messageContext)) {
             if (state) {
-                MessageSender.sendMessage(fastLocaleAndReplace(M_ACTIVATED_CHECK.tag, messageContext.getGuild(),
+                MessageSender.sendMessage(localizeAllAndReplace(M_ACTIVATED_CHECK.tag, messageContext.getGuild(),
                         "**" + contextName.toUpperCase() + "**"), messageContext.getTextChannel());
             } else {
-                MessageSender.sendMessage(fastLocaleAndReplace(M_DEACTIVATED_CHECK.tag, messageContext.getGuild(),
+                MessageSender.sendMessage(localizeAllAndReplace(M_DEACTIVATED_CHECK.tag, messageContext.getGuild(),
                         "**" + contextName.toUpperCase() + "**"), messageContext.getTextChannel());
             }
         }

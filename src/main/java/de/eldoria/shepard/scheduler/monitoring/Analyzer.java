@@ -18,7 +18,7 @@ import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_S
 import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVICE_NAME_UNAVAILABLE;
 import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_STATUS_OF;
 import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_VERSION;
-import static de.eldoria.shepard.localization.util.TextLocalizer.fastLocaleAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static de.eldoria.shepard.util.TextFormatting.getTimeAsString;
 
 class Analyzer implements Runnable {
@@ -82,7 +82,7 @@ class Analyzer implements Runnable {
         } else if (!minecraftPing.isOnline()) {
             LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
                     .setTitle(M_SERVER_DOWN.tag)
-                    .setDescription(fastLocaleAndReplace(M_SERVER_DOWN_MESSAGE.tag, channel.getGuild(),
+                    .setDescription(localizeAllAndReplace(M_SERVER_DOWN_MESSAGE.tag, channel.getGuild(),
                             "**" + address.getName() + "**", "**" + address.getAddress() + "**"))
                     .setColor(Color.red)
                     .setThumbnail(ShepardReactions.SHULKY.thumbnail)
@@ -100,7 +100,7 @@ class Analyzer implements Runnable {
     private void analyzeNonMinecraftAddress() {
         if (!isAddressReachable()) {
             EmbedBuilder builder = new EmbedBuilder()
-                    .setTitle(fastLocaleAndReplace(M_SERVICE_NAME_UNAVAILABLE.tag, channel.getGuild(),
+                    .setTitle(localizeAllAndReplace(M_SERVICE_NAME_UNAVAILABLE.tag, channel.getGuild(),
                             "**" + address.getName() + "**"))
                     .setDescription(M_SERVICE_ADDRESS + " " + address.getFullAddress())
                     .setThumbnail(ShepardReactions.SHULKY.thumbnail);
