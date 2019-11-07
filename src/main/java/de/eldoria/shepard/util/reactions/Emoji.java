@@ -34,6 +34,10 @@ public enum EmojiCollection {
      */
     public final String unicode;
 
+    /**
+     * Create a new emoji
+     * @param unicode
+     */
     EmojiCollection(String unicode) {
         this.unicode = unicode;
     }
