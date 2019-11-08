@@ -20,12 +20,16 @@ public final class TextFormatting {
 
     /**
      * Appends white spaces to a string to match the given length.
+     * Returns input if fill is smaller or equal string.length()
      *
      * @param string String to fill
      * @param fill   Desired String length
      * @return filled string.
      */
     public static String fillString(String string, int fill) {
+        if (string.length() >= fill) {
+            return string;
+        }
         int charsToFill = fill - string.length();
         return string + " ".repeat(charsToFill);
     }
@@ -58,6 +62,7 @@ public final class TextFormatting {
 
     /**
      * Trims a text to the desired length.
+     * Returns unmodified input if max chars is larger or equal string.length().
      *
      * @param string      String to trim
      * @param endSequence end sequence which should be append at the end of the string. included in max chars.
@@ -113,6 +118,7 @@ public final class TextFormatting {
 
     /**
      * Get a rank table.
+     *
      * @param ranks list of ranks for table
      * @return table of ranks
      */
@@ -146,7 +152,8 @@ public final class TextFormatting {
 
         /**
          * Create a new tablebuilder.
-         * @param collection collection for row amount
+         *
+         * @param collection  collection for row amount
          * @param columnNames column names for column amount
          */
         TableBuilder(Collection collection, String... columnNames) {

@@ -11,9 +11,10 @@ public class ReminderSimple {
 
     /**
      * Creates a new reminder with timestamp.
+     *
      * @param reminderId reminder id.
-     * @param text reminder text
-     * @param timestamp reminder timestamp.
+     * @param text       reminder text
+     * @param timestamp  reminder timestamp.
      */
     public ReminderSimple(int reminderId, String text, Timestamp timestamp) {
         this.reminderId = reminderId;
@@ -23,8 +24,9 @@ public class ReminderSimple {
 
     /**
      * Creates a new reminder without timestamp.
+     *
      * @param reminderId id of reminder
-     * @param text text of reminder.
+     * @param text       text of reminder.
      */
     public ReminderSimple(int reminderId, String text) {
         this.reminderId = reminderId;
@@ -34,6 +36,7 @@ public class ReminderSimple {
 
     /**
      * Get the reminder id.
+     *
      * @return reminder id
      */
     public int getReminderId() {
@@ -42,6 +45,7 @@ public class ReminderSimple {
 
     /**
      * Get the text of the reminder.
+     *
      * @return reminder text
      */
     public String getText() {
@@ -50,6 +54,7 @@ public class ReminderSimple {
 
     /**
      * Get the time of the reminder.
+     *
      * @return reminder time
      */
     public String getTime() {

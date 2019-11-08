@@ -7,37 +7,43 @@ import static org.junit.jupiter.api.Assertions.*;
 class TextFormattingTest {
 
     @Test
-    void fillString() {
+    void fillString0() {
         String test = TextFormatting.fillString("test", 5);
         assertEquals(5, test.length());
+    }
+    @Test
+    void fillString1() {
+        String input = "test";
+        String test = TextFormatting.fillString(input, 4);
+        assertEquals(input, test);
     }
 
     @Test
     void getRangeAsString0() {
         String[] array = new String[] {"this", "is", "a", "simple", "test", "text", "as", "array"};
         String rangeAsString = TextFormatting.getRangeAsString(" ", array, 1, 8);
-        assertEquals(String.join(" ", new String[] {"is", "a", "simple", "test", "text", "as", "array"}), rangeAsString);
+        assertEquals("is a simple test text as array", rangeAsString);
     }
 
     @Test
     void getRangeAsString1() {
         String[] array = new String[] {"this", "is", "a", "simple", "test", "text", "as", "array"};
         String rangeAsString = TextFormatting.getRangeAsString(" ", array, 1, 0);
-        assertEquals(String.join(" ", new String[] {"is", "a", "simple", "test", "text", "as", "array"}), rangeAsString);
+        assertEquals("is a simple test text as array", rangeAsString);
     }
 
     @Test
     void getRangeAsString2() {
         String[] array = new String[] {"this", "is", "a", "simple", "test", "text", "as", "array"};
         String rangeAsString = TextFormatting.getRangeAsString(" ", array, 1, -1);
-        assertEquals(String.join(" ", new String[] {"is", "a", "simple", "test", "text", "as"}), rangeAsString);
+        assertEquals("is a simple test text as", rangeAsString);
     }
 
     @Test
     void getRangeAsString3() {
         String[] array = new String[] {"this", "is", "a", "simple", "test", "text", "as", "array"};
         String rangeAsString = TextFormatting.getRangeAsString(" ", array, -3, 0);
-        assertEquals(String.join(" ", new String[] {"text", "as", "array"}), rangeAsString);
+        assertEquals("text as array", rangeAsString);
     }
 
     @Test
