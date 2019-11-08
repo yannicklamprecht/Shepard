@@ -61,6 +61,7 @@ public enum MonitoringLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     MonitoringLocale(String localeCode) {

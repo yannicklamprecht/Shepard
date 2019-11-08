@@ -21,6 +21,7 @@ public class Evaluator {
 
     /**
      * Get the channel evaluator for Kudo lottery.
+     *
      * @return guess game evaluator
      */
     public static ChannelEvaluator<KudoLotteryEvaluator> getKudoLotteryScheduler() {

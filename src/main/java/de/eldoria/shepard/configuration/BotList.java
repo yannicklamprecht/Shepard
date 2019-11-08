@@ -6,6 +6,7 @@ public class BotList {
 
     /**
      * Get the botlist token.
+     *
      * @return token as string
      */
     public String getToken() {
@@ -14,6 +15,7 @@ public class BotList {
 
     /**
      * Set the botlist token.
+     *
      * @param token token as string
      */
     public void setToken(String token) {
@@ -22,6 +24,7 @@ public class BotList {
 
     /**
      * Get the authorization key.
+     *
      * @return authorization key
      */
     public String getAuthorization() {
@@ -30,6 +33,7 @@ public class BotList {
 
     /**
      * Set the authorization key.
+     *
      * @param authorization authorization key
      */
     public void setAuthorization(String authorization) {

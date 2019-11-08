@@ -69,6 +69,7 @@ public enum GuessGameLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     GuessGameLocale(String localeCode) {

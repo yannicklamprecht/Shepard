@@ -49,6 +49,7 @@ public enum BotPresenceLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     BotPresenceLocale(String localeCode) {

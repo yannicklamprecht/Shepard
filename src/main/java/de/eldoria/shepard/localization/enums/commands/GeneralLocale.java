@@ -73,6 +73,7 @@ public enum GeneralLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     GeneralLocale(String localeCode) {

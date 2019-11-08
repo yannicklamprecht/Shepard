@@ -91,8 +91,9 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
 
     /**
      * Add the amount of kudos to the pot. Adds only if the user has enough kudos.
-     * @param guild guild where the kudos should be taken
-     * @param user user where the kudos should be taken
+     *
+     * @param guild  guild where the kudos should be taken
+     * @param user   user where the kudos should be taken
      * @param amount amount of kudos. -1 to take all kudos.
      */
     public void addBet(Guild guild, User user, int amount) {

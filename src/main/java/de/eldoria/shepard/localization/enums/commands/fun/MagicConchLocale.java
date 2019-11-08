@@ -34,6 +34,7 @@ public enum MagicConchLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     MagicConchLocale(String localeCode) {

@@ -223,8 +223,8 @@ public final class MessageSender {
     /**
      * Log a command to the command log channel.
      *
-     * @param label label of command
-     * @param args arguments of command
+     * @param label          label of command
+     * @param args           arguments of command
      * @param messageContext context of command
      */
     public static void logCommand(String label, String[] args, MessageEventDataWrapper messageContext) {

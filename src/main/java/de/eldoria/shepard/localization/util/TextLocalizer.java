@@ -38,8 +38,8 @@ public class TextLocalizer {
      * Translates a String with Placeholders.
      * Can handle multiple messages with replacements. Add replacements in the right order.
      *
-     * @param message Message to translate
-     * @param guild guild for locale detection
+     * @param message      Message to translate
+     * @param guild        guild for locale detection
      * @param replacements Replacements in the right order.
      * @return Replaced Messages
      */

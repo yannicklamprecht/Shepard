@@ -29,6 +29,7 @@ public enum CommandListenerLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     CommandListenerLocale(String localeCode) {

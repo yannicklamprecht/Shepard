@@ -13,6 +13,7 @@ public enum OwoLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     OwoLocale(String localeCode) {

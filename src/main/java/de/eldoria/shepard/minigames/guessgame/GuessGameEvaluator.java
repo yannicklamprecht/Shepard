@@ -34,8 +34,9 @@ public class GuessGameEvaluator extends BaseEvaluator {
 
     /**
      * Creates a new guess game evaluator.
+     *
      * @param message message for evaluation
-     * @param image image for evaluation.
+     * @param image   image for evaluation.
      */
     public GuessGameEvaluator(Message message, GuessGameImage image) {
         super(message.getIdLong(), message.getChannel().getIdLong());
@@ -111,7 +112,8 @@ public class GuessGameEvaluator extends BaseEvaluator {
 
     /**
      * Adds a vote or overrides the old vote.
-     * @param user voted user
+     *
+     * @param user      voted user
      * @param voteValue vote value
      */
     public void addVote(User user, boolean voteValue) {

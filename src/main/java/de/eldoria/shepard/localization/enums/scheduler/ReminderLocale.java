@@ -13,6 +13,7 @@ public enum ReminderLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     ReminderLocale(String localeCode) {

@@ -25,6 +25,7 @@ public enum PrivateMessageLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     PrivateMessageLocale(String localeCode) {

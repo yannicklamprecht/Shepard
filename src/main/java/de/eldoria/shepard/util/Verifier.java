@@ -112,6 +112,7 @@ public class Verifier {
 
     /**
      * Get the valid users by id.
+     *
      * @param collect list of long ids
      * @return list of valid users.
      */

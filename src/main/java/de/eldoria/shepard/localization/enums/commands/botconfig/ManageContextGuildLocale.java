@@ -53,6 +53,7 @@ public enum ManageContextGuildLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     ManageContextGuildLocale(String localeCode) {

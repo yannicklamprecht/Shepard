@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.util;
 
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
@@ -23,7 +24,7 @@ public class GetRaw extends Command {
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        MessageSender.sendMessage("`" + messageContext.getMessage().getContentRaw() + "`",
+        MessageSender.sendMessage("`" + ArgumentParser.getMessage(args, 0) + "`",
                 messageContext.getTextChannel());
     }
 }

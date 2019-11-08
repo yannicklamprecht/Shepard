@@ -21,7 +21,8 @@ public enum LocaleCode {
 
     /**
      * Create a new locale code.
-     * @param code language code
+     *
+     * @param code         language code
      * @param languageName name of the language
      */
     LocaleCode(String code, String languageName) {
@@ -31,6 +32,7 @@ public enum LocaleCode {
 
     /**
      * Parse a string to a language code.
+     *
      * @param codeString string to parse
      * @return the locale code or null if parse failed
      */

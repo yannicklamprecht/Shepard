@@ -17,6 +17,7 @@ public enum KudoLotteryEvaluatorLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     KudoLotteryEvaluatorLocale(String localeCode) {

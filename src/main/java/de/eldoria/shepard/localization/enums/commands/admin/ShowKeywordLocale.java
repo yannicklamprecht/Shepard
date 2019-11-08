@@ -13,6 +13,7 @@ public enum ShowKeywordLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     ShowKeywordLocale(String localeCode) {

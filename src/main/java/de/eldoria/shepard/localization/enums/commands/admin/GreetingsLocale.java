@@ -37,6 +37,7 @@ public enum GreetingsLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     GreetingsLocale(String localeCode) {

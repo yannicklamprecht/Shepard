@@ -50,7 +50,7 @@ public final class LocaleData {
     /**
      * Get the prefix for a guild.
      *
-     * @param guild          Guild object for lookup
+     * @param guild Guild object for lookup
      * @return Prefix as string
      */
     public static LocaleCode getLanguage(Guild guild) {

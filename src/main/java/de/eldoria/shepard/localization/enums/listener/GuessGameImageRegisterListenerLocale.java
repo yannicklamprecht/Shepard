@@ -25,6 +25,7 @@ public enum GuessGameImageRegisterListenerLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     GuessGameImageRegisterListenerLocale(String localeCode) {

@@ -22,7 +22,7 @@ public class MagicConch extends Command {
      */
     public MagicConch() {
         commandName = "magicConch";
-        commandAliases = new String[] {"MagischeMiesmuschel"};
+        commandAliases = new String[] {"conch"};
         commandDesc = MagicConchLocale.DESCRIPTION.tag;
         category = ContextCategory.FUN;
     }

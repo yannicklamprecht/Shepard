@@ -54,6 +54,7 @@ public class LocalizedEmbedBuilder extends EmbedBuilder {
 
     /**
      * Add a localized field.
+     *
      * @param field localized field to add.
      * @return the builder after the field has been set
      */

@@ -36,6 +36,7 @@ public enum Emoji {
 
     /**
      * Create a new emoji.
+     *
      * @param unicode unicode of emoji.
      */
     Emoji(String unicode) {

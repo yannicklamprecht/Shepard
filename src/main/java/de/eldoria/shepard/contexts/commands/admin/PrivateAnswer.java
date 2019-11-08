@@ -27,7 +27,7 @@ public class PrivateAnswer extends Command {
                 new CommandArg("name", true,
                         new SubArg("name", A_NAME.tag)),
                 new CommandArg("message", false,
-                        new SubArg("message",A_MESSAGE.tag))
+                        new SubArg("message", A_MESSAGE.tag))
         };
         category = ContextCategory.ADMIN;
     }

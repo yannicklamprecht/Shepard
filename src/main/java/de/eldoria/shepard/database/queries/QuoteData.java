@@ -21,8 +21,8 @@ public final class QuoteData {
     /**
      * Adds a new Quote.
      *
-     * @param guild Guild for which the quote should be added.
-     * @param quote quote to add
+     * @param guild          Guild for which the quote should be added.
+     * @param quote          quote to add
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
@@ -42,10 +42,10 @@ public final class QuoteData {
     /**
      * Alters a quote by id on guild.
      *
-     * @param guild   Guild object for lookup
-     * @param quoteId id on guild.
-     * @param quote   new quote
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param quoteId        id on guild.
+     * @param quote          new quote
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean alterQuote(Guild guild, int quoteId, String quote, MessageEventDataWrapper messageContext) {
@@ -65,9 +65,9 @@ public final class QuoteData {
     /**
      * Removes a quote by id on guild.
      *
-     * @param guild   Guild object for lookup
-     * @param quoteId id on guild.
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param quoteId        id on guild.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean removeQuote(Guild guild, int quoteId, MessageEventDataWrapper messageContext) {
@@ -86,7 +86,7 @@ public final class QuoteData {
     /**
      * Gets all quotes from guild.
      *
-     * @param guild Guild object for lookup
+     * @param guild          Guild object for lookup
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
@@ -108,9 +108,9 @@ public final class QuoteData {
     /**
      * Gets all quotes from guild.
      *
-     * @param guild   Guild object for lookup
-     * @param keyword Keyword for lookup. Not case sensitive
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param keyword        Keyword for lookup. Not case sensitive
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
     public static List<QuoteElement> getQuotesByKeyword(Guild guild, String keyword,
@@ -133,7 +133,7 @@ public final class QuoteData {
     /**
      * Gets the number of quotes for a guild.
      *
-     * @param guild Guild object for lookup
+     * @param guild          Guild object for lookup
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
@@ -154,9 +154,9 @@ public final class QuoteData {
     /**
      * Gets the number of quotes for a guild which contains the keyword.
      *
-     * @param guild   Guild object for lookup
-     * @param keyword Keyword not case sensitive
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param keyword        Keyword not case sensitive
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
     public static int getQuotesCountByKeyword(Guild guild, String keyword, MessageEventDataWrapper messageContext) {

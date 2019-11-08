@@ -139,6 +139,7 @@ class Analyzer implements Runnable {
 
     /**
      * Get the minecraft ping.
+     *
      * @return ping object or null if ping was unsuccessful.
      */
     PingMinecraftServer.MinecraftPing checkMinecraftServer() {

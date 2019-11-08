@@ -65,6 +65,7 @@ public enum InviteLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     InviteLocale(String localeCode) {

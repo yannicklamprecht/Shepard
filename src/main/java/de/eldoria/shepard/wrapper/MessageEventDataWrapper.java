@@ -40,6 +40,7 @@ public class MessageEventDataWrapper extends GenericMessageEvent {
 
     /**
      * Get the member of the event.
+     *
      * @return member object
      */
     public Member getMember() {
@@ -48,6 +49,7 @@ public class MessageEventDataWrapper extends GenericMessageEvent {
 
     /**
      * Get the user object of the event.
+     *
      * @return user object
      */
     public User getAuthor() {
@@ -56,6 +58,7 @@ public class MessageEventDataWrapper extends GenericMessageEvent {
 
     /**
      * Get the message of the event.
+     *
      * @return message object
      */
     public Message getMessage() {

@@ -65,6 +65,7 @@ public enum ShepardReactions {
 
     /**
      * Creates a new shepard reaction.
+     *
      * @param name name of the emote.
      */
     ShepardReactions(String name) {

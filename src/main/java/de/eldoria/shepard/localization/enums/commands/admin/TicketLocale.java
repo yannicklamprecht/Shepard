@@ -65,6 +65,7 @@ public enum TicketLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     TicketLocale(String localeCode) {

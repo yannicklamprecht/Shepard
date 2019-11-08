@@ -11,6 +11,7 @@ public class UniqueMessageIdentifier {
 
     /**
      * Creates a new unique message identifier.
+     *
      * @param channel channel where the message is in.
      * @param message message id
      */
@@ -22,6 +23,7 @@ public class UniqueMessageIdentifier {
 
     /**
      * check if identifier channel is the same.
+     *
      * @param channel channel for check
      * @return true if the snowflake is the same
      */

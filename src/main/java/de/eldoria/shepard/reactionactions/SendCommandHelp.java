@@ -10,6 +10,7 @@ public class SendCommandHelp extends Action {
 
     /**
      * Creates a new send command help action.
+     *
      * @param command command for which the help should be send.
      */
     public SendCommandHelp(Command command) {

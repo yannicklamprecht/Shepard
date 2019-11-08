@@ -57,6 +57,7 @@ public class SubArg {
 
     /**
      * Get the short command of the subcommand.
+     *
      * @return short command or null if it is not a sub command.
      */
     public String getShortCommand() {
@@ -83,6 +84,7 @@ public class SubArg {
 
     /**
      * Checks if the argument is a subcommand.
+     *
      * @return true if it is a subcommand
      */
     public boolean isSubCommand() {
@@ -91,6 +93,7 @@ public class SubArg {
 
     /**
      * Generate the short command with additional length.
+     *
      * @param additionalLength length of short command.
      */
     public void generateShortCommand(int additionalLength) {

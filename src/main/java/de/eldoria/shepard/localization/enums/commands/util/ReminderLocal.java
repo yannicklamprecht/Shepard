@@ -45,6 +45,7 @@ public enum ReminderLocal {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     ReminderLocal(String localeCode) {

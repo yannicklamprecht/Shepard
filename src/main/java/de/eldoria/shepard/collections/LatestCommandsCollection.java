@@ -44,11 +44,11 @@ public final class LatestCommandsCollection {
     /**
      * Save the latest command.
      *
-     * @param guild guild for saving
-     * @param user user for saving
+     * @param guild   guild for saving
+     * @param user    user for saving
      * @param command command which should be saved
-     * @param label label of command
-     * @param args command arguments
+     * @param label   label of command
+     * @param args    command arguments
      */
     public synchronized void saveLatestCommand(Guild guild, User user, Command command, String label, String[] args) {
         latestCommands.putIfAbsent(guild.getIdLong(), new HashMap<>());
@@ -68,6 +68,7 @@ public final class LatestCommandsCollection {
 
         /**
          * Get the command instance.
+         *
          * @return command instance
          */
         public Command getCommand() {
@@ -76,6 +77,7 @@ public final class LatestCommandsCollection {
 
         /**
          * Get the command label.
+         *
          * @return command label
          */
         public String getLabel() {
@@ -84,6 +86,7 @@ public final class LatestCommandsCollection {
 
         /**
          * Get the command args.
+         *
          * @return command args
          */
         public String[] getArgs() {

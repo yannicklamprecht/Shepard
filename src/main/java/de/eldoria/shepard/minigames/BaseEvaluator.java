@@ -12,6 +12,7 @@ public abstract class BaseEvaluator implements Runnable {
 
     /**
      * Creates a new base evaluator.
+     *
      * @param messageId message for evaluation
      * @param channelId channel where the message was send
      */

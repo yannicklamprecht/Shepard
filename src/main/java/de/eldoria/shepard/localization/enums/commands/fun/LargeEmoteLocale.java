@@ -17,6 +17,7 @@ public enum LargeEmoteLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     LargeEmoteLocale(String localeCode) {

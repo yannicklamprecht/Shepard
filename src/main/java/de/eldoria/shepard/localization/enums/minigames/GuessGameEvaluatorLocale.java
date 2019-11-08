@@ -38,6 +38,7 @@ public enum GuessGameEvaluatorLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     GuessGameEvaluatorLocale(String localeCode) {

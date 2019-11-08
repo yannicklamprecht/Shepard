@@ -29,6 +29,7 @@ public enum PrefixLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     PrefixLocale(String localeCode) {

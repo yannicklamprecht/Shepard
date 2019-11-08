@@ -19,6 +19,7 @@ public class ChannelEvaluator<T extends BaseEvaluator> {
 
     /**
      * Creates a new channel evaluator.
+     *
      * @param poolSize pool size of evaluator.
      */
     public ChannelEvaluator(int poolSize) {
@@ -29,6 +30,7 @@ public class ChannelEvaluator<T extends BaseEvaluator> {
 
     /**
      * Get the channel evaluator for the channel.
+     *
      * @param channel channel for lookup
      * @return evaluator of null if no evaluation is in progress
      */

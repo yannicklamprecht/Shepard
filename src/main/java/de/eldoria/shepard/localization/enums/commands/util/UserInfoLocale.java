@@ -73,6 +73,7 @@ public enum UserInfoLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     UserInfoLocale(String localeCode) {

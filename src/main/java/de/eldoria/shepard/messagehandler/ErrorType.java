@@ -186,6 +186,7 @@ public enum ErrorType {
 
     /**
      * Create a new error type. Default not embed.
+     *
      * @param tag locale tag for error
      */
     ErrorType(String tag) {

@@ -49,6 +49,7 @@ public enum AnalyzerLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     AnalyzerLocale(String localeCode) {

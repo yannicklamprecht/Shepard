@@ -21,6 +21,7 @@ public enum HomeLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     HomeLocale(String localeCode) {

@@ -13,6 +13,7 @@ public enum GetRawLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     GetRawLocale(String localeCode) {

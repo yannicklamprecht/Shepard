@@ -38,6 +38,7 @@ public enum ManageContextLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     ManageContextLocale(String localeCode) {

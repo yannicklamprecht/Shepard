@@ -13,6 +13,7 @@ public enum MockingSpongebobLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     MockingSpongebobLocale(String localeCode) {

@@ -66,6 +66,7 @@ public enum ShepardEmote {
 
     /**
      * Creates a new emote.
+     *
      * @param id id of the emote.
      */
     ShepardEmote(long id) {
@@ -74,6 +75,7 @@ public enum ShepardEmote {
 
     /**
      * Get the emote object.
+     *
      * @return emote object or null if emote was not found.
      */
     public Emote getEmote() {

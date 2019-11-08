@@ -13,6 +13,7 @@ public enum RepeatCommandLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     RepeatCommandLocale(String localeCode) {

@@ -302,8 +302,8 @@ public final class TicketData {
     /**
      * Get the roles for the channel owner of a channel.
      *
-     * @param guild          Guild object for lookup
-     * @param channel        channel id
+     * @param guild   Guild object for lookup
+     * @param channel channel id
      * @return List of role ids
      */
     public static List<String> getChannelOwnerRoles(Guild guild, TextChannel channel) {

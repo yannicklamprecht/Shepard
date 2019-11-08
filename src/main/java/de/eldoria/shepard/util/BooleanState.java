@@ -21,6 +21,7 @@ public enum BooleanState {
 
     /**
      * Create a new boolean state.
+     *
      * @param state state of the boolean
      */
     BooleanState(boolean state) {

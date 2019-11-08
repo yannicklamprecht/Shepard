@@ -32,6 +32,7 @@ public class GelbooruPost {
 
     /**
      * URL of the image.
+     *
      * @param baseUrl base url as string
      * @return String
      */
@@ -41,6 +42,7 @@ public class GelbooruPost {
 
     /**
      * Sample url.
+     *
      * @param baseUrl base url as string
      * @return String
      */
@@ -50,6 +52,7 @@ public class GelbooruPost {
 
     /**
      * Share url.
+     *
      * @param baseUrl base url as string
      * @return String
      */

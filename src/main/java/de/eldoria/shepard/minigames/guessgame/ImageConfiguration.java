@@ -33,6 +33,7 @@ public class ImageConfiguration {
 
     /**
      * Register the images at database.
+     *
      * @return true if registration was successfully
      */
     boolean registerAtDatabase() {
@@ -41,6 +42,7 @@ public class ImageConfiguration {
 
     /**
      * Configuration state.
+     *
      * @return configuration state of the current registration.
      */
     ConfigurationState getConfigurationState() {
@@ -55,6 +57,7 @@ public class ImageConfiguration {
 
     /**
      * Check if the image ist nsfw.
+     *
      * @return true if nsfw.
      */
     public boolean isNsfw() {
@@ -63,6 +66,7 @@ public class ImageConfiguration {
 
     /**
      * Get the cropped image url.
+     *
      * @return copped image url.
      */
     public String getCroppedImage() {
@@ -71,6 +75,7 @@ public class ImageConfiguration {
 
     /**
      * Get the full image url.
+     *
      * @return full image url.
      */
     public String getFullImage() {

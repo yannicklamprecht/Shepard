@@ -20,10 +20,10 @@ public abstract class Action {
     /**
      * Creates a new action with a emoji.
      *
-     * @param emoji emoji from emoji collection
-     * @param exclusiveUser   user which is allowed to user the action. null if action is not user exclusive
-     * @param secondsValid    how long the action can be executed
-     * @param oneTime         true if the action can be used only one time
+     * @param emoji         emoji from emoji collection
+     * @param exclusiveUser user which is allowed to user the action. null if action is not user exclusive
+     * @param secondsValid  how long the action can be executed
+     * @param oneTime       true if the action can be used only one time
      */
     Action(Emoji emoji, User exclusiveUser, int secondsValid, boolean oneTime) {
         this.emoji = emoji.unicode;
@@ -84,12 +84,14 @@ public abstract class Action {
 
     /**
      * Execute the internal functions.
+     *
      * @param event event for information
      */
     protected abstract void internalExecute(GuildMessageReactionAddEvent event);
 
     /**
      * Check if the action is used and cant be used anymore.
+     *
      * @return true if action is used
      */
     public boolean isUsed() {
@@ -98,6 +100,7 @@ public abstract class Action {
 
     /**
      * Get the emoji.
+     *
      * @return emoji as string (unicode) or null
      */
     public String getEmoji() {
@@ -106,6 +109,7 @@ public abstract class Action {
 
     /**
      * Get the emote.
+     *
      * @return emote object or null
      */
     public Emote getEmote() {
@@ -114,6 +118,7 @@ public abstract class Action {
 
     /**
      * Get the reaction type.
+     *
      * @return reaction type
      */
     public ReactionType getReactionType() {
@@ -122,6 +127,7 @@ public abstract class Action {
 
     /**
      * Get the time a action can be executed.
+     *
      * @return time in seconds as integer.
      */
     public int getSecondsValid() {

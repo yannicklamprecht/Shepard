@@ -41,6 +41,7 @@ public enum LanguageLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     LanguageLocale(String localeCode) {

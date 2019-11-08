@@ -61,6 +61,7 @@ public enum PermissionLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     PermissionLocale(String localeCode) {

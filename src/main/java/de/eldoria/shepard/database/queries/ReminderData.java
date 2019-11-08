@@ -23,11 +23,12 @@ public final class ReminderData {
 
     /**
      * Add a new reminder in a interval.
-     * @param guild guild for savind
-     * @param user user which created the invite
-     * @param channel channel where the invite was created
-     * @param message message for reminder
-     * @param interval reminder interval
+     *
+     * @param guild          guild for savind
+     * @param user           user which created the invite
+     * @param channel        channel where the invite was created
+     * @param message        message for reminder
+     * @param interval       reminder interval
      * @param messageContext message context for error handling. can be null
      * @return true if the query was executed successfully
      */
@@ -82,8 +83,9 @@ public final class ReminderData {
 
     /**
      * Get the reminder of the user on a guild.
-     * @param guild guild of the user.
-     * @param user user
+     *
+     * @param guild          guild of the user.
+     * @param user           user
      * @param messageContext message context for error handling. can be null
      * @return list of reminder of the user on the guild
      */
@@ -113,9 +115,9 @@ public final class ReminderData {
     /**
      * Remove a reminder of a user by id.
      *
-     * @param guild guild in which the reminder should be deleted.
-     * @param user user which created the invite
-     * @param id id of the reminder
+     * @param guild          guild in which the reminder should be deleted.
+     * @param user           user which created the invite
+     * @param id             id of the reminder
      * @param messageContext message context for error handling. can be null
      * @return true if the query was executed successfully
      */

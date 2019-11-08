@@ -204,6 +204,7 @@ public abstract class ContextSensitive {
 
     /**
      * Get the context name. Context names are always all caps!
+     *
      * @return context name
      */
     public String getContextName() {

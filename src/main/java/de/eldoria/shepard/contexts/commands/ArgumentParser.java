@@ -394,6 +394,7 @@ public final class ArgumentParser {
 
     /**
      * Parse a string to integer.
+     *
      * @param number number as string
      * @return number or null if parse failed
      */

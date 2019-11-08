@@ -198,7 +198,6 @@ public final class KudoData {
 
     /**
      * Add to all users 1 kudo.
-     *
      */
     public static void upcountKudos() {
         try (PreparedStatement statement = DatabaseConnector.getConn()

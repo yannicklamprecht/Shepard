@@ -10,7 +10,7 @@ public class DariNope extends Keyword {
      * Creates a new dari nope keyword object.
      */
     public DariNope() {
-        keywords = new String[]{"richtig?", "oder?", "ja", "doch"};
+        keywords = new String[] {"richtig?", "oder?", "ja", "doch"};
     }
 
     @Override

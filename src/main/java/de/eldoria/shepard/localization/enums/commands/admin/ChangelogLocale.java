@@ -53,6 +53,7 @@ public enum ChangelogLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     ChangelogLocale(String localeCode) {

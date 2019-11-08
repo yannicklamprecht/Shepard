@@ -53,6 +53,7 @@ public enum KudosLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     KudosLocale(String localeCode) {

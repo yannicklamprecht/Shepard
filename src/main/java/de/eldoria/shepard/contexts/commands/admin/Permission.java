@@ -46,6 +46,7 @@ public class Permission extends Command {
      */
     public Permission() {
         commandName = "permission";
+        commandAliases = new String[] {"perm"};
         commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("context name", true,

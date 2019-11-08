@@ -26,7 +26,7 @@ public class LargeEmote extends Command {
         commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("emotes", true,
-                new SubArg("emotes", A_EMOTE.tag))};
+                        new SubArg("emotes", A_EMOTE.tag))};
         commandAliases = new String[] {"lemote"};
         category = ContextCategory.FUN;
     }

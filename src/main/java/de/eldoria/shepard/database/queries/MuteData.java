@@ -29,10 +29,10 @@ public final class MuteData {
     /**
      * Sets a user as muted.
      *
-     * @param guild    Guild on which the user should be muted
-     * @param user     user id
-     * @param duration duration of the mute
-     * @param messageContext    messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild on which the user should be muted
+     * @param user           user id
+     * @param duration       duration of the mute
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean setMuted(Guild guild, User user, String duration, MessageEventDataWrapper messageContext) {
@@ -68,8 +68,8 @@ public final class MuteData {
     /**
      * Remove a mute from a user.
      *
-     * @param guild Guild object for lookup
-     * @param user  id of the user
+     * @param guild          Guild object for lookup
+     * @param user           id of the user
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
@@ -90,7 +90,7 @@ public final class MuteData {
     /**
      * Get the muted users on a guild.
      *
-     * @param guild Guild object for lookup
+     * @param guild          Guild object for lookup
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of muted users on a server.
      */

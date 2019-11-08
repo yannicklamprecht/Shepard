@@ -19,6 +19,7 @@ public class Rank {
 
     /**
      * Get the user object.
+     *
      * @return get user object
      */
     public User getUser() {
@@ -27,6 +28,7 @@ public class Rank {
 
     /**
      * Get the score of the user.
+     *
      * @return score
      */
     public int getScore() {

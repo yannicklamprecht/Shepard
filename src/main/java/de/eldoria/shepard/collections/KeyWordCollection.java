@@ -36,6 +36,7 @@ public final class KeyWordCollection {
 
     /**
      * Adds a new Keyword to collection.
+     *
      * @param keyword keyword to add
      */
     public void addKeyword(Keyword keyword) {
@@ -44,6 +45,7 @@ public final class KeyWordCollection {
 
     /**
      * get the first found keyword in a message.
+     *
      * @param event message received event.
      * @return KeyWordArgs object or null if no keyword was found.
      */
@@ -58,6 +60,7 @@ public final class KeyWordCollection {
 
     /**
      * Get all registered keywords.
+     *
      * @return Keyword list
      */
     public List<Keyword> getKeywords() {
@@ -66,8 +69,9 @@ public final class KeyWordCollection {
 
     /**
      * Get a Keyword from context name.
+     *
      * @param contextName name of the context
-     * @param event event for permission check
+     * @param event       event for permission check
      * @return Keyword object
      */
     public Keyword getKeywordWithContextName(String contextName, MessageEventDataWrapper event) {

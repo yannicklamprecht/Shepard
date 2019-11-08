@@ -22,10 +22,6 @@ public enum ManageQuoteLocale {
      */
     C_LIST("command.manageQuote.subcommand.list"),
     /**
-     * Localization key for argument quote id.
-     */
-    A_QUOTE_ID("command.manageQuote.argument.quoteId"),
-    /**
      * Localization key for argument keyword.
      */
     A_KEYWORD("command.manageQuote.argument.keyWord"),
@@ -53,6 +49,7 @@ public enum ManageQuoteLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     ManageQuoteLocale(String localeCode) {

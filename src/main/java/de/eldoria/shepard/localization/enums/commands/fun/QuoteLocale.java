@@ -21,6 +21,7 @@ public enum QuoteLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     QuoteLocale(String localeCode) {

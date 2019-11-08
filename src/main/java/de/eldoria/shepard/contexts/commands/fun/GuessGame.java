@@ -45,7 +45,7 @@ public class GuessGame extends Command {
      */
     public GuessGame() {
         commandName = "guessGame";
-        commandAliases = new String[] {"nsfwornot"};
+        commandAliases = new String[] {"gg", "nsfwornot"};
         commandDesc = GuessGameLocale.DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", false,

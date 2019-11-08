@@ -47,6 +47,7 @@ public final class BotListReporter {
 
     /**
      * Check if a user has voted today.
+     *
      * @param user user for lookup
      * @return true if the user has voted.
      */
@@ -67,6 +68,7 @@ public final class BotListReporter {
 
     /**
      * Adds a event handler.
+     *
      * @param eventHandler eventhandler to add
      */
     public void addEventHandler(Consumer<BotListResponse> eventHandler) {

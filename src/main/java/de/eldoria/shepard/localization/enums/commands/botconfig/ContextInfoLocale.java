@@ -13,6 +13,7 @@ public enum ContextInfoLocale {
 
     /**
      * Create a new locale object.
+     *
      * @param localeCode locale code
      */
     ContextInfoLocale(String localeCode) {

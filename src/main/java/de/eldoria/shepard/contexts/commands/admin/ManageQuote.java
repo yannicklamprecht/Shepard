@@ -16,9 +16,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_ID;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_TEXT;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.A_KEYWORD;
-import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.A_QUOTE_ID;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_ADD;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_ALTER;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_LIST;
@@ -48,8 +48,8 @@ public class ManageQuote extends Command {
                         new SubArg("list", C_LIST.tag, true)),
                 new CommandArg("action", false,
                         new SubArg("add", A_TEXT.tag),
-                        new SubArg("alter", A_QUOTE_ID + " " + A_TEXT),
-                        new SubArg("remove", A_QUOTE_ID.tag),
+                        new SubArg("alter", A_ID + " " + A_TEXT),
+                        new SubArg("remove", A_ID.tag),
                         new SubArg("list", A_KEYWORD.tag))
         };
         category = ContextCategory.ADMIN;

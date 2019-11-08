@@ -65,25 +65,25 @@ public class GuessGameConfig extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
         CommandArg arg = commandArgs[0];
-        if (arg.isSubCommand(cmd,0)) {
+        if (arg.isSubCommand(cmd, 0)) {
             addImage(args, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd,1)) {
+        if (arg.isSubCommand(cmd, 1)) {
             removeImage(args, messageContext);
             return;
         }
-        if (arg.isSubCommand(cmd,2)) {
+        if (arg.isSubCommand(cmd, 2)) {
             changeFlag(args, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd,3)) {
+        if (arg.isSubCommand(cmd, 3)) {
             showImageSet(args, messageContext);
             return;
         }
-        if (arg.isSubCommand(cmd,4)) {
+        if (arg.isSubCommand(cmd, 4)) {
             ImageRegister.getInstance().cancelConfiguration(messageContext);
             MessageSender.sendMessage(M_REGISTRATION_CANCELED.tag, messageContext.getTextChannel());
             return;

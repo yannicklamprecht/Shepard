@@ -10,7 +10,7 @@ public class DariYes extends Keyword {
      * Creates a new dari yes keyword.
      */
     public DariYes() {
-        keywords = new String[]{"nein", "no", "oder?", "nope"};
+        keywords = new String[] {"nein", "no", "oder?", "nope"};
     }
 
     @Override

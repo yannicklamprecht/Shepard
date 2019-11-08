@@ -223,6 +223,7 @@ public abstract class Command extends ContextSensitive {
 
     /**
      * Get the highest similarity score between command string and command name and aliases.
+     *
      * @param command command to check
      * @return score between 0 and 1
      */

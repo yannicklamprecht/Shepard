@@ -34,6 +34,7 @@ public class MinecraftLink {
 
     /**
      * Gets user of link.
+     *
      * @return User object. Can be null.
      */
     @Nullable
@@ -43,6 +44,7 @@ public class MinecraftLink {
 
     /**
      * Get uuid of link.
+     *
      * @return uuid as link. Can be null.
      */
     public String getUuid() {
