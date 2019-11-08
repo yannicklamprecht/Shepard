@@ -1,29 +1,29 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.localization.util.LocalizedField;
+import de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.util.Collections;
 import java.util.Random;
 
+import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.ANSWER_NEGATIVE;
+import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.ANSWER_NEUTRAL;
+import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.ANSWER_POSITIVE;
+import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.M_ANSWER;
+
 
 public class MagicConch extends Command {
-
-    private final String[] positive = new String[] {"Yes", "Of Course", "DO IT!", "Why not :)"};
-    private final String[] neutral = new String[] {"How should I know?", "Maybe",
-            "You should ask someone else instead."};
-    private final String[] negative = new String[] {"Are you dumb?", "Fly, you fool!", "nope", "No"};
-
     /**
      * Creates a new MagicConch command object.
      */
     public MagicConch() {
         commandName = "magicConch";
-        commandAliases = new String[] {"MagischeMiesmuschel"};
-        commandDesc = "Find your decision!";
+        commandAliases = new String[] {"conch"};
+        commandDesc = MagicConchLocale.DESCRIPTION.tag;
         category = ContextCategory.FUN;
     }
 
@@ -33,23 +33,27 @@ public class MagicConch extends Command {
         Random rand = new Random();
         int type = rand.nextInt(3);
 
+
+        MagicConchLocale answer;
         switch (type) {
             case 0:
-                word = positive[rand.nextInt(positive.length)];
+                answer = ANSWER_POSITIVE;
                 break;
             case 1:
-                word = negative[rand.nextInt(negative.length)];
+                answer = ANSWER_NEGATIVE;
                 break;
             case 2:
-                word = neutral[rand.nextInt(neutral.length)];
+                answer = ANSWER_NEUTRAL;
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
         }
+        String[] decisions = locale.getLanguageString(messageContext.getGuild(), answer.localeCode).split("\\|");
+        word = decisions[rand.nextInt(decisions.length)];
 
         MessageSender.sendTextBox(null,
-                Collections.singletonList(new MessageEmbed.Field("The magic conch says:", word, false)),
-                messageContext.getChannel());
+                Collections.singletonList(new LocalizedField(M_ANSWER.tag, word, false, messageContext)),
+                messageContext.getTextChannel());
 
     }
 }

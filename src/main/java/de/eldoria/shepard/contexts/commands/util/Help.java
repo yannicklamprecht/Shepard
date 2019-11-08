@@ -2,13 +2,15 @@ package de.eldoria.shepard.contexts.commands.util;
 
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.PrefixData;
+import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
+import de.eldoria.shepard.localization.util.LocalizedField;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.CommandArg;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageEmbed;
+import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**
  * A command for listing all possible commands.
@@ -29,18 +33,17 @@ public class Help extends Command {
      */
     public Help() {
         commandName = "help";
-        commandAliases = new String[] {"Hilfe", "sendhelp"};
-        commandDesc = "Help for all commands and arguments.";
-        commandArgs = new CommandArg[]
-                {new CommandArg("Command", "Name or Alias of Command", false),
-                        new CommandArg("Argument", "One Argument of the Command", false)};
+        commandAliases = new String[] {"sendhelp"};
+        commandDesc = HelpLocale.DESCRIPTION.tag;
+        commandArgs = new CommandArg[] {
+                new CommandArg("Command", false,
+                        new SubArg("Command", HelpLocale.A_COMMAND.tag))
+        };
         category = ContextCategory.UTIL;
     }
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        String prefix = PrefixData.getPrefix(messageContext.getGuild(), messageContext);
-
         //Command List
         if (args.length == 0) {
             listCommands(messageContext);
@@ -49,82 +52,70 @@ public class Help extends Command {
 
         Command command = CommandCollection.getInstance().getCommand(args[0]);
         if (command == null || !command.isContextValid(messageContext)) {
-            MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Command not found!",
-                            "Type " + prefix + "help for a full list of available commands!", false)},
-                    messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.COMMAND_NOT_FOUND, messageContext.getTextChannel());
             return;
         }
 
         //Command Help
         if (args.length == 1) {
-            commandHelp(messageContext.getChannel(), command);
+            commandHelp(messageContext, command);
             return;
         }
 
-
-        //Arg help
-        if (args.length == 2) {
-            argumentHelp(args[1], messageContext.getChannel(), command);
-            return;
-
-        }
-
-        MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Usage:", "Type:\n"
-                        + prefix + "help for a list of commands.\n"
-                        + prefix + "help [command] for help for a specific command.\n"
-                        + prefix + "help [command] [arg] for a description of the argument.", false)},
-                messageContext.getChannel());
-    }
-
-    /* Sends help for a specific argument of a command.*/
-    private void argumentHelp(String argument, MessageChannel channel, Command command) {
-        command.sendCommandArgHelp(argument, channel);
+        String prefix = PrefixData.getPrefix(messageContext.getGuild(), messageContext);
+        MessageSender.sendMessage(localizeAllAndReplace(HelpLocale.M_USAGE.tag, messageContext.getGuild(),
+                prefix), messageContext.getTextChannel());
     }
 
     /* Sends help for a specific command with description, alias and usage.*/
-    private void commandHelp(MessageChannel channel, Command command) {
-        command.sendCommandUsage(channel);
+    private void commandHelp(MessageEventDataWrapper messageContext, Command command) {
+        command.sendCommandUsage(messageContext.getTextChannel());
     }
 
     /* Sends a list of all commands with description */
-    private void listCommands(MessageEventDataWrapper event) {
+    private void listCommands(MessageEventDataWrapper messageContext) {
         Map<ContextCategory, List<Command>> commands = new HashMap<>();
 
-        List<MessageEmbed.Field> fields = new ArrayList<>();
+        List<LocalizedField> fields = new ArrayList<>();
 
         for (Command command : CommandCollection.getInstance().getCommands()) {
-            if (!command.isContextValid(event)) {
+            if (!command.isContextValid(messageContext)) {
                 continue;
             }
             commands.putIfAbsent(command.getCategory(), new ArrayList<>());
             commands.get(command.getCategory()).add(command);
         }
 
-        fields.add(getCommandField(commands, ContextCategory.BOTCONFIG));
-        fields.add(getCommandField(commands, ContextCategory.ADMIN));
-        fields.add(getCommandField(commands, ContextCategory.EXCLUSIVE));
-        fields.add(getCommandField(commands, ContextCategory.FUN));
-        fields.add(getCommandField(commands, ContextCategory.UTIL));
-        fields.add(new MessageEmbed.Field("", "**Use `" + PrefixData.getPrefix(event.getGuild(), event)
-                + "<command> help` for more information about a command.**", false));
-        fields.add(new MessageEmbed.Field("Maybe useful:",
-                "**[Invite me](https://discordapp.com/oauth2/authorize?client_id=512413049894731780&scope=bot&permissions=1544027254), "
-                        + "[Support Server](https://discord.gg/AJyFGAj)**", false));
+        fields.add(getCommandField(commands, ContextCategory.BOT_CONFIG, messageContext));
+        fields.add(getCommandField(commands, ContextCategory.ADMIN, messageContext));
+        fields.add(getCommandField(commands, ContextCategory.EXCLUSIVE, messageContext));
+        fields.add(getCommandField(commands, ContextCategory.FUN, messageContext));
+        fields.add(getCommandField(commands, ContextCategory.UTIL, messageContext));
+        fields.add(new LocalizedField("", localizeAllAndReplace(HelpLocale.M_LIST_COMMANDS.tag,
+                messageContext.getGuild(),
+                "`" + PrefixData.getPrefix(messageContext.getGuild(), messageContext) + "<command> help`"),
+                false, messageContext));
+        fields.add(new LocalizedField(HelpLocale.M_MAYBE_USEFUL.tag,
+                "**[" + HelpLocale.M_INVITE_ME + "]"
+                        + "(https://discordapp.com/oauth2/authorize?client_id=512413049894731780&scope=bot&permissions=1544027254), "
+                        + "[" + HelpLocale.M_SUPPORT_SERVER + "](https://discord.gg/AJyFGAj)**", false, messageContext));
 
         fields.removeIf(Objects::isNull);
 
-        MessageSender.sendTextBox("__**COMMANDS**__", fields, event.getChannel(), Color.green);
+        MessageSender.sendTextBox("__**" + HelpLocale.M_COMMANDS + "**__", fields, messageContext.getTextChannel(),
+                Color.green);
     }
 
     private String getCommandNames(List<Command> commands) {
         return commands.stream().map(command -> "`" + command.getCommandName() + "`").collect(Collectors.joining(", "));
     }
 
-    private MessageEmbed.Field getCommandField(Map<ContextCategory, List<Command>> commands, ContextCategory category) {
+    private LocalizedField getCommandField(Map<ContextCategory, List<Command>> commands, ContextCategory category,
+                                           MessageEventDataWrapper messageContext) {
         List<Command> list = commands.getOrDefault(category, Collections.emptyList());
         if (!list.isEmpty()) {
-            return new MessageEmbed.Field(category.categoryName,
-                    getCommandNames(list), false);
+            return new LocalizedField(category.categoryName,
+                    getCommandNames(list), false, messageContext);
         }
         return null;
     }

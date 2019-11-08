@@ -24,7 +24,7 @@ public class PrivateMessageListener extends ListenerAdapter {
         String[] args = receivedMessage.split(" ");
 
         if (!args[0].isEmpty() && CommandCollection.getInstance().getCommand(args[0].substring(1)) != null) {
-            MessageSender.sendMessage(
+            MessageSender.sendMessageToChannel(
                     "I'm sorry, but I'm not your personal assistant. I am only available to the public.",
                     messageContext.getChannel());
         } else {

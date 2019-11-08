@@ -12,7 +12,7 @@ public class TicketType {
      * Creates a new Ticket type object.
      *
      * @param id              id.
-     * @param category      channel category
+     * @param category        channel category
      * @param creationMessage creation message
      * @param keyword         creation keyword
      */
@@ -26,7 +26,7 @@ public class TicketType {
     /**
      * Creates a new Ticket type object.
      *
-     * @param category      channel category
+     * @param category        channel category
      * @param creationMessage creation message
      * @param keyword         creation keyword
      */

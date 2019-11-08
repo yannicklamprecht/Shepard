@@ -22,9 +22,7 @@ public class KeywordListener extends ListenerAdapter {
         KeywordArgs kwa = keyWordCollections.getKeyword(event);
 
         if (kwa != null) {
-
             kwa.getKeyword().execute(event, kwa.getKey());
         }
-
     }
 }

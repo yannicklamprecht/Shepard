@@ -17,13 +17,11 @@ public class TicketCleanupListener extends ListenerAdapter {
     public void onGuildMemberLeave(@Nonnull GuildMemberLeaveEvent event) {
         List<String> channelIds = getChannelIdsByOwner(event.getGuild(), event.getUser(), null);
 
-
         List<TextChannel> validTextChannels = Verifier.getValidTextChannels(event.getGuild(), channelIds);
         for (TextChannel channel : validTextChannels) {
             if (removeChannel(event.getGuild(), channel, null)) {
                 channel.delete().queue();
             }
-
         }
     }
 }

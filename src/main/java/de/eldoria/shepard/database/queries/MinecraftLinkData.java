@@ -19,7 +19,7 @@ public final class MinecraftLinkData {
     /**
      * Get a Minecraft link by user.
      *
-     * @param user  User object.
+     * @param user           User object.
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Minecraft Link object or null if no link was found
      */
@@ -40,7 +40,7 @@ public final class MinecraftLinkData {
     /**
      * Get a Minecraft link by uuid of a minecraft account.
      *
-     * @param uuid  uuid of a minecraft account
+     * @param uuid           uuid of a minecraft account
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Minecraft Link object or null if no link was found
      */
@@ -61,8 +61,8 @@ public final class MinecraftLinkData {
     /**
      * Add a link code to database.
      *
-     * @param code  Code to add
-     * @param uuid  uuid of player
+     * @param code           Code to add
+     * @param uuid           uuid of player
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
@@ -82,7 +82,7 @@ public final class MinecraftLinkData {
     /**
      * Get a uuid by code.
      *
-     * @param code  code for lookup
+     * @param code           code for lookup
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return UUID as String.
      */

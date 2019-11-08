@@ -7,6 +7,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class KudoCounter implements Runnable {
+    /**
+     * Initializes the kudo counter if not active.
+     */
     public void initialize() {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(this, 30, 60, TimeUnit.MINUTES);

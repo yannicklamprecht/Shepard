@@ -7,6 +7,9 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 public class SomeoneKeyword extends Keyword {
+    /**
+     * Creates a new someone keyword.
+     */
     public SomeoneKeyword() {
         keywords = new String[] {"@someone"};
     }
@@ -15,7 +18,7 @@ public class SomeoneKeyword extends Keyword {
     public void execute(GuildMessageReceivedEvent event, String key) {
         Command someone = CommandCollection.getInstance().getCommand("someone");
         if (someone != null) {
-            someone.execute("", new String[0], new MessageEventDataWrapper(event));
+            someone.executeAsync("", new String[0], new MessageEventDataWrapper(event));
 
         }
     }

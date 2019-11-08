@@ -140,6 +140,11 @@ public class Address {
         return type;
     }
 
+    /**
+     * get the port of the address.
+     *
+     * @return port as integer
+     */
     public int getPort() {
         return port;
     }

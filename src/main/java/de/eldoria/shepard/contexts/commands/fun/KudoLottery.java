@@ -3,24 +3,30 @@ package de.eldoria.shepard.contexts.commands.fun;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.database.queries.KudoData;
+import de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.ChannelEvaluator;
 import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.kudolottery.KudoLotteryEvaluator;
-import de.eldoria.shepard.util.reactions.EmoteCollection;
+import de.eldoria.shepard.util.reactions.ShepardEmote;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.awt.Color;
 
-import static java.lang.System.lineSeparator;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_LOTTERY_RUNNING;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 public class KudoLottery extends Command {
+    /**
+     * Creates a new kudo lottery command object.
+     */
     public KudoLottery() {
         commandName = "kudoLottery";
         commandAliases = new String[] {"lottery", "kl"};
-        commandDesc = "Play for Kudos! You need at least 1 Kudo to start a round! 1 ticket = 1 Kudo";
+        commandDesc = DESCRIPTION.tag;
         category = ContextCategory.FUN;
     }
 
@@ -30,7 +36,7 @@ public class KudoLottery extends Command {
                 messageContext.getAuthor(), 1, messageContext);
 
         if (!success) {
-            MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_KUDOS, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_KUDOS, messageContext.getTextChannel());
             return;
         }
 
@@ -38,28 +44,28 @@ public class KudoLottery extends Command {
                 = Evaluator.getKudoLotteryScheduler();
 
         if (kudoLotteryScheduler.isEvaluationActive(messageContext.getTextChannel())) {
-            MessageSender.sendMessage("There is an active Lottery in this channel.", messageContext.getChannel());
+            MessageSender.sendMessage(M_LOTTERY_RUNNING.tag, messageContext.getTextChannel());
             return;
         }
 
-        EmbedBuilder builder = new EmbedBuilder()
-                .setTitle("KUDO LOTTERY")
-                .setDescription("A new round is starting. Please place your bets!" + lineSeparator()
-                        + " You have 3 minutes!")
-                .addField("Currently there is 1 Kudo in the pot!",
-                        "Press " + EmoteCollection.INFINITY.getEmote().getAsMention()
-                                + " to buy as much Tickets as you can." + lineSeparator()
-                                + "Press " + EmoteCollection.PLUS_X.getEmote().getAsMention()
-                                + " to buy 10 Tickets for 10 Kudos." + lineSeparator()
-                                + "Press " + EmoteCollection.PLUS_I.getEmote().getAsMention()
-                                + " to buy 1 Ticket for 1 Kudo.",
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
+                .setTitle(KudoLotteryLocale.M_EMBED_TITLE.tag)
+                .setDescription(localizeAllAndReplace(KudoLotteryLocale.M_EMBED_DESCRIPTION.tag,
+                        messageContext.getGuild(), "3"))
+                .addField(localizeAllAndReplace(KudoLotteryLocale.M_EMBED_KUDOS_IN_POT.tag,
+                        messageContext.getGuild(), "1"),
+                        localizeAllAndReplace(KudoLotteryLocale.M_EMBED_EXPLANATION.tag,
+                                messageContext.getGuild(),
+                                ShepardEmote.INFINITY.getEmote().getAsMention(),
+                                ShepardEmote.PLUS_X.getEmote().getAsMention(),
+                                ShepardEmote.PLUS_I.getEmote().getAsMention()),
                         true)
                 .setColor(Color.orange);
 
         messageContext.getChannel().sendMessage(builder.build()).queue(message -> {
-            message.addReaction(EmoteCollection.INFINITY.getEmote()).queue();
-            message.addReaction(EmoteCollection.PLUS_X.getEmote()).queue();
-            message.addReaction(EmoteCollection.PLUS_I.getEmote()).queue();
+            message.addReaction(ShepardEmote.INFINITY.getEmote()).queue();
+            message.addReaction(ShepardEmote.PLUS_X.getEmote()).queue();
+            message.addReaction(ShepardEmote.PLUS_I.getEmote()).queue();
             kudoLotteryScheduler.scheduleEvaluation(message, 180,
                     new KudoLotteryEvaluator(message, messageContext.getAuthor()));
         });

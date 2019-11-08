@@ -10,15 +10,13 @@ public class DariNope extends Keyword {
      * Creates a new dari nope keyword object.
      */
     public DariNope() {
-        keywords = new String[]{"richtig?", "oder?", "ja", "doch"};
+        keywords = new String[] {"richtig?", "oder?", "ja", "doch"};
     }
 
     @Override
     public void execute(GuildMessageReceivedEvent event, String key) {
         if (event.getAuthor().getId().equalsIgnoreCase("223192558468202496")) {
             MessageSender.sendMessage("Nein " + event.getAuthor().getAsMention(), event.getChannel());
-
         }
     }
-
 }

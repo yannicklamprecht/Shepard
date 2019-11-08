@@ -1,26 +1,36 @@
 package de.eldoria.shepard.contexts.commands.botconfig;
 
-import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.commands.ArgumentParser;
+import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
-import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.util.BooleanState;
-import de.eldoria.shepard.util.Verifier;
-import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static de.eldoria.shepard.contexts.ContextHelper.getContextName;
-import static de.eldoria.shepard.util.Verifier.isArgument;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USERS;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.A_LIST_TYPE;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.C_ADD_USER;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.C_REMOVE_USER;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.C_SET_ACTIVE;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.C_SET_LIST_TYPE;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_ACTIVATED_CHECK;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_ADDED_USERS;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_CHANGED_LIST_TYPE;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_DEACTIVATED_CHECK;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_REMOVED_USERS;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 public class ManageContextUsers extends Command {
     /**
@@ -29,58 +39,56 @@ public class ManageContextUsers extends Command {
     public ManageContextUsers() {
         commandName = "manageContextUser";
         commandAliases = new String[] {"mcu"};
-        commandDesc = "Manage which user can use a context.";
+        commandDesc = DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
-                new CommandArg("context name", "Name of the context to change", true),
-                new CommandArg("action",
-                        "**set__A__ctive** -> Enables/Disables User Check for Command" + System.lineSeparator()
-                                + "**set__L__ist__T__ype** -> Defines it the list should be used as White or Blacklist"
-                                + System.lineSeparator()
-                                + "**__a__dd__U__ser** -> Adds a user to the list" + System.lineSeparator()
-                                + "**__r__emove__U__ser** -> Removes a user from the list", true),
-                new CommandArg("value",
-                        "**setActive** -> 'true' or 'false'" + System.lineSeparator()
-                                + "**setListType** -> 'BLACKLIST' or 'WHITELIST'. "
-                                + "Defines as which Type the user list should be used" + System.lineSeparator()
-                                + "**addUser** -> Add a user to the list (Multiple users possible)"
-                                + System.lineSeparator()
-                                + "**removeUser** -> Removes a user from the list (Multiple users possible", true)};
-        category = ContextCategory.BOTCONFIG;
+                new CommandArg("context name", true,
+                        new SubArg("context name", A_CONTEXT_NAME.tag)),
+                new CommandArg("action", true,
+                        new SubArg("setActive", C_SET_ACTIVE.tag, true),
+                        new SubArg("setListType", C_SET_LIST_TYPE.tag, true),
+                        new SubArg("addUser", C_ADD_USER.tag, true),
+                        new SubArg("removeUser", C_REMOVE_USER.tag, true)),
+                new CommandArg("value", true,
+                        new SubArg("setActive", A_BOOLEAN.tag),
+                        new SubArg("setListType", A_LIST_TYPE.tag),
+                        new SubArg("addUser", A_USERS.tag),
+                        new SubArg("removeUser", A_USERS.tag))
+        };
+        category = ContextCategory.BOT_CONFIG;
     }
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        String contextName = getContextName(args[0], messageContext);
+        String contextName = ArgumentParser.getContextName(args[0], messageContext);
         String cmd = args[1];
+        CommandArg arg = commandArgs[1];
 
         if (contextName == null) {
-            MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
-                    messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND, messageContext.getTextChannel());
             return;
         }
 
-        if (isArgument(cmd, "setActive", "a")) {
+        if (arg.isSubCommand(cmd, 0)) {
             setActive(args, contextName, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "setListType", "lt")) {
+        if (arg.isSubCommand(cmd, 1)) {
             setListType(args, contextName, messageContext);
             return;
         }
 
-        if (isArgument(cmd, "addUser", "au")) {
+        if (arg.isSubCommand(cmd, 2)) {
             addUser(args, contextName, messageContext);
             return;
         }
 
-        if (isArgument("removeUser", "ru")) {
+        if (arg.isSubCommand(cmd, 3)) {
             removeUser(args, contextName, messageContext);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getChannel());
-        sendCommandArgHelp("action", messageContext.getChannel());
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
 
     }
 
@@ -88,34 +96,28 @@ public class ManageContextUsers extends Command {
                             ModifyType modifyType, MessageEventDataWrapper messageContext) {
         List<String> mentions = new ArrayList<>();
 
-        for (String userId : Arrays.copyOfRange(args, 2, args.length)) {
-            if (Verifier.isValidId(userId)) {
-                User user = ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(userId));
-                if (user != null) {
+        ArgumentParser.getGuildUsers(messageContext.getGuild(),
+                ArgumentParser.getRangeAsList(args, 2))
+                .forEach(user -> {
                     if (modifyType == ModifyType.ADD) {
                         if (!ContextData.addContextUser(contextName, user, messageContext)) {
                             return;
                         }
-                    } else {
-                        if (!ContextData.removeContextUser(contextName, user, messageContext)) {
-                            return;
-                        }
+                    } else if (!ContextData.removeContextUser(contextName, user, messageContext)) {
+                        return;
                     }
                     mentions.add(user.getAsMention());
-                }
-            }
-        }
+                });
 
         String names = String.join(System.lineSeparator(), mentions);
 
         if (modifyType == ModifyType.ADD) {
-            MessageSender.sendSimpleTextBox("Added following users to context \""
-                            + contextName.toUpperCase() + "\"", names + "**",
-                    messageContext.getChannel());
+            MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_ADDED_USERS.tag, messageContext.getGuild(),
+                    " **" + contextName.toUpperCase() + "**"), names, messageContext.getTextChannel());
+
         } else {
-            MessageSender.sendSimpleTextBox("Removed following users from context \""
-                            + contextName.toUpperCase() + "\"", names + "**",
-                    messageContext.getChannel());
+            MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_REMOVED_USERS.tag, messageContext.getGuild(),
+                    " **" + contextName.toUpperCase() + "**"), names, messageContext.getTextChannel());
         }
     }
 
@@ -127,47 +129,41 @@ public class ManageContextUsers extends Command {
         manageUser(args, contextName, ModifyType.REMOVE, messageContext);
     }
 
-
     private void setListType(String[] args, String contextName, MessageEventDataWrapper messageContext) {
         ListType type = ListType.getType(args[2]);
 
         if (type == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_LIST_TYPE,
-                    messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_LIST_TYPE, messageContext.getTextChannel());
             return;
         }
 
         if (ContextData.setContextUserListType(contextName, type, messageContext)) {
-            MessageSender.sendMessage("**Changed user list type of context \""
-                            + contextName.toUpperCase() + "\" to " + type.toString() + "**",
-                    messageContext.getChannel());
+            MessageSender.sendMessage(localizeAllAndReplace(M_CHANGED_LIST_TYPE.tag,
+                    messageContext.getGuild(), "**" + contextName.toUpperCase() + "**"
+                            + "**" + type.toString() + "**"), messageContext.getTextChannel());
         }
-
     }
 
     private void setActive(String[] args, String contextName, MessageEventDataWrapper messageContext) {
-        BooleanState bState = Verifier.checkAndGetBoolean(args[2]);
+        BooleanState bState = ArgumentParser.getBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN,
-                    messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
             return;
         }
 
-        boolean state = bState == BooleanState.TRUE;
+        boolean state = bState.stateAsBoolean;
 
         if (!ContextData.setContextUserCheckActive(contextName, state, messageContext)) {
             return;
         }
 
         if (state) {
-            MessageSender.sendMessage("**Activated user check for context \"" + contextName.toUpperCase() + "\"**",
-                    messageContext.getChannel());
-
+            MessageSender.sendMessage(localizeAllAndReplace(M_ACTIVATED_CHECK.tag, messageContext.getGuild(),
+                    "**" + contextName.toUpperCase() + "**"), messageContext.getTextChannel());
         } else {
-            MessageSender.sendMessage("**Deactivated user check for context \"" + contextName.toUpperCase() + "\"**",
-                    messageContext.getChannel());
-
+            MessageSender.sendMessage(localizeAllAndReplace(M_DEACTIVATED_CHECK.tag, messageContext.getGuild(),
+                    "**" + contextName.toUpperCase() + "**"), messageContext.getTextChannel());
         }
     }
 }

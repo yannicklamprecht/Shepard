@@ -1,11 +1,11 @@
 package de.eldoria.shepard.messagehandler;
 
 import de.eldoria.shepard.collections.ReactionActionCollection;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
+import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.reactionactions.Action;
 import de.eldoria.shepard.reactionactions.ReactionType;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.Color;
@@ -21,7 +21,7 @@ public final class InteractableMessageSender {
      * @param channel channel to send.
      * @param actions one ore more reaction actions linked with this message.
      */
-    public static void sendTextBox(String title, List<MessageEmbed.Field> fields, TextChannel channel,
+    public static void sendTextBox(String title, List<LocalizedField> fields, TextChannel channel,
                                    Action... actions) {
         sendTextBox(title, fields, channel, Color.gray, actions);
     }
@@ -35,12 +35,12 @@ public final class InteractableMessageSender {
      * @param color   Color of the text box
      * @param actions one ore more reaction actions linked with this message.
      */
-    private static void sendTextBox(String title, List<MessageEmbed.Field> fields, TextChannel channel, Color color,
+    private static void sendTextBox(String title, List<LocalizedField> fields, TextChannel channel, Color color,
                                     Action... actions) {
-        EmbedBuilder builder = new EmbedBuilder()
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
                 .setTitle(title)
                 .setColor(color);
-        for (MessageEmbed.Field field : fields) {
+        for (LocalizedField field : fields) {
             builder.addField(field);
         }
         channel.sendMessage(builder.build()).queue(message -> registerActions(channel, message, actions));
@@ -101,7 +101,7 @@ public final class InteractableMessageSender {
     public static void sendSimpleTextBox(String title, String description, Color color,
                                          ShepardReactions reaction, TextChannel channel,
                                          Action... actions) {
-        EmbedBuilder builder = new EmbedBuilder()
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
                 .setTitle(title)
                 .setColor(color)
                 .setDescription(description);

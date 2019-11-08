@@ -9,13 +9,14 @@ import net.dv8tion.jda.api.entities.Guild;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Map;
 
 import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public final class PrefixData {
-    private static final Map<String, String> prefixes = new DefaultMap<>(ShepardBot.getConfig().getPrefix());
-    private static boolean cacheDirty = true;
+    private static final Map<Long, String> prefixes = new HashMap<>();
+    private static final DefaultMap<Long, Boolean> cacheDirty = new DefaultMap<>(true);
 
     private PrefixData() {
     }
@@ -23,18 +24,18 @@ public final class PrefixData {
     /**
      * Sets the prefix for a guild.
      *
-     * @param guild  Guild for which the prefix should be set
-     * @param prefix prefix to set.
-     * @param messageContext  messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild for which the prefix should be set
+     * @param prefix         prefix to set.
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean setPrefix(Guild guild, String prefix, MessageEventDataWrapper messageContext) {
-        cacheDirty = true;
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.set_prefix(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, prefix);
             statement.execute();
+            prefixes.put(guild.getIdLong(), prefix);
         } catch (SQLException e) {
             handleExceptionAndIgnore(e, messageContext);
             return false;
@@ -47,39 +48,34 @@ public final class PrefixData {
     /**
      * Get the prefix for a guild.
      *
-     * @param guild Guild object for lookup
+     * @param guild          Guild object for lookup
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Prefix as string
      */
     public static String getPrefix(Guild guild, MessageEventDataWrapper messageContext) {
-        if (!cacheDirty) {
-            return prefixes.get(guild.getId());
+        if (!prefixes.containsKey(guild.getIdLong()) || cacheDirty.get(guild.getIdLong())) {
+            loadPrefix(guild);
         }
-
-        refreshPrefixes(messageContext);
-
-        return getPrefix(guild, messageContext);
+        return prefixes.get(guild.getIdLong());
     }
 
-    private static void refreshPrefixes(MessageEventDataWrapper messageContext) {
-        if (!cacheDirty) {
-            return;
-        }
+    private static void loadPrefix(Guild guild) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT * from shepard_func.get_prefixes()")) {
+                .prepareStatement("SELECT * from shepard_func.get_prefix(?)")) {
+            statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
-            prefixes.clear();
-            while (result.next()) {
-                String guild = result.getString("guild_id");
-                String prefix = result.getString("prefix");
-
-                prefixes.put(guild, prefix);
+            if (result.next()) {
+                String prefix = result.getString(1);
+                if (prefix != null) {
+                    prefixes.put(guild.getIdLong(), prefix);
+                } else {
+                    prefixes.put(guild.getIdLong(), ShepardBot.getConfig().getPrefix());
+                }
             }
-
-            cacheDirty = false;
+            cacheDirty.put(guild.getIdLong(), false);
 
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, messageContext);
+            handleExceptionAndIgnore(e, null);
         }
     }
 }
