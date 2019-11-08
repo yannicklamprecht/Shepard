@@ -20,6 +20,11 @@ public final class ReactionActionCollection {
     private final Map<UniqueMessageIdentifier, List<Action>> reactionActions = new HashMap<>();
     private final ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(10);
 
+    /**
+     * Get the reaction action collection instance.
+     *
+     * @return instance singleton
+     */
     public static ReactionActionCollection getInstance() {
         if (instance == null) {
             instance = new ReactionActionCollection();
@@ -27,6 +32,13 @@ public final class ReactionActionCollection {
         return instance;
     }
 
+    /**
+     * Invokes a reaction.
+     * Checks if a action is registered for this action in the message and if the reaction is registered.
+     * If true executes the action.
+     *
+     * @param event event for check
+     */
     public void invokeReactionAction(GuildMessageReactionAddEvent event) {
         UniqueMessageIdentifier umi = new UniqueMessageIdentifier(event.getChannel(), event.getMessageIdLong());
         if (reactionActions.containsKey(umi)) {
@@ -40,6 +52,13 @@ public final class ReactionActionCollection {
         }
     }
 
+    /**
+     * Adds a action on a message. Also adds the reaction of the action on the message.
+     *
+     * @param channel channel where the message is
+     * @param message message to add
+     * @param action  action to register
+     */
     public void addReactionAction(TextChannel channel, Message message, Action action) {
         UniqueMessageIdentifier umi = new UniqueMessageIdentifier(channel, message.getIdLong());
         reactionActions.putIfAbsent(umi, new ArrayList<>());
@@ -48,6 +67,12 @@ public final class ReactionActionCollection {
         executorService.schedule(new ActionRemover(umi, action), action.getSecondsValid(), TimeUnit.SECONDS);
     }
 
+    /**
+     * Removes a action from a message.
+     *
+     * @param umi    umi for message identification
+     * @param action action to remove
+     */
     public void removeAction(UniqueMessageIdentifier umi, Action action) {
         if (reactionActions.containsKey(umi)) {
             reactionActions.get(umi).removeIf(action::equals);

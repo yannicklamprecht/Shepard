@@ -40,6 +40,9 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
 import static java.lang.System.lineSeparator;
 
 public class Monitoring extends Command {
+    /**
+     * Creates a new monitoring command object.
+     */
     public Monitoring() {
         commandName = "monitoring";
         commandAliases = new String[] {"monitor"};

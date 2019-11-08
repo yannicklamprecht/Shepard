@@ -14,6 +14,9 @@ import static de.eldoria.shepard.localization.enums.commands.fun.MockingSpongebo
 public class MockingSpongebob extends Command {
     private static final String BASE_URL = "https://mockingspongebob.org/";
 
+    /**
+     * Creates a new mocking spongebob command object.
+     */
     public MockingSpongebob() {
         this.commandName = "mockingSpongebob";
         this.commandDesc = DESCRIPTION.tag;

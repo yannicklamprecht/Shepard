@@ -19,6 +19,9 @@ import java.util.stream.Collectors;
 class RegisterInvites implements Runnable {
     private final Map<Long, Set<String>> invites = new HashMap<>();
 
+    /**
+     * Creates a mew register invite object.
+     */
     RegisterInvites() {
     }
 
@@ -31,7 +34,7 @@ class RegisterInvites implements Runnable {
             } catch (IllegalArgumentException e) {
                 return;
             }
-            int sleepDuration =  10000 / guilds.size();
+            int sleepDuration = 10000 / guilds.size();
 
             if (ShepardBot.getConfig().debugActive()) {
                 ShepardBot.getLogger().info("Looking for unregistered invites.");

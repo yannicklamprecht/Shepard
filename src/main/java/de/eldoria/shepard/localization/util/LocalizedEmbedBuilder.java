@@ -19,10 +19,20 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
 public class LocalizedEmbedBuilder extends EmbedBuilder {
     private final Guild guild;
 
+    /**
+     * Creates a new localized embed builder.
+     *
+     * @param messageContext message context for guild and language detection
+     */
     public LocalizedEmbedBuilder(MessageEventDataWrapper messageContext) {
         this.guild = messageContext.getGuild();
     }
 
+    /**
+     * Creates a new localized embed builder.
+     *
+     * @param guild guild for language detection
+     */
     public LocalizedEmbedBuilder(Guild guild) {
         this.guild = guild;
     }
@@ -42,6 +52,11 @@ public class LocalizedEmbedBuilder extends EmbedBuilder {
         return this;
     }
 
+    /**
+     * Add a localized field.
+     * @param field localized field to add.
+     * @return the builder after the field has been set
+     */
     public LocalizedEmbedBuilder addField(LocalizedField field) {
         return addField(field.getField());
     }

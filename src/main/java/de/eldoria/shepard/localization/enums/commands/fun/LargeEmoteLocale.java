@@ -15,6 +15,10 @@ public enum LargeEmoteLocale {
      */
     public final String tag;
 
+    /**
+     * Create a new locale object.
+     * @param localeCode locale code
+     */
     LargeEmoteLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }

@@ -18,6 +18,9 @@ import static de.eldoria.shepard.localization.enums.commands.fun.LargeEmoteLocal
 import static de.eldoria.shepard.localization.enums.commands.fun.LargeEmoteLocale.DESCRIPTION;
 
 public class LargeEmote extends Command {
+    /**
+     * Create new large emote command object.
+     */
     public LargeEmote() {
         commandName = "largeEmote";
         commandDesc = DESCRIPTION.tag;

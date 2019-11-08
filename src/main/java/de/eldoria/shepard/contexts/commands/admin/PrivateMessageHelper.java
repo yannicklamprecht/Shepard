@@ -12,6 +12,13 @@ public final class PrivateMessageHelper {
     private PrivateMessageHelper() {
     }
 
+    /**
+     * Sends a private message to a user.
+     *
+     * @param args           arguments to send. Are joined with white spaces
+     * @param messageContext message context for error handling
+     * @param user           user which should receive the message
+     */
     static void sendPrivateMessage(String[] args, MessageEventDataWrapper messageContext, User user) {
         if (user == null) {
             MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext.getTextChannel());

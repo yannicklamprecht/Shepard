@@ -11,9 +11,11 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class RefreshInvites implements Runnable {
-    RefreshInvites() {
+    /**
+     * Creates a new RefreshInvite object.
+     */
+    public RefreshInvites() {
     }
-
 
     @Override
     public void run() {

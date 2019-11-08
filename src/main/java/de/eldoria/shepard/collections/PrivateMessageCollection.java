@@ -16,6 +16,11 @@ public final class PrivateMessageCollection {
     private PrivateMessageCollection() {
     }
 
+    /**
+     * Get the current private message collection.
+     *
+     * @return private message collection
+     */
     public static PrivateMessageCollection getInstance() {
         if (instance == null) {
             instance = new PrivateMessageCollection();

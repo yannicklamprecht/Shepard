@@ -28,7 +28,7 @@ public final class ReminderData {
      * @param channel channel where the invite was created
      * @param message message for reminder
      * @param interval reminder interval
-     * @param messageContext
+     * @param messageContext message context for error handling. can be null
      * @return true if the query was executed successfully
      */
     public static boolean addReminderInterval(Guild guild, User user, TextChannel channel,
@@ -58,7 +58,7 @@ public final class ReminderData {
      * @param message        message for reminder
      * @param date           date when the reminder should be posted
      * @param time           time when the reminder should be posted (Format: hh24:mm
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param messageContext message context for error handling. can be null
      * @return true if the query execution was successful
      */
     public static boolean addReminderDate(Guild guild, User user, TextChannel channel,
@@ -84,7 +84,7 @@ public final class ReminderData {
      * Get the reminder of the user on a guild.
      * @param guild guild of the user.
      * @param user user
-     * @param messageContext
+     * @param messageContext message context for error handling. can be null
      * @return list of reminder of the user on the guild
      */
     public static List<ReminderSimple> getUserReminder(Guild guild, User user, MessageEventDataWrapper messageContext) {
@@ -116,7 +116,7 @@ public final class ReminderData {
      * @param guild guild in which the reminder should be deleted.
      * @param user user which created the invite
      * @param id id of the reminder
-     * @param messageContext
+     * @param messageContext message context for error handling. can be null
      * @return true if the query was executed successfully
      */
     public static boolean removeUserReminder(Guild guild, User user, int id, MessageEventDataWrapper messageContext) {
@@ -136,7 +136,7 @@ public final class ReminderData {
     /**
      * Get the expired reminders and delete them on database.
      *
-     * @param messageContext
+     * @param messageContext message context for error handling. can be null
      * @return list of expired reminder
      */
     public static List<ReminderComplex> getAndDeleteExpiredReminder(MessageEventDataWrapper messageContext) {

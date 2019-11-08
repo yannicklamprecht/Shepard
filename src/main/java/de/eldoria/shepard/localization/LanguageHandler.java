@@ -32,6 +32,13 @@ public class LanguageHandler {
         return languages.getOrDefault(localeCode, languages.get(LocaleCode.EN_US));
     }
 
+    /**
+     * Get the language string of the locale code.
+     *
+     * @param guild      guild for language lookup
+     * @param localeCode locale code
+     * @return message in the local code or the default language if key is missing.
+     */
     public String getLanguageString(Guild guild, String localeCode) {
         LocaleCode language = LocaleData.getLanguage(guild);
         if (getLanguageResource(language).containsKey(localeCode)) {
@@ -64,6 +71,11 @@ public class LanguageHandler {
         return languageString;
     }
 
+    /**
+     * Get the current language handler instance.
+     *
+     * @return language handler instance
+     */
     public static LanguageHandler getInstance() {
         initialize();
         return instance;

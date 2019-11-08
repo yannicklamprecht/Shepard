@@ -220,11 +220,18 @@ public final class MessageSender {
         channel.sendMessage(builder.build()).queue();
     }
 
-    public static void logCommand(String label, String[] args, MessageEventDataWrapper receivedEvent) {
-        String command = receivedEvent.getAuthor().getAsTag()
+    /**
+     * Log a command to the command log channel.
+     *
+     * @param label label of command
+     * @param args arguments of command
+     * @param messageContext context of command
+     */
+    public static void logCommand(String label, String[] args, MessageEventDataWrapper messageContext) {
+        String command = messageContext.getAuthor().getAsTag()
                 + " executed command \"" + label + " " + String.join(" ", args)
-                + "\" on  guild " + receivedEvent.getGuild().getName() + " ("
-                + receivedEvent.getGuild().getId() + ")";
+                + "\" on  guild " + messageContext.getGuild().getName() + " ("
+                + messageContext.getGuild().getId() + ")";
         ShepardBot.getLogger().command(command);
         Normandy.getCommandLogChannel().sendMessage(command).queue();
     }

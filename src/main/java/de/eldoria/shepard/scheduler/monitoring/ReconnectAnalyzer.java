@@ -19,6 +19,12 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
 import static de.eldoria.shepard.util.TextFormatting.getTimeAsString;
 
 public class ReconnectAnalyzer extends Analyzer {
+    /**
+     * Creates a new reconnect analyzer.
+     *
+     * @param address address to check
+     * @param channel channel for result
+     */
     ReconnectAnalyzer(Address address, TextChannel channel) {
         super(address, channel, false);
     }

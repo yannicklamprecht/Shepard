@@ -29,6 +29,9 @@ public class Reminder extends Command {
     private static final Pattern DATE = Pattern.compile("on\\s[0-9]{1,2}\\.[0-9]{1,2}\\.\\s[0-9]{1,2}:[0-9]{1,2}",
             Pattern.MULTILINE);
 
+    /**
+     * Creates a new reminder command object.
+     */
     public Reminder() {
         commandName = "remind";
         commandAliases = new String[] {"reminder"};

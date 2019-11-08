@@ -19,11 +19,21 @@ public enum LocaleCode {
      */
     public final String languageName;
 
+    /**
+     * Create a new locale code.
+     * @param code language code
+     * @param languageName name of the language
+     */
     LocaleCode(String code, String languageName) {
         this.code = code;
         this.languageName = languageName;
     }
 
+    /**
+     * Parse a string to a language code.
+     * @param codeString string to parse
+     * @return the locale code or null if parse failed
+     */
     public static LocaleCode parse(String codeString) {
         for (LocaleCode code : LocaleCode.values()) {
             if (code.code.equalsIgnoreCase(codeString)) {

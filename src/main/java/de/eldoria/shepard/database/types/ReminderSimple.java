@@ -10,7 +10,7 @@ public class ReminderSimple {
     private final String time;
 
     /**
-     * Creates a new reminder with timestamp
+     * Creates a new reminder with timestamp.
      * @param reminderId reminder id.
      * @param text reminder text
      * @param timestamp reminder timestamp.
