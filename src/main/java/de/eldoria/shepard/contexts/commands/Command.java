@@ -74,7 +74,7 @@ public abstract class Command extends ContextSensitive {
         } catch (InsufficientPermissionException e) {
             messageContext.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel ->
                     MessageSender.handlePermissionException(e, messageContext.getTextChannel()));
-        } catch (Throwable e) {
+        } catch (RuntimeException e) {
             ShepardBot.getLogger().error(e);
             MessageSender.sendSimpleError(ErrorType.INTERNAL_ERROR, messageContext.getTextChannel());
             return;
