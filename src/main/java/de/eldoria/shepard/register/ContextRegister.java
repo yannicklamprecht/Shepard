@@ -4,6 +4,7 @@ import de.eldoria.shepard.contexts.commands.admin.Changelog;
 import de.eldoria.shepard.contexts.commands.admin.Greeting;
 import de.eldoria.shepard.contexts.commands.admin.GuessGameConfig;
 import de.eldoria.shepard.contexts.commands.admin.Invite;
+import de.eldoria.shepard.contexts.commands.admin.Language;
 import de.eldoria.shepard.contexts.commands.admin.ManageQuote;
 import de.eldoria.shepard.contexts.commands.admin.Monitoring;
 import de.eldoria.shepard.contexts.commands.admin.Permission;
@@ -19,8 +20,6 @@ import de.eldoria.shepard.contexts.commands.botconfig.ContextInfo;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContext;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContextGuild;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContextUsers;
-import de.eldoria.shepard.contexts.commands.exklusive.IsHaddeWorking;
-import de.eldoria.shepard.contexts.commands.exklusive.Meetings;
 import de.eldoria.shepard.contexts.commands.fun.GuessGame;
 import de.eldoria.shepard.contexts.commands.fun.KudoLottery;
 import de.eldoria.shepard.contexts.commands.fun.Kudos;
@@ -38,28 +37,17 @@ import de.eldoria.shepard.contexts.commands.util.GetRaw;
 import de.eldoria.shepard.contexts.commands.util.Help;
 import de.eldoria.shepard.contexts.commands.util.HireMe;
 import de.eldoria.shepard.contexts.commands.util.Home;
-import de.eldoria.shepard.contexts.commands.util.ListServer;
 import de.eldoria.shepard.contexts.commands.util.Reminder;
 import de.eldoria.shepard.contexts.commands.util.SystemInfo;
 import de.eldoria.shepard.contexts.commands.util.Test;
 import de.eldoria.shepard.contexts.commands.util.UserInfo;
-import de.eldoria.shepard.contexts.keywords.keyword.AmIRight;
-import de.eldoria.shepard.contexts.keywords.keyword.CommanderQuestion;
-import de.eldoria.shepard.contexts.keywords.keyword.Communism;
-import de.eldoria.shepard.contexts.keywords.keyword.DariNope;
-import de.eldoria.shepard.contexts.keywords.keyword.DariYes;
-import de.eldoria.shepard.contexts.keywords.keyword.Mlp;
-import de.eldoria.shepard.contexts.keywords.keyword.Normandy;
-import de.eldoria.shepard.contexts.keywords.keyword.Nudes;
-import de.eldoria.shepard.contexts.keywords.keyword.SomeoneKeyword;
-import de.eldoria.shepard.contexts.keywords.keyword.Thing;
 
 public final class ContextRegister {
 
     private ContextRegister() {
     }
 
-    private static void registerKeywords() {
+    /*private static void registerKeywords() {
         new AmIRight();
         new CommanderQuestion();
         new Communism();
@@ -70,7 +58,7 @@ public final class ContextRegister {
         new Nudes();
         new Thing();
         new SomeoneKeyword();
-    }
+    }*/
 
     private static void registerUtilCommands() {
         new Reminder();
@@ -79,7 +67,6 @@ public final class ContextRegister {
         new HireMe();
         new Home();
         new SystemInfo();
-        new ListServer();
         new GetRaw();
         new Test();
     }
@@ -101,8 +88,8 @@ public final class ContextRegister {
     }
 
     private static void registerExclusiveCommands() {
-        new IsHaddeWorking();
-        new Meetings();
+        //new IsHaddeWorking();
+        //new Meetings();
     }
 
     private static void registerBotConfigCommands() {
@@ -127,6 +114,7 @@ public final class ContextRegister {
         new PrivateAnswer();
         new SendPrivateMessage();
         new Monitoring();
+        new Language();
         new RepeatCommand();
     }
 
@@ -140,6 +128,6 @@ public final class ContextRegister {
         registerUtilCommands();
         registerFunCommands();
 
-        registerKeywords();
+        //registerKeywords();
     }
 }

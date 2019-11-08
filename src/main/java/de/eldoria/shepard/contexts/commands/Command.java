@@ -1,26 +1,38 @@
 package de.eldoria.shepard.contexts.commands;
 
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.LatestCommandsCollection;
+import de.eldoria.shepard.contexts.commands.argument.CommandArg;
+import de.eldoria.shepard.database.queries.PrefixData;
+import de.eldoria.shepard.localization.LanguageHandler;
+import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
+import de.eldoria.shepard.localization.util.LocalizedField;
+import de.eldoria.shepard.localization.util.TextLocalizer;
+import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.ContextSensitive;
 import info.debatty.java.stringsimilarity.JaroWinkler;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import static java.lang.System.lineSeparator;
 
 /**
  * An abstract class for commands.
  */
 public abstract class Command extends ContextSensitive {
-
+    /**
+     * Language handler instance.
+     */
+    protected final LanguageHandler locale;
     /**
      * Name of the command.
      */
@@ -45,6 +57,7 @@ public abstract class Command extends ContextSensitive {
      */
     protected Command() {
         CommandCollection.getInstance().addCommand(this);
+        locale = LanguageHandler.getInstance();
     }
 
     /**
@@ -56,7 +69,16 @@ public abstract class Command extends ContextSensitive {
      */
     @Deprecated
     public final void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        internalExecute(label, args, messageContext);
+        try {
+            internalExecute(label, args, messageContext);
+        } catch (InsufficientPermissionException e) {
+            messageContext.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel ->
+                    MessageSender.handlePermissionException(e, messageContext.getTextChannel()));
+        } catch (RuntimeException e) {
+            ShepardBot.getLogger().error(e);
+            MessageSender.sendSimpleError(ErrorType.INTERNAL_ERROR, messageContext.getTextChannel());
+            return;
+        }
         MessageSender.logCommand(label, args, messageContext);
         LatestCommandsCollection.getInstance().saveLatestCommand(messageContext.getGuild(), messageContext.getAuthor(),
                 this, label, args);
@@ -162,80 +184,49 @@ public abstract class Command extends ContextSensitive {
      *
      * @param channel Channel where the usage should be send in.
      */
-    public void sendCommandUsage(MessageChannel channel) {
-        List<MessageEmbed.Field> fields = new ArrayList<>();
+    public void sendCommandUsage(TextChannel channel) {
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild());
 
-        fields.add(new MessageEmbed.Field(getCommandDesc(), "", false));
+        builder.setDescription(getCommandDesc());
 
+        // Set aliases
         if (getCommandAliases() != null && getCommandAliases().length != 0) {
-            fields.add(new MessageEmbed.Field("__**Aliases:**__", String.join(", ", getCommandAliases()), false));
+            builder.appendDescription(lineSeparator() + "__**" + HelpLocale.W_ALIASES + ":**__ "
+                    + String.join(", ", getCommandAliases()));
         }
+
+        String args = Arrays.stream(getCommandArgs()).map(CommandArg::getHelpString)
+                .collect(Collectors.joining(" "));
+
+
+        builder.addField(new LocalizedField("__**" + HelpLocale.W_USAGE + ":**__",
+                PrefixData.getPrefix(channel.getGuild(), null) + getCommandName() + " " + args,
+                false, channel));
 
         StringBuilder desc = new StringBuilder();
-
-        desc.append(getCommandName()).append(" ");
-        if (getCommandArgs() != null) {
-            for (CommandArg arg : getCommandArgs()) {
-                if (arg.isRequired()) {
-                    desc.append("[").append(arg.getArgName().toUpperCase()).append("] ");
-                } else {
-                    desc.append("<").append(arg.getArgName().toUpperCase()).append("> ");
-                }
-            }
-        }
-
-        fields.add(new MessageEmbed.Field("__**Usage:**__", desc.toString(), false));
-
-        desc.setLength(0);
         if (commandArgs.length != 0) {
-
+            String title = "__**" + HelpLocale.W_ARGUMENTS + ":**__";
             for (CommandArg arg : commandArgs) {
-                desc.append("**").append(arg.getArgName().toUpperCase()).append("**")
-                        .append(arg.isRequired() ? " REQUIRED" : " OPTIONAL")
-                        .append(System.lineSeparator())
-                        .append("> ").append(arg.getArgDesc()
-                        .replace(System.lineSeparator(), System.lineSeparator() + "> "))
-                        .append(System.lineSeparator())
-                        .append(System.lineSeparator());
+                desc.setLength(0);
+                desc.append(">>> ").append(TextLocalizer.localizeAll(arg.getArgHelpString(), channel.getGuild()))
+                        .append(lineSeparator()).append(lineSeparator());
+                builder.addField(new LocalizedField(title, desc.toString(),
+                        false, channel));
+                title = "";
             }
-            fields.add(new MessageEmbed.Field("__**Arguments:**__", desc.toString(), false));
         }
+        builder.setTitle("__**" + HelpLocale.M_HELP_FOR_COMMAND + " " + getCommandName() + "**__")
+                .setColor(Color.green);
 
-
-        MessageSender.sendTextBox("__**Help for command " + getCommandName() + "**__", fields, channel, Color.green);
+        channel.sendMessage(builder.build()).queue();
     }
 
     /**
-     * Sends help for a specified command argument.
+     * Get the highest similarity score between command string and command name and aliases.
      *
-     * @param argument Argument for which should be send some detailed informations
-     * @param channel  Channel where the usage should be send in.
+     * @param command command to check
+     * @return score between 0 and 1
      */
-    public void sendCommandArgHelp(String argument, MessageChannel channel) {
-
-        if (commandArgs == null || commandArgs.length == 0) {
-            MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("No Argument found!",
-                    "This command, doesn't have any arguments.", false)}, channel);
-            return;
-        }
-
-        for (CommandArg arg : commandArgs) {
-            if (arg.getArgName().equalsIgnoreCase(argument)) {
-                List<MessageEmbed.Field> fields = new ArrayList<>();
-                fields.add(new MessageEmbed.Field("Description:", arg.getArgDesc(), false));
-                fields.add(new MessageEmbed.Field("Required", arg.isRequired() ? "true" : "false", false));
-                MessageSender.sendTextBox("Help for Argument: \"" + arg.getArgName() + "\" of command \""
-                        + getCommandName() + "\"", fields, channel);
-                return;
-            }
-        }
-
-        String argsAsString = Arrays.stream(commandArgs).map(CommandArg::getArgName).collect(Collectors.joining(" "));
-
-        MessageSender.sendError(new MessageEmbed.Field[] {new MessageEmbed.Field("Argument not found!",
-                "Try one of these: " + argsAsString, false)}, channel);
-    }
-
     public double getSimilarityScore(String command) {
         String lowerCommand = command.toLowerCase();
         double cmdScore = similarity.similarity(commandName.toLowerCase(),

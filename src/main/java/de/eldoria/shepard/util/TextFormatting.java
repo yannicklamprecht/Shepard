@@ -10,24 +10,26 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static java.lang.System.console;
 import static java.lang.System.lineSeparator;
 
 public final class TextFormatting {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
-
 
     private TextFormatting() {
     }
 
     /**
      * Appends white spaces to a string to match the given length.
+     * Returns input if fill is smaller or equal string.length()
      *
      * @param string String to fill
      * @param fill   Desired String length
      * @return filled string.
      */
     public static String fillString(String string, int fill) {
+        if (string.length() >= fill) {
+            return string;
+        }
         int charsToFill = fill - string.length();
         return string + " ".repeat(charsToFill);
     }
@@ -50,11 +52,17 @@ public final class TextFormatting {
         if (from < 0) {
             finalFrom = source.length + from;
         }
+
+        if (finalFrom > finalTo || finalFrom < 0 || finalTo > source.length) {
+            return "";
+        }
+
         return String.join(delimiter, Arrays.copyOfRange(source, finalFrom, finalTo)).trim();
     }
 
     /**
      * Trims a text to the desired length.
+     * Returns unmodified input if max chars is larger or equal string.length().
      *
      * @param string      String to trim
      * @param endSequence end sequence which should be append at the end of the string. included in max chars.
@@ -62,19 +70,24 @@ public final class TextFormatting {
      * @param keepWords   true if no word should be cut.
      * @return String with length of maxChars of shorter.
      */
-    public static String trimText(String string, String endSequence, int maxChars, boolean keepWords) {
+    public static String cropText(String string, String endSequence, int maxChars, boolean keepWords) {
+        if (string.length() <= maxChars) {
+            return string;
+        }
         if (!keepWords) {
             String substring = string.substring(0, Math.max(0, maxChars - endSequence.length()));
             return (substring + endSequence).trim();
         }
+
         String[] split = string.split("\\s");
+
         StringBuilder builder = new StringBuilder();
+
         for (String s : split) {
-            if (builder.length() + s.length() > maxChars + endSequence.length()) {
-                builder.append(endSequence);
-                return builder.toString().trim();
+            if (builder.length() + s.length() + 1 + endSequence.length() > maxChars) {
+                return builder.toString().trim() + endSequence;
             }
-            builder.append(" ").append(s);
+            builder.append(s).append(" ");
         }
         return builder.toString().trim();
     }
@@ -103,6 +116,12 @@ public final class TextFormatting {
         return new TableBuilder(collection, columnNames);
     }
 
+    /**
+     * Get a rank table.
+     *
+     * @param ranks list of ranks for table
+     * @return table of ranks
+     */
     public static String getRankTable(List<Rank> ranks) {
         TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(ranks, "Rank", "User", "Score");
 
@@ -114,6 +133,7 @@ public final class TextFormatting {
         }
         return tableBuilder.toString();
     }
+
 
     /**
      * Get the current time as string.
@@ -130,6 +150,12 @@ public final class TextFormatting {
         private int padding = 1;
         private int rowPointer = 0;
 
+        /**
+         * Create a new tablebuilder.
+         *
+         * @param collection  collection for row amount
+         * @param columnNames column names for column amount
+         */
         TableBuilder(Collection collection, String... columnNames) {
             table = new String[collection.size() + 1][columnNames.length];
             table[0] = columnNames;
@@ -146,7 +172,7 @@ public final class TextFormatting {
                 return;
             }
             for (int i = 0; i < columnEntries.length; i++) {
-                columnEntries[i] = columnEntries[i].replace("`","");
+                columnEntries[i] = columnEntries[i].replace("`", "");
             }
             if (columnEntries.length <= table[0].length) {
                 table[rowPointer] = columnEntries;
@@ -194,8 +220,8 @@ public final class TextFormatting {
             int[] length = new int[table[0].length];
             for (int column = 0; column < length.length; column++) {
                 int max = 0;
-                for (int row = 0; row < table.length; row++) {
-                    max = Math.max(max, table[row][column].length());
+                for (String[] strings : table) {
+                    max = Math.max(max, strings[column].length());
                 }
                 length[column] = max;
             }

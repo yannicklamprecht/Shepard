@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 
 public class Verifier {
     private static final Pattern IPV_4 = Pattern.compile("^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}(:[0-9]{1,5})?$");
-    private static final Pattern IPV_6 = Pattern.compile("^\\[?([a-fA-F0-9:]{8,40})(]:[0-9]{1,5})?$");
+    private static final Pattern IPV_6 = Pattern.compile("(^\\[([a-fA-F0-9]{0,4}:){4,7}[a-fA-F0-9]{0,4}]:"
+            + "[0-9]{1,5}$)|(([a-fA-F0-9]{0,4}:){4,7}[a-fA-F0-9]{0,4}$)");
     private static final Pattern DOMAIN = Pattern.compile("^(?!://)([a-zA-Z0-9-_]+\\.)*[a-zA-Z0-9][a-zA-Z0-9-_]"
             + "+\\.[a-zA-Z]{2,11}?(:[0-9]{1,5})?$");
 
@@ -110,28 +111,11 @@ public class Verifier {
     }
 
     /**
-     * Returns from a list of text user ids all valid user.
+     * Get the valid users by id.
      *
-     * @param args array of role id
-     * @return list of valid roles
+     * @param collect list of long ids
+     * @return list of valid users.
      */
-    public static List<User> getValidUserByString(List<String> args) {
-        return getValidUserByString(args.toArray(String[]::new));
-    }
-
-    /**
-     * Returns from a list of user ids all valid user.
-     *
-     * @param args array of channel ids
-     * @return list of valid channels
-     */
-    public static List<User> getValidUserByString(String[] args) {
-        return Arrays.stream(args)
-                .map(channelId -> ShepardBot.getJDA().getUserById(DbUtil.getIdRaw(channelId)))
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-    }
-
     public static List<User> getValidUserByLong(List<Long> collect) {
         return collect.stream()
                 .map(id -> ShepardBot.getJDA().getUserById(id))
@@ -175,11 +159,11 @@ public class Verifier {
      */
     public static AddressType getAddressType(String address) {
         Matcher matcher = IPV_4.matcher(address);
-        if (matcher.find()) {
+        if (matcher.matches()) {
             return AddressType.IPV4;
         }
         matcher = IPV_6.matcher(address);
-        if (matcher.find()) {
+        if (matcher.matches()) {
             return AddressType.IPV6;
         }
         matcher = DOMAIN.matcher(address);

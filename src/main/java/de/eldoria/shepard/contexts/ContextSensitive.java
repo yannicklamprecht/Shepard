@@ -195,9 +195,19 @@ public abstract class ContextSensitive {
 
     /**
      * Get the category of the context.
+     *
      * @return category
      */
     public ContextCategory getCategory() {
         return category;
+    }
+
+    /**
+     * Get the context name. Context names are always all caps!
+     *
+     * @return context name
+     */
+    public String getContextName() {
+        return getClass().getSimpleName().toUpperCase();
     }
 }

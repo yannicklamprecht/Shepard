@@ -1,0 +1,111 @@
+package de.eldoria.shepard.localization;
+
+import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.collections.Normandy;
+import de.eldoria.shepard.database.queries.LocaleData;
+import de.eldoria.shepard.localization.util.LocaleCode;
+import de.eldoria.shepard.messagehandler.MessageSender;
+import net.dv8tion.jda.api.entities.Guild;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+
+public class LanguageHandler {
+    private static final String BUNDLE_PATH = "locale";
+    private static LanguageHandler instance;
+    private final HashMap<LocaleCode, ResourceBundle> languages = new HashMap<>();
+
+    private static void initialize() {
+        if (instance != null) {
+            return;
+        } else {
+            instance = new LanguageHandler();
+        }
+        instance.loadLanguages();
+    }
+
+    private ResourceBundle getLanguageResource(LocaleCode localeCode) {
+        return languages.getOrDefault(localeCode, languages.get(LocaleCode.EN_US));
+    }
+
+    /**
+     * Get the language string of the locale code.
+     *
+     * @param guild      guild for language lookup
+     * @param localeCode locale code
+     * @return message in the local code or the default language if key is missing.
+     */
+    public String getLanguageString(Guild guild, String localeCode) {
+        LocaleCode language = LocaleData.getLanguage(guild);
+        if (getLanguageResource(language).containsKey(localeCode)) {
+            return getLanguageResource(language).getString(localeCode);
+        } else {
+            ShepardBot.getLogger().error("Missing localization for key: " + localeCode + " in language pack: "
+                    + language.code + ". Using Fallback Language en_US");
+            MessageSender.sendSimpleErrorEmbed("Missing localization for key: " + localeCode + " in language pack: "
+                    + language.code + ". Using Fallback Language en_US", Normandy.getErrorChannel());
+
+            return getLanguageResource(LocaleCode.EN_US).getString(localeCode);
+        }
+
+    }
+
+    /**
+     * Replaced placeholder in a string with the x index of replacements.
+     *
+     * @param localeCode   locale code for localization
+     * @param guild        guild for language lookup.
+     * @param replacements array of replacements for message placeholder.
+     * @return localized message with replace placeholder.
+     */
+    @Deprecated
+    public String getReplacedString(String localeCode, Guild guild, String... replacements) {
+        String languageString = getLanguageString(guild, localeCode);
+        for (int i = 0; i < replacements.length; i++) {
+            languageString = languageString.replace("%" + i + "%", replacements[i]);
+        }
+        return languageString;
+    }
+
+    /**
+     * Get the current language handler instance.
+     *
+     * @return language handler instance
+     */
+    public static LanguageHandler getInstance() {
+        initialize();
+        return instance;
+    }
+
+    private void loadLanguages() {
+        for (LocaleCode code : LocaleCode.values()) {
+            String[] s = code.code.split("_");
+            Locale locale = new Locale(s[0], s[1]);
+            ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_PATH, locale);
+            languages.put(code, bundle);
+        }
+
+        ShepardBot.getLogger().info("Loaded " + languages.size() + " languages!");
+        List<String> keys = new ArrayList<>();
+        getLanguageResource(LocaleCode.EN_US).getKeys().asIterator().forEachRemaining(keys::add);
+
+        for (LocaleCode code : LocaleCode.values()) {
+            if (code == LocaleCode.EN_US) {
+                continue;
+            }
+
+            ResourceBundle languageResource = getLanguageResource(code);
+            List<String> missingKeys = keys.stream()
+                    .filter(k -> !languageResource.containsKey(k)).collect(Collectors.toUnmodifiableList());
+            if (!missingKeys.isEmpty()) {
+                MessageSender.sendSimpleErrorEmbed("Found missing keys in language pack " + code.code
+                                + System.lineSeparator() + String.join(System.lineSeparator(), missingKeys),
+                        Normandy.getErrorChannel());
+            }
+        }
+    }
+}

@@ -11,16 +11,17 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
+import static spark.Spark.port;
 import static spark.Spark.post;
 
-public class BotListReporter {
+public final class BotListReporter {
     private static BotListReporter instance;
-    private DiscordBotListAPI api;
-    private List<Consumer<BotListResponse>> eventHandlers;
+    private final DiscordBotListAPI api;
+    private final List<Consumer<BotListResponse>> eventHandlers;
 
     private BotListReporter() {
         api = new DiscordBotListAPI.Builder()
-                .token(ShepardBot.getConfig().getBotList().getToken())
+                .token(ShepardBot.getConfig().getBotlist().getToken())
                 .botId(ShepardBot.getJDA().getSelfUser().getId())
                 .build();
         eventHandlers = new ArrayList<>();
@@ -28,21 +29,28 @@ public class BotListReporter {
         defineRoutes();
     }
 
+    /**
+     * Initializes the bot list reporter if not active.
+     */
     public static void initialize() {
         if (instance == null) {
             instance = new BotListReporter();
         }
     }
 
-    public static BotListReporter getInstance() {
-        initialize();
-        return instance;
-    }
-
+    /**
+     * Refresh the server count.
+     */
     public void refreshInformation() {
         api.setStats(ShepardBot.getJDA().getGuilds().size());
     }
 
+    /**
+     * Check if a user has voted today.
+     *
+     * @param user user for lookup
+     * @return true if the user has voted.
+     */
     public boolean hasVoted(User user) {
         AtomicBoolean voted = new AtomicBoolean(false);
 
@@ -58,14 +66,21 @@ public class BotListReporter {
         return voted.get();
     }
 
+    /**
+     * Adds a event handler.
+     *
+     * @param eventHandler eventhandler to add
+     */
     public void addEventHandler(Consumer<BotListResponse> eventHandler) {
         eventHandlers.add(eventHandler);
     }
 
     private void defineRoutes() {
+        port(34555);
+
         post("/votes/", (request, response) -> {
             String authorization = request.headers("Authorization");
-            if(!authorization.equals(ShepardBot.getConfig().getBotList().getAuthorization())){
+            if (!authorization.equals(ShepardBot.getConfig().getBotlist().getAuthorization())) {
                 return HttpStatusCodes.STATUS_CODE_UNAUTHORIZED;
             }
 

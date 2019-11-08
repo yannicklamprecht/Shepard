@@ -2,6 +2,7 @@ package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.collections.KeyWordCollection;
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -10,13 +11,15 @@ import de.eldoria.shepard.contexts.keywords.Keyword;
 
 import java.util.List;
 
+import static de.eldoria.shepard.localization.enums.commands.admin.ShowKeywordLocale.DESCRIPTION;
+
 public class ShowKeyword extends Command {
     /**
      * Creates a new show keyword command object.
      */
     public ShowKeyword() {
         commandName = "showKeywords";
-        commandDesc = "Show all valid Keywords";
+        commandDesc = DESCRIPTION.tag;
         category = ContextCategory.ADMIN;
     }
 
@@ -25,13 +28,14 @@ public class ShowKeyword extends Command {
         List<Keyword> keywords = KeyWordCollection.getInstance().getKeywords();
 
         TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
-                keywords, "ContextName", "", "Keywords");
+                keywords, WordsLocale.CONTEXT_NAME.tag, WordsLocale.KEYWORDS.tag);
 
         for (Keyword kw : keywords) {
             tableBuilder.next();
             tableBuilder.setRow(kw.getClass().getSimpleName(), "->", kw.toString());
         }
 
-        MessageSender.sendMessage("Keywords" + System.lineSeparator() + tableBuilder, messageContext.getChannel());
+        MessageSender.sendMessage(WordsLocale.KEYWORDS + System.lineSeparator() + tableBuilder,
+                messageContext.getTextChannel());
     }
 }

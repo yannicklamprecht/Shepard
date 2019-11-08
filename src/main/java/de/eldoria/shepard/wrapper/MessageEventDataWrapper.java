@@ -13,6 +13,11 @@ public class MessageEventDataWrapper extends GenericMessageEvent {
     private User author;
     private Message message;
 
+    /**
+     * Creates a new Message Event data wrapper.
+     *
+     * @param event event for wrapping
+     */
     public MessageEventDataWrapper(GenericGuildMessageEvent event) {
         super(event.getJDA(), event.getResponseNumber(), event.getMessageIdLong(), event.getChannel());
 
@@ -33,14 +38,29 @@ public class MessageEventDataWrapper extends GenericMessageEvent {
         message = isUpdate ? updateEvent.getMessage() : receivedEvent.getMessage();
     }
 
+    /**
+     * Get the member of the event.
+     *
+     * @return member object
+     */
     public Member getMember() {
         return member;
     }
 
+    /**
+     * Get the user object of the event.
+     *
+     * @return user object
+     */
     public User getAuthor() {
         return author;
     }
 
+    /**
+     * Get the message of the event.
+     *
+     * @return message object
+     */
     public Message getMessage() {
         return message;
     }

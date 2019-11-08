@@ -75,10 +75,9 @@ public final class KudoData {
      * @param user           user where the amount should be applied
      * @param amount         The amount which should be applied
      * @param messageContext messageContext from command sending for error handling. Can be null.
-     * @return true if the query execution was successful
      */
-    public static boolean addFreeRubberPoints(Guild guild, User user, int amount,
-                                              MessageEventDataWrapper messageContext) {
+    public static void addFreeRubberPoints(Guild guild, User user, int amount,
+                                           MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.add_free_rubber_points(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -87,9 +86,7 @@ public final class KudoData {
             statement.execute();
         } catch (SQLException e) {
             handleExceptionAndIgnore(e, messageContext);
-            return false;
         }
-        return true;
     }
 
     /**
@@ -201,18 +198,14 @@ public final class KudoData {
 
     /**
      * Add to all users 1 kudo.
-     *
-     * @return true if the query execution was successful
      */
-    public static boolean upcountKudos() {
+    public static void upcountKudos() {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.upcount_free_rubber_points()")) {
             statement.execute();
         } catch (SQLException e) {
             handleExceptionAndIgnore(e, null);
-            return false;
         }
-        return true;
     }
 
 

@@ -46,7 +46,6 @@ public final class ShepardBot {
         } catch (InterruptedException e) {
             System.out.println("Startup interrupted");
         }
-
     }
 
     private void setup() {
@@ -109,7 +108,7 @@ public final class ShepardBot {
         jda.awaitReady();
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+            Class.forName("com.mysql.cj.jdbc.Driver").getConstructor().newInstance();
         } catch (Exception e) {
             ShepardBot.getLogger().error(e.getMessage());
         }
@@ -168,6 +167,11 @@ public final class ShepardBot {
         System.exit(0);
     }
 
+    /**
+     * Get the logger instance.
+     *
+     * @return logger
+     */
     public static Logger getLogger() {
         return logger;
     }

@@ -10,14 +10,15 @@ public final class InviteScheduler {
 
     private InviteScheduler() {
         ScheduledExecutorService autoRegister = Executors.newSingleThreadScheduledExecutor();
-
-        autoRegister.scheduleAtFixedRate(new RegisterInvites(), 0, 10, TimeUnit.SECONDS);
+        autoRegister.schedule(new RegisterInvites(), 0, TimeUnit.SECONDS);
 
         ScheduledExecutorService refreshInvites = Executors.newSingleThreadScheduledExecutor();
-
         refreshInvites.scheduleAtFixedRate(new RefreshInvites(), 0, 60, TimeUnit.MINUTES);
     }
 
+    /**
+     * Initializes the invite scheduler if not active.
+     */
     public static void initialize() {
         if (instance == null) {
             instance = new InviteScheduler();

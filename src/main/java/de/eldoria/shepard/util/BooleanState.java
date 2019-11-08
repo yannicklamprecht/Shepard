@@ -19,6 +19,11 @@ public enum BooleanState {
      */
     public final boolean stateAsBoolean;
 
+    /**
+     * Create a new boolean state.
+     *
+     * @param state state of the boolean
+     */
     BooleanState(boolean state) {
         this.stateAsBoolean = state;
     }

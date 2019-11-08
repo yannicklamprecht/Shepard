@@ -73,7 +73,7 @@ public final class DbUtil {
         ShepardBot.getLogger().error(builder.toString());
 
         if (event != null) {
-            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, event.getChannel());
+            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, event.getTextChannel());
         }
         MessageSender.sendSimpleErrorEmbed(builder.toString(), Normandy.getErrorChannel());
         throw ex;

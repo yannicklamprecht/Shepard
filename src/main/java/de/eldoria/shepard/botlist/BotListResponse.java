@@ -7,43 +7,48 @@ public class BotListResponse {
     private boolean isWeekend;
     private String query;
 
+    /**
+     * Get the bot id.
+     *
+     * @return id of the bot
+     */
     public long getBot() {
         return bot;
     }
 
-    public void setBot(long bot) {
-        this.bot = bot;
-    }
-
+    /**
+     * Get the user who has voted.
+     *
+     * @return id of user
+     */
     public long getUser() {
         return user;
     }
 
-    public void setUser(long user) {
-        this.user = user;
-    }
-
+    /**
+     * Get the type of the vote. Should be always upvote.
+     *
+     * @return upvote type
+     */
     public String getType() {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
+    /**
+     * indicates if the weekend multiplier is active.
+     *
+     * @return true of the weekend multiplier was active
+     */
     public boolean isWeekend() {
         return isWeekend;
     }
 
-    public void setWeekend(boolean weekend) {
-        isWeekend = weekend;
-    }
-
+    /**
+     * query of the vote.
+     *
+     * @return query as string
+     */
     public String getQuery() {
         return query;
-    }
-
-    public void setQuery(String query) {
-        this.query = query;
     }
 }

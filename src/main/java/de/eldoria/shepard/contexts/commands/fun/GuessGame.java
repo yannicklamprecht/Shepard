@@ -2,40 +2,58 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.database.queries.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.database.types.Rank;
+import de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigames.ChannelEvaluator;
 import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.guessgame.GuessGameEvaluator;
 import de.eldoria.shepard.util.TextFormatting;
-import de.eldoria.shepard.util.reactions.EmoteCollection;
+import de.eldoria.shepard.util.reactions.ShepardEmote;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 import java.util.List;
 
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_SCORE;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_SCORE_GLOBAL;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_START;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_TOP;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_TOP_GLOBAL;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_GAME_DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_GAME_FOOTER;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_GLOBAL_RANKING;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_MINIGAME_CHANNEL;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_ROUND_IN_PROGRESS;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_SCORE;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_SCORE_GLOBAL;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_SERVER_RANKING;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_TITLE;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 public class GuessGame extends Command {
 
-    private static final String TITLE = "NSFW or not! Guess now!";
-
+    /**
+     * Create a new guess game command.
+     */
     public GuessGame() {
         commandName = "guessGame";
-        commandAliases = new String[] {"nsfwornot"};
-        commandDesc = "Game where you have to guess if a cropped image is part of a hentai image or not.";
+        commandAliases = new String[] {"gg", "nsfwornot"};
+        commandDesc = GuessGameLocale.DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
-                new CommandArg("action",
-                        "Leave Empty to start a game." + lineSeparator()
-                                + "**__s__core** -> Your score on this server" + lineSeparator()
-                                + "**__g__lobal__s__core** -> Your global score." + lineSeparator()
-                                + "**__t__op** -> The top 10 player on this server" + lineSeparator()
-                                + "**__g__lobal__t__op** -> The top 10 player.", false)
+                new CommandArg("action", false,
+                        new SubArg("start game", C_START.tag),
+                        new SubArg("score", C_SCORE.tag, true),
+                        new SubArg("scoreGlobal", C_SCORE_GLOBAL.tag, true),
+                        new SubArg("top", C_TOP.tag, true),
+                        new SubArg("topGlobal", C_TOP_GLOBAL.tag, true))
         };
         category = ContextCategory.FUN;
     }
@@ -44,13 +62,7 @@ public class GuessGame extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         if (!isArgument(messageContext.getChannel().getName(),
                 "guessgame", "guess-game", "nsfwornot", "nsfw-or-not")) {
-            MessageSender.sendMessage("This is a minigame."
-                            + "Minigame commands can only be executed in a minigame channel." + lineSeparator()
-                            + "Please create a channel with one of the following names to play the game:"
-                            + lineSeparator()
-                            + "`guessgame`, `guess-game` for the **sfw version**" + lineSeparator()
-                            + "`nsfwornot`, `nsfw-or-not` for the **nsfw version**",
-                    messageContext.getChannel());
+            MessageSender.sendMessage(M_MINIGAME_CHANNEL.tag, messageContext.getTextChannel());
             return;
         }
         if (args.length == 0) {
@@ -58,29 +70,30 @@ public class GuessGame extends Command {
             return;
         }
         if (args.length != 1) {
-            MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext.getChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext.getTextChannel());
             return;
         }
 
         String cmd = args[0];
+        CommandArg arg = commandArgs[0];
 
-        if (isArgument(cmd, "score", "s")) {
+        if (arg.isSubCommand(cmd, 1)) {
             int userScore = GuessGameData.getUserScore(messageContext.getGuild(),
                     messageContext.getAuthor(), messageContext);
-            MessageSender.sendMessage("Your score is: " + userScore, messageContext.getChannel());
+            MessageSender.sendMessage(M_SCORE + " **" + userScore + "**", messageContext.getTextChannel());
             return;
         }
 
-        if (isArgument(cmd, "globalScore", "gs")) {
+        if (arg.isSubCommand(cmd, 2)) {
             int userScore = GuessGameData.getGlobalUserScore(messageContext.getAuthor(), messageContext);
-            MessageSender.sendMessage("Your global score is: " + userScore, messageContext.getChannel());
+            MessageSender.sendMessage(M_SCORE_GLOBAL + " **" + userScore, messageContext.getTextChannel());
             return;
         }
 
-        if (isArgument(cmd, "top", "t")) {
+        if (arg.isSubCommand(cmd, 3)) {
             sendTopScores(false, messageContext);
         }
-        if (isArgument(cmd, "globalTop", "gt")) {
+        if (arg.isSubCommand(cmd, 4)) {
             sendTopScores(true, messageContext);
         }
     }
@@ -92,16 +105,16 @@ public class GuessGame extends Command {
 
         String rankTable = TextFormatting.getRankTable(ranks);
 
-        MessageSender.sendMessage((global ? "**GLOBAL GUESS GAME RANKING**" : "**SERVER GUESS GAME RANKING**")
-                        + lineSeparator() + rankTable,
-                messageContext.getChannel());
+        String ranking = global ? M_GLOBAL_RANKING.tag : M_SERVER_RANKING.tag;
+
+        MessageSender.sendMessage("**" + ranking + "**" + lineSeparator() + rankTable, messageContext.getTextChannel());
     }
 
     private void startGame(MessageEventDataWrapper messageContext) {
         ChannelEvaluator<GuessGameEvaluator> channelEvaluator
-                = Evaluator.getGuessGameScheduler();
+                = Evaluator.getGuessGame();
         if (channelEvaluator.isEvaluationActive(messageContext.getTextChannel())) {
-            MessageSender.sendMessage("One round is still in progress.", messageContext.getChannel());
+            MessageSender.sendMessage(M_ROUND_IN_PROGRESS.tag, messageContext.getTextChannel());
             return;
         }
 
@@ -109,21 +122,20 @@ public class GuessGame extends Command {
         if (hentaiImage == null) {
             return;
         }
-        EmbedBuilder builder = new EmbedBuilder();
 
-        builder.setTitle(TITLE)
-                .setDescription("Is this image part of an nsfw image or not?" + lineSeparator()
-                        + "Click " + EmoteCollection.ANIM_CHECKMARK.getEmote().getAsMention()
-                        + " for yes or " + EmoteCollection.ANIM_CROSS.getEmote().getAsMention()
-                        + " for no!" + lineSeparator()
-                        + "You have 30 seconds to guess!")
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
+                .setTitle(M_TITLE.tag)
+                .setDescription(localizeAllAndReplace(M_GAME_DESCRIPTION.tag, messageContext.getGuild(),
+                        ShepardEmote.ANIM_CHECKMARK.getEmote().getAsMention(),
+                        ShepardEmote.ANIM_CROSS.getEmote().getAsMention(),
+                        "30"))
                 .setImage(hentaiImage.getCroppedImage())
-                .setFooter("Hint: Everything which isn't clearly NSFW is sfw!");
+                .setFooter(M_GAME_FOOTER.tag);
 
         messageContext.getChannel().sendMessage(builder.build())
                 .queue(message -> {
-                    message.addReaction(EmoteCollection.ANIM_CHECKMARK.getEmote()).queue();
-                    message.addReaction(EmoteCollection.ANIM_CROSS.getEmote()).queue();
+                    message.addReaction(ShepardEmote.ANIM_CHECKMARK.getEmote()).queue();
+                    message.addReaction(ShepardEmote.ANIM_CROSS.getEmote()).queue();
                     channelEvaluator.scheduleEvaluation(message, 30, new GuessGameEvaluator(message, hentaiImage));
                 });
     }

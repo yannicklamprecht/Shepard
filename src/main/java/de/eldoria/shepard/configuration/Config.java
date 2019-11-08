@@ -3,7 +3,7 @@ package de.eldoria.shepard.configuration;
 public class Config {
     private String token = null;
     private boolean debug = false;
-    private BotList botList = null;
+    private BotList botlist = null;
     private Database database = null;
     private String prefix = null;
 
@@ -64,19 +64,39 @@ public class Config {
         this.prefix = prefix;
     }
 
+    /**
+     * Check if the debug mode is active.
+     *
+     * @return true if active
+     */
     public boolean debugActive() {
         return debug;
     }
 
+    /**
+     * Set the debug mode.
+     *
+     * @param debug true if active
+     */
     public void setDebug(boolean debug) {
         this.debug = debug;
     }
 
-    public BotList getBotList() {
-        return botList;
+    /**
+     * Get the botlist object.
+     *
+     * @return botlist object.
+     */
+    public BotList getBotlist() {
+        return botlist;
     }
 
-    public void setBotList(BotList botList) {
-        this.botList = botList;
+    /**
+     * Set the botlist object.
+     *
+     * @param botlist botlist object
+     */
+    public void setBotlist(BotList botlist) {
+        this.botlist = botlist;
     }
 }

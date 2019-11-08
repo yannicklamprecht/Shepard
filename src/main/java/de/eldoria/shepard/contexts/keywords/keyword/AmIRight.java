@@ -10,7 +10,7 @@ public class AmIRight extends Keyword {
      * Creates new AmIRight object.
      */
     public AmIRight() {
-        keywords = new String[]{"stimmts shep", "stimmt's shep", "hab ich recht shep"};
+        keywords = new String[] {"stimmts shep", "stimmt's shep", "hab ich recht shep"};
     }
 
     @Override

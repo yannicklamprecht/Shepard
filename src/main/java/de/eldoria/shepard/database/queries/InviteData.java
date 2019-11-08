@@ -100,9 +100,8 @@ public final class InviteData {
      * @param guild          Guild object for lookup
      * @param code           Code of the invite for upcount
      * @param messageContext messageContext from command sending for error handling. Can be null.
-     * @return true if the query execution was successful
      */
-    public static boolean upCountInvite(Guild guild, String code, MessageEventDataWrapper messageContext) {
+    public static void upCountInvite(Guild guild, String code, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = getConn()
                 .prepareStatement("SELECT shepard_func.upcount_invite(?,?)")) {
             statement.setString(1, guild.getId());
@@ -110,9 +109,7 @@ public final class InviteData {
             statement.execute();
         } catch (SQLException e) {
             handleExceptionAndIgnore(e, messageContext);
-            return false;
         }
-        return true;
     }
 
     /**

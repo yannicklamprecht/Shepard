@@ -81,7 +81,7 @@ public final class CommandCollection {
             }
         }
 
-        Collections.sort(rankedCommands);
+        rankedCommands.sort(Collections.reverseOrder());
         return rankedCommands.stream().map(rankedCommand -> rankedCommand.command).collect(Collectors.toList());
     }
 
@@ -105,6 +105,12 @@ public final class CommandCollection {
          */
         final Command command;
 
+        /**
+         * Creates a new ranked command.
+         *
+         * @param rank    rank of command
+         * @param command command
+         */
         RankedCommand(double rank, Command command) {
             this.rank = rank;
             this.command = command;
