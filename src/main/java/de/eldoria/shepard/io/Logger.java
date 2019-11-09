@@ -2,6 +2,7 @@ package de.eldoria.shepard.io;
 
 import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
 import java.io.File;
@@ -16,8 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-import static java.lang.System.lineSeparator;
-import static java.lang.System.out;
+import static java.lang.System.*;
 
 public class Logger {
 
@@ -54,7 +54,9 @@ public class Logger {
             out.println("Trying to create log File");
             logFile = Files.createFile(logFilePath);
         } catch (IOException e) {
-            MessageSender.sendSimpleErrorEmbed("Couldn't create log file!", Normandy.getErrorChannel());
+            if (Normandy.getErrorChannel() != null) {
+                MessageSender.sendSimpleErrorEmbed("Couldn't create log file!", Normandy.getErrorChannel());
+            }
             out.println("Couldn't create log file!");
             return;
         }
@@ -70,7 +72,10 @@ public class Logger {
      */
     public void error(Throwable exception) {
         error(ExceptionUtils.getStackTrace(exception));
-        MessageSender.sendSimpleErrorEmbed(ExceptionUtils.getStackTrace(exception), Normandy.getErrorChannel());
+        TextChannel errorChannel = Normandy.getErrorChannel();
+        if (errorChannel != null) {
+            MessageSender.sendSimpleErrorEmbed(ExceptionUtils.getStackTrace(exception), errorChannel);
+        }
     }
 
     /**

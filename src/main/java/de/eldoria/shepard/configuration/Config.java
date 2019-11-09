@@ -3,6 +3,7 @@ package de.eldoria.shepard.configuration;
 public class Config {
     private String token = null;
     private boolean debug = false;
+    private boolean beta = false;
     private BotList botlist = null;
     private Presence presence = null;
     private Database database = null;
@@ -115,5 +116,21 @@ public class Config {
      */
     public void setPresence(Presence presence) {
         this.presence = presence;
+    }
+
+    /**
+     * Get the state of the bot.
+     * @return true if this is a beta bot
+     */
+    public boolean isBeta() {
+        return beta;
+    }
+
+    /**
+     * Set the beta status of the bot.
+     * @param beta true if bot is beta
+     */
+    public void setBeta(boolean beta) {
+        this.beta = beta;
     }
 }
