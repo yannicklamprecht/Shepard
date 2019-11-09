@@ -4,6 +4,7 @@ public class Config {
     private String token = null;
     private boolean debug = false;
     private BotList botlist = null;
+    private Presence presence = null;
     private Database database = null;
     private String prefix = null;
 
@@ -98,5 +99,21 @@ public class Config {
      */
     public void setBotlist(BotList botlist) {
         this.botlist = botlist;
+    }
+
+    /**
+     * Get the presence object.
+     * @return presence object
+     */
+    public Presence getPresence() {
+        return presence;
+    }
+
+    /**
+     * Set the presence object.
+     * @param presence presence object
+     */
+    public void setPresence(Presence presence) {
+        this.presence = presence;
     }
 }
