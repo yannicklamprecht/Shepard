@@ -76,18 +76,18 @@ public class Kudos extends Command {
         String cmd = args[0];
         CommandArg arg = commandArgs[0];
 
-        if (arg.isSubCommand(cmd, 0)) {
+        if (arg.isSubCommand(cmd, 1)) {
             give(args, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 1)) {
+        if (arg.isSubCommand(cmd, 2)) {
             sendTopScores(false, messageContext);
 
             return;
         }
 
-        if (arg.isSubCommand(cmd, 2)) {
+        if (arg.isSubCommand(cmd, 3)) {
             sendTopScores(true, messageContext);
             return;
         }
