@@ -32,12 +32,12 @@ public class PresenceChanger implements Runnable {
         }
 
         instance.executor = Executors.newSingleThreadScheduledExecutor();
-        instance.executor.scheduleAtFixedRate(instance, 0, 1, TimeUnit.MINUTES);
+        instance.executor.scheduleAtFixedRate(instance, 0, 5, TimeUnit.MINUTES);
     }
 
     private void startScheduler() {
         executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(instance, 0, 1, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(instance, 0, 5, TimeUnit.MINUTES);
         customStatus = false;
     }
 
