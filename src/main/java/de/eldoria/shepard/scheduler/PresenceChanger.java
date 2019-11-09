@@ -35,10 +35,22 @@ public class PresenceChanger implements Runnable {
         instance.executor.scheduleAtFixedRate(instance, 0, 5, TimeUnit.MINUTES);
     }
 
+    /**
+     * Get the instance of the presence changer.
+     *
+     * @return instance of presence changer
+     */
+    public static PresenceChanger getInstance() {
+        initialize();
+        return instance;
+    }
+
     private void startScheduler() {
-        executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(instance, 0, 5, TimeUnit.MINUTES);
-        customStatus = false;
+        if (executor.isShutdown() || executor.isTerminated()) {
+            executor = Executors.newSingleThreadScheduledExecutor();
+            executor.scheduleAtFixedRate(instance, 0, 5, TimeUnit.MINUTES);
+            customStatus = false;
+        }
     }
 
     @Override
@@ -51,24 +63,45 @@ public class PresenceChanger implements Runnable {
             case LISTENING:
                 ShepardBot.getJDA().getPresence().setActivity(Activity.listening(presence.message));
                 break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + presence.state);
         }
     }
 
+    /**
+     * Set the status to playing.
+     *
+     * @param message playing message
+     */
     public void setPlaying(String message) {
         ShepardBot.getJDA().getPresence().setActivity(Activity.playing(message));
         clearScheduler();
     }
 
+    /**
+     * Set the status to listening.
+     *
+     * @param message listening message
+     */
     public void setListening(String message) {
         ShepardBot.getJDA().getPresence().setActivity(Activity.listening(message));
         clearScheduler();
     }
 
+    /**
+     * Set the status to streaming.
+     *
+     * @param message streaming message
+     * @param url     twitch url
+     */
     public void setStreaming(String message, String url) {
         ShepardBot.getJDA().getPresence().setActivity(Activity.streaming(message, url));
         clearScheduler();
     }
 
+    /**
+     * Clear the custom status and use default presence.
+     */
     public void clearPresence() {
         ShepardBot.getJDA().getPresence().setActivity(null);
         startScheduler();
@@ -82,12 +115,11 @@ public class PresenceChanger implements Runnable {
         }
     }
 
-    public static PresenceChanger getInstance() {
-        initialize();
-        return instance;
+    private enum PresenceState {
+        PLAYING, LISTENING
     }
 
-    private static class Presence {
+    private static final class Presence {
         private PresenceState state;
         private String message;
 
@@ -103,9 +135,5 @@ public class PresenceChanger implements Runnable {
         public String getMessage() {
             return message;
         }
-    }
-
-    private enum PresenceState {
-        PLAYING, LISTENING
     }
 }

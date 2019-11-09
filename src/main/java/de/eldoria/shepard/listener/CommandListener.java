@@ -2,13 +2,13 @@ package de.eldoria.shepard.listener;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
+import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.InteractableMessageSender;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.reactionactions.ExecuteCommand;
 import de.eldoria.shepard.reactionactions.SendCommandHelp;

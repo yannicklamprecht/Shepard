@@ -1,5 +1,6 @@
 package de.eldoria.shepard.register;
 
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.listener.ChangelogListener;
 import de.eldoria.shepard.listener.CommandListener;
 import de.eldoria.shepard.listener.GreetingListener;
@@ -12,7 +13,6 @@ import de.eldoria.shepard.listener.TicketCleanupListener;
 import de.eldoria.shepard.scheduler.KudoCounter;
 import de.eldoria.shepard.scheduler.ReminderScheduler;
 import de.eldoria.shepard.scheduler.invites.InviteScheduler;
-import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.scheduler.monitoring.MonitoringScheduler;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 

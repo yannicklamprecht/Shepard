@@ -14,21 +14,21 @@ public class Presence {
     }
 
     /**
-     * Get the listening messages.
-     *
-     * @return array of messages
-     */
-    public String[] getListening() {
-        return listening;
-    }
-
-    /**
      * Set the playing messages.
      *
      * @param playing messages
      */
     public void setPlaying(String[] playing) {
         this.playing = playing;
+    }
+
+    /**
+     * Get the listening messages.
+     *
+     * @return array of messages
+     */
+    public String[] getListening() {
+        return listening;
     }
 
     /**

@@ -50,6 +50,56 @@ public final class ShepardBot {
 
     }
 
+    /**
+     * Returns the Shepard Bot instance.
+     *
+     * @return Instance of Shepard bot.
+     */
+    public static ShepardBot getInstance() {
+        return instance;
+    }
+
+    /**
+     * Main method.
+     *
+     * @param args Arguments.
+     */
+    public static void main(String[] args) {
+        instance = new ShepardBot();
+
+
+        instance.setup();
+
+        BotListReporter.initialize();
+    }
+
+    /**
+     * Gets the jda.
+     *
+     * @return JDA object
+     */
+    public static JDA getJDA() {
+        return jda;
+    }
+
+    /**
+     * Get the config.
+     *
+     * @return Config object
+     */
+    public static Config getConfig() {
+        return config;
+    }
+
+    /**
+     * Get the logger instance.
+     *
+     * @return logger
+     */
+    public static Logger getLogger() {
+        return logger;
+    }
+
     private void setup() {
         try {
             initiateJda();
@@ -80,29 +130,6 @@ public final class ShepardBot {
         logger.info("Setup complete!");
     }
 
-    /**
-     * Returns the Shepard Bot instance.
-     *
-     * @return Instance of Shepard bot.
-     */
-    public static ShepardBot getInstance() {
-        return instance;
-    }
-
-    /**
-     * Main method.
-     *
-     * @param args Arguments.
-     */
-    public static void main(String[] args) {
-        instance = new ShepardBot();
-
-
-        instance.setup();
-
-        BotListReporter.initialize();
-    }
-
     private void initiateJda() throws LoginException, InterruptedException {
         jda = new JDABuilder(config.getToken()).setMaxReconnectDelay(60).build();
 
@@ -116,24 +143,6 @@ public final class ShepardBot {
         }
 
         logger.info("JDA initialized");
-    }
-
-    /**
-     * Gets the jda.
-     *
-     * @return JDA object
-     */
-    public static JDA getJDA() {
-        return jda;
-    }
-
-    /**
-     * Get the config.
-     *
-     * @return Config object
-     */
-    public static Config getConfig() {
-        return config;
     }
 
     /**
@@ -167,14 +176,5 @@ public final class ShepardBot {
         }
 
         System.exit(0);
-    }
-
-    /**
-     * Get the logger instance.
-     *
-     * @return logger
-     */
-    public static Logger getLogger() {
-        return logger;
     }
 }

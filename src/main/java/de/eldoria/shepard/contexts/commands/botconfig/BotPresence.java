@@ -11,7 +11,6 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.scheduler.PresenceChanger;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.managers.Presence;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;

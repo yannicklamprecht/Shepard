@@ -1,10 +1,10 @@
 package de.eldoria.shepard.contexts.commands.argument;
 
 public class SubArg {
-    private String shortCommand;
     private final String argumentName;
     private final String localeTag;
     private final boolean isSubCommand;
+    private String shortCommand;
 
     /**
      * Creates a new argument.

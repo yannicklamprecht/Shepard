@@ -2,12 +2,12 @@ package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.collections.KeyWordCollection;
 import de.eldoria.shepard.contexts.ContextCategory;
-import de.eldoria.shepard.localization.enums.WordsLocale;
-import de.eldoria.shepard.util.TextFormatting;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.keywords.Keyword;
+import de.eldoria.shepard.localization.enums.WordsLocale;
+import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.util.TextFormatting;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.util.List;
 

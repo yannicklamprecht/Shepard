@@ -104,6 +104,7 @@ public class Config {
 
     /**
      * Get the presence object.
+     *
      * @return presence object
      */
     public Presence getPresence() {
@@ -112,6 +113,7 @@ public class Config {
 
     /**
      * Set the presence object.
+     *
      * @param presence presence object
      */
     public void setPresence(Presence presence) {
@@ -120,6 +122,7 @@ public class Config {
 
     /**
      * Get the state of the bot.
+     *
      * @return true if this is a beta bot
      */
     public boolean isBeta() {
@@ -128,6 +131,7 @@ public class Config {
 
     /**
      * Set the beta status of the bot.
+     *
      * @param beta true if bot is beta
      */
     public void setBeta(boolean beta) {

@@ -17,7 +17,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-import static java.lang.System.*;
+import static java.lang.System.lineSeparator;
+import static java.lang.System.out;
 
 public class Logger {
 

@@ -5,7 +5,6 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.EmbedBuilder;
 
 import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.M_AVAILABLE_CORES;

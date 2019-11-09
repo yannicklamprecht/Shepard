@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
-
 import java.util.List;
 
 import static de.eldoria.shepard.database.queries.TicketData.getChannelIdsByOwner;
