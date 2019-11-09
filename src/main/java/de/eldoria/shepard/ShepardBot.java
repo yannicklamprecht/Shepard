@@ -27,10 +27,10 @@ public final class ShepardBot {
     private static Logger logger;
 
     private ShepardBot() {
+        System.out.println("Startup in progress. Bot is heating up");
+        System.out.println("Initialising Logger");
+        logger = new Logger();
         try {
-            System.out.println("Startup in progress. Bot is heating up");
-            System.out.println("Initialising Logger");
-            logger = new Logger();
             config = Loader.getConfigLoader().getConfig();
             Thread.sleep(100);
             ConsoleReader.initialize();
@@ -42,10 +42,12 @@ public final class ShepardBot {
             if (config.debugActive()) {
                 org.apache.log4j.BasicConfigurator.configure();
             }
-
         } catch (InterruptedException e) {
             System.out.println("Startup interrupted");
+        } catch (RuntimeException e) {
+            logger.error(e);
         }
+
     }
 
     private void setup() {
