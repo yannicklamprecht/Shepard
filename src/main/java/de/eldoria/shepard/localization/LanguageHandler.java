@@ -61,7 +61,6 @@ public class LanguageHandler {
 
             return getLanguageResource(LocaleCode.EN_US).getString(localeCode);
         }
-
     }
 
     /**
