@@ -70,7 +70,9 @@ public final class ShepardBot {
 
         instance.setup();
 
-        BotListReporter.initialize();
+        if (!config.isBeta()) {
+            BotListReporter.initialize();
+        }
     }
 
     /**
