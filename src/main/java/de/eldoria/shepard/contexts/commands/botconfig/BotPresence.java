@@ -77,7 +77,8 @@ public class BotPresence extends Command {
         if (arg.isSubCommand(activity, 0)) {
             String message = ArgumentParser.getMessage(args, 1);
             presenceChanger.setPlaying(message);
-            MessageSender.sendMessage(M_PLAYING + " **" + message + "**", messageContext.getTextChannel());
+            MessageSender.sendMessage(localizeAllAndReplace(M_PLAYING.tag, messageContext.getGuild(),
+                    "**" + message + "**"), messageContext.getTextChannel());
             return;
         }
         if (arg.isSubCommand(activity, 1)) {
@@ -86,7 +87,7 @@ public class BotPresence extends Command {
                 String url = ArgumentParser.getMessage(args, -1);
                 presenceChanger.setStreaming(message, url);
                 MessageSender.sendMessage(localizeAllAndReplace(M_STREAMING.tag, messageContext.getGuild(),
-                        "**" + message + "**") + " " + url + "!", messageContext.getTextChannel());
+                        "**" + message + "**", url), messageContext.getTextChannel());
                 return;
             } else {
                 MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
@@ -104,7 +105,8 @@ public class BotPresence extends Command {
         if (arg.isSubCommand(activity, 2)) {
             String message = ArgumentParser.getMessage(args, 1);
             presenceChanger.setListening(message);
-            MessageSender.sendMessage(M_LISTENING + " **" + message + "**", messageContext.getTextChannel());
+            MessageSender.sendMessage(localizeAllAndReplace(M_LISTENING.tag, messageContext.getGuild(),
+                    "**" + message + "**"), messageContext.getTextChannel());
             return;
         }
 
