@@ -5,6 +5,7 @@ import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.util.UserInfoLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
@@ -61,7 +62,7 @@ public class UserInfo extends Command {
 
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
                 .setThumbnail(user.getAvatarUrl())
-                .addField(new LocalizedField(GeneralLocale.A_ID.tag, user.getId(), true, messageContext))
+                .addField(new LocalizedField(WordsLocale.ID.tag, user.getId(), true, messageContext))
                 .addField(new LocalizedField(UserInfoLocale.W_NICKNAME.tag, member != null ? member.getNickname() : "",
                         true, messageContext))
                 .addField(new LocalizedField(
@@ -78,18 +79,18 @@ public class UserInfo extends Command {
                 .setColor(member != null ? member.getColor() : Color.gray);
 
         if (member != null) {
-            builder.addField(UserInfoLocale.W_JOINED.tag, getIntervalString(member.getTimeJoined(), messageContext),
+            builder.addField(UserInfoLocale.W_JOINED.tag, getIntervalString(UserInfoLocale.M_JOINED.tag, member.getTimeJoined(), messageContext),
                     false);
 
             String roles = member.getRoles().stream().map(IMentionable::getAsMention).collect(Collectors.joining(", "));
             builder.addField(UserInfoLocale.W_ROLES.tag, roles, false);
         }
-        builder.setFooter(UserInfoLocale.M_CREATED + " " + getIntervalString(user.getTimeCreated(), messageContext));
+        builder.setFooter(getIntervalString(UserInfoLocale.M_CREATED.tag, user.getTimeCreated(), messageContext));
 
         messageContext.getChannel().sendMessage(builder.build()).queue();
     }
 
-    private String getIntervalString(OffsetDateTime time, MessageEventDataWrapper messageContext) {
+    private String getIntervalString(String messageTag, OffsetDateTime time, MessageEventDataWrapper messageContext) {
         LocalDate date = time.toLocalDate();
         Period period = date.until(LocalDate.now());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -100,7 +101,7 @@ public class UserInfo extends Command {
         String year = years != 1 ? UserInfoLocale.W_YEARS.tag : UserInfoLocale.W_YEAR.tag;
         String day = days != 1 ? UserInfoLocale.W_DAYS.tag : UserInfoLocale.W_DAY.tag;
         String month = months != 1 ? UserInfoLocale.W_MONTHS.tag : UserInfoLocale.W_MONTH.tag;
-        return localizeAllAndReplace(UserInfoLocale.M_JOINED.tag, messageContext.getGuild(),
+        return localizeAllAndReplace(messageTag, messageContext.getGuild(),
                 formatted, years + " " + year, months + " " + month, days + " " + day);
     }
 }
