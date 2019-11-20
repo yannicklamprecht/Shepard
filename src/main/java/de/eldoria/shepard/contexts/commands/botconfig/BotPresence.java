@@ -9,8 +9,8 @@ import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.scheduler.PresenceChanger;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.managers.Presence;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
@@ -27,11 +27,13 @@ import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresen
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 public class BotPresence extends Command {
+    private PresenceChanger presenceChanger;
 
     /**
      * Creates a new bot presence command object.
      */
     public BotPresence() {
+        presenceChanger = PresenceChanger.getInstance();
         commandName = "presence";
         commandDesc = BotPresenceLocale.DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
@@ -62,7 +64,7 @@ public class BotPresence extends Command {
 
 
         if (arg.isSubCommand(activity, 3)) {
-            presence.setActivity(null);
+            presenceChanger.clearPresence();
             MessageSender.sendMessage(M_CLEAR.tag, messageContext.getTextChannel());
             return;
         }
@@ -74,17 +76,18 @@ public class BotPresence extends Command {
 
         if (arg.isSubCommand(activity, 0)) {
             String message = ArgumentParser.getMessage(args, 1);
-            presence.setActivity(Activity.playing(message));
-            MessageSender.sendMessage(M_PLAYING + message, messageContext.getTextChannel());
+            presenceChanger.setPlaying(message);
+            MessageSender.sendMessage(localizeAllAndReplace(M_PLAYING.tag, messageContext.getGuild(),
+                    "**" + message + "**"), messageContext.getTextChannel());
             return;
         }
         if (arg.isSubCommand(activity, 1)) {
             if (args.length > 2) {
                 String message = ArgumentParser.getMessage(args, 1, -1);
                 String url = ArgumentParser.getMessage(args, -1);
-                presence.setActivity(Activity.streaming(message, url));
+                presenceChanger.setStreaming(message, url);
                 MessageSender.sendMessage(localizeAllAndReplace(M_STREAMING.tag, messageContext.getGuild(),
-                        message) + url + "!", messageContext.getTextChannel());
+                        "**" + message + "**", url), messageContext.getTextChannel());
                 return;
             } else {
                 MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
@@ -101,8 +104,9 @@ public class BotPresence extends Command {
 
         if (arg.isSubCommand(activity, 2)) {
             String message = ArgumentParser.getMessage(args, 1);
-            presence.setActivity(Activity.listening(message));
-            MessageSender.sendMessage(M_LISTENING + message, messageContext.getTextChannel());
+            presenceChanger.setListening(message);
+            MessageSender.sendMessage(localizeAllAndReplace(M_LISTENING.tag, messageContext.getGuild(),
+                    "**" + message + "**"), messageContext.getTextChannel());
             return;
         }
 

@@ -19,8 +19,8 @@ import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public final class MuteData {
 
-    private static Map<String, List<String>> mutedUsers = new HashMap<>();
     private static final Map<String, Boolean> mutedUsersDirty = new HashMap<>();
+    private static Map<String, List<String>> mutedUsers = new HashMap<>();
     private static LocalDateTime lastRefresh;
 
     private MuteData() {

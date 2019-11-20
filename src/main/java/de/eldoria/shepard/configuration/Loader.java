@@ -118,7 +118,12 @@ public final class Loader {
             logger.error("File not found!", e);
             return;
         }
-        this.config = yaml.load(inputStream);
+        try {
+            this.config = yaml.load(inputStream);
+        } catch (RuntimeException e) {
+            ShepardBot.getLogger().error(e);
+            return;
+        }
         logger.info("Config loaded");
     }
 }

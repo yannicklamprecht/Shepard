@@ -13,8 +13,8 @@ public abstract class Action {
     private final Emote emote;
     private final ReactionType reactionType;
     private final boolean oneTime;
-    private long userId;
     private final int secondsValid;
+    private long userId;
     private boolean used;
 
     /**

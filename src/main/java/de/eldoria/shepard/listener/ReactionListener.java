@@ -1,11 +1,11 @@
 package de.eldoria.shepard.listener;
 
 import de.eldoria.shepard.collections.ReactionActionCollection;
-import de.eldoria.shepard.util.UniqueMessageIdentifier;
 import de.eldoria.shepard.minigames.ChannelEvaluator;
 import de.eldoria.shepard.minigames.Evaluator;
 import de.eldoria.shepard.minigames.guessgame.GuessGameEvaluator;
 import de.eldoria.shepard.minigames.kudolottery.KudoLotteryEvaluator;
+import de.eldoria.shepard.util.UniqueMessageIdentifier;
 import de.eldoria.shepard.util.reactions.ShepardEmote;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;

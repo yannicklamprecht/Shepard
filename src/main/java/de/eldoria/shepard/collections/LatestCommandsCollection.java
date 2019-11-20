@@ -8,9 +8,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class LatestCommandsCollection {
-    private static LatestCommandsCollection instance;
-
     private static final Map<Long, Map<Long, SavedCommand>> latestCommands = new HashMap<>();
+    private static LatestCommandsCollection instance;
 
     private LatestCommandsCollection() {
     }

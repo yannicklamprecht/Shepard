@@ -5,9 +5,9 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import static de.eldoria.shepard.database.queries.PrefixData.setPrefix;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;

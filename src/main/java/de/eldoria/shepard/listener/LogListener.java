@@ -1,8 +1,8 @@
 package de.eldoria.shepard.listener;
 
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import net.dv8tion.jda.api.events.DisconnectEvent;
 import net.dv8tion.jda.api.events.ReconnectedEvent;

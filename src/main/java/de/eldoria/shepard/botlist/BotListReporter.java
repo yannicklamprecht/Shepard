@@ -8,13 +8,17 @@ import org.discordbots.api.client.DiscordBotListAPI;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import static spark.Spark.port;
 import static spark.Spark.post;
 
-public final class BotListReporter {
+public final class BotListReporter implements Runnable {
     private static BotListReporter instance;
     private final DiscordBotListAPI api;
     private final List<Consumer<BotListResponse>> eventHandlers;
@@ -26,7 +30,11 @@ public final class BotListReporter {
                 .build();
         eventHandlers = new ArrayList<>();
 
+        ShepardBot.getLogger().info("Defining Routes");
         defineRoutes();
+        ShepardBot.getLogger().info("Routes Defined");
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(this, 10, 600, TimeUnit.SECONDS);
     }
 
     /**
@@ -35,14 +43,27 @@ public final class BotListReporter {
     public static void initialize() {
         if (instance == null) {
             instance = new BotListReporter();
+
         }
+    }
+
+    @Override
+    public void run() {
+        refreshInformation();
     }
 
     /**
      * Refresh the server count.
      */
     public void refreshInformation() {
-        api.setStats(ShepardBot.getJDA().getGuilds().size());
+        ShepardBot.getLogger().info("Sending Server stats to top.gg");
+        try {
+            CompletableFuture.allOf(api.setStats(ShepardBot.getJDA().getGuilds().size()).toCompletableFuture());
+        } catch (RuntimeException e) {
+            ShepardBot.getLogger().error(e);
+            return;
+        }
+        ShepardBot.getLogger().info("Stats send!");
     }
 
     /**

@@ -28,6 +28,16 @@ public class LanguageHandler {
         instance.loadLanguages();
     }
 
+    /**
+     * Get the current language handler instance.
+     *
+     * @return language handler instance
+     */
+    public static LanguageHandler getInstance() {
+        initialize();
+        return instance;
+    }
+
     private ResourceBundle getLanguageResource(LocaleCode localeCode) {
         return languages.getOrDefault(localeCode, languages.get(LocaleCode.EN_US));
     }
@@ -69,16 +79,6 @@ public class LanguageHandler {
             languageString = languageString.replace("%" + i + "%", replacements[i]);
         }
         return languageString;
-    }
-
-    /**
-     * Get the current language handler instance.
-     *
-     * @return language handler instance
-     */
-    public static LanguageHandler getInstance() {
-        initialize();
-        return instance;
     }
 
     private void loadLanguages() {
