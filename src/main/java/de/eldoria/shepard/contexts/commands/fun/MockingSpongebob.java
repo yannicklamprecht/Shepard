@@ -30,7 +30,8 @@ public class MockingSpongebob extends Command {
             MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
         }
-        File image = FileHelper.getFileFromURL(BASE_URL + String.join("%20", args) + ".jpg");
+        String uri = String.join("+", args).replaceAll("[&#/?%]", "");
+        File image = FileHelper.getFileFromURL(BASE_URL + uri + ".jpg");
         if (image == null) {
             MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, messageContext.getTextChannel());
         } else {
