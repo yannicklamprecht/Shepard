@@ -20,6 +20,8 @@ import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageCon
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_ACTIVATED_NSFW;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_DEACTIVATED_ADMIN;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_DEACTIVATED_NSFW;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_SET_GUILD_COOLDOWN;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_SET_USER_COOLDOWN;
 
 public class ManageContext extends Command {
 
@@ -35,9 +37,15 @@ public class ManageContext extends Command {
                         new SubArg("context name", GeneralLocale.A_CONTEXT_NAME.tag)),
                 new CommandArg("action", true,
                         new SubArg("setNsfw", C_NSFW.tag, true),
-                        new SubArg("setAdminOnly", C_ADMIN.tag, true)),
-                new CommandArg("boolean", true, new SubArg("boolean",
-                        GeneralLocale.A_BOOLEAN.tag))
+                        new SubArg("setAdminOnly", C_ADMIN.tag, true),
+                        new SubArg("setUserCooldown", ManageContextLocale.C_USER_COOLDOWN.tag, true),
+                        new SubArg("setGuildCooldown", ManageContextLocale.C_GUILD_COOLDOWN.tag, true)),
+                new CommandArg("value", true,
+                        new SubArg("boolean", GeneralLocale.A_BOOLEAN.tag),
+                        new SubArg("boolean", GeneralLocale.A_BOOLEAN.tag),
+                        new SubArg("seconds", GeneralLocale.A_SECONDS.tag),
+                        new SubArg("seconds", GeneralLocale.A_SECONDS.tag)
+                )
         };
         category = ContextCategory.BOT_CONFIG;
     }
@@ -62,9 +70,40 @@ public class ManageContext extends Command {
             setAdminOnly(args, contextName, messageContext);
             return;
         }
+        if (arg.isSubCommand(cmd, 2) || arg.isSubCommand(cmd, 3)) {
+            setCooldown(cmd, args, contextName, messageContext);
+            return;
+        }
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
+
+    private void setCooldown(String cmd, String[] args, String contextName, MessageEventDataWrapper messageContext) {
+        Integer seconds = ArgumentParser.parseInt(args[2]);
+
+
+        if (seconds == null) {
+            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
+            return;
+        }
+
+        boolean userCooldown = commandArgs[1].isSubCommand(cmd, 2);
+
+        if (userCooldown) {
+            if (!ContextData.setContextUserCooldown(contextName, seconds, messageContext)) {
+                return;
+            }
+        } else {
+            if (!ContextData.setContextGuildCooldown(contextName, seconds, messageContext)) {
+                return;
+            }
+        }
+        MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace(
+                "**" + (userCooldown ? M_SET_USER_COOLDOWN.tag : M_SET_GUILD_COOLDOWN.tag) + "**",
+                messageContext.getGuild(), "\"" + contextName.toUpperCase() + "\"",
+                seconds + ""), messageContext.getTextChannel());
+    }
+
 
     private void setAdminOnly(String[] args, String contextName, MessageEventDataWrapper messageContext) {
         BooleanState bState = ArgumentParser.getBoolean(args[2]);
