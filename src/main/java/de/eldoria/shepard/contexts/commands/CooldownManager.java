@@ -51,14 +51,14 @@ public final class CooldownManager implements Runnable {
             return 0;
         }
 
-        double cooldown = Math.max(getGuildCooldown(command, guild), getUserCooldown(command, user));
+        long cooldown = Math.max(getGuildCooldown(command, guild), getUserCooldown(command, user));
         if (cooldown == 0) {
             return 0;
         }
-        return (float) (Math.round(cooldown * 1000.0) / 1000.0);
+        return (int) (cooldown);
     }
 
-    private double getUserCooldown(Command command, User user) {
+    private long getUserCooldown(Command command, User user) {
         if (!command.getContextData().hasUserCooldown() || !userCooldown.containsKey(command)) {
             return 0;
         }
@@ -66,7 +66,7 @@ public final class CooldownManager implements Runnable {
         return getCooldown(map.get(user.getIdLong()));
     }
 
-    private double getGuildCooldown(Command command, Guild guild) {
+    private long getGuildCooldown(Command command, Guild guild) {
         if (!command.getContextData().hasGuildCooldown() || !guildCooldown.containsKey(command)) {
             return 0;
         }
@@ -75,11 +75,11 @@ public final class CooldownManager implements Runnable {
         return getCooldown(map.get(guild.getIdLong()));
     }
 
-    private double getCooldown(LocalDateTime time) {
+    private long getCooldown(LocalDateTime time) {
         if (time == null) {
             return 0;
         }
-        double seconds = LocalDateTime.now().until(time, ChronoUnit.MILLIS) / 1000.0;
+        long seconds = LocalDateTime.now().until(time, ChronoUnit.SECONDS);
 
         return Math.max(seconds, 0);
     }
