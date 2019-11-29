@@ -45,7 +45,7 @@ public abstract class ContextSensitive {
     public boolean isContextValid(MessageEventDataWrapper context) {
         if (context.getChannel() instanceof TextChannel) {
             TextChannel textChannel = (TextChannel) context.getChannel();
-            if (getContextData(context).isNsfw() && !textChannel.isNSFW()) {
+            if (getContextData().isNsfw() && !textChannel.isNSFW()) {
                 return false;
             }
         }
@@ -67,7 +67,7 @@ public abstract class ContextSensitive {
     }
 
     private boolean canExecutedOnGuild(MessageEventDataWrapper context) {
-        ContextSettings data = getContextData(context);
+        ContextSettings data = getContextData();
         if (data.isGuildCheckActive()) {
             if (data.getGuildList().contains(context.getGuild().getId())) {
                 return data.getGuildListType() == ListType.WHITELIST;
@@ -78,7 +78,7 @@ public abstract class ContextSensitive {
     }
 
     private boolean canExecutedByUser(MessageEventDataWrapper context) {
-        ContextSettings data = getContextData(context);
+        ContextSettings data = getContextData();
         if (data.isUserCheckActive()) {
             if (data.getUserList().contains(context.getAuthor().getId())) {
                 return data.getUserListType() == ListType.WHITELIST;
@@ -91,7 +91,7 @@ public abstract class ContextSensitive {
 
     private boolean hasPermission(MessageEventDataWrapper context) {
         Member member = context.getMember();
-        if (!getContextData(context).isAdminOnly()
+        if (!getContextData().isAdminOnly()
                 || (member != null && member.hasPermission(Permission.ADMINISTRATOR))) {
             return true;
         }
@@ -120,7 +120,7 @@ public abstract class ContextSensitive {
     }
 
     private void loadCache() {
-        getContextData(null);
+        getContextData();
         getRolePermissions(null);
         getUserPermissions(null);
     }
@@ -133,7 +133,7 @@ public abstract class ContextSensitive {
                 .append(getClass().getSimpleName().toUpperCase())
                 .append("\" initialised with settings:")
                 .append(System.lineSeparator())
-                .append(getContextData(null).toString())
+                .append(getContextData().toString())
                 .append("  Roles with access to this context:").append(System.lineSeparator());
 
         for (Map.Entry<String, List<String>> roles : getRolePermissions(null).entrySet()) {
@@ -181,8 +181,12 @@ public abstract class ContextSensitive {
         ShepardBot.getLogger().info(getDebugInfo());
     }
 
-    private ContextSettings getContextData(MessageEventDataWrapper context) {
-        return ContextData.getContextData(getClass().getSimpleName(), context);
+    /**
+     * Get the settings of the context.
+     * @return a context settings object.
+     */
+    public ContextSettings getContextData() {
+        return ContextData.getContextData(getClass().getSimpleName(), null);
     }
 
     private Map<String, List<String>> getRolePermissions(MessageEventDataWrapper context) {
