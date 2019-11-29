@@ -14,7 +14,7 @@ public class SendCommandHelp extends Action {
      * @param command command for which the help should be send.
      */
     public SendCommandHelp(Command command) {
-        super(Emoji.QUESTION_MARK, null, 60, false);
+        super(Emoji.QUESTION_MARK, null, 60, true);
         this.command = command;
     }
 

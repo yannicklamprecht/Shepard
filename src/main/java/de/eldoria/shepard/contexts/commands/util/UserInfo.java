@@ -48,7 +48,10 @@ public class UserInfo extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         User user;
         if (args.length != 0) {
-            user = ArgumentParser.getUser(args[0]);
+            user = ArgumentParser.getGuildUser(messageContext.getGuild(), ArgumentParser.getMessage(args, 0));
+            if (user == null) {
+                user = ArgumentParser.getUser(ArgumentParser.getMessage(args, 0));
+            }
         } else {
             user = messageContext.getAuthor();
         }
@@ -62,16 +65,19 @@ public class UserInfo extends Command {
 
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
                 .setThumbnail(user.getAvatarUrl())
-                .addField(new LocalizedField(WordsLocale.ID.tag, user.getId(), true, messageContext))
-                .addField(new LocalizedField(UserInfoLocale.W_NICKNAME.tag, member != null ? member.getNickname() : "",
-                        true, messageContext))
-                .addField(new LocalizedField(
-                        UserInfoLocale.W_STATUS.tag,
-                        member != null
-                                ? member.getOnlineStatus().toString().toLowerCase().replace("_", " ")
-                                : UserInfoLocale.W_UNKOWN.tag,
-                        true,
-                        messageContext))
+                .addField(new LocalizedField(WordsLocale.ID.tag, user.getId(), true, messageContext));
+        if (member != null) {
+            builder.addField(new LocalizedField(UserInfoLocale.W_NICKNAME.tag, member.getNickname() != null
+                    ? member.getNickname() : "none",
+                    true, messageContext));
+        }
+        builder.addField(new LocalizedField(
+                UserInfoLocale.W_STATUS.tag,
+                member != null
+                        ? member.getOnlineStatus().toString().toLowerCase().replace("_", " ")
+                        : UserInfoLocale.W_UNKOWN.tag,
+                true,
+                messageContext))
                 .addField(new LocalizedField(UserInfoLocale.W_MINECRAFT_NAME.tag, "Not implemented yet",
                         true, messageContext))
                 .addField(UserInfoLocale.W_MENTION.tag, user.getAsMention(), false)
