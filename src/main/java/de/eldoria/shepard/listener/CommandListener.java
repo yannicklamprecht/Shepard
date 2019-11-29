@@ -3,6 +3,7 @@ package de.eldoria.shepard.listener;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.contexts.commands.CooldownManager;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.localization.util.LocalizedField;
@@ -88,25 +89,8 @@ public class CommandListener extends ListenerAdapter {
             args = new String[0];
         }
 
-        if (command != null && command.isContextValid(messageContext)) {
-            if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
-                command.sendCommandUsage(messageContext.getTextChannel());
-                return;
-            }
-            if (command.checkArguments(args)) {
-                command.executeAsync(label, args, messageContext);
-            } else {
-                try {
-                    MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
-                } catch (InsufficientPermissionException ex) {
-                    messageContext.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel ->
-                            MessageSender.handlePermissionException(ex, messageContext.getTextChannel()));
-                }
-            }
-            return;
-        } else if (command != null && command.canBeExecutedHere(messageContext)) {
-            MessageSender.sendMessage(localizeAllAndReplace(M_INSUFFICIENT_PERMISSION.tag,
-                    messageContext.getGuild(), command.getContextName()), messageContext.getTextChannel());
+        if (command != null) {
+            command.executeAsync(label, args, messageContext);
             return;
         }
 
