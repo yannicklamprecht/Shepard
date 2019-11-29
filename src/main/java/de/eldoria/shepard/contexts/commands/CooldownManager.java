@@ -45,7 +45,7 @@ public final class CooldownManager implements Runnable {
      * @param guild   guild to check
      * @return the cooldown in seconds or 0 if there is no cooldown.
      */
-    public float getCurrentCooldown(Command command, Guild guild, User user) {
+    public int getCurrentCooldown(Command command, Guild guild, User user) {
         ContextSettings contextData = command.getContextData();
         if (!contextData.hasCooldown()) {
             return 0;
