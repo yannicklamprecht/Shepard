@@ -371,6 +371,54 @@ public final class ContextData {
     }
 
     /**
+     * Set the global guild cooldown to a context.
+     *
+     * @param contextName    name of the context
+     * @param seconds        cooldown in seconds
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
+     */
+    public static boolean setContextGuildCooldown(String contextName, int seconds,
+                                                  MessageEventDataWrapper messageContext) {
+        contextDataDirty.put(contextName, true);
+
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.set_guild_cooldown(?,?)")) {
+            statement.setString(1, contextName);
+            statement.setInt(2, seconds);
+            statement.execute();
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Set the global user cooldown to a context.
+     *
+     * @param contextName    name of the context
+     * @param seconds        cooldown in seconds
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
+     */
+    public static boolean setContextUserCooldown(String contextName, int seconds,
+                                                 MessageEventDataWrapper messageContext) {
+        contextDataDirty.put(contextName, true);
+
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.set_user_cooldown(?,?)")) {
+            statement.setString(1, contextName);
+            statement.setInt(2, seconds);
+            statement.execute();
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Returns the context data of the needed context.
      *
      * @param contextName    Name of the context for lookup
@@ -408,6 +456,8 @@ public final class ContextData {
                 } else {
                     data.setGuildList((String[]) result.getArray("guild_list").getArray());
                 }
+                data.setUserCooldown(result.getInt("user_cooldown"));
+                data.setGuildCooldown(result.getInt("guild_cooldown"));
 
                 contextData.put(contextName, data);
                 contextDataDirty.put(contextName, false);

@@ -6,7 +6,6 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.localization.util.LocalizedField;
-import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.InteractableMessageSender;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
@@ -16,7 +15,6 @@ import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
-import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
@@ -28,7 +26,6 @@ import java.util.List;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_BOT_ANSWER;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_COMMAND_NOT_FOUND;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_HELP_COMMAND;
-import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_INSUFFICIENT_PERMISSION;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_SUGGESTION;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
@@ -88,25 +85,8 @@ public class CommandListener extends ListenerAdapter {
             args = new String[0];
         }
 
-        if (command != null && command.isContextValid(messageContext)) {
-            if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
-                command.sendCommandUsage(messageContext.getTextChannel());
-                return;
-            }
-            if (command.checkArguments(args)) {
-                command.executeAsync(label, args, messageContext);
-            } else {
-                try {
-                    MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
-                } catch (InsufficientPermissionException ex) {
-                    messageContext.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel ->
-                            MessageSender.handlePermissionException(ex, messageContext.getTextChannel()));
-                }
-            }
-            return;
-        } else if (command != null && command.canBeExecutedHere(messageContext)) {
-            MessageSender.sendMessage(localizeAllAndReplace(M_INSUFFICIENT_PERMISSION.tag,
-                    messageContext.getGuild(), command.getContextName()), messageContext.getTextChannel());
+        if (command != null) {
+            command.executeAsync(label, args, messageContext);
             return;
         }
 

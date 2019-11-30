@@ -7,6 +7,7 @@ import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.localization.LanguageHandler;
+import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
@@ -23,16 +24,14 @@ import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_INSUFFICIENT_PERMISSION;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
 /**
  * An abstract class for commands.
  */
 public abstract class Command extends ContextSensitive {
-    /**
-     * Language handler instance.
-     */
-    protected final LanguageHandler locale;
     /**
      * Name of the command.
      */
@@ -49,7 +48,10 @@ public abstract class Command extends ContextSensitive {
      * Command args as command arg array.
      */
     protected CommandArg[] commandArgs = new CommandArg[0];
-
+    /**
+     * Language handler instance.
+     */
+    protected final LanguageHandler locale;
     private final JaroWinkler similarity = new JaroWinkler();
 
     /**
@@ -69,6 +71,51 @@ public abstract class Command extends ContextSensitive {
      */
     @Deprecated
     public final void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+        //Check if the context can be used on guild by user
+        if (!isContextValid(messageContext)) {
+            return;
+        }
+
+        //check if the user has the permission on the guild
+        if (!canBeExecutedHere(messageContext)) {
+            MessageSender.sendMessage(localizeAllAndReplace(M_INSUFFICIENT_PERMISSION.tag,
+                    messageContext.getGuild(), getContextName()), messageContext.getTextChannel());
+            return;
+        }
+
+        //Check if it is the help command
+        if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
+            sendCommandUsage(messageContext.getTextChannel());
+            return;
+        }
+
+        //Check if the argument count is equal or more than the minimum arguments
+        if (!checkArguments(args)) {
+            try {
+                MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
+            } catch (InsufficientPermissionException ex) {
+                messageContext.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel ->
+                        MessageSender.handlePermissionException(ex, messageContext.getTextChannel()));
+                return;
+            }
+        }
+
+        //Check if the command is on cooldown.
+        int currentCooldown = CooldownManager.getInstance().getCurrentCooldown(
+                this, messageContext.getGuild(), messageContext.getAuthor());
+        if (currentCooldown != 0) {
+            try {
+                MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace(GeneralLocale.M_COOLDOWN.tag,
+                        messageContext.getGuild(), currentCooldown + ""), messageContext.getTextChannel());
+            } catch (InsufficientPermissionException ex) {
+                messageContext.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel ->
+                        MessageSender.handlePermissionException(ex, messageContext.getTextChannel()));
+            }
+            return;
+        }
+
+        CooldownManager.getInstance().renewCooldown(this, messageContext.getGuild(), messageContext.getAuthor());
+
         try {
             internalExecute(label, args, messageContext);
         } catch (InsufficientPermissionException e) {
@@ -80,8 +127,9 @@ public abstract class Command extends ContextSensitive {
             return;
         }
         MessageSender.logCommand(label, args, messageContext);
-        LatestCommandsCollection.getInstance().saveLatestCommand(messageContext.getGuild(), messageContext.getAuthor(),
-                this, label, args);
+        LatestCommandsCollection.getInstance()
+                .saveLatestCommand(messageContext.getGuild(), messageContext.getAuthor(),
+                        this, label, args);
     }
 
     /**

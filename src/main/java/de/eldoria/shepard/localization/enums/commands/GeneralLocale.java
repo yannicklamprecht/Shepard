@@ -58,13 +58,18 @@ public enum GeneralLocale {
      */
     A_CONTEXT_NAME("command.general.argument.contextName"),
     /**
+     * Localization key for argument [Seconds] Only full Seconds.
+     */
+    A_SECONDS("command.general.argument.seconds"),
+    /**
      * Localization key for argument [true|false].
      */
     A_BOOLEAN("command.general.argument.boolean"),
     /**
      * Localization key for argument [yes|no].
      */
-    A_BOOLEAN_YES_NO("command.general.argument.booleanYesNo");
+    A_BOOLEAN_YES_NO("command.general.argument.booleanYesNo"),
+    M_COOLDOWN("command.general.message.cooldown");
 
     /**
      * Get the escaped locale code for auto translation.

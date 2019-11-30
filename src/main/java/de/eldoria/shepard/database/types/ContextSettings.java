@@ -22,6 +22,8 @@ public class ContextSettings {
     private boolean guildCheckActive;
     private ListType guildListType;
     private List<String> guildList;
+    private int userCooldown;
+    private int guildCooldown;
 
     /**
      * Get if the Context is admin only.
@@ -167,12 +169,77 @@ public class ContextSettings {
         this.guildList = Arrays.asList(guildList);
     }
 
+    /**
+     * Get the cooldown of the context for user.
+     *
+     * @return cooldown in seconds
+     */
+    public int getUserCooldown() {
+        return userCooldown;
+    }
+
+    /**
+     * Set the the cooldown of the context for user.
+     *
+     * @param userCooldown cooldown in seconds
+     */
+    public void setUserCooldown(int userCooldown) {
+        this.userCooldown = userCooldown;
+    }
+
+    /**
+     * Get the cooldown of the context for a guild.
+     *
+     * @return cooldown in seconds
+     */
+    public int getGuildCooldown() {
+        return guildCooldown;
+    }
+
+    /**
+     * Set the the cooldown of the context for a guild.
+     *
+     * @param guildCooldown cooldown in seconds
+     */
+    public void setGuildCooldown(int guildCooldown) {
+        this.guildCooldown = guildCooldown;
+    }
+
+    /**
+     * Check if a user and/or a guild cooldown is set.
+     *
+     * @return true if at least a guild or user cooldown is set.
+     */
+    public boolean hasCooldown() {
+        return hasUserCooldown() || hasGuildCooldown();
+    }
+
+    /**
+     * Check if a user cooldown is set.
+     *
+     * @return true if a cooldown is set
+     */
+    public boolean hasUserCooldown() {
+        return userCooldown != 0;
+    }
+
+    /**
+     * Check if a user cooldown is set.
+     *
+     * @return true if a cooldown is set
+     */
+    public boolean hasGuildCooldown() {
+        return guildCooldown != 0;
+    }
+
     @Override
     public String toString() {
         JDA jda = ShepardBot.getJDA();
         StringBuilder builder = new StringBuilder();
         builder.append("  admin_only: ").append(isAdminOnly()).append(lineSeparator())
                 .append("  nsfw: ").append(isNsfw()).append(lineSeparator())
+                .append("  user_cooldown: ").append(getUserCooldown()).append(lineSeparator())
+                .append("  guild_cooldown: ").append(getGuildCooldown()).append(lineSeparator())
                 .append("  user_check_active: ").append(isUserCheckActive()).append(lineSeparator());
         if (isUserCheckActive()) {
             builder.append("    List_Type: ").append(getUserListType()).append(lineSeparator())
