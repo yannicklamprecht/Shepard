@@ -85,8 +85,8 @@ public class UserInfo extends Command {
                 .setColor(member != null ? member.getColor() : Color.gray);
 
         if (member != null) {
-            builder.addField(UserInfoLocale.W_JOINED.tag, getIntervalString(UserInfoLocale.M_JOINED.tag, member.getTimeJoined(), messageContext),
-                    false);
+            builder.addField(UserInfoLocale.W_JOINED.tag, getIntervalString(UserInfoLocale.M_JOINED.tag,
+                    member.getTimeJoined(), messageContext), false);
 
             String roles = member.getRoles().stream().map(IMentionable::getAsMention).collect(Collectors.joining(", "));
             builder.addField(UserInfoLocale.W_ROLES.tag, roles, false);
