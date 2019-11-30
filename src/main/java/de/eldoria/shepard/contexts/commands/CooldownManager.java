@@ -58,32 +58,6 @@ public final class CooldownManager implements Runnable {
         return (int) (cooldown);
     }
 
-    private long getUserCooldown(Command command, User user) {
-        if (!command.getContextData().hasUserCooldown() || !userCooldown.containsKey(command)) {
-            return 0;
-        }
-        Map<Long, LocalDateTime> map = userCooldown.get(command);
-        return getCooldown(map.get(user.getIdLong()));
-    }
-
-    private long getGuildCooldown(Command command, Guild guild) {
-        if (!command.getContextData().hasGuildCooldown() || !guildCooldown.containsKey(command)) {
-            return 0;
-        }
-        Map<Long, LocalDateTime> map = guildCooldown.get(command);
-
-        return getCooldown(map.get(guild.getIdLong()));
-    }
-
-    private long getCooldown(LocalDateTime time) {
-        if (time == null) {
-            return 0;
-        }
-        long seconds = LocalDateTime.now().until(time, ChronoUnit.SECONDS);
-
-        return Math.max(seconds, 0);
-    }
-
     /**
      * Restarts the cooldown for the command.
      *
@@ -116,5 +90,31 @@ public final class CooldownManager implements Runnable {
                 .map(Map.Entry::getKey).collect(Collectors.toList()).forEach(c::remove));
         guildCooldown.values().forEach(c -> c.entrySet().stream().filter(e -> e.getValue().isBefore(now))
                 .map(Map.Entry::getKey).collect(Collectors.toList()).forEach(c::remove));
+    }
+
+    private long getUserCooldown(Command command, User user) {
+        if (!command.getContextData().hasUserCooldown() || !userCooldown.containsKey(command)) {
+            return 0;
+        }
+        Map<Long, LocalDateTime> map = userCooldown.get(command);
+        return getCooldown(map.get(user.getIdLong()));
+    }
+
+    private long getGuildCooldown(Command command, Guild guild) {
+        if (!command.getContextData().hasGuildCooldown() || !guildCooldown.containsKey(command)) {
+            return 0;
+        }
+        Map<Long, LocalDateTime> map = guildCooldown.get(command);
+
+        return getCooldown(map.get(guild.getIdLong()));
+    }
+
+    private long getCooldown(LocalDateTime time) {
+        if (time == null) {
+            return 0;
+        }
+        long seconds = LocalDateTime.now().until(time, ChronoUnit.SECONDS);
+
+        return Math.max(seconds, 0);
     }
 }
