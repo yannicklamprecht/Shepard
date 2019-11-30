@@ -101,7 +101,7 @@ public abstract class Command extends ContextSensitive {
         }
 
         //Check if the command is on cooldown.
-        float currentCooldown = CooldownManager.getInstance().getCurrentCooldown(
+        int currentCooldown = CooldownManager.getInstance().getCurrentCooldown(
                 this, messageContext.getGuild(), messageContext.getAuthor());
         if (currentCooldown != 0) {
             try {
