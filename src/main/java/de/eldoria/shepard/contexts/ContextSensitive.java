@@ -183,6 +183,7 @@ public abstract class ContextSensitive {
 
     /**
      * Get the settings of the context.
+     *
      * @return a context settings object.
      */
     public ContextSettings getContextData() {

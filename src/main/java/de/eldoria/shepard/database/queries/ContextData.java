@@ -372,8 +372,9 @@ public final class ContextData {
 
     /**
      * Set the global guild cooldown to a context.
-     * @param contextName name of the context
-     * @param seconds cooldown in seconds
+     *
+     * @param contextName    name of the context
+     * @param seconds        cooldown in seconds
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
@@ -395,13 +396,14 @@ public final class ContextData {
 
     /**
      * Set the global user cooldown to a context.
-     * @param contextName name of the context
-     * @param seconds cooldown in seconds
+     *
+     * @param contextName    name of the context
+     * @param seconds        cooldown in seconds
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean setContextUserCooldown(String contextName, int seconds,
-                                                  MessageEventDataWrapper messageContext) {
+                                                 MessageEventDataWrapper messageContext) {
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()

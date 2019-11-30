@@ -33,10 +33,6 @@ import static java.lang.System.lineSeparator;
  */
 public abstract class Command extends ContextSensitive {
     /**
-     * Language handler instance.
-     */
-    protected final LanguageHandler locale;
-    /**
      * Name of the command.
      */
     protected String commandName = "";
@@ -52,7 +48,10 @@ public abstract class Command extends ContextSensitive {
      * Command args as command arg array.
      */
     protected CommandArg[] commandArgs = new CommandArg[0];
-
+    /**
+     * Language handler instance.
+     */
+    protected final LanguageHandler locale;
     private final JaroWinkler similarity = new JaroWinkler();
 
     /**
@@ -122,8 +121,7 @@ public abstract class Command extends ContextSensitive {
         } catch (InsufficientPermissionException e) {
             messageContext.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel ->
                     MessageSender.handlePermissionException(e, messageContext.getTextChannel()));
-        } catch (
-                RuntimeException e) {
+        } catch (RuntimeException e) {
             ShepardBot.getLogger().error(e);
             MessageSender.sendSimpleError(ErrorType.INTERNAL_ERROR, messageContext.getTextChannel());
             return;

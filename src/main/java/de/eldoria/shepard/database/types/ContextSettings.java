@@ -207,6 +207,7 @@ public class ContextSettings {
 
     /**
      * Check if a user and/or a guild cooldown is set.
+     *
      * @return true if at least a guild or user cooldown is set.
      */
     public boolean hasCooldown() {
@@ -215,6 +216,7 @@ public class ContextSettings {
 
     /**
      * Check if a user cooldown is set.
+     *
      * @return true if a cooldown is set
      */
     public boolean hasUserCooldown() {
@@ -223,6 +225,7 @@ public class ContextSettings {
 
     /**
      * Check if a user cooldown is set.
+     *
      * @return true if a cooldown is set
      */
     public boolean hasGuildCooldown() {
