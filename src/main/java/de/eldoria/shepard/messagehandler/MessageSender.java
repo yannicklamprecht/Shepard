@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.List;
 
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
+import static java.lang.System.lineSeparator;
 
 public final class MessageSender {
 
@@ -228,10 +229,12 @@ public final class MessageSender {
      * @param messageContext context of command
      */
     public static void logCommand(String label, String[] args, MessageEventDataWrapper messageContext) {
-        String command = messageContext.getAuthor().getAsTag()
-                + " executed command \"" + label + " " + String.join(" ", args)
-                + "\" on  guild " + messageContext.getGuild().getName() + " ("
-                + messageContext.getGuild().getId() + ")";
+        String command = "```yaml" + lineSeparator()
+                + "Executor: " + messageContext.getAuthor().getAsTag() + lineSeparator()
+                + "Command:" + messageContext.getMessage().getContentStripped() + lineSeparator()
+                + "Guild: " + messageContext.getGuild().getName()
+                + " (" + messageContext.getGuild().getId() + ")" + lineSeparator()
+                + "```";
         ShepardBot.getLogger().command(command);
         Normandy.getCommandLogChannel().sendMessage(command).queue();
     }
@@ -247,11 +250,11 @@ public final class MessageSender {
 
         String localizedMessage = TextLocalizer.localizeAll(message, channel);
 
-        String[] messageParts = localizedMessage.split(System.lineSeparator());
+        String[] messageParts = localizedMessage.split(lineSeparator());
         StringBuilder messagePart = new StringBuilder();
         for (int i = 0; i < messageParts.length; i++) {
             if (messagePart.length() + messageParts[i].length() < 1024) {
-                messagePart.append(messageParts[i]).append(System.lineSeparator());
+                messagePart.append(messageParts[i]).append(lineSeparator());
             } else {
                 channel.sendMessage(messagePart.toString()).queue();
                 messagePart = new StringBuilder();
@@ -271,11 +274,11 @@ public final class MessageSender {
     public static void sendMessageToChannel(String message, MessageChannel channel) {
         if (message.isEmpty()) return;
 
-        String[] messageParts = message.split(System.lineSeparator());
+        String[] messageParts = message.split(lineSeparator());
         StringBuilder messagePart = new StringBuilder();
         for (int i = 0; i < messageParts.length; i++) {
             if (messagePart.length() + messageParts[i].length() < 1024) {
-                messagePart.append(messageParts[i]).append(System.lineSeparator());
+                messagePart.append(messageParts[i]).append(lineSeparator());
             } else {
                 channel.sendMessage(messagePart.toString()).queue();
                 messagePart = new StringBuilder();
