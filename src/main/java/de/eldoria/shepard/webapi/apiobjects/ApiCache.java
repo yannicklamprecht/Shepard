@@ -9,7 +9,8 @@ public class ApiCache<T> {
 
     /**
      * Creates a new api cache object.
-     * @param object object to cache
+     *
+     * @param object       object to cache
      * @param invalidAfter time in minutes how long the object is valid
      */
     public ApiCache(T object, int invalidAfter) {

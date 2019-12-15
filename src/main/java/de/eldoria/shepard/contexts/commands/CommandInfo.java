@@ -20,6 +20,7 @@ public class CommandInfo {
 
     /**
      * Creates a new CommandInfo object.
+     *
      * @param command command for information retrieval
      */
     public CommandInfo(Command command) {

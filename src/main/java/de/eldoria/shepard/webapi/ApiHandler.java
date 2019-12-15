@@ -9,8 +9,8 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandInfo;
 import de.eldoria.shepard.database.queries.MinecraftLinkData;
 import de.eldoria.shepard.webapi.apiobjects.ApiCache;
-import de.eldoria.shepard.webapi.apiobjects.VoteInformation;
 import de.eldoria.shepard.webapi.apiobjects.CommandSearchResponse;
+import de.eldoria.shepard.webapi.apiobjects.VoteInformation;
 import spark.Request;
 
 import java.util.HashMap;

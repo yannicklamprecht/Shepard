@@ -10,6 +10,7 @@ public class CommandInfos {
 
     /**
      * Creates a new CommandInfos object.
+     *
      * @param infos list of commandInfo objects
      */
     public CommandInfos(List<CommandInfo> infos) {
@@ -18,6 +19,7 @@ public class CommandInfos {
 
     /**
      * Get the object as json string.
+     *
      * @return object as json string
      */
     public String asJson() {

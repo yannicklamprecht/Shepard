@@ -36,6 +36,7 @@ public abstract class Command extends ContextSensitive {
      * Language handler instance.
      */
     protected final LanguageHandler locale;
+    private final JaroWinkler similarity = new JaroWinkler();
     /**
      * Name of the command.
      */
@@ -52,7 +53,6 @@ public abstract class Command extends ContextSensitive {
      * Command args as command arg array.
      */
     protected CommandArg[] commandArgs = new CommandArg[0];
-    private final JaroWinkler similarity = new JaroWinkler();
 
     /**
      * Create a new command an register it to the {@link CommandCollection}.
@@ -288,6 +288,7 @@ public abstract class Command extends ContextSensitive {
 
     /**
      * Get a object which holds all information about the command.
+     *
      * @return command info object
      */
     public CommandInfo getCommandInfo() {

@@ -32,6 +32,7 @@ public final class BotListReporter implements Runnable {
 
     /**
      * Initializes the bot list reporter if not active.
+     *
      * @return self instance
      */
     public static BotListReporter initialize() {
@@ -71,6 +72,7 @@ public final class BotListReporter implements Runnable {
 
     /**
      * redirect the vote information ti listener event handler.
+     *
      * @param voteInformation vote information
      */
     public void handleVote(VoteInformation voteInformation) {

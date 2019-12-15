@@ -13,7 +13,8 @@ public class CommandSearchResponse {
 
     /**
      * Creates a new command search response.
-     * @param directMatch command for return. found by direct match. can be null
+     *
+     * @param directMatch   command for return. found by direct match. can be null
      * @param fuzzySearched list of commands found by fuzzy search
      */
     public CommandSearchResponse(@Nullable Command directMatch, List<Command> fuzzySearched) {

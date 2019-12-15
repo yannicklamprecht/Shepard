@@ -113,6 +113,7 @@ public class SubArg {
 
     /**
      * Get the locale tag of the argument.
+     *
      * @return locale tag as string
      */
     public String getLocaleTag() {

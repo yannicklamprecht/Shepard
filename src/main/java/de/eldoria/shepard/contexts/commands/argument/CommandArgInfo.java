@@ -11,6 +11,7 @@ public class CommandArgInfo {
 
     /**
      * Creates a new Command arg info object.
+     *
      * @param arg Command arg for information retrieval.
      */
     public CommandArgInfo(CommandArg arg) {

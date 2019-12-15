@@ -10,6 +10,7 @@ public class SubArgInfo {
 
     /**
      * Creates a new sub arg info object.
+     *
      * @param arg subarg for information retrieval
      */
     public SubArgInfo(SubArg arg) {
