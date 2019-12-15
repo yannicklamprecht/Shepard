@@ -125,5 +125,21 @@ public class CommandArg {
         }
         return result;
     }
+
+    /**
+     * Get the argument name.
+     * @return argument name
+     */
+    public String getArgName() {
+        return argName;
+    }
+
+    /**
+     * Get the sub arguments of the argument.
+     * @return array of sub arguments Is empty when no arguments are set.
+     */
+    public SubArg[] getSubArgs() {
+        return subArgs;
+    }
 }
 

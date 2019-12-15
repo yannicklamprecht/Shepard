@@ -110,4 +110,12 @@ public class SubArg {
         }
         setShortCommand(shortCommand.toString());
     }
+
+    /**
+     * Get the locale tag of the argument.
+     * @return locale tag as string
+     */
+    public String getLocaleTag() {
+        return localeTag;
+    }
 }
