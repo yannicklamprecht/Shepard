@@ -37,4 +37,8 @@ public class CommandInfo {
         arguments = Arrays.stream(commandArgs).map(CommandArgInfo::new)
                 .collect(Collectors.toList());
     }
+
+    public ContextCategory getCategory() {
+        return category;
+    }
 }
