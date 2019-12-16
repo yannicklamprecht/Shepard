@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.CommandInfos;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandInfo;
 import de.eldoria.shepard.database.queries.MinecraftLinkData;
@@ -87,7 +88,7 @@ public final class ApiHandler {
                 return (cache.get(cacheName)).getObject();
             }
 
-            CommandInfos commandInfos = CommandCollection.getInstance().getCommandInfos();
+            CommandInfos commandInfos = CommandCollection.getInstance().getCommandInfos(ContextCategory.BOT_CONFIG, ContextCategory.EXCLUSIVE);
             if (cache.containsKey(cacheName)) {
                 ((ApiCache<String>) cache.get(cacheName)).update(commandInfos.asJson());
             } else {

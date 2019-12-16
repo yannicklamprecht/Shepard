@@ -106,7 +106,8 @@ public final class CommandCollection {
      */
     public CommandInfos getCommandInfos(ContextCategory... excludes) {
         List<CommandInfo> collect = commands.stream().map(Command::getCommandInfo).collect(Collectors.toList());
-        collect.removeIf(commandInfo -> Arrays.asList(excludes).contains(commandInfo.getCategory()));
+        collect.removeIf(commandInfo -> Arrays.asList(excludes).contains(commandInfo.
+                getCategory()));
         return new CommandInfos(collect);
     }
 
