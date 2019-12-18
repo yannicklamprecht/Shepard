@@ -38,6 +38,11 @@ public class CommandInfo {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Get the category of the command info.
+     *
+     * @return command category
+     */
     public ContextCategory getCategory() {
         return category;
     }
