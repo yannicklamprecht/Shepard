@@ -224,11 +224,25 @@ public abstract class ContextSensitive {
         return ContextData.getContextData(this, null);
     }
 
+    /**
+     * Get the roles, which have access to this context on the
+     * guild of the {@link MessageEventDataWrapper} message context.
+     *
+     * @param messageContext message context for guild lookup
+     * @return list of all roles with access to this context
+     */
     public List<Role> getRolesWithPermissions(MessageEventDataWrapper messageContext) {
         return ArgumentParser.getRoles(messageContext.getGuild(),
                 ContextData.getContextGuildRolePermissions(messageContext.getGuild(), this, null));
     }
 
+    /**
+     * Get the users, which have access to this context on the
+     * guild of the {@link MessageEventDataWrapper} message context.
+     *
+     * @param messageContext message context for guild lookup
+     * @return list of all roles with access to this context
+     */
     public List<User> getUsersWithPermissions(MessageEventDataWrapper messageContext) {
         return ArgumentParser.getGuildUsers(messageContext.getGuild(),
                 ContextData.getContextGuildUserPermissions(messageContext.getGuild(), this, null));

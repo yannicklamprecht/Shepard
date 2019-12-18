@@ -65,7 +65,8 @@ public final class ContextData {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeContextUser(ContextSensitive context, User user, MessageEventDataWrapper messageContext) {
+    public static boolean removeContextUser(ContextSensitive context, User user,
+                                            MessageEventDataWrapper messageContext) {
         String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
@@ -89,7 +90,8 @@ public final class ContextData {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addContextGuild(ContextSensitive context, Guild guild, MessageEventDataWrapper messageContext) {
+    public static boolean addContextGuild(ContextSensitive context, Guild guild,
+                                          MessageEventDataWrapper messageContext) {
         String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
@@ -113,7 +115,8 @@ public final class ContextData {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeContextGuild(ContextSensitive context, Guild guild, MessageEventDataWrapper messageContext) {
+    public static boolean removeContextGuild(ContextSensitive context, Guild guild,
+                                             MessageEventDataWrapper messageContext) {
         String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
@@ -245,7 +248,8 @@ public final class ContextData {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextAdmin(ContextSensitive context, boolean state, MessageEventDataWrapper messageContext) {
+    public static boolean setContextAdmin(ContextSensitive context, boolean state,
+                                          MessageEventDataWrapper messageContext) {
         String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
@@ -269,7 +273,8 @@ public final class ContextData {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextNsfw(ContextSensitive context, boolean state, MessageEventDataWrapper messageContext) {
+    public static boolean setContextNsfw(ContextSensitive context, boolean state,
+                                         MessageEventDataWrapper messageContext) {
         String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 

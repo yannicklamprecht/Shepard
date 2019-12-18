@@ -79,7 +79,8 @@ public class ManageContext extends Command {
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
-    private void setCooldown(String cmd, String[] args, ContextSensitive context, MessageEventDataWrapper messageContext) {
+    private void setCooldown(String cmd, String[] args, ContextSensitive context,
+                             MessageEventDataWrapper messageContext) {
         Integer seconds = ArgumentParser.parseInt(args[2]);
 
 
