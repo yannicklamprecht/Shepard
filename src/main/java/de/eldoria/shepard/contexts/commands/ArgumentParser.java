@@ -3,6 +3,7 @@ package de.eldoria.shepard.contexts.commands;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.KeyWordCollection;
+import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.keywords.Keyword;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.TextFormatting;
@@ -265,24 +266,29 @@ public final class ArgumentParser {
     }
 
     /**
+     * Get the name of the messageContext from a string.
+     *
+     * @param indicator      for lookup
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return Name of the context or null if no messageContext was found
+     */
+    public static String getContextName(String indicator, MessageEventDataWrapper messageContext) {
+        ContextSensitive context = getContext(indicator, messageContext);
+        return context == null ? null : context.getClass().getSimpleName();
+    }
+
+    /**
      * Get the name of the context from a string.
      *
      * @param indicator for lookup
      * @param context   context from command sending for error handling. Can be null.
      * @return Name of the context or null if no context was found
      */
-    public static String getContextName(String indicator, MessageEventDataWrapper context) {
+    public static ContextSensitive getContext(String indicator, MessageEventDataWrapper context) {
         Command command = CommandCollection.getInstance().getCommand(indicator);
         Keyword keyword = KeyWordCollection.getInstance().getKeywordWithContextName(indicator, context);
 
-        String contextName = null;
-        if (keyword != null) {
-            contextName = keyword.getClass().getSimpleName();
-        } else if (command != null) {
-            contextName = command.getClass().getSimpleName();
-        }
-
-        return contextName;
+        return keyword != null ? keyword : command;
     }
 
     /**
