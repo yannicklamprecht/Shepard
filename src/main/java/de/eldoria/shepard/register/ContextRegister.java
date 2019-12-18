@@ -42,8 +42,8 @@ import de.eldoria.shepard.contexts.commands.util.SystemInfo;
 import de.eldoria.shepard.contexts.commands.util.Test;
 import de.eldoria.shepard.contexts.commands.util.UserInfo;
 import de.eldoria.shepard.contexts.commands.util.Vote;
-import de.eldoria.shepard.localization.enums.commands.botconfig.Restart;
-import de.eldoria.shepard.localization.enums.commands.botconfig.Upgrade;
+import de.eldoria.shepard.contexts.commands.botconfig.Restart;
+import de.eldoria.shepard.contexts.commands.botconfig.Upgrade;
 
 public final class ContextRegister {
 
