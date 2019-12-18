@@ -159,6 +159,10 @@ public final class ShepardBot {
 
     /**
      * Close the shepard application.
+     *
+     * @param exitCode exit code do determine what should happen after shutdown
+     *                 0 = shutdown
+     *                 10 = restart
      */
     public void shutdown(int exitCode) {
         if (exitCode == 0) {
@@ -169,7 +173,7 @@ public final class ShepardBot {
         if (exitCode == 10) {
             MessageSender.sendSimpleTextBox("Restarting",
                     "",
-                    new Color(17,209,209), ShepardReactions.WINK, Normandy.getGeneralLogChannel());
+                    new Color(17, 209, 209), ShepardReactions.WINK, Normandy.getGeneralLogChannel());
         }
 
         if (jda != null) {
