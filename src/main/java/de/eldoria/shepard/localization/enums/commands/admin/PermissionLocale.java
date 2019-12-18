@@ -52,7 +52,20 @@ public enum PermissionLocale {
     /**
      * Localization key for message role access revoked.
      */
-    M_ROLE_ACCESS_REVOKED("command.permission.message.roleAccessRevoked");
+    M_ROLE_ACCESS_REVOKED("command.permission.message.roleAccessRevoked"),
+    C_SET_PERMISSION_OVERRIDE("command.permission.subcommand.setPermissionOverride"),
+    C_INFO("command.permission.subcommand.info"),
+    M_OVERRIDE_ACTIVATED("command.permission.message.overrideActivated"),
+    M_OVERRIDE_DEACTIVATED("command.permission.message.overrideDeactivated"),
+    M_PERMISSION_REQUIRED_MESSAGE("command.permission.message.permissionNeeded"),
+    M_PERMISSION_NOT_REQUIRED_MESSAGE("command.permission.message.permissionNotNeeded"),
+    M_INFO_TITLE("command.permission.message.infoTitle"),
+    M_GENERAL_INFORMATION("command.permission.message.generalInformation"),
+    M_ADMIN_ONLY("command.permission.message.adminOnly"),
+    M_OVERRIDE_ACTIVE("command.permission.message.overrideActive"),
+    M_PERMISSION_REQUIRED("command.permission.message.permissionRequired"),
+    M_ROLES_WITH_PERMISSION("command.permission.message.rolesWithPermission"),
+    M_USER_WITH_PERMISSION("command.permission.message.userWithPermission");
 
     /**
      * Get the escaped locale code for auto translation.
