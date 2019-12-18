@@ -161,9 +161,16 @@ public final class ShepardBot {
      * Close the shepard application.
      */
     public void shutdown(int exitCode) {
-        MessageSender.sendSimpleTextBox("Shepard verlässt die Brücke!!",
-                "",
-                Color.RED, ShepardReactions.ASLEEP, Normandy.getGeneralLogChannel());
+        if (exitCode == 0) {
+            MessageSender.sendSimpleTextBox("Shutdown.",
+                    "",
+                    Color.RED, ShepardReactions.ASLEEP, Normandy.getGeneralLogChannel());
+        }
+        if (exitCode == 10) {
+            MessageSender.sendSimpleTextBox("Restarting",
+                    "",
+                    new Color(17,209,209), ShepardReactions.WINK, Normandy.getGeneralLogChannel());
+        }
 
         if (jda != null) {
             jda.shutdown();
