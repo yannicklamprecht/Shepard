@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.User;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.System.lineSeparator;
 
@@ -24,11 +25,13 @@ public class ContextSettings {
     private List<String> guildList;
     private int userCooldown;
     private int guildCooldown;
+    private Map<Long, Boolean> permissionOverride;
 
     /**
-     * Get if the Context is admin only.
+     * True if the command can be executed only by admin by default.
+     * Can be overwritten by {@link #hasGuildPermissionOverride(Guild)}}
      *
-     * @return true if command is admin only
+     * @return true if this command is admin only by default.
      */
     public boolean isAdminOnly() {
         return adminOnly;
@@ -230,6 +233,28 @@ public class ContextSettings {
      */
     public boolean hasGuildCooldown() {
         return guildCooldown != 0;
+    }
+
+    /**
+     * Set the permission override map.
+     *
+     * @param permissionOverride a map containing a boolean for each guild, which has a permission override set.
+     */
+    public void setPermissionOverride(Map<Long, Boolean> permissionOverride) {
+        this.permissionOverride = permissionOverride;
+    }
+
+    /**
+     * Check if the guild has a permission override.
+     * If a permission override is set a admin command is no longer a admin command.
+     * A non admin command is a admin command and needs a permission to be executed.
+     *
+     * @param guild guild to check if a override is active
+     * @return true if a override is active.
+     */
+    public boolean hasGuildPermissionOverride(Guild guild) {
+        Boolean override = permissionOverride.get(guild.getIdLong());
+        return override == null ? false : override;
     }
 
     @Override

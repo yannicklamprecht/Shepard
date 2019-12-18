@@ -9,6 +9,7 @@ import de.eldoria.shepard.database.queries.MonitoringData;
 import de.eldoria.shepard.database.types.Address;
 import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.AddressType;
@@ -20,7 +21,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.List;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN_YES_NO;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_NAME;
 import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.A_ADDRESS;
@@ -56,7 +57,7 @@ public class Monitoring extends Command {
                         new SubArg("disable", C_DISABLE.tag, true)),
                 new CommandArg("value", false,
                         new SubArg("add", A_ADDRESS + " " + A_NAME + " "
-                                + A_BOOLEAN_YES_NO + lineSeparator() + A_ADD_TEXT),
+                                + A_BOOLEAN + lineSeparator() + A_ADD_TEXT),
                         new SubArg("remove", GeneralLocale.A_ID.tag),
                         new SubArg("list", GeneralLocale.A_EMPTY.tag),
                         new SubArg("enable", GeneralLocale.A_CHANNEL_MENTION_OR_EXECUTE.tag),
@@ -181,9 +182,12 @@ public class Monitoring extends Command {
         List<Address> monitoringAddresses = MonitoringData.getMonitoringAddressesForGuild(
                 messageContext.getGuild(), messageContext);
 
-        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(monitoringAddresses,
-                WordsLocale.ID.tag, WordsLocale.NAME.tag,
-                WordsLocale.ADDRESS.tag, WordsLocale.MINECRAFT.tag);
+        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
+                monitoringAddresses,
+                TextLocalizer.localizeAllAndReplace(WordsLocale.ID.tag, messageContext.getGuild()),
+                TextLocalizer.localizeAllAndReplace(WordsLocale.NAME.tag, messageContext.getGuild()),
+                TextLocalizer.localizeAllAndReplace(WordsLocale.ADDRESS.tag, messageContext.getGuild()),
+                TextLocalizer.localizeAllAndReplace(WordsLocale.MINECRAFT.tag, messageContext.getGuild()));
 
         for (Address address : monitoringAddresses) {
             tableBuilder.next();

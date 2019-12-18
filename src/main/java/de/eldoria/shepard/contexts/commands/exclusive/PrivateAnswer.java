@@ -1,8 +1,8 @@
-package de.eldoria.shepard.contexts.commands.admin;
+package de.eldoria.shepard.contexts.commands.exclusive;
 
 import de.eldoria.shepard.collections.Normandy;
+import de.eldoria.shepard.collections.PrivateMessageCollection;
 import de.eldoria.shepard.contexts.ContextCategory;
-import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
@@ -11,25 +11,25 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USER;
+import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.ANSWER_DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.A_MESSAGE;
-import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.MESSAGE_DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.A_NAME;
 
-public class SendPrivateMessage extends Command {
+public class PrivateAnswer extends Command {
     /**
-     * Creates a new private message command object.
+     * Create a new private answer command object.
      */
-    public SendPrivateMessage() {
-        commandName = "privateMessage";
-        commandAliases = new String[] {"pm", "sendMessage"};
-        commandDesc = MESSAGE_DESCRIPTION.tag;
+    public PrivateAnswer() {
+        commandName = "privateAnswer";
+        commandAliases = new String[] {"reply", "answer"};
+        commandDesc = ANSWER_DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("name", true,
-                        new SubArg("name", A_USER.tag)),
+                        new SubArg("name", A_NAME.tag)),
                 new CommandArg("message", false,
                         new SubArg("message", A_MESSAGE.tag))
         };
-        category = ContextCategory.ADMIN;
+        category = ContextCategory.EXCLUSIVE;
     }
 
     @Override
@@ -39,13 +39,9 @@ public class SendPrivateMessage extends Command {
             return;
         }
 
-        User user = ArgumentParser.getUser(args[0]);
-
-        if (user == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext.getTextChannel());
-            return;
-        }
+        User user = PrivateMessageCollection.getInstance().getUser(args[0]);
 
         PrivateMessageHelper.sendPrivateMessage(args, messageContext, user);
     }
+
 }

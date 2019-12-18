@@ -43,6 +43,13 @@ public class CommandListener extends ListenerAdapter {
         onCommand(new MessageEventDataWrapper(event));
     }
 
+    /**
+     * Checks if the message is a Command on the guild.
+     * Suggests a command if no command is valid and some similar command are found.
+     * Parses the input into commands.
+     *
+     * @param messageContext context to check
+     */
     private void onCommand(MessageEventDataWrapper messageContext) {
         String receivedMessage = messageContext.getMessage().getContentRaw();
         receivedMessage = receivedMessage.replaceAll("\\s\\s+", " ");

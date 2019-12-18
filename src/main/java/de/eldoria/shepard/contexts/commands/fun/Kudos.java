@@ -144,7 +144,7 @@ public class Kudos extends Command {
                 ? KudoData.getGlobalTopScore(25, messageContext)
                 : KudoData.getTopScore(messageContext.getGuild(), 25, messageContext);
 
-        String rankTable = TextFormatting.getRankTable(ranks);
+        String rankTable = TextFormatting.getRankTable(ranks, messageContext);
 
         MessageSender.sendMessage("**" + (global ? M_GLOBAL_RANKING.tag : M_SERVER_RANKING.tag) + "**"
                 + lineSeparator() + rankTable, messageContext.getTextChannel());

@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
@@ -8,8 +9,11 @@ import de.eldoria.shepard.contexts.commands.argument.SubArg;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Role;
@@ -21,23 +25,33 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CONTEXT_NAME;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_ROLES;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USERS;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_ADD_ROLE;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_ADD_USER;
+import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_INFO;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_LIST_ROLE;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_LIST_USER;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_REMOVE_ROLE;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_REMOVE_USER;
+import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_SET_PERMISSION_OVERRIDE;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ADMIN_ONLY;
+import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_GENERAL_INFORMATION;
+import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_INFO_TITLE;
+import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_OVERRIDE_ACTIVE;
+import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_PERMISSION_REQUIRED;
+import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ROLES_WITH_PERMISSION;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ROLE_ACCESS;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ROLE_ACCESS_GRANTED;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ROLE_ACCESS_REVOKED;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_ACCESS;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_ACCESS_GRANTED;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_ACCESS_REVOKED;
+import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_WITH_PERMISSION;
 import static java.lang.System.lineSeparator;
 
 public class Permission extends Command {
@@ -57,14 +71,18 @@ public class Permission extends Command {
                         new SubArg("listUser", C_LIST_USER.tag, true),
                         new SubArg("addRole", C_ADD_ROLE.tag, true),
                         new SubArg("removeRole", C_REMOVE_ROLE.tag, true),
-                        new SubArg("listRoles", C_LIST_ROLE.tag, true)),
+                        new SubArg("listRoles", C_LIST_ROLE.tag, true),
+                        new SubArg("setPermissionOverride", C_SET_PERMISSION_OVERRIDE.tag, true),
+                        new SubArg("info", C_INFO.tag, true)),
                 new CommandArg("value", false,
                         new SubArg("addUser", A_USERS.tag),
                         new SubArg("removeUser", A_USERS.tag),
                         new SubArg("listUser", A_EMPTY.tag),
                         new SubArg("addRole", A_ROLES.tag),
                         new SubArg("removeRole", A_ROLES.tag),
-                        new SubArg("listRoles", A_EMPTY.tag)),
+                        new SubArg("listRoles", A_EMPTY.tag),
+                        new SubArg("setPermissionOverride", A_BOOLEAN.tag),
+                        new SubArg("info", A_EMPTY.tag)),
         };
         category = ContextCategory.ADMIN;
     }
@@ -73,9 +91,9 @@ public class Permission extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[1];
 
-        String contextName = ArgumentParser.getContextName(args[0], messageContext);
+        ContextSensitive context = ArgumentParser.getContext(args[0], messageContext);
 
-        if (contextName == null) {
+        if (context == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND,
                     messageContext.getTextChannel());
             return;
@@ -84,40 +102,113 @@ public class Permission extends Command {
         CommandArg arg = commandArgs[1];
 
         if (arg.isSubCommand(cmd, 0)) {
-            modifyUsers(args, messageContext, contextName, ModifyType.ADD);
+            modifyUsers(args, messageContext, context, ModifyType.ADD);
             return;
         }
         if (arg.isSubCommand(cmd, 1)) {
-            modifyUsers(args, messageContext, contextName, ModifyType.REMOVE);
+            modifyUsers(args, messageContext, context, ModifyType.REMOVE);
             return;
         }
 
         if (arg.isSubCommand(cmd, 2)) {
-            showMentions(messageContext, contextName, M_USER_ACCESS.tag);
+            showMentions(messageContext, context, M_USER_ACCESS.tag);
             return;
         }
 
         if (arg.isSubCommand(cmd, 3)) {
-            modifyRoles(args, messageContext, contextName, ModifyType.ADD);
+            modifyRoles(args, messageContext, context, ModifyType.ADD);
             return;
         }
         if (arg.isSubCommand(cmd, 4)) {
-            modifyRoles(args, messageContext, contextName, ModifyType.REMOVE);
+            modifyRoles(args, messageContext, context, ModifyType.REMOVE);
             return;
         }
 
         if (arg.isSubCommand(cmd, 5)) {
-            showMentions(messageContext, contextName, M_ROLE_ACCESS.tag);
+            showMentions(messageContext, context, M_ROLE_ACCESS.tag);
+            return;
+        }
+
+        if (arg.isSubCommand(cmd, 6)) {
+            overridePermission(args, messageContext, context);
+            return;
+        }
+
+        if (arg.isSubCommand(cmd, 7)) {
+            info(messageContext, context);
             return;
         }
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
-    private void showMentions(MessageEventDataWrapper messageContext, String contextName, String message) {
+    private void info(MessageEventDataWrapper messageContext, ContextSensitive context) {
+        LocalizedEmbedBuilder embedBuilder = new LocalizedEmbedBuilder(messageContext)
+                .setTitle(TextLocalizer.localizeAllAndReplace(M_INFO_TITLE.tag, messageContext.getGuild(),
+                        context.getContextName()));
+
+        String builder = M_ADMIN_ONLY + " " + context.isAdmin() + lineSeparator()
+                + M_OVERRIDE_ACTIVE + " " + context.overrideActive(messageContext.getGuild()) + lineSeparator()
+                + M_PERMISSION_REQUIRED + " " + context.needsPermission(messageContext.getGuild());
+        embedBuilder.addField(M_GENERAL_INFORMATION.tag, builder, false);
+
+        if (context.needsPermission(messageContext.getGuild())) {
+            List<Role> roles = context.getRolesWithPermissions(messageContext);
+            List<User> users = context.getUsersWithPermissions(messageContext);
+
+            if (!roles.isEmpty()) {
+                String roleMentions = roles.stream()
+                        .map(IMentionable::getAsMention).collect(Collectors.joining(lineSeparator()));
+                embedBuilder.addField(M_ROLES_WITH_PERMISSION.tag, roleMentions, false);
+            }
+
+            if (!users.isEmpty()) {
+                String userMentions = users.stream()
+                        .map(IMentionable::getAsMention).collect(Collectors.joining(lineSeparator()));
+                embedBuilder.addField(M_USER_WITH_PERMISSION.tag, userMentions, false);
+
+            }
+        }
+        messageContext.getTextChannel().sendMessage(embedBuilder.build()).queue();
+    }
+
+    private void overridePermission(String[] args, MessageEventDataWrapper messageContext, ContextSensitive context) {
+        if (args.length != 3) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            return;
+        }
+
+        BooleanState state = ArgumentParser.getBoolean(args[2]);
+        if (state == BooleanState.UNDEFINED) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
+        }
+
+        if (ContextData.setPermissionOverride(context, state.stateAsBoolean, messageContext.getGuild(),
+                messageContext)) {
+            StringBuilder builder = new StringBuilder();
+            if (state.stateAsBoolean) {
+                builder.append(TextLocalizer.localizeAllAndReplace(PermissionLocale.M_OVERRIDE_ACTIVATED.tag,
+                        messageContext.getGuild(), "**" + context.getContextName() + "**"));
+            } else {
+                builder.append(TextLocalizer.localizeAllAndReplace(PermissionLocale.M_OVERRIDE_DEACTIVATED.tag,
+                        messageContext.getGuild(), "**" + context.getContextName() + "**"));
+            }
+            builder.append(lineSeparator());
+            if (context.needsPermission(messageContext.getGuild())) {
+                builder.append(TextLocalizer.localizeAllAndReplace(
+                        PermissionLocale.M_PERMISSION_REQUIRED_MESSAGE.tag, messageContext.getGuild()));
+            } else {
+                builder.append(TextLocalizer.localizeAllAndReplace(
+                        PermissionLocale.M_PERMISSION_NOT_REQUIRED_MESSAGE.tag, messageContext.getGuild()));
+            }
+            MessageSender.sendMessage(builder.toString(), messageContext.getTextChannel());
+        }
+    }
+
+    private void showMentions(MessageEventDataWrapper messageContext, ContextSensitive context, String message) {
         String roleMentions = ArgumentParser.getRoles(messageContext.getGuild(),
-                ContextData.getContextRolePermission(messageContext.getGuild(),
-                        contextName, messageContext)).stream().map(IMentionable::getAsMention)
+                ContextData.getContextGuildRolePermissions(messageContext.getGuild(),
+                        context, messageContext)).stream().map(IMentionable::getAsMention)
                 .collect(Collectors.joining(lineSeparator()));
         MessageSender.sendSimpleTextBox(message,
                 roleMentions,
@@ -125,7 +216,7 @@ public class Permission extends Command {
     }
 
     private void modifyUsers(String[] args, MessageEventDataWrapper messageContext,
-                             String contextName, ModifyType modifyType) {
+                             ContextSensitive context, ModifyType modifyType) {
         if (args.length < 3) {
             MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
@@ -137,24 +228,24 @@ public class Permission extends Command {
 
         for (User user : validUser) {
             if (modifyType == ModifyType.ADD) {
-                if (!ContextData.addContextUserPermission(contextName,
+                if (!ContextData.addContextUserPermission(context,
                         messageContext.getGuild(), user, messageContext)) {
                     return;
                 }
             } else {
-                if (!ContextData.removeContextUserPermission(contextName,
+                if (!ContextData.removeContextUserPermission(context,
                         messageContext.getGuild(), user, messageContext)) {
                     return;
                 }
             }
         }
 
-        sendMessage(messageContext, contextName, modifyType,
+        sendMessage(messageContext, context.getContextName(), modifyType,
                 M_USER_ACCESS_GRANTED, M_USER_ACCESS_REVOKED, new ArrayList<>(validUser));
     }
 
     private void modifyRoles(String[] args, MessageEventDataWrapper messageContext,
-                             String contextName, ModifyType modifyType) {
+                             ContextSensitive context, ModifyType modifyType) {
         if (args.length < 3) {
             MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
@@ -164,19 +255,19 @@ public class Permission extends Command {
 
         for (Role role : roles) {
             if (modifyType == ModifyType.ADD) {
-                if (!ContextData.addContextRolePermission(contextName,
+                if (!ContextData.addContextRolePermission(context,
                         messageContext.getGuild(), role, messageContext)) {
                     return;
                 }
             } else {
-                if (!ContextData.removeContextRolePermission(contextName,
+                if (!ContextData.removeContextRolePermission(context,
                         messageContext.getGuild(), role, messageContext)) {
                     return;
                 }
             }
         }
 
-        sendMessage(messageContext, contextName, modifyType,
+        sendMessage(messageContext, context.getContextName(), modifyType,
                 M_ROLE_ACCESS_GRANTED, M_ROLE_ACCESS_REVOKED, new ArrayList<>(roles));
     }
 

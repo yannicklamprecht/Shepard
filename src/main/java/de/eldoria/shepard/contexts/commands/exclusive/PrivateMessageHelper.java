@@ -1,4 +1,4 @@
-package de.eldoria.shepard.contexts.commands.admin;
+package de.eldoria.shepard.contexts.commands.exclusive;
 
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.messagehandler.ErrorType;

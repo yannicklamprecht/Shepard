@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts;
 
 import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.database.types.ContextSettings;
@@ -10,7 +11,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -36,36 +36,40 @@ public abstract class ContextSensitive {
 
     /**
      * Get whether a command is valid or not.
-     * A command is valid if it is not excluded to use on a specific guild
-     * or if the author is restricted to use it.
+     * If the command is a NSFW Command and the channel is SFW, the context is not valid.
+     * Checks also if a context can be executed by guild and user {@link #canBeExecutedHere(MessageEventDataWrapper)}
      *
      * @param context the context of the command.
      * @return {@code true} if the command is valid, {@code false} otherwise.
      */
     public boolean isContextValid(MessageEventDataWrapper context) {
-        if (context.getChannel() instanceof TextChannel) {
-            TextChannel textChannel = (TextChannel) context.getChannel();
-            if (getContextData().isNsfw() && !textChannel.isNSFW()) {
-                return false;
-            }
+        if (getContextData().isNsfw() && !context.getTextChannel().isNSFW()) {
+            return false;
         }
 
-        if (canBeExecutedHere(context)) {
-            return hasPermission(context);
-        }
-        return false;
+        return canBeExecutedHere(context);
     }
 
     /**
-     * Returns if the context can be executed on this guild by this user, if he has the permission.
+     * Returns if the context can be executed on this guild by this user.
+     * Checks first if the {@link Guild} is allowed to use the context.
+     * If the guild is allowed to use it, it checks if the {@link Member} is allowed to use it.
+     * {@code false} if the user is allowed to use it, but the guild is not.
      *
      * @param context the context of the command.
-     * @return {@code true} if the context can be executed on guild by user with permissions.
+     * @return {@code true} if the context can be executed on guild by user.
      */
-    public boolean canBeExecutedHere(MessageEventDataWrapper context) {
+    private boolean canBeExecutedHere(MessageEventDataWrapper context) {
         return canExecutedByUser(context) && canExecutedOnGuild(context);
     }
 
+    /**
+     * Checks if the context has an active guild check and if the guild is listed.
+     * Determines based on the {@link ListType} type if the guild is allowed to use this context or not.
+     *
+     * @param context context for lookup
+     * @return true if the context is executeable on this guild
+     */
     private boolean canExecutedOnGuild(MessageEventDataWrapper context) {
         ContextSettings data = getContextData();
         if (data.isGuildCheckActive()) {
@@ -77,6 +81,13 @@ public abstract class ContextSensitive {
         return true;
     }
 
+    /**
+     * Checks if the context has an active guild check and if the user is listed.
+     * Determines based on the {@link ListType} type if the user is allowed to use this context or not.
+     *
+     * @param context context for lookup
+     * @return true if the context is executeable by this user
+     */
     private boolean canExecutedByUser(MessageEventDataWrapper context) {
         ContextSettings data = getContextData();
         if (data.isUserCheckActive()) {
@@ -89,10 +100,23 @@ public abstract class ContextSensitive {
     }
 
 
-    private boolean hasPermission(MessageEventDataWrapper context) {
+    /**
+     * Checks if the user needs a permission to execute this context.
+     * Applies guild permission override.
+     * If a permission is needed, it checks if a role or the user himself has the permission to execute this context.
+     * Should be used after {@link #canBeExecutedHere(MessageEventDataWrapper)}.
+     *
+     * @param context message context
+     * @return true if the user is allowed to execute this command
+     */
+    protected boolean hasPermission(MessageEventDataWrapper context) {
+        if (!needsPermission(context.getGuild())) {
+            return true;
+        }
+
         Member member = context.getMember();
-        if (!getContextData().isAdminOnly()
-                || (member != null && member.hasPermission(Permission.ADMINISTRATOR))) {
+        //Checks if a command is not admin only and override is inactive or if the member is a administrator
+        if ((member != null && member.hasPermission(Permission.ADMINISTRATOR))) {
             return true;
         }
 
@@ -105,12 +129,14 @@ public abstract class ContextSensitive {
             allowedRoles = Collections.emptyList();
         }
 
+        //Check if one of the user roles has the permission for this context.
         for (Role r : memberRoles) {
             if (allowedRoles.contains(r.getId())) {
                 return true;
             }
         }
 
+        //Check if the user has the permission
         List<String> allowedUsers = getUserPermissions(context).get(context.getGuild().getId());
         if (allowedUsers == null) {
             allowedUsers = Collections.emptyList();
@@ -119,12 +145,20 @@ public abstract class ContextSensitive {
         return allowedUsers.contains(context.getAuthor().getId());
     }
 
+    /**
+     * Load the cache for the context.
+     */
     private void loadCache() {
         getContextData();
         getRolePermissions(null);
         getUserPermissions(null);
     }
 
+    /**
+     * Get all information about a context.
+     *
+     * @return Information of context as a string.
+     */
     private String getDebugInfo() {
         JDA jda = ShepardBot.getJDA();
         StringBuilder builder = new StringBuilder();
@@ -187,15 +221,39 @@ public abstract class ContextSensitive {
      * @return a context settings object.
      */
     public ContextSettings getContextData() {
-        return ContextData.getContextData(getClass().getSimpleName(), null);
+        return ContextData.getContextData(this, null);
+    }
+
+    /**
+     * Get the roles, which have access to this context on the
+     * guild of the {@link MessageEventDataWrapper} message context.
+     *
+     * @param messageContext message context for guild lookup
+     * @return list of all roles with access to this context
+     */
+    public List<Role> getRolesWithPermissions(MessageEventDataWrapper messageContext) {
+        return ArgumentParser.getRoles(messageContext.getGuild(),
+                ContextData.getContextGuildRolePermissions(messageContext.getGuild(), this, null));
+    }
+
+    /**
+     * Get the users, which have access to this context on the
+     * guild of the {@link MessageEventDataWrapper} message context.
+     *
+     * @param messageContext message context for guild lookup
+     * @return list of all roles with access to this context
+     */
+    public List<User> getUsersWithPermissions(MessageEventDataWrapper messageContext) {
+        return ArgumentParser.getGuildUsers(messageContext.getGuild(),
+                ContextData.getContextGuildUserPermissions(messageContext.getGuild(), this, null));
     }
 
     private Map<String, List<String>> getRolePermissions(MessageEventDataWrapper context) {
-        return ContextData.getContextRolePermissions(getClass().getSimpleName(), context);
+        return ContextData.getContextRolePermissions(this, context);
     }
 
     private Map<String, List<String>> getUserPermissions(MessageEventDataWrapper context) {
-        return ContextData.getContextUserPermissions(getClass().getSimpleName(), context);
+        return ContextData.getContextUserPermissions(this, context);
     }
 
     /**
@@ -208,11 +266,40 @@ public abstract class ContextSensitive {
     }
 
     /**
-     * Get the context name. Context names are always all caps!
+     * Get the context name.
      *
      * @return context name
      */
     public String getContextName() {
-        return getClass().getSimpleName().toUpperCase();
+        return getClass().getSimpleName();
+    }
+
+    /**
+     * Check if the command can only be used by an administrator by default.
+     *
+     * @return true if only an administrator can use this command.
+     */
+    public boolean isAdmin() {
+        return getContextData().isAdminOnly();
+    }
+
+    /**
+     * Checks if a context needs a permission based on the permission override of the guild.
+     *
+     * @param guild guild for lookup
+     * @return true of a permission is needed to execute this command
+     */
+    public boolean needsPermission(Guild guild) {
+        return overrideActive(guild) ? !isAdmin() : isAdmin();
+    }
+
+    /**
+     * Checks if a permission override is active for this guild.
+     *
+     * @param guild guild for lookup
+     * @return true if a override is active
+     */
+    public boolean overrideActive(Guild guild) {
+        return getContextData().hasGuildPermissionOverride(guild);
     }
 }

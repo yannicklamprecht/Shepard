@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_COMMAND_NOT_FOUND;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_INSUFFICIENT_PERMISSION;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
@@ -69,17 +70,18 @@ public abstract class Command extends ContextSensitive {
      * @param args           Arguments of the command.
      * @param messageContext Message Received Event of the command execution
      */
-    @Deprecated
     public final void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
         //Check if the context can be used on guild by user
         if (!isContextValid(messageContext)) {
+            MessageSender.sendMessage(localizeAllAndReplace(M_COMMAND_NOT_FOUND.tag, messageContext.getGuild()),
+                    messageContext.getTextChannel());
             return;
         }
 
         //check if the user has the permission on the guild
-        if (!canBeExecutedHere(messageContext)) {
+        if (!hasPermission(messageContext)) {
             MessageSender.sendMessage(localizeAllAndReplace(M_INSUFFICIENT_PERMISSION.tag,
-                    messageContext.getGuild(), getContextName()), messageContext.getTextChannel());
+                    messageContext.getGuild(), "**" + getContextName() + "**"), messageContext.getTextChannel());
             return;
         }
 
