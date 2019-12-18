@@ -123,6 +123,7 @@ public final class TextFormatting {
      * @return table of ranks
      */
     public static String getRankTable(List<Rank> ranks) {
+        //TODO: Localisation
         TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(ranks, "Rank", "User", "Score");
 
         int ranking = 1;
