@@ -55,7 +55,6 @@ public class Changelog extends Command {
                         new SubArg("deactivate", A_EMPTY.tag),
                         new SubArg("roles", A_EMPTY.tag))
         };
-
         category = ContextCategory.ADMIN;
     }
 
