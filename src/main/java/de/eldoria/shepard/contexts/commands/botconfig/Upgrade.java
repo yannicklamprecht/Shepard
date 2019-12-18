@@ -1,6 +1,7 @@
-package de.eldoria.shepard.localization.enums.commands.botconfig;
+package de.eldoria.shepard.contexts.commands.botconfig;
 
 import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.ExitCode;
@@ -14,6 +15,7 @@ public class Upgrade extends Command {
 
     public Upgrade() {
         commandName = "upgrade";
+        category = ContextCategory.BOT_CONFIG;
     }
 
     @Override
