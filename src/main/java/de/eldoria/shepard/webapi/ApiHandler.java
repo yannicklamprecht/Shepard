@@ -88,7 +88,8 @@ public final class ApiHandler {
                 return (cache.get(cacheName)).getObject();
             }
 
-            CommandInfos commandInfos = CommandCollection.getInstance().getCommandInfos(ContextCategory.BOT_CONFIG, ContextCategory.EXCLUSIVE);
+            CommandInfos commandInfos = CommandCollection.getInstance()
+                    .getCommandInfos(ContextCategory.BOT_CONFIG, ContextCategory.EXCLUSIVE);
             if (cache.containsKey(cacheName)) {
                 ((ApiCache<String>) cache.get(cacheName)).update(commandInfos.asJson());
             } else {
