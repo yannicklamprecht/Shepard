@@ -122,7 +122,7 @@ public final class TextFormatting {
     /**
      * Get a rank table.
      *
-     * @param ranks list of ranks for table
+     * @param ranks          list of ranks for table
      * @param messageContext message context for localisation
      * @return table of ranks
      */
