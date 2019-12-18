@@ -35,9 +35,8 @@ public class VoteHandler implements Consumer<VoteInformation> {
             ShepardBot.getLogger().info("No user found for vote");
             return;
         }
-        int pointsToAdd = Math.min(15, Math.round((float) Math.random() * 25));
+        int pointsToAdd = Math.max(15, Math.round((float) Math.random() * 25));
         pointsToAdd = pointsToAdd * (voteInformation.isWeekend() ? 2 : 1);
-
 
         KudoData.addFreeRubberPoints(userById, pointsToAdd, null);
         KudoData.addRubberPoints(userById, pointsToAdd, null);
