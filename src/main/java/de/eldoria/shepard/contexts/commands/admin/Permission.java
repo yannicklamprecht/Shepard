@@ -102,30 +102,30 @@ public class Permission extends Command {
         CommandArg arg = commandArgs[1];
 
         if (arg.isSubCommand(cmd, 0)) {
-            modifyUsers(args, messageContext, context.getContextName(), ModifyType.ADD);
+            modifyUsers(args, messageContext, context, ModifyType.ADD);
             return;
         }
         if (arg.isSubCommand(cmd, 1)) {
-            modifyUsers(args, messageContext, context.getContextName(), ModifyType.REMOVE);
+            modifyUsers(args, messageContext, context, ModifyType.REMOVE);
             return;
         }
 
         if (arg.isSubCommand(cmd, 2)) {
-            showMentions(messageContext, context.getContextName(), M_USER_ACCESS.tag);
+            showMentions(messageContext, context, M_USER_ACCESS.tag);
             return;
         }
 
         if (arg.isSubCommand(cmd, 3)) {
-            modifyRoles(args, messageContext, context.getContextName(), ModifyType.ADD);
+            modifyRoles(args, messageContext, context, ModifyType.ADD);
             return;
         }
         if (arg.isSubCommand(cmd, 4)) {
-            modifyRoles(args, messageContext, context.getContextName(), ModifyType.REMOVE);
+            modifyRoles(args, messageContext, context, ModifyType.REMOVE);
             return;
         }
 
         if (arg.isSubCommand(cmd, 5)) {
-            showMentions(messageContext, context.getContextName(), M_ROLE_ACCESS.tag);
+            showMentions(messageContext, context, M_ROLE_ACCESS.tag);
             return;
         }
 
@@ -183,7 +183,8 @@ public class Permission extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
         }
 
-        if (ContextData.setPermissionOverride(context.getContextName(), state.stateAsBoolean, messageContext.getGuild(), messageContext)) {
+        if (ContextData.setPermissionOverride(context, state.stateAsBoolean, messageContext.getGuild(),
+                messageContext)) {
             StringBuilder builder = new StringBuilder();
             if (state.stateAsBoolean) {
                 builder.append(TextLocalizer.localizeAllAndReplace(PermissionLocale.M_OVERRIDE_ACTIVATED.tag,
@@ -204,10 +205,10 @@ public class Permission extends Command {
         }
     }
 
-    private void showMentions(MessageEventDataWrapper messageContext, String contextName, String message) {
+    private void showMentions(MessageEventDataWrapper messageContext, ContextSensitive context, String message) {
         String roleMentions = ArgumentParser.getRoles(messageContext.getGuild(),
-                ContextData.getContextRolePermission(messageContext.getGuild(),
-                        contextName, messageContext)).stream().map(IMentionable::getAsMention)
+                ContextData.getContextGuildRolePermissions(messageContext.getGuild(),
+                        context, messageContext)).stream().map(IMentionable::getAsMention)
                 .collect(Collectors.joining(lineSeparator()));
         MessageSender.sendSimpleTextBox(message,
                 roleMentions,
@@ -215,7 +216,7 @@ public class Permission extends Command {
     }
 
     private void modifyUsers(String[] args, MessageEventDataWrapper messageContext,
-                             String contextName, ModifyType modifyType) {
+                             ContextSensitive context, ModifyType modifyType) {
         if (args.length < 3) {
             MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
@@ -227,24 +228,24 @@ public class Permission extends Command {
 
         for (User user : validUser) {
             if (modifyType == ModifyType.ADD) {
-                if (!ContextData.addContextUserPermission(contextName,
+                if (!ContextData.addContextUserPermission(context,
                         messageContext.getGuild(), user, messageContext)) {
                     return;
                 }
             } else {
-                if (!ContextData.removeContextUserPermission(contextName,
+                if (!ContextData.removeContextUserPermission(context,
                         messageContext.getGuild(), user, messageContext)) {
                     return;
                 }
             }
         }
 
-        sendMessage(messageContext, contextName, modifyType,
+        sendMessage(messageContext, context.getContextName(), modifyType,
                 M_USER_ACCESS_GRANTED, M_USER_ACCESS_REVOKED, new ArrayList<>(validUser));
     }
 
     private void modifyRoles(String[] args, MessageEventDataWrapper messageContext,
-                             String contextName, ModifyType modifyType) {
+                             ContextSensitive context, ModifyType modifyType) {
         if (args.length < 3) {
             MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
             return;
@@ -254,19 +255,19 @@ public class Permission extends Command {
 
         for (Role role : roles) {
             if (modifyType == ModifyType.ADD) {
-                if (!ContextData.addContextRolePermission(contextName,
+                if (!ContextData.addContextRolePermission(context,
                         messageContext.getGuild(), role, messageContext)) {
                     return;
                 }
             } else {
-                if (!ContextData.removeContextRolePermission(contextName,
+                if (!ContextData.removeContextRolePermission(context,
                         messageContext.getGuild(), role, messageContext)) {
                     return;
                 }
             }
         }
 
-        sendMessage(messageContext, contextName, modifyType,
+        sendMessage(messageContext, context.getContextName(), modifyType,
                 M_ROLE_ACCESS_GRANTED, M_ROLE_ACCESS_REVOKED, new ArrayList<>(roles));
     }
 

@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.botconfig;
 
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
@@ -62,30 +63,30 @@ public class ManageContextGuild extends Command {
         String cmd = args[1];
         CommandArg arg = commandArgs[1];
 
-        String contextName = ArgumentParser.getContextName(args[0], messageContext);
+        ContextSensitive context = ArgumentParser.getContext(args[0], messageContext);
 
-        if (contextName == null) {
+        if (context == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND, messageContext.getTextChannel());
             return;
         }
 
         if (arg.isSubCommand(cmd, 0)) {
-            setActive(args, contextName, messageContext);
+            setActive(args, context, messageContext);
             return;
         }
 
         if (arg.isSubCommand(cmd, 1)) {
-            setListType(args, contextName, messageContext);
+            setListType(args, context, messageContext);
             return;
         }
 
         if (arg.isSubCommand(cmd, 2)) {
-            addGuild(args, contextName, messageContext);
+            addGuild(args, context, messageContext);
             return;
         }
 
         if (arg.isSubCommand(cmd, 3)) {
-            removeGuild(args, contextName, messageContext);
+            removeGuild(args, context, messageContext);
             return;
         }
 
@@ -93,25 +94,25 @@ public class ManageContextGuild extends Command {
 
     }
 
-    private void addGuild(String[] args, String contextName, MessageEventDataWrapper messageContext) {
-        modifyGuild(args, contextName, ModifyType.ADD, messageContext);
+    private void addGuild(String[] args, ContextSensitive context, MessageEventDataWrapper messageContext) {
+        modifyGuild(args, context, ModifyType.ADD, messageContext);
     }
 
-    private void removeGuild(String[] args, String contextName, MessageEventDataWrapper messageContext) {
+    private void removeGuild(String[] args, ContextSensitive contextName, MessageEventDataWrapper messageContext) {
         modifyGuild(args, contextName, ModifyType.REMOVE, messageContext);
     }
 
-    private void modifyGuild(String[] args, String contextName,
+    private void modifyGuild(String[] args, ContextSensitive context,
                              ModifyType modifyType, MessageEventDataWrapper messageContext) {
         List<String> mentions = new ArrayList<>();
 
         ArgumentParser.getGuilds(ArgumentParser.getRangeAsList(args, 2)).forEach(guild -> {
             if (modifyType == ModifyType.ADD) {
-                if (!ContextData.addContextGuild(contextName, guild, messageContext)) {
+                if (!ContextData.addContextGuild(context, guild, messageContext)) {
                     return;
                 }
             } else {
-                if (!ContextData.removeContextGuild(contextName, guild, messageContext)) {
+                if (!ContextData.removeContextGuild(context, guild, messageContext)) {
                     return;
                 }
             }
@@ -122,18 +123,18 @@ public class ManageContextGuild extends Command {
 
         if (modifyType == ModifyType.ADD) {
             MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_ADDED_GUILDS.tag,
-                    messageContext.getGuild(), "**" + contextName.toUpperCase() + "**"),
+                    messageContext.getGuild(), "**" + context.getContextName().toUpperCase() + "**"),
                     names, messageContext.getTextChannel());
 
         } else {
             MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_REMOVED_GUILDS.tag,
-                    messageContext.getGuild(), "**" + contextName.toUpperCase() + "**"),
+                    messageContext.getGuild(), "**" + context.getContextName().toUpperCase() + "**"),
                     names, messageContext.getTextChannel());
         }
     }
 
 
-    private void setListType(String[] args, String contextName, MessageEventDataWrapper messageContext) {
+    private void setListType(String[] args, ContextSensitive contextName, MessageEventDataWrapper messageContext) {
         ListType type = ListType.getType(args[2]);
 
         if (type == null) {
@@ -143,13 +144,13 @@ public class ManageContextGuild extends Command {
 
         if (ContextData.setContextGuildListType(contextName, type, messageContext)) {
             MessageSender.sendMessage(localizeAllAndReplace(M_CHANGED_LIST_TYPE.tag,
-                    messageContext.getGuild(), "**" + contextName.toUpperCase() + "**",
+                    messageContext.getGuild(), "**" + contextName.getContextName().toUpperCase() + "**",
                     "**" + type.toString() + "**"), messageContext.getTextChannel());
         }
 
     }
 
-    private void setActive(String[] args, String contextName, MessageEventDataWrapper messageContext) {
+    private void setActive(String[] args, ContextSensitive contextName, MessageEventDataWrapper messageContext) {
         BooleanState bState = ArgumentParser.getBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
@@ -162,10 +163,10 @@ public class ManageContextGuild extends Command {
         if (ContextData.setContextGuildCheckActive(contextName, state, messageContext)) {
             if (state) {
                 MessageSender.sendMessage(localizeAllAndReplace(M_ACTIVATED_CHECK.tag, messageContext.getGuild(),
-                        "**" + contextName.toUpperCase() + "**"), messageContext.getTextChannel());
+                        "**" + contextName.getContextName().toUpperCase() + "**"), messageContext.getTextChannel());
             } else {
                 MessageSender.sendMessage(localizeAllAndReplace(M_DEACTIVATED_CHECK.tag, messageContext.getGuild(),
-                        "**" + contextName.toUpperCase() + "**"), messageContext.getTextChannel());
+                        "**" + contextName.getContextName().toUpperCase() + "**"), messageContext.getTextChannel());
             }
         }
     }

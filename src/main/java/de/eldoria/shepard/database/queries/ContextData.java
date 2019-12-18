@@ -1,5 +1,6 @@
 package de.eldoria.shepard.database.queries;
 
+import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.types.ContextSettings;
@@ -35,12 +36,13 @@ public final class ContextData {
     /**
      * Adds a user to a context list.
      *
-     * @param contextName    context zo change
+     * @param context        context to change
      * @param user           user to add
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addContextUser(String contextName, User user, MessageEventDataWrapper messageContext) {
+    public static boolean addContextUser(ContextSensitive context, User user, MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -58,12 +60,13 @@ public final class ContextData {
     /**
      * Removes a user from the context list.
      *
-     * @param contextName    context name to change
+     * @param context        context to change
      * @param user           user to remove
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeContextUser(String contextName, User user, MessageEventDataWrapper messageContext) {
+    public static boolean removeContextUser(ContextSensitive context, User user, MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -81,12 +84,13 @@ public final class ContextData {
     /**
      * Adds a guild to the context list.
      *
-     * @param contextName    context name to change
+     * @param context        context to change
      * @param guild          guild id to add
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addContextGuild(String contextName, Guild guild, MessageEventDataWrapper messageContext) {
+    public static boolean addContextGuild(ContextSensitive context, Guild guild, MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -104,12 +108,13 @@ public final class ContextData {
     /**
      * Removes a guild from the context list.
      *
-     * @param contextName    context name to change
+     * @param context        context to change
      * @param guild          guild id to remove
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeContextGuild(String contextName, Guild guild, MessageEventDataWrapper messageContext) {
+    public static boolean removeContextGuild(ContextSensitive context, Guild guild, MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -127,14 +132,15 @@ public final class ContextData {
     /**
      * Adds a context user permission on a guild.
      *
-     * @param contextName    context name to change
+     * @param context        context to change
      * @param guild          guild id where the permission should be added
      * @param user           user which should be added
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addContextUserPermission(String contextName, Guild guild,
+    public static boolean addContextUserPermission(ContextSensitive context, Guild guild,
                                                    User user, MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         userPermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -153,14 +159,15 @@ public final class ContextData {
     /**
      * Removes a context user permission on a guild.
      *
-     * @param contextName    context name to change
+     * @param context        context to change
      * @param guild          guild id where the permission should be removed
      * @param user           user which should be removed
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeContextUserPermission(String contextName, Guild guild,
+    public static boolean removeContextUserPermission(ContextSensitive context, Guild guild,
                                                       User user, MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         userPermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -179,14 +186,15 @@ public final class ContextData {
     /**
      * Adds a context role permission on a guild.
      *
-     * @param contextName    context name to change
+     * @param context        context to change
      * @param guild          guild id where the permission should be added
      * @param role           role which should be added
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean addContextRolePermission(String contextName, Guild guild,
+    public static boolean addContextRolePermission(ContextSensitive context, Guild guild,
                                                    Role role, MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         rolePermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -205,14 +213,15 @@ public final class ContextData {
     /**
      * Removes a context role permission on a guild.
      *
-     * @param contextName    context name to change
+     * @param context        context to change
      * @param guild          guild id where the permission should be removed
      * @param role           role which should be removed
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeContextRolePermission(String contextName, Guild guild,
+    public static boolean removeContextRolePermission(ContextSensitive context, Guild guild,
                                                       Role role, MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         rolePermissionDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -231,12 +240,13 @@ public final class ContextData {
     /**
      * Changes the context admin only state.
      *
-     * @param contextName    Name of the context to change
+     * @param context        context to change
      * @param state          True if it is a admin only command.
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextAdmin(String contextName, boolean state, MessageEventDataWrapper messageContext) {
+    public static boolean setContextAdmin(ContextSensitive context, boolean state, MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -254,12 +264,13 @@ public final class ContextData {
     /**
      * Changes the context nsfw state.
      *
-     * @param contextName    Name of the context to change
+     * @param context        context to change
      * @param state          True if it is a nsfw command.
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextNsfw(String contextName, boolean state, MessageEventDataWrapper messageContext) {
+    public static boolean setContextNsfw(ContextSensitive context, boolean state, MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -277,13 +288,14 @@ public final class ContextData {
     /**
      * Activates or deactivates the user check for this context.
      *
-     * @param contextName    Name of the context to change
+     * @param context        context to change
      * @param state          true when user should be checked
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextUserCheckActive(String contextName, boolean state,
+    public static boolean setContextUserCheckActive(ContextSensitive context, boolean state,
                                                     MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -301,13 +313,14 @@ public final class ContextData {
     /**
      * Activates or deactivates the guild check for this context.
      *
-     * @param contextName    Name of the context to change
+     * @param context        context to change
      * @param state          true when guild should be checked
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextGuildCheckActive(String contextName, boolean state,
+    public static boolean setContextGuildCheckActive(ContextSensitive context, boolean state,
                                                      MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -325,13 +338,14 @@ public final class ContextData {
     /**
      * Changes the context user list type.
      *
-     * @param contextName    Name of the context to change
+     * @param context        context to change
      * @param listType       ListType enum.
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextUserListType(String contextName, ListType listType,
+    public static boolean setContextUserListType(ContextSensitive context, ListType listType,
                                                  MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -349,13 +363,14 @@ public final class ContextData {
     /**
      * Changes the context guild list type.
      *
-     * @param contextName    Name of the context to change
+     * @param context        context to change
      * @param listType       ListType enum.
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextGuildListType(String contextName, ListType listType,
+    public static boolean setContextGuildListType(ContextSensitive context, ListType listType,
                                                   MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -373,13 +388,14 @@ public final class ContextData {
     /**
      * Set the global guild cooldown to a context.
      *
-     * @param contextName    name of the context
+     * @param context        context to change
      * @param seconds        cooldown in seconds
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextGuildCooldown(String contextName, int seconds,
+    public static boolean setContextGuildCooldown(ContextSensitive context, int seconds,
                                                   MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -397,13 +413,14 @@ public final class ContextData {
     /**
      * Set the global user cooldown to a context.
      *
-     * @param contextName    name of the context
+     * @param context        context to change
      * @param seconds        cooldown in seconds
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setContextUserCooldown(String contextName, int seconds,
+    public static boolean setContextUserCooldown(ContextSensitive context, int seconds,
                                                  MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -421,11 +438,12 @@ public final class ContextData {
     /**
      * Returns the context data of the needed context.
      *
-     * @param contextName    Name of the context for lookup
+     * @param context        context to change
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Context data object.
      */
-    public static ContextSettings getContextData(String contextName, MessageEventDataWrapper messageContext) {
+    public static ContextSettings getContextData(ContextSensitive context, MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         if (contextDataDirty.containsKey(contextName)) {
             if (!contextDataDirty.get(contextName)) {
                 return contextData.get(contextName);
@@ -490,25 +508,26 @@ public final class ContextData {
      * Returns a list of all user ids, which have access to the context on a specific guild.
      *
      * @param guild          Guild for lookup.
-     * @param contextName    Name of the context for permission lookup.
+     * @param context        context for permission lookup.
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of user ids
      */
-    public static List<String> getContextUserPermission(Guild guild, String contextName,
-                                                        MessageEventDataWrapper messageContext) {
-        return getContextUserPermissions(contextName, messageContext).getOrDefault(guild.getId(),
+    public static List<String> getContextGuildUserPermissions(Guild guild, ContextSensitive context,
+                                                              MessageEventDataWrapper messageContext) {
+        return getContextUserPermissions(context, messageContext).getOrDefault(guild.getId(),
                 Collections.emptyList());
     }
 
     /**
      * Returns a map which contains a list of all users per guild, which are allowed to use this context.
      *
-     * @param contextName    Name of the context for permission lookup.
+     * @param context        context for permission lookup.
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Map [guild_id, List(role_ids)] Map which contains the user as list for each guild
      */
-    public static Map<String, List<String>> getContextUserPermissions(String contextName,
+    public static Map<String, List<String>> getContextUserPermissions(ContextSensitive context,
                                                                       MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         if (userPermissions.containsKey(contextName)) {
             if (!userPermissionDirty.get(contextName)) {
                 return userPermissions.get(contextName);
@@ -552,13 +571,13 @@ public final class ContextData {
      * Returns a list of all role ids, which have access to the context on a specific guild.
      *
      * @param guild          Guild for lookup.
-     * @param contextName    Name of the context for permission lookup.
+     * @param context        context for permission lookup.
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of user ids
      */
-    public static List<String> getContextRolePermission(Guild guild, String contextName,
-                                                        MessageEventDataWrapper messageContext) {
-        return getContextRolePermissions(contextName, messageContext)
+    public static List<String> getContextGuildRolePermissions(Guild guild, ContextSensitive context,
+                                                              MessageEventDataWrapper messageContext) {
+        return getContextRolePermissions(context, messageContext)
                 .getOrDefault(guild.getId(), Collections.emptyList());
     }
 
@@ -566,12 +585,13 @@ public final class ContextData {
     /**
      * Returns a map which contains a list of all roles per guild, which are allowed to use this context.
      *
-     * @param contextName    Name of the context for permission lookup.
+     * @param context        context for permission lookup.
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Map [guild_id, List(role_ids)] Map which contains the user as list for each guild
      */
-    public static Map<String, List<String>> getContextRolePermissions(String contextName,
+    public static Map<String, List<String>> getContextRolePermissions(ContextSensitive context,
                                                                       MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         if (rolePermissions.containsKey(contextName)) {
             if (!rolePermissionDirty.get(contextName)) {
                 return rolePermissions.get(contextName);
@@ -613,8 +633,19 @@ public final class ContextData {
         return rolePermissions.getOrDefault(contextName, Collections.emptyMap());
     }
 
-    public static boolean setPermissionOverride(String contextName, boolean state,
+    /**
+     * Sets a permission override on the {@link Guild} for the
+     * specific {@link ContextSensitive} Context name.
+     *
+     * @param context        context to change.
+     * @param state          state
+     * @param guild          guild to add
+     * @param messageContext message context for error handling
+     * @return true if the database access was successful
+     */
+    public static boolean setPermissionOverride(ContextSensitive context, boolean state,
                                                 Guild guild, MessageEventDataWrapper messageContext) {
+        String contextName = context.getContextName();
         contextDataDirty.put(contextName, true);
 
         try (PreparedStatement statement = DatabaseConnector.getConn()

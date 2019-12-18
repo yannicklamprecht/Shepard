@@ -221,27 +221,25 @@ public abstract class ContextSensitive {
      * @return a context settings object.
      */
     public ContextSettings getContextData() {
-        return ContextData.getContextData(getClass().getSimpleName(), null);
+        return ContextData.getContextData(this, null);
     }
 
     public List<Role> getRolesWithPermissions(MessageEventDataWrapper messageContext) {
         return ArgumentParser.getRoles(messageContext.getGuild(),
-                getRolePermissions(messageContext)
-                        .getOrDefault(messageContext.getGuild().getId(), Collections.emptyList()));
+                ContextData.getContextGuildRolePermissions(messageContext.getGuild(), this, null));
     }
 
     public List<User> getUsersWithPermissions(MessageEventDataWrapper messageContext) {
         return ArgumentParser.getGuildUsers(messageContext.getGuild(),
-                getUserPermissions(messageContext)
-                        .getOrDefault(messageContext.getGuild().getId(), Collections.emptyList()));
+                ContextData.getContextGuildUserPermissions(messageContext.getGuild(), this, null));
     }
 
     private Map<String, List<String>> getRolePermissions(MessageEventDataWrapper context) {
-        return ContextData.getContextRolePermissions(getClass().getSimpleName(), context);
+        return ContextData.getContextRolePermissions(this, context);
     }
 
     private Map<String, List<String>> getUserPermissions(MessageEventDataWrapper context) {
-        return ContextData.getContextUserPermissions(getClass().getSimpleName(), context);
+        return ContextData.getContextUserPermissions(this, context);
     }
 
     /**

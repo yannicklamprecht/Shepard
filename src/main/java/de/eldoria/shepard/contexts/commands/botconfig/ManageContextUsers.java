@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.botconfig;
 
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
@@ -59,32 +60,32 @@ public class ManageContextUsers extends Command {
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        String contextName = ArgumentParser.getContextName(args[0], messageContext);
+        ContextSensitive context = ArgumentParser.getContext(args[0], messageContext);
         String cmd = args[1];
         CommandArg arg = commandArgs[1];
 
-        if (contextName == null) {
+        if (context == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND, messageContext.getTextChannel());
             return;
         }
 
         if (arg.isSubCommand(cmd, 0)) {
-            setActive(args, contextName, messageContext);
+            setActive(args, context, messageContext);
             return;
         }
 
         if (arg.isSubCommand(cmd, 1)) {
-            setListType(args, contextName, messageContext);
+            setListType(args, context, messageContext);
             return;
         }
 
         if (arg.isSubCommand(cmd, 2)) {
-            addUser(args, contextName, messageContext);
+            addUser(args, context, messageContext);
             return;
         }
 
         if (arg.isSubCommand(cmd, 3)) {
-            removeUser(args, contextName, messageContext);
+            removeUser(args, context, messageContext);
             return;
         }
 
@@ -92,7 +93,7 @@ public class ManageContextUsers extends Command {
 
     }
 
-    private void manageUser(String[] args, String contextName,
+    private void manageUser(String[] args, ContextSensitive context,
                             ModifyType modifyType, MessageEventDataWrapper messageContext) {
         List<String> mentions = new ArrayList<>();
 
@@ -100,10 +101,10 @@ public class ManageContextUsers extends Command {
                 ArgumentParser.getRangeAsList(args, 2))
                 .forEach(user -> {
                     if (modifyType == ModifyType.ADD) {
-                        if (!ContextData.addContextUser(contextName, user, messageContext)) {
+                        if (!ContextData.addContextUser(context, user, messageContext)) {
                             return;
                         }
-                    } else if (!ContextData.removeContextUser(contextName, user, messageContext)) {
+                    } else if (!ContextData.removeContextUser(context, user, messageContext)) {
                         return;
                     }
                     mentions.add(user.getAsMention());
@@ -113,23 +114,23 @@ public class ManageContextUsers extends Command {
 
         if (modifyType == ModifyType.ADD) {
             MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_ADDED_USERS.tag, messageContext.getGuild(),
-                    " **" + contextName.toUpperCase() + "**"), names, messageContext.getTextChannel());
+                    " **" + context.getContextName().toUpperCase() + "**"), names, messageContext.getTextChannel());
 
         } else {
             MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_REMOVED_USERS.tag, messageContext.getGuild(),
-                    " **" + contextName.toUpperCase() + "**"), names, messageContext.getTextChannel());
+                    " **" + context.getContextName().toUpperCase() + "**"), names, messageContext.getTextChannel());
         }
     }
 
-    private void addUser(String[] args, String contextName, MessageEventDataWrapper messageContext) {
-        manageUser(args, contextName, ModifyType.ADD, messageContext);
+    private void addUser(String[] args, ContextSensitive context, MessageEventDataWrapper messageContext) {
+        manageUser(args, context, ModifyType.ADD, messageContext);
     }
 
-    private void removeUser(String[] args, String contextName, MessageEventDataWrapper messageContext) {
-        manageUser(args, contextName, ModifyType.REMOVE, messageContext);
+    private void removeUser(String[] args, ContextSensitive context, MessageEventDataWrapper messageContext) {
+        manageUser(args, context, ModifyType.REMOVE, messageContext);
     }
 
-    private void setListType(String[] args, String contextName, MessageEventDataWrapper messageContext) {
+    private void setListType(String[] args, ContextSensitive context, MessageEventDataWrapper messageContext) {
         ListType type = ListType.getType(args[2]);
 
         if (type == null) {
@@ -137,14 +138,14 @@ public class ManageContextUsers extends Command {
             return;
         }
 
-        if (ContextData.setContextUserListType(contextName, type, messageContext)) {
+        if (ContextData.setContextUserListType(context, type, messageContext)) {
             MessageSender.sendMessage(localizeAllAndReplace(M_CHANGED_LIST_TYPE.tag,
-                    messageContext.getGuild(), "**" + contextName.toUpperCase() + "**"
+                    messageContext.getGuild(), "**" + context.getContextName().toUpperCase() + "**"
                             + "**" + type.toString() + "**"), messageContext.getTextChannel());
         }
     }
 
-    private void setActive(String[] args, String contextName, MessageEventDataWrapper messageContext) {
+    private void setActive(String[] args, ContextSensitive context, MessageEventDataWrapper messageContext) {
         BooleanState bState = ArgumentParser.getBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
@@ -154,16 +155,16 @@ public class ManageContextUsers extends Command {
 
         boolean state = bState.stateAsBoolean;
 
-        if (!ContextData.setContextUserCheckActive(contextName, state, messageContext)) {
+        if (!ContextData.setContextUserCheckActive(context, state, messageContext)) {
             return;
         }
 
         if (state) {
             MessageSender.sendMessage(localizeAllAndReplace(M_ACTIVATED_CHECK.tag, messageContext.getGuild(),
-                    "**" + contextName.toUpperCase() + "**"), messageContext.getTextChannel());
+                    "**" + context.getContextName().toUpperCase() + "**"), messageContext.getTextChannel());
         } else {
             MessageSender.sendMessage(localizeAllAndReplace(M_DEACTIVATED_CHECK.tag, messageContext.getGuild(),
-                    "**" + contextName.toUpperCase() + "**"), messageContext.getTextChannel());
+                    "**" + context.getContextName().toUpperCase() + "**"), messageContext.getTextChannel());
         }
     }
 }
