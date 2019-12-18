@@ -53,7 +53,6 @@ public abstract class Command extends ContextSensitive {
      * Command args as command arg array.
      */
     protected CommandArg[] commandArgs = new CommandArg[0];
-
     private final JaroWinkler similarity = new JaroWinkler();
 
     /**
