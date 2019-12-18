@@ -1,6 +1,7 @@
 package de.eldoria.shepard.io;
 
 import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.util.ExitCode;
 
 import java.util.Scanner;
 
@@ -46,13 +47,13 @@ public final class ConsoleReader implements Runnable {
                 continue;
             }
             if (input.equalsIgnoreCase("shutdown")) {
-                ShepardBot.getInstance().shutdown(0);
                 ShepardBot.getLogger().info(input);
+                ShepardBot.getInstance().shutdown(ExitCode.SHUTDOWN);
                 return;
             }
             if (input.equalsIgnoreCase("restart")) {
-                ShepardBot.getInstance().shutdown(10);
                 ShepardBot.getLogger().info(input);
+                ShepardBot.getInstance().shutdown(ExitCode.RESTART);
                 return;
             }
         }

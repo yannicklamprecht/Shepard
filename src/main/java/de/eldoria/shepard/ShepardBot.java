@@ -11,6 +11,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.register.ContextRegister;
 import de.eldoria.shepard.register.ListenerRegister;
+import de.eldoria.shepard.util.ExitCode;
 import de.eldoria.shepard.webapi.ApiHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -164,13 +165,13 @@ public final class ShepardBot {
      *                 0 = shutdown
      *                 10 = restart
      */
-    public void shutdown(int exitCode) {
-        if (exitCode == 0) {
+    public void shutdown(ExitCode exitCode) {
+        if (exitCode == ExitCode.SHUTDOWN) {
             MessageSender.sendSimpleTextBox("Shutdown.",
                     "",
                     Color.RED, ShepardReactions.ASLEEP, Normandy.getGeneralLogChannel());
         }
-        if (exitCode == 10) {
+        if (exitCode == ExitCode.RESTART) {
             MessageSender.sendSimpleTextBox("Restarting",
                     "",
                     new Color(17, 209, 209), ShepardReactions.WINK, Normandy.getGeneralLogChannel());
@@ -178,15 +179,15 @@ public final class ShepardBot {
 
         if (jda != null) {
             jda.shutdown();
-            ShepardBot.getLogger().info("JDA shut down. Closing Application in 5 Seconds!");
+            ShepardBot.getLogger().info("JDA shut down. Closing Application in 2 Seconds!");
         }
         jda = null;
         try {
-            Thread.sleep(5000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             ShepardBot.getLogger().info("Shutdown interrupted!");
         }
 
-        System.exit(exitCode);
+        System.exit(exitCode.code);
     }
 }

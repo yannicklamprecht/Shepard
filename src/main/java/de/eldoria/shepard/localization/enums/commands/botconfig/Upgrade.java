@@ -3,6 +3,7 @@ package de.eldoria.shepard.localization.enums.commands.botconfig;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.util.ExitCode;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Message;
 
@@ -60,6 +61,6 @@ public class Upgrade extends Command {
         MessageSender.sendMessage("Download completed!" + System.lineSeparator() + "**RESTARTING**",
                 messageContext.getTextChannel());
 
-        ShepardBot.getInstance().shutdown(10);
+        ShepardBot.getInstance().shutdown(ExitCode.RESTART);
     }
 }
