@@ -160,7 +160,7 @@ public final class ShepardBot {
     /**
      * Close the shepard application.
      */
-    public void shutdown() {
+    public void shutdown(int exitCode) {
         MessageSender.sendSimpleTextBox("Shepard verlässt die Brücke!!",
                 "",
                 Color.RED, ShepardReactions.ASLEEP, Normandy.getGeneralLogChannel());
@@ -176,6 +176,6 @@ public final class ShepardBot {
             ShepardBot.getLogger().info("Shutdown interrupted!");
         }
 
-        System.exit(0);
+        System.exit(exitCode);
     }
 }
