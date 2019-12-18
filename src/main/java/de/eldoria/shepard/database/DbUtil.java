@@ -3,9 +3,9 @@ package de.eldoria.shepard.database;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.database.types.Rank;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
 
 import java.sql.ResultSet;
@@ -73,7 +73,7 @@ public final class DbUtil {
         ShepardBot.getLogger().error(builder.toString());
 
         if (event != null) {
-            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, event.getChannel());
+            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, event.getTextChannel());
         }
         MessageSender.sendSimpleErrorEmbed(builder.toString(), Normandy.getErrorChannel());
         throw ex;

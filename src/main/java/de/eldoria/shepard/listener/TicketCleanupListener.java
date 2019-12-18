@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberLeaveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
-
 import java.util.List;
 
 import static de.eldoria.shepard.database.queries.TicketData.getChannelIdsByOwner;
@@ -17,13 +16,11 @@ public class TicketCleanupListener extends ListenerAdapter {
     public void onGuildMemberLeave(@Nonnull GuildMemberLeaveEvent event) {
         List<String> channelIds = getChannelIdsByOwner(event.getGuild(), event.getUser(), null);
 
-
         List<TextChannel> validTextChannels = Verifier.getValidTextChannels(event.getGuild(), channelIds);
         for (TextChannel channel : validTextChannels) {
             if (removeChannel(event.getGuild(), channel, null)) {
                 channel.delete().queue();
             }
-
         }
     }
 }

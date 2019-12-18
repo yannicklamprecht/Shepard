@@ -1,7 +1,7 @@
 package de.eldoria.shepard.contexts.keywords.keyword;
 
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.keywords.Keyword;
+import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -17,7 +17,7 @@ public class Nudes extends Keyword {
      * creates a new nudes keyword object.
      */
     public Nudes() {
-        keywords = new String[]{"nudes", "pr0n", "porn", "p0rn", "noot"};
+        keywords = new String[] {"nudes", "pr0n", "porn", "p0rn", "noot"};
     }
 
     @Override

@@ -1,6 +1,6 @@
 package de.eldoria.shepard.minigames;
 
-import de.eldoria.shepard.collections.UniqueMessageIdentifier;
+import de.eldoria.shepard.util.UniqueMessageIdentifier;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -17,12 +17,23 @@ public class ChannelEvaluator<T extends BaseEvaluator> {
     private final Map<UniqueMessageIdentifier, T> evaluationChannel;
     private final ScheduledExecutorService executor;
 
+    /**
+     * Creates a new channel evaluator.
+     *
+     * @param poolSize pool size of evaluator.
+     */
     public ChannelEvaluator(int poolSize) {
         this.evaluationChannel = new HashMap<>();
         executor = new ScheduledThreadPoolExecutor(poolSize);
 
     }
 
+    /**
+     * Get the channel evaluator for the channel.
+     *
+     * @param channel channel for lookup
+     * @return evaluator of null if no evaluation is in progress
+     */
     @Nullable
     public T getChannelEvaluator(TextChannel channel) {
         Optional<Map.Entry<UniqueMessageIdentifier, T>> collect = evaluationChannel.entrySet()

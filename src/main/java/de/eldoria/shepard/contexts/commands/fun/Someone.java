@@ -2,8 +2,8 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
@@ -12,10 +12,18 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.M_NO_ONLINE;
+import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.M_SOMEONE;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
+
 public class Someone extends Command {
+    /**
+     * Creates a new someone command object.
+     */
     public Someone() {
         commandName = "Someone";
-        commandDesc = "Tags someone who is online in this channel";
+        commandDesc = DESCRIPTION.tag;
         category = ContextCategory.FUN;
     }
 
@@ -31,7 +39,7 @@ public class Someone extends Command {
                     .collect(Collectors.toList());
 
             if (members.size() == 0) {
-                MessageSender.sendMessage("No one is online :fearful:", messageContext.getChannel());
+                MessageSender.sendMessage(M_NO_ONLINE.tag, messageContext.getTextChannel());
                 return;
             }
 
@@ -39,8 +47,8 @@ public class Someone extends Command {
 
             Member member = members.get(rand.nextInt(members.size()));
 
-            MessageSender.sendMessage(member.getAsMention() + " is someone!", messageContext.getChannel());
-
+            MessageSender.sendMessage(localizeAllAndReplace(M_SOMEONE.tag, messageContext.getGuild(),
+                    member.getAsMention()), messageContext.getTextChannel());
         }
     }
 }

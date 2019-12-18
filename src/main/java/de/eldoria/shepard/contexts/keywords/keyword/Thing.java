@@ -1,8 +1,8 @@
 package de.eldoria.shepard.contexts.keywords.keyword;
 
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.keywords.Keyword;
+import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.util.Objects;

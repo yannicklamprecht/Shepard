@@ -11,9 +11,11 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class RefreshInvites implements Runnable {
-    RefreshInvites() {
+    /**
+     * Creates a new RefreshInvite object.
+     */
+    public RefreshInvites() {
     }
-
 
     @Override
     public void run() {
@@ -43,6 +45,11 @@ class RefreshInvites implements Runnable {
                     ShepardBot.getLogger().info("Cleaned up Invites");
                 }
             });
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                return;
+            }
         }
     }
 }

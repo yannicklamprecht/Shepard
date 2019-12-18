@@ -16,16 +16,6 @@ public class QuoteElement {
     }
 
     /**
-     * Creates new Quote object.
-     *
-     * @param quote   quote
-     */
-    public QuoteElement(String quote) {
-        this.quote = quote;
-        this.quoteId = -1;
-    }
-
-    /**
      * Get the Quote text.
      *
      * @return String not null.

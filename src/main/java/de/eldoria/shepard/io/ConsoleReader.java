@@ -46,7 +46,12 @@ public final class ConsoleReader implements Runnable {
                 continue;
             }
             if (input.equalsIgnoreCase("shutdown")) {
-                ShepardBot.getInstance().shutdown();
+                ShepardBot.getInstance().shutdown(0);
+                ShepardBot.getLogger().info(input);
+                return;
+            }
+            if (input.equalsIgnoreCase("restart")) {
+                ShepardBot.getInstance().shutdown(10);
                 ShepardBot.getLogger().info(input);
                 return;
             }

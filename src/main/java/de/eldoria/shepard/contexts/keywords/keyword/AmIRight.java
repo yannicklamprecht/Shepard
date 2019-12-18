@@ -1,7 +1,7 @@
 package de.eldoria.shepard.contexts.keywords.keyword;
 
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.keywords.Keyword;
+import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 public class AmIRight extends Keyword {
@@ -10,7 +10,7 @@ public class AmIRight extends Keyword {
      * Creates new AmIRight object.
      */
     public AmIRight() {
-        keywords = new String[]{"stimmts shep", "stimmt's shep", "hab ich recht shep"};
+        keywords = new String[] {"stimmts shep", "stimmt's shep", "hab ich recht shep"};
     }
 
     @Override

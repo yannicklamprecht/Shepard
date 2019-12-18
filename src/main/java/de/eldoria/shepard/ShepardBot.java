@@ -1,6 +1,5 @@
 package de.eldoria.shepard;
 
-import de.eldoria.shepard.botlist.BotListReporter;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.KeyWordCollection;
 import de.eldoria.shepard.collections.Normandy;
@@ -12,6 +11,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.register.ContextRegister;
 import de.eldoria.shepard.register.ListenerRegister;
+import de.eldoria.shepard.webapi.ApiHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -27,10 +27,10 @@ public final class ShepardBot {
     private static Logger logger;
 
     private ShepardBot() {
+        System.out.println("Startup in progress. Bot is heating up");
+        System.out.println("Initialising Logger");
+        logger = new Logger();
         try {
-            System.out.println("Startup in progress. Bot is heating up");
-            System.out.println("Initialising Logger");
-            logger = new Logger();
             config = Loader.getConfigLoader().getConfig();
             Thread.sleep(100);
             ConsoleReader.initialize();
@@ -42,11 +42,63 @@ public final class ShepardBot {
             if (config.debugActive()) {
                 org.apache.log4j.BasicConfigurator.configure();
             }
-
         } catch (InterruptedException e) {
             System.out.println("Startup interrupted");
+        } catch (RuntimeException e) {
+            logger.error(e);
         }
 
+    }
+
+    /**
+     * Returns the Shepard Bot instance.
+     *
+     * @return Instance of Shepard bot.
+     */
+    public static ShepardBot getInstance() {
+        return instance;
+    }
+
+    /**
+     * Main method.
+     *
+     * @param args Arguments.
+     */
+    public static void main(String[] args) {
+        instance = new ShepardBot();
+
+
+        instance.setup();
+
+        ApiHandler.getInstance();
+
+    }
+
+    /**
+     * Gets the jda.
+     *
+     * @return JDA object
+     */
+    public static JDA getJDA() {
+        return jda;
+    }
+
+    /**
+     * Get the config.
+     *
+     * @return Config object
+     */
+    public static Config getConfig() {
+        return config;
+    }
+
+    /**
+     * Get the logger instance.
+     *
+     * @return logger
+     */
+    public static Logger getLogger() {
+        return logger;
     }
 
     private void setup() {
@@ -79,29 +131,6 @@ public final class ShepardBot {
         logger.info("Setup complete!");
     }
 
-    /**
-     * Returns the Shepard Bot instance.
-     *
-     * @return Instance of Shepard bot.
-     */
-    public static ShepardBot getInstance() {
-        return instance;
-    }
-
-    /**
-     * Main method.
-     *
-     * @param args Arguments.
-     */
-    public static void main(String[] args) {
-        instance = new ShepardBot();
-
-
-        instance.setup();
-
-        BotListReporter.initialize();
-    }
-
     private void initiateJda() throws LoginException, InterruptedException {
         jda = new JDABuilder(config.getToken()).setMaxReconnectDelay(60).build();
 
@@ -109,30 +138,12 @@ public final class ShepardBot {
         jda.awaitReady();
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+            Class.forName("com.mysql.cj.jdbc.Driver").getConstructor().newInstance();
         } catch (Exception e) {
             ShepardBot.getLogger().error(e.getMessage());
         }
 
         logger.info("JDA initialized");
-    }
-
-    /**
-     * Gets the jda.
-     *
-     * @return JDA object
-     */
-    public static JDA getJDA() {
-        return jda;
-    }
-
-    /**
-     * Get the config.
-     *
-     * @return Config object
-     */
-    public static Config getConfig() {
-        return config;
     }
 
     /**
@@ -148,11 +159,22 @@ public final class ShepardBot {
 
     /**
      * Close the shepard application.
+     *
+     * @param exitCode exit code do determine what should happen after shutdown
+     *                 0 = shutdown
+     *                 10 = restart
      */
-    public void shutdown() {
-        MessageSender.sendSimpleTextBox("Shepard verlässt die Brücke!!",
-                "",
-                Color.RED, ShepardReactions.ASLEEP, Normandy.getGeneralLogChannel());
+    public void shutdown(int exitCode) {
+        if (exitCode == 0) {
+            MessageSender.sendSimpleTextBox("Shutdown.",
+                    "",
+                    Color.RED, ShepardReactions.ASLEEP, Normandy.getGeneralLogChannel());
+        }
+        if (exitCode == 10) {
+            MessageSender.sendSimpleTextBox("Restarting",
+                    "",
+                    new Color(17, 209, 209), ShepardReactions.WINK, Normandy.getGeneralLogChannel());
+        }
 
         if (jda != null) {
             jda.shutdown();
@@ -165,10 +187,6 @@ public final class ShepardBot {
             ShepardBot.getLogger().info("Shutdown interrupted!");
         }
 
-        System.exit(0);
-    }
-
-    public static Logger getLogger() {
-        return logger;
+        System.exit(exitCode);
     }
 }

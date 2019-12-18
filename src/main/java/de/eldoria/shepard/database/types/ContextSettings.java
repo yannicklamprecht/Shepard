@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.User;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.System.lineSeparator;
 
@@ -22,11 +23,15 @@ public class ContextSettings {
     private boolean guildCheckActive;
     private ListType guildListType;
     private List<String> guildList;
+    private int userCooldown;
+    private int guildCooldown;
+    private Map<Long, Boolean> permissionOverride;
 
     /**
-     * Get if the Context is admin only.
+     * True if the command can be executed only by admin by default.
+     * Can be overwritten by {@link #hasGuildPermissionOverride(Guild)}}
      *
-     * @return true if command is admin only
+     * @return true if this command is admin only by default.
      */
     public boolean isAdminOnly() {
         return adminOnly;
@@ -167,12 +172,99 @@ public class ContextSettings {
         this.guildList = Arrays.asList(guildList);
     }
 
+    /**
+     * Get the cooldown of the context for user.
+     *
+     * @return cooldown in seconds
+     */
+    public int getUserCooldown() {
+        return userCooldown;
+    }
+
+    /**
+     * Set the the cooldown of the context for user.
+     *
+     * @param userCooldown cooldown in seconds
+     */
+    public void setUserCooldown(int userCooldown) {
+        this.userCooldown = userCooldown;
+    }
+
+    /**
+     * Get the cooldown of the context for a guild.
+     *
+     * @return cooldown in seconds
+     */
+    public int getGuildCooldown() {
+        return guildCooldown;
+    }
+
+    /**
+     * Set the the cooldown of the context for a guild.
+     *
+     * @param guildCooldown cooldown in seconds
+     */
+    public void setGuildCooldown(int guildCooldown) {
+        this.guildCooldown = guildCooldown;
+    }
+
+    /**
+     * Check if a user and/or a guild cooldown is set.
+     *
+     * @return true if at least a guild or user cooldown is set.
+     */
+    public boolean hasCooldown() {
+        return hasUserCooldown() || hasGuildCooldown();
+    }
+
+    /**
+     * Check if a user cooldown is set.
+     *
+     * @return true if a cooldown is set
+     */
+    public boolean hasUserCooldown() {
+        return userCooldown != 0;
+    }
+
+    /**
+     * Check if a user cooldown is set.
+     *
+     * @return true if a cooldown is set
+     */
+    public boolean hasGuildCooldown() {
+        return guildCooldown != 0;
+    }
+
+    /**
+     * Set the permission override map.
+     *
+     * @param permissionOverride a map containing a boolean for each guild, which has a permission override set.
+     */
+    public void setPermissionOverride(Map<Long, Boolean> permissionOverride) {
+        this.permissionOverride = permissionOverride;
+    }
+
+    /**
+     * Check if the guild has a permission override.
+     * If a permission override is set a admin command is no longer a admin command.
+     * A non admin command is a admin command and needs a permission to be executed.
+     *
+     * @param guild guild to check if a override is active
+     * @return true if a override is active.
+     */
+    public boolean hasGuildPermissionOverride(Guild guild) {
+        Boolean override = permissionOverride.get(guild.getIdLong());
+        return override == null ? false : override;
+    }
+
     @Override
     public String toString() {
         JDA jda = ShepardBot.getJDA();
         StringBuilder builder = new StringBuilder();
         builder.append("  admin_only: ").append(isAdminOnly()).append(lineSeparator())
                 .append("  nsfw: ").append(isNsfw()).append(lineSeparator())
+                .append("  user_cooldown: ").append(getUserCooldown()).append(lineSeparator())
+                .append("  guild_cooldown: ").append(getGuildCooldown()).append(lineSeparator())
                 .append("  user_check_active: ").append(isUserCheckActive()).append(lineSeparator());
         if (isUserCheckActive()) {
             builder.append("    List_Type: ").append(getUserListType()).append(lineSeparator())

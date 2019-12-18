@@ -10,7 +10,7 @@ public class KeywordArgs {
     /**
      * Create a new instance with a given key and a given keyword.
      *
-     * @param key the key of the KeyWordArgs.
+     * @param key     the key of the KeyWordArgs.
      * @param keyword the keyword of the KeyWordArgs.
      */
     public KeywordArgs(String key, Keyword keyword) {

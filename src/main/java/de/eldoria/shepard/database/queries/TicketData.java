@@ -302,13 +302,11 @@ public final class TicketData {
     /**
      * Get the roles for the channel owner of a channel.
      *
-     * @param guild          Guild object for lookup
-     * @param channel        channel id
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param guild   Guild object for lookup
+     * @param channel channel id
      * @return List of role ids
      */
-    public static List<String> getChannelOwnerRoles(Guild guild, TextChannel channel,
-                                                    MessageEventDataWrapper messageContext) {
+    public static List<String> getChannelOwnerRoles(Guild guild, TextChannel channel) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_func.get_ticket_channel_owner_roles(?,?)")) {
             statement.setString(1, guild.getId());

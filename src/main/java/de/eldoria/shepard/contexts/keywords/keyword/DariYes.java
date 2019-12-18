@@ -1,7 +1,7 @@
 package de.eldoria.shepard.contexts.keywords.keyword;
 
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.keywords.Keyword;
+import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 public class DariYes extends Keyword {
@@ -10,7 +10,7 @@ public class DariYes extends Keyword {
      * Creates a new dari yes keyword.
      */
     public DariYes() {
-        keywords = new String[]{"nein", "no", "oder?", "nope"};
+        keywords = new String[] {"nein", "no", "oder?", "nope"};
     }
 
     @Override

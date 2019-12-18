@@ -2,157 +2,194 @@ package de.eldoria.shepard.messagehandler;
 
 public enum ErrorType {
     /**
-     * Used when a database error occurs.
+     * Used when a command was not found.
      */
-    DATABASE_ERROR("Ups. Looks like my Database has a small hickup." + System.lineSeparator()
-            + "Can you give me another try, pls?" + System.lineSeparator()
-            + "IF error persists contact Bot Support", true),
-    /**
-     * Used when a (web) service isn't available at the moment, e.g. http response code 4xx or 5xx.
-     */
-    SERVICE_UNAVAILABLE("Oh. This doesn't work right now. Try again later."),
-    /**
-     * Used when a command argument is not valid.
-     */
-    INVALID_ARGUMENT("Invalid argument!"),
-    /**
-     * Used when a command action is not valid.
-     */
-    INVALID_ACTION("Invalid action!"),
-    /**
-     * Used when too many arguments are passed.
-     */
-    TOO_MANY_ARGUMENTS("Too many arguments!"),
-    /**
-     * Used when too few arguments are passed.
-     */
-    TOO_FEW_ARGUMENTS("Too few arguments!"),
-    /**
-     * Used when a number parse failed.
-     */
-    NOT_A_NUMBER("This is not a number!"),
-    /**
-     * Used when the user has not enough Kudos.
-     */
-    NOT_ENOUGH_KUDOS("You dont have enough Kudos!"),
-    /**
-     * Used when a channel is not a guild text channel.
-     */
-    NOT_GUILD_TEXT_CHANNEL("This is not a guild text channel!"),
-    /**
-     * Used when a category was passed but not found.
-     */
-    INVALID_CATEGORY("This is not a valid category!"),
-    /**
-     * Used when a channel was passed but not found.
-     */
-    INVALID_CHANNEL("This is not a valid channel!"),
-    /**
-     * Used when a role was passed but not found.
-     */
-    INVALID_ROLE("This is not a valid role!"),
-    /**
-     * Used when a user was passed but not found.
-     */
-    INVALID_USER("This is not a valid user!"),
-    /**
-     * Used when a id was found but the id is out of range.
-     */
-    INVALID_ID("This is not a valid id!"),
-    /**
-     * Used when the prefix is to long.
-     */
-    INVALID_PREFIX_LENGTH("Invalid prefix length. Only one or two Chars are allowed as prefix!"),
-    /**
-     * Used when a context was not found while command parsing.
-     */
-    INVALID_CONTEXT("Invalid Context!"),
-    /**
-     * Used when a boolean could not be parsed.
-     */
-    INVALID_BOOLEAN("Invalid input! Only 'true' and 'false' are valid inputs!"),
-    /**
-     * Used when the list type could not be parsed.
-     */
-    INVALID_LIST_TYPE("Invalid Input. Only 'blacklist' or 'whitelist are valid inputs"),
-    /**
-     * Used when the list type could not be parsed.
-     */
-    INVALID_ADDRESS("Invalid Input. The Address must be a ipv4/6 or a domain."),
-    /**
-     * Used when a time doesn't have a valid time formatting.
-     */
-    INVALID_TIME("Invalid time."),
-    /**
-     * Used when no message was found.
-     */
-    NO_MESSAGE_FOUND("No message found!"),
-    /**
-     * Used when no invite was found while registering.
-     */
-    NO_INVITE_FOUND("No invite found with this code!"),
-    /**
-     * Used when no quote was found.
-     */
-    NO_QUOTE_FOUND("No quote found!"),
-    /**
-     * Used when a ticket type is already defined.
-     */
-    TYPE_ALREADY_DEFINED("This type is already defined!"),
-    /**
-     * Used when a ticket type is not found.
-     */
-    TYPE_NOT_FOUND("Ticket type not found!"),
-    /**
-     * Used when someone tries to open a ticket for himself.
-     */
-    TICKET_SELF_ASSIGNMENT("You can't open a ticket for yourself!"),
-    /**
-     * Used when a ticket close command is executed in a non ticket channel.
-     */
-    NOT_TICKET_CHANEL("This is not a ticket channel!"),
+    COMMAND_NOT_FOUND("error.commandNotFound"),
     /**
      * Used when a context is not found.
      */
-    CONTEXT_NOT_FOUND("Context not found. Please use the context name or an alias!"),
+    CONTEXT_NOT_FOUND("error.contextNotFound"),
     /**
-     * Used when no emote was found.
+     * Used when a database error occurs.
      */
-    NO_EMOTE_FOUND("No emote was found."),
+    DATABASE_ERROR("error.databaseError", true),
     /**
-     * Used when a user executes a command on himself, when he is not allowed to do it!.
+     * Used when a command which is restricted to a specific channel is executed outside the channel.
      */
-    SELF_ASSIGNMENT("You can't do this to yourself!"),
+    EXCLUSIVE_CHANNEL("error.exclusiveChannel"),
     /**
-     * Used when no last command was found.
+     * Used for general error pasting.
      */
-    NO_LAST_COMMAND_FOUND("There is no last used Command saved!"),
+    GENERAL("error.general"),
+    /**
+     * Used when a database error occurs.
+     */
+    INTERNAL_ERROR("error.internalError", true),
+    /**
+     * Used when a command action is not valid.
+     */
+    INVALID_ACTION("error.invalidAction"),
+    /**
+     * Used when the list type could not be parsed.
+     */
+    INVALID_ADDRESS("error.invalidAddress"),
+    /**
+     * Used when a command argument is not valid.
+     */
+    INVALID_ARGUMENT("error.invalidArgument"),
+    /**
+     * Used when a boolean could not be parsed.
+     */
+    INVALID_BOOLEAN("error.invalidBoolean"),
+    /**
+     * Used when a category was passed but not found.
+     */
+    INVALID_CATEGORY("error.invalidCategory"),
+    /**
+     * Used when a channel was passed but not found.
+     */
+    INVALID_CHANNEL("error.invalidChannel"),
+    /**
+     * Used when a context was not found while command parsing.
+     */
+    INVALID_CONTEXT("error.invalidContext"),
+    /**
+     * Used when a id was found but the id is out of range.
+     */
+    INVALID_ID("error.invalidId"),
     /**
      * Used when no guess game image was found.
      */
-    INVALID_IMAGE_URL("Invalid image url.");
+    INVALID_IMAGE_URL("error.invalidImageUrl"),
+    /**
+     * Used when the list type could not be parsed.
+     */
+    INVALID_LIST_TYPE("error.invalidListType"),
+    /**
+     * Used when a time doesn't have a valid time formatting.
+     */
+    INVALID_LOCALE_CODE("error.invalidLocaleCode"),
+    /**
+     * Used when the prefix is to long.
+     */
+    INVALID_PREFIX_LENGTH("error.invalidPrefixLength"),
+    /**
+     * Used when a role was passed but not found.
+     */
+    INVALID_ROLE("error.invalidRole"),
+    /**
+     * Used when a time doesn't have a valid time formatting.
+     */
+    INVALID_TIME("error.invalidTime"),
+    /**
+     * Used when a user was passed but not found.
+     */
+    INVALID_USER("error.invalidUser"),
+    /**
+     * Used when a number parse failed.
+     */
+    NOT_A_NUMBER("error.notANumber"),
+    /**
+     * Used when the user has not enough Kudos.
+     */
+    NOT_ENOUGH_KUDOS("error.notEnoughKudos"),
+    /**
+     * Used when a channel is not a guild text channel.
+     */
+    NOT_GUILD_TEXT_CHANNEL("error.notGuildTextChannel"),
+    /**
+     * Used when a ticket close command is executed in a non ticket channel.
+     */
+    NOT_TICKET_CHANNEL("error.notTicketChannel"),
+    /**
+     * Used when a argument help is executed on a command without arguments.
+     */
+    NO_ARGUMENT_FOUND("error.noArgumentFound"),
+    /**
+     * Used when no emote was found.
+     */
+    NO_EMOTE_FOUND("error.noEmoteFound"),
+    /**
+     * Used when no invite was found while registering.
+     */
+    NO_INVITE_FOUND("error.noInviteFound"),
+    /**
+     * Used when no last command was found.
+     */
+    NO_LAST_COMMAND_FOUND("error.noLastCommandFound"),
+    /**
+     * Used when no message was found.
+     */
+    NO_MESSAGE_FOUND("error.noMessageFound"),
+    /**
+     * Used when no quote was found.
+     */
+    NO_QUOTE_FOUND("error.noQuoteFound"),
+    /**
+     * Used when there is no defined ticket type on a guild.
+     */
+    NO_TICKET_TYPES_DEFINED("error.noTicketTypesDefined"),
+    /**
+     * Used when a user executes a command on himself, when he is not allowed to do it!.
+     */
+    SELF_ASSIGNMENT("error.selfAssignment"),
+    /**
+     * Used when a (web) service isn't available at the moment, e.g. http response code 4xx or 5xx.
+     */
+    SERVICE_UNAVAILABLE("error.serviceUnavailable"),
+    /**
+     * Used when someone tries to open a ticket for himself.
+     */
+    TICKET_SELF_ASSIGNMENT("error.ticketSelfAssignment"),
+    /**
+     * Used when too few arguments are passed.
+     */
+    TOO_FEW_ARGUMENTS("error.tooFewArguments"),
+    /**
+     * Used when too many arguments are passed.
+     */
+    TOO_MANY_ARGUMENTS("error.tooManyArguments"),
+    /**
+     * Used when a ticket type is already defined.
+     */
+    TYPE_ALREADY_DEFINED("error.typeAlreadyDefined"),
+    /**
+     * Used when a ticket type is not found.
+     */
+    TYPE_NOT_FOUND("error.typeNotFound");
 
 
     /**
      * Get the error message of the error type.
      */
-    public final String message;
+    public final String taggedMessage;
 
     /**
      * True if the error should be send as an embed.
      */
     public final boolean isEmbed;
 
-    ErrorType(String message, boolean embed) {
+    /**
+     * Create a new error type.
+     *
+     * @param tag   locale tag for error
+     * @param embed true if error should be send as embed
+     */
+    ErrorType(String tag, boolean embed) {
         if (embed) {
-            this.message = message;
+            this.taggedMessage = "$" + tag + "$";
         } else {
-            this.message = "**ERROR**" + System.lineSeparator() + message;
+            this.taggedMessage = System.lineSeparator() + "$" + tag + "$";
         }
         this.isEmbed = embed;
     }
 
-    ErrorType(String message) {
-        this(message, false);
+    /**
+     * Create a new error type. Default not embed.
+     *
+     * @param tag locale tag for error
+     */
+    ErrorType(String tag) {
+        this(tag, false);
     }
 }

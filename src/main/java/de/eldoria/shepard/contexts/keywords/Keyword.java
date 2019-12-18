@@ -32,7 +32,8 @@ public abstract class Keyword extends ContextSensitive {
 
     /**
      * Performs an action if a keyword was found.
-     *  @param event the event in which the keyword was found.
+     *
+     * @param event the event in which the keyword was found.
      * @param key   the key found in the event.
      */
     public abstract void execute(GuildMessageReceivedEvent event, String key);
@@ -63,6 +64,7 @@ public abstract class Keyword extends ContextSensitive {
 
     /**
      * Get Keywordargs from a event if the message contains a keyword.
+     *
      * @param event to search on.
      * @return Keywordargs containing keyword and the key which matched.
      */

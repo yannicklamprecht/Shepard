@@ -16,6 +16,11 @@ public final class PrivateMessageCollection {
     private PrivateMessageCollection() {
     }
 
+    /**
+     * Get the current private message collection.
+     *
+     * @return private message collection
+     */
     public static PrivateMessageCollection getInstance() {
         if (instance == null) {
             instance = new PrivateMessageCollection();
@@ -30,16 +35,12 @@ public final class PrivateMessageCollection {
      */
     public void addUser(User user) {
         MessageUser messageUser = new MessageUser(user.getName(), user.getIdLong());
-
         lastMessageUsers.remove(messageUser);
-
         lastMessageUsers.add(0, messageUser);
-
         int size = lastMessageUsers.size();
         if (size > 50) {
             lastMessageUsers.remove(50);
         }
-
     }
 
     /**

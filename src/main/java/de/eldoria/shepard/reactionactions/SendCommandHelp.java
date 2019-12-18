@@ -1,23 +1,25 @@
 package de.eldoria.shepard.reactionactions;
 
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.util.reactions.EmojiCollection;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.util.reactions.Emoji;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 public class SendCommandHelp extends Action {
 
     private final Command command;
-    private final MessageEventDataWrapper messageContext;
 
-    public SendCommandHelp(Command command, MessageEventDataWrapper messageContext) {
-        super(EmojiCollection.QUESTION_MARK, null, 60,false);
+    /**
+     * Creates a new send command help action.
+     *
+     * @param command command for which the help should be send.
+     */
+    public SendCommandHelp(Command command) {
+        super(Emoji.QUESTION_MARK, null, 60, true);
         this.command = command;
-        this.messageContext = messageContext;
     }
 
     @Override
     protected void internalExecute(GuildMessageReactionAddEvent event) {
-        messageContext.getAuthor().openPrivateChannel().queue(command::sendCommandUsage);
+        command.sendCommandUsage(event.getChannel());
     }
 }

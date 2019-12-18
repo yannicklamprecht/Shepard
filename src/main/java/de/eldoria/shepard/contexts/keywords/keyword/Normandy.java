@@ -1,7 +1,7 @@
 package de.eldoria.shepard.contexts.keywords.keyword;
 
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.keywords.Keyword;
+import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 public class Normandy extends Keyword {
@@ -11,7 +11,6 @@ public class Normandy extends Keyword {
      */
     public Normandy() {
         keywords = new String[] {"normandy"};
-
     }
 
     @Override

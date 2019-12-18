@@ -1,6 +1,14 @@
 debug: false
 prefix: "&"
 token: ""
+botlist:
+  token:
+  authorization:
+presence:
+  playing:
+    - "Nothing"
+  listening:
+    - "More Nothing"
 database:
   username: ""
   password: ""

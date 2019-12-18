@@ -21,28 +21,54 @@ public final class MonitoringScheduler {
         executor.scheduleAtFixedRate(new ReconnectCoordinator(), 0, 1, TimeUnit.MINUTES);
     }
 
+    /**
+     * initialize the monitoring scheduler.
+     */
     public static void initialize() {
         if (instance == null) {
             instance = new MonitoringScheduler();
         }
     }
 
+    /**
+     * Get the current monitoring scheduler.
+     *
+     * @return instance of monitoring scheduler
+     */
     public static MonitoringScheduler getInstance() {
         initialize();
         return instance;
     }
 
-    Map<Long, List<Address>> getUnreachable() {
+
+    /**
+     * Get all unreachable addresses.
+     *
+     * @return map with guild ids and list of address objects
+     */
+    public Map<Long, List<Address>> getUnreachable() {
         return Collections.unmodifiableMap(unreachable);
     }
 
-    void markAsUnreachable(long guildId, Address address) {
+    /**
+     * Marks a server as unreachable.
+     *
+     * @param guildId guild id for saving
+     * @param address address to mark
+     */
+    public void markAsUnreachable(long guildId, Address address) {
         unreachable.putIfAbsent(guildId, new ArrayList<>());
         if (!unreachable.get(guildId).contains(address)) {
             unreachable.get(guildId).add(address);
         }
     }
 
+    /**
+     * Marks a address as reachable.
+     *
+     * @param guildId guild id
+     * @param address address object to remove
+     */
     void markAsReachable(long guildId, Address address) {
         if (unreachable.containsKey(guildId)) {
             unreachable.get(guildId).remove(address);

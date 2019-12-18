@@ -9,6 +9,9 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
  */
 public class Test extends Command {
 
+    /**
+     * Creates a new test command.
+     */
     public Test() {
         commandName = "test";
         commandDesc = "Testcommand!";

@@ -1,10 +1,13 @@
 package de.eldoria.shepard.collections;
 
 import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.contexts.commands.CommandInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -81,7 +84,7 @@ public final class CommandCollection {
             }
         }
 
-        Collections.sort(rankedCommands);
+        rankedCommands.sort(Collections.reverseOrder());
         return rankedCommands.stream().map(rankedCommand -> rankedCommand.command).collect(Collectors.toList());
     }
 
@@ -95,6 +98,18 @@ public final class CommandCollection {
         }
     }
 
+    /**
+     * Get a objects which holds information for all Commands.
+     *
+     * @param excludes command types, which should be excluded.
+     * @return CommandInfos object
+     */
+    public CommandInfos getCommandInfos(ContextCategory... excludes) {
+        List<CommandInfo> collect = commands.stream().map(Command::getCommandInfo).collect(Collectors.toList());
+        collect.removeIf(commandInfo -> Arrays.asList(excludes).contains(commandInfo.getCategory()));
+        return new CommandInfos(collect);
+    }
+
     static class RankedCommand implements Comparable<RankedCommand> {
         /**
          * Rank of the command.
@@ -105,6 +120,12 @@ public final class CommandCollection {
          */
         final Command command;
 
+        /**
+         * Creates a new ranked command.
+         *
+         * @param rank    rank of command
+         * @param command command
+         */
         RankedCommand(double rank, Command command) {
             this.rank = rank;
             this.command = command;

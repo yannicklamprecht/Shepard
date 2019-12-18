@@ -23,8 +23,8 @@ public final class ChangelogData {
     /**
      * Adds a role to changelog observation.
      *
-     * @param guild guild on which the role should be added
-     * @param role  id of the role id of the role
+     * @param guild          guild on which the role should be added
+     * @param role           id of the role id of the role
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
@@ -44,8 +44,8 @@ public final class ChangelogData {
     /**
      * Remove a role from changelog observation.
      *
-     * @param guild Guild object for lookup
-     * @param role  id of the role
+     * @param guild          Guild object for lookup
+     * @param role           id of the role
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
@@ -65,9 +65,9 @@ public final class ChangelogData {
     /**
      * Sets the changelog channel.
      *
-     * @param guild   Guild object for lookup
-     * @param channel Id of the channel
-     * @param messageContext   messageContext from command sending for error handling. Can be null.
+     * @param guild          Guild object for lookup
+     * @param channel        Id of the channel
+     * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public static boolean setChannel(Guild guild, TextChannel channel, MessageEventDataWrapper messageContext) {
@@ -86,7 +86,7 @@ public final class ChangelogData {
     /**
      * Removes the changelog channel.
      *
-     * @param guild Guild object for lookup
+     * @param guild          Guild object for lookup
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
@@ -105,7 +105,7 @@ public final class ChangelogData {
     /**
      * Get a list of all observed roles.
      *
-     * @param guild Guild object for lookup
+     * @param guild          Guild object for lookup
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return list of role ids
      */
@@ -126,7 +126,7 @@ public final class ChangelogData {
     /**
      * Get the changelog channel of the guild.
      *
-     * @param guild Guild object for lookup
+     * @param guild          Guild object for lookup
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return channel id as string
      */

@@ -1,11 +1,13 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.util.Random;
+
+import static de.eldoria.shepard.localization.enums.commands.fun.OhaLocale.DESCRIPTION;
 
 public class Oha extends Command {
 
@@ -14,7 +16,7 @@ public class Oha extends Command {
      */
     public Oha() {
         commandName = "oha";
-        commandDesc = "Ohaaaaaa - Use \"ohad\" to delete your command afterwards.";
+        commandDesc = DESCRIPTION.tag;
         commandAliases = new String[] {"ohad"};
         category = ContextCategory.FUN;
     }
@@ -25,7 +27,7 @@ public class Oha extends Command {
         Random rand = new Random();
         int loops = rand.nextInt(30) + 10;
         oha = oha + "a".repeat(loops);
-        MessageSender.sendMessage(oha, messageContext.getChannel());
+        MessageSender.sendMessage(oha, messageContext.getTextChannel());
 
         if (label.equalsIgnoreCase("ohad")) {
             messageContext.getMessage().delete().queue();

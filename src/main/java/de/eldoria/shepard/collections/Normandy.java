@@ -1,6 +1,7 @@
 package de.eldoria.shepard.collections;
 
 import de.eldoria.shepard.ShepardBot;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -18,7 +19,11 @@ public class Normandy {
      * @return normandy guild.
      */
     public static Guild getNormandy() {
-        return ShepardBot.getJDA().getGuildById(normandy);
+        JDA jda = ShepardBot.getJDA();
+        if (jda != null) {
+            return jda.getGuildById(normandy);
+        }
+        return null;
     }
 
     /**
@@ -27,7 +32,10 @@ public class Normandy {
      * @return error text channel
      */
     public static TextChannel getErrorChannel() {
-        return getNormandy().getTextChannelById(errorChannel);
+        if (getNormandy() != null) {
+            return getNormandy().getTextChannelById(errorChannel);
+        }
+        return null;
     }
 
     /**

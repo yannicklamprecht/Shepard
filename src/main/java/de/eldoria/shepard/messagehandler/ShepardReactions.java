@@ -63,6 +63,11 @@ public enum ShepardReactions {
      */
     public final String full;
 
+    /**
+     * Creates a new shepard reaction.
+     *
+     * @param name name of the emote.
+     */
     ShepardReactions(String name) {
         String root = "http://img.shepardbot.de/emotes/";
         this.emote = root + "emote/" + name;

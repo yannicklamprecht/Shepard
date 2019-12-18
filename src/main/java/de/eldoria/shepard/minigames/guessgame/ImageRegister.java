@@ -14,6 +14,11 @@ public final class ImageRegister {
     private ImageRegister() {
     }
 
+    /**
+     * Get the current image register instance.
+     *
+     * @return image register instance
+     */
     public static ImageRegister getInstance() {
         if (instance == null) {
             instance = new ImageRegister();
@@ -21,10 +26,22 @@ public final class ImageRegister {
         return instance;
     }
 
-    public void startConfiguration(MessageEventDataWrapper messageContext, boolean hentai) {
-        configurations.put(new UserChannelKey(messageContext), new ImageConfiguration(hentai));
+    /**
+     * Starts a new configruation for a user.
+     *
+     * @param messageContext message context
+     * @param nsfw           true if nsfw
+     */
+    public void startConfiguration(MessageEventDataWrapper messageContext, boolean nsfw) {
+        configurations.put(new UserChannelKey(messageContext), new ImageConfiguration(nsfw));
     }
 
+    /**
+     * Add a new image.
+     *
+     * @param messageContext message context
+     * @param url            url to add
+     */
     public void addImage(MessageEventDataWrapper messageContext, String url) {
         switch (getConfigurationState(messageContext)) {
             case NONE:
@@ -39,8 +56,14 @@ public final class ImageRegister {
         }
     }
 
+    /**
+     * Register configuration if registration is complete.
+     *
+     * @param messageContext message context
+     * @return true if the image was registered
+     */
     public boolean registerConfiguration(MessageEventDataWrapper messageContext) {
-        if (getConfigurationState(messageContext) == ConfigurationType.CONFIGURED) {
+        if (getConfigurationState(messageContext) == ConfigurationState.CONFIGURED) {
             UserChannelKey channelKey = new UserChannelKey(messageContext);
             boolean success = configurations.get(channelKey).registerAtDatabase();
             configurations.remove(channelKey);
@@ -50,18 +73,35 @@ public final class ImageRegister {
         return false;
     }
 
+    /**
+     * Cancel a registration of a image.
+     *
+     * @param messageContext message context
+     */
     public void cancelConfiguration(MessageEventDataWrapper messageContext) {
         configurations.remove(new UserChannelKey(messageContext));
     }
 
-    public ConfigurationType getConfigurationState(MessageEventDataWrapper messageContext) {
+    /**
+     * Get the current configuration state for a user in a channel.
+     *
+     * @param messageContext message context
+     * @return configuration state
+     */
+    public ConfigurationState getConfigurationState(MessageEventDataWrapper messageContext) {
         UserChannelKey key = new UserChannelKey(messageContext);
         if (configurations.containsKey(key)) {
             return configurations.get(key).getConfigurationState();
         }
-        return ConfigurationType.NONE;
+        return ConfigurationState.NONE;
     }
 
+    /**
+     * Get the current image configuration.
+     *
+     * @param messageContext message context
+     * @return configuration or null
+     */
     public ImageConfiguration getConfiguration(MessageEventDataWrapper messageContext) {
         return configurations.get(new UserChannelKey(messageContext));
     }
