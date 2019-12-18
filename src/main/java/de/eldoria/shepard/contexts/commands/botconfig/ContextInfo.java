@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.botconfig;
 
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
@@ -31,11 +32,12 @@ public class ContextInfo extends Command {
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        String contextName = ArgumentParser.getContextName(args[0], messageContext);
-        if (contextName != null) {
-            ContextSettings data = ContextData.getContextData(contextName, messageContext);
+        ContextSensitive context = ArgumentParser.getContext(args[0], messageContext);
+        if (context != null) {
+            ContextSettings data = ContextData.getContextData(context, messageContext);
 
-            MessageSender.sendMessage("Information about context " + contextName.toUpperCase() + lineSeparator()
+            MessageSender.sendMessage("Information about context " + context.getContextName().toUpperCase()
+                    + lineSeparator()
                     + "```yaml" + lineSeparator()
                     + data.toString() + lineSeparator() + "```", messageContext.getTextChannel());
         } else {

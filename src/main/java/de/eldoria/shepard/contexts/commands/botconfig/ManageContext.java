@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands.botconfig;
 
 import de.eldoria.shepard.contexts.ContextCategory;
+import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
@@ -52,33 +53,34 @@ public class ManageContext extends Command {
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        String contextName = ArgumentParser.getContextName(args[0], messageContext);
+        ContextSensitive context = ArgumentParser.getContext(args[0], messageContext);
         String cmd = args[1];
         CommandArg arg = commandArgs[1];
 
-        if (contextName == null) {
+        if (context == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND, messageContext.getTextChannel());
             return;
         }
 
         if (arg.isSubCommand(cmd, 0)) {
-            setNsfw(args, contextName, messageContext);
+            setNsfw(args, context, messageContext);
             return;
         }
 
         if (arg.isSubCommand(cmd, 1)) {
-            setAdminOnly(args, contextName, messageContext);
+            setAdminOnly(args, context, messageContext);
             return;
         }
         if (arg.isSubCommand(cmd, 2) || arg.isSubCommand(cmd, 3)) {
-            setCooldown(cmd, args, contextName, messageContext);
+            setCooldown(cmd, args, context, messageContext);
             return;
         }
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
-    private void setCooldown(String cmd, String[] args, String contextName, MessageEventDataWrapper messageContext) {
+    private void setCooldown(String cmd, String[] args, ContextSensitive context,
+                             MessageEventDataWrapper messageContext) {
         Integer seconds = ArgumentParser.parseInt(args[2]);
 
 
@@ -90,22 +92,22 @@ public class ManageContext extends Command {
         boolean userCooldown = commandArgs[1].isSubCommand(cmd, 2);
 
         if (userCooldown) {
-            if (!ContextData.setContextUserCooldown(contextName, seconds, messageContext)) {
+            if (!ContextData.setContextUserCooldown(context, seconds, messageContext)) {
                 return;
             }
         } else {
-            if (!ContextData.setContextGuildCooldown(contextName, seconds, messageContext)) {
+            if (!ContextData.setContextGuildCooldown(context, seconds, messageContext)) {
                 return;
             }
         }
         MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace(
                 "**" + (userCooldown ? M_SET_USER_COOLDOWN.tag : M_SET_GUILD_COOLDOWN.tag) + "**",
-                messageContext.getGuild(), "\"" + contextName.toUpperCase() + "\"",
+                messageContext.getGuild(), "\"" + context.getContextName().toUpperCase() + "\"",
                 seconds + ""), messageContext.getTextChannel());
     }
 
 
-    private void setAdminOnly(String[] args, String contextName, MessageEventDataWrapper messageContext) {
+    private void setAdminOnly(String[] args, ContextSensitive context, MessageEventDataWrapper messageContext) {
         BooleanState bState = ArgumentParser.getBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
@@ -115,23 +117,23 @@ public class ManageContext extends Command {
 
         boolean state = bState.stateAsBoolean;
 
-        if (!ContextData.setContextAdmin(contextName, state, messageContext)) {
+        if (!ContextData.setContextAdmin(context, state, messageContext)) {
             return;
         }
 
         if (state) {
             MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace("**" + M_ACTIVATED_ADMIN + "**",
-                    messageContext.getGuild(), "\"" + contextName.toUpperCase() + "\""),
+                    messageContext.getGuild(), "\"" + context.getContextName().toUpperCase() + "\""),
                     messageContext.getTextChannel());
 
         } else {
             MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace("**" + M_DEACTIVATED_ADMIN + "**",
-                    messageContext.getGuild(), "\"" + contextName.toUpperCase() + "\""),
+                    messageContext.getGuild(), "\"" + context.getContextName().toUpperCase() + "\""),
                     messageContext.getTextChannel());
         }
     }
 
-    private void setNsfw(String[] args, String contextName, MessageEventDataWrapper messageContext) {
+    private void setNsfw(String[] args, ContextSensitive context, MessageEventDataWrapper messageContext) {
         BooleanState bState = ArgumentParser.getBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
@@ -141,18 +143,18 @@ public class ManageContext extends Command {
 
         boolean state = bState.stateAsBoolean;
 
-        if (!ContextData.setContextNsfw(contextName, state, messageContext)) {
+        if (!ContextData.setContextNsfw(context, state, messageContext)) {
             return;
         }
 
         if (state) {
             MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace("**" + M_ACTIVATED_NSFW + "**",
-                    messageContext.getGuild(), "\"" + contextName.toUpperCase() + "\""),
+                    messageContext.getGuild(), "\"" + context.getContextName().toUpperCase() + "\""),
                     messageContext.getTextChannel());
 
         } else {
             MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace("**" + M_DEACTIVATED_NSFW + "**",
-                    messageContext.getGuild(), "\"" + contextName.toUpperCase() + "\""),
+                    messageContext.getGuild(), "\"" + context.getContextName().toUpperCase() + "\""),
                     messageContext.getTextChannel());
         }
     }

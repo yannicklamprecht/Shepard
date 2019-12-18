@@ -30,6 +30,8 @@ public class ContextSettings {
     /**
      * True if the command can be executed only by admin by default.
      * Can be overwritten by {@link #hasGuildPermissionOverride(Guild)}}
+     *
+     * @return true if this command is admin only by default.
      */
     public boolean isAdminOnly() {
         return adminOnly;
