@@ -432,13 +432,14 @@ public final class ContextData {
             }
         }
 
+        ContextSettings data = new ContextSettings();
+
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.get_context_data(?)")) {
             statement.setString(1, contextName);
             ResultSet result = statement.executeQuery();
 
             if (result.next()) {
-                ContextSettings data = new ContextSettings();
 
                 data.setAdminOnly(result.getBoolean("admin_only"));
                 data.setNsfw(result.getBoolean("nsfw"));
@@ -458,15 +459,30 @@ public final class ContextData {
                 }
                 data.setUserCooldown(result.getInt("user_cooldown"));
                 data.setGuildCooldown(result.getInt("guild_cooldown"));
-
-                contextData.put(contextName, data);
-                contextDataDirty.put(contextName, false);
             }
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+            return data;
+        }
 
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_permission_overrides(?)")) {
+            statement.setString(1, contextName);
+            ResultSet result = statement.executeQuery();
+
+            Map<Long, Boolean> overrides = new HashMap<>();
+            while (result.next()) {
+                overrides.put(
+                        Long.parseLong(result.getString("guild_id")),
+                        result.getBoolean("override")
+                );
+            }
+            data.setPermissionOverride(overrides);
+            contextData.put(contextName, data);
+            contextDataDirty.put(contextName, false);
         } catch (SQLException e) {
             handleExceptionAndIgnore(e, messageContext);
         }
-
         return contextData.getOrDefault(contextName, null);
     }
 
@@ -595,5 +611,23 @@ public final class ContextData {
         }
 
         return rolePermissions.getOrDefault(contextName, Collections.emptyMap());
+    }
+
+    public static boolean setPermissionOverride(String contextName, boolean state,
+                                                Guild guild, MessageEventDataWrapper messageContext) {
+        contextDataDirty.put(contextName, true);
+
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.set_permission_override(?,?,?)")) {
+            statement.setString(1, contextName);
+            statement.setString(2, guild.getId());
+            statement.setBoolean(3, state);
+            statement.execute();
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+            return false;
+        }
+        return true;
+
     }
 }
