@@ -48,8 +48,9 @@ public enum WordsLocale {
     /**
      * Localization key for word "Points".
      */
-    POINTS("words.points");
-
+    POINTS("words.points"),
+    RANK("words.rank"),
+    USER("words.user");
 
     /**
      * Get the escaped locale code for auto translation.

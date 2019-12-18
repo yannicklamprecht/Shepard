@@ -103,7 +103,7 @@ public class GuessGame extends Command {
                 ? GuessGameData.getGlobalTopScore(10, messageContext)
                 : GuessGameData.getTopScore(messageContext.getGuild(), 10, messageContext);
 
-        String rankTable = TextFormatting.getRankTable(ranks);
+        String rankTable = TextFormatting.getRankTable(ranks, messageContext);
 
         String ranking = global ? M_GLOBAL_RANKING.tag : M_SERVER_RANKING.tag;
 
