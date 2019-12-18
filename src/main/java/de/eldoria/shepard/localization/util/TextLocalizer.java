@@ -75,5 +75,4 @@ public class TextLocalizer {
         }
         return result;
     }
-
 }

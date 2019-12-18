@@ -1,10 +1,13 @@
 package de.eldoria.shepard.collections;
 
 import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.contexts.commands.CommandInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -93,6 +96,19 @@ public final class CommandCollection {
         for (Command c : commands) {
             c.printDebugInfo();
         }
+    }
+
+    /**
+     * Get a objects which holds information for all Commands.
+     *
+     * @param excludes command types, which should be excluded.
+     * @return CommandInfos object
+     */
+    public CommandInfos getCommandInfos(ContextCategory... excludes) {
+        List<ContextCategory> excludeList = Arrays.asList(excludes);
+        List<CommandInfo> collect = commands.stream().map(Command::getCommandInfo)
+                .filter(commandInfo -> !excludeList.contains(commandInfo.getCategory())).collect(Collectors.toList());
+        return new CommandInfos(collect);
     }
 
     static class RankedCommand implements Comparable<RankedCommand> {

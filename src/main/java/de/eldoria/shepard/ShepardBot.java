@@ -1,6 +1,5 @@
 package de.eldoria.shepard;
 
-import de.eldoria.shepard.botlist.BotListReporter;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.KeyWordCollection;
 import de.eldoria.shepard.collections.Normandy;
@@ -12,6 +11,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.register.ContextRegister;
 import de.eldoria.shepard.register.ListenerRegister;
+import de.eldoria.shepard.webapi.ApiHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -70,9 +70,8 @@ public final class ShepardBot {
 
         instance.setup();
 
-        if (!config.isBeta()) {
-            BotListReporter.initialize();
-        }
+        ApiHandler.getInstance();
+
     }
 
     /**

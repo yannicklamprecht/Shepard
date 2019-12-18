@@ -36,7 +36,8 @@ public enum ContextCategory {
     /**
      * Creates a new context category.
      *
-     * @param tag locale tag of the category
+     * @param emoji emoji as unicode string
+     * @param tag   locale tag of the category
      */
     ContextCategory(String emoji, String tag) {
         this.categoryName = emoji + " " + tag;

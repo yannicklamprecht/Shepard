@@ -1,6 +1,6 @@
-package de.eldoria.shepard.botlist;
+package de.eldoria.shepard.webapi.apiobjects;
 
-public class BotListResponse {
+public class VoteInformation {
     private long bot;
     private long user;
     private String type;

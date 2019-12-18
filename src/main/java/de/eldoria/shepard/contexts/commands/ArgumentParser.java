@@ -80,7 +80,23 @@ public final class ArgumentParser {
             foundUser = byName(memberString, s -> guild.getMembersByName(s, true));
         }
 
+        if (foundUser == null) {
+            foundUser = byNameOnGuild(memberString, guild);
+        }
+
         return foundUser;
+    }
+
+    private static Member byNameOnGuild(String memberString, Guild guild) {
+        List<Member> collect = guild.getMembers().stream()
+                .filter(m -> m.getEffectiveName().toLowerCase()
+                        .startsWith(memberString.toLowerCase())).collect(Collectors.toList());
+        if (!collect.isEmpty()) {
+            return collect.get(0);
+        }
+        collect = guild.getMembers().stream().filter(m -> m.getUser().getName().toLowerCase()
+                .startsWith(memberString.toLowerCase())).collect(Collectors.toList());
+        return collect.isEmpty() ? null : collect.get(0);
     }
 
     /**

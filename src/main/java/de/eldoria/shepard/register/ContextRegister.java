@@ -41,6 +41,7 @@ import de.eldoria.shepard.contexts.commands.util.Reminder;
 import de.eldoria.shepard.contexts.commands.util.SystemInfo;
 import de.eldoria.shepard.contexts.commands.util.Test;
 import de.eldoria.shepard.contexts.commands.util.UserInfo;
+import de.eldoria.shepard.contexts.commands.util.Vote;
 
 public final class ContextRegister {
 
@@ -65,6 +66,7 @@ public final class ContextRegister {
         new UserInfo();
         new Help();
         new HireMe();
+        new Vote();
         new Home();
         new SystemInfo();
         new GetRaw();

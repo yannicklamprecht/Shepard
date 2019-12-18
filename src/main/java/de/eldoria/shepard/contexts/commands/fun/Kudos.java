@@ -134,7 +134,8 @@ public class Kudos extends Command {
             return;
         }
         MessageSender.sendMessage(localizeAllAndReplace(M_RECEIVED_KUDOS.tag, messageContext.getGuild(),
-                member.getAsMention(), "**" + points + "**", messageContext.getAuthor().getAsMention()),
+                "**" + member.getEffectiveName() + "**", "**" + points
+                        + "**", "**" + messageContext.getMember().getEffectiveName() + "**"),
                 messageContext.getTextChannel());
     }
 

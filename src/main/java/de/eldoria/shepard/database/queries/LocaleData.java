@@ -54,6 +54,10 @@ public final class LocaleData {
      * @return Prefix as string
      */
     public static LocaleCode getLanguage(Guild guild) {
+        if (guild == null) {
+            return LocaleCode.EN_US;
+        }
+
         if (!languages.containsKey(guild.getIdLong()) || cacheDirty.get(guild.getIdLong())) {
             loadLanguage(guild);
         }

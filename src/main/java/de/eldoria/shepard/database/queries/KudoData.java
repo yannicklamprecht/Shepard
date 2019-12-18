@@ -69,6 +69,28 @@ public final class KudoData {
     }
 
     /**
+     * Add the score to the score in the database. Negative score subtracts from score.
+     *
+     * @param user           user where the score should be applied
+     * @param score          The score which should be applied
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
+     */
+    public static boolean addRubberPoints(User user, int score,
+                                          MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.add_rubber_points(?,?)")) {
+            statement.setString(1, user.getId());
+            statement.setInt(2, score);
+            statement.execute();
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Add the amount to the amount in the database. Negative amount subtracts from amount.
      *
      * @param guild          Guild where the amount should be applied
@@ -83,6 +105,25 @@ public final class KudoData {
             statement.setString(1, guild.getId());
             statement.setString(2, user.getId());
             statement.setInt(3, amount);
+            statement.execute();
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+        }
+    }
+
+    /**
+     * Add the amount to the amount in the database. Negative amount subtracts from amount.
+     *
+     * @param user           user where the amount should be applied
+     * @param amount         The amount which should be applied
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     */
+    public static void addFreeRubberPoints(User user, int amount,
+                                           MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.add_free_rubber_points(?,?)")) {
+            statement.setString(1, user.getId());
+            statement.setInt(2, amount);
             statement.execute();
         } catch (SQLException e) {
             handleExceptionAndIgnore(e, messageContext);

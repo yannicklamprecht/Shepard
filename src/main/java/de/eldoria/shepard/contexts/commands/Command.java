@@ -33,6 +33,10 @@ import static java.lang.System.lineSeparator;
  */
 public abstract class Command extends ContextSensitive {
     /**
+     * Language handler instance.
+     */
+    protected final LanguageHandler locale;
+    /**
      * Name of the command.
      */
     protected String commandName = "";
@@ -48,10 +52,6 @@ public abstract class Command extends ContextSensitive {
      * Command args as command arg array.
      */
     protected CommandArg[] commandArgs = new CommandArg[0];
-    /**
-     * Language handler instance.
-     */
-    protected final LanguageHandler locale;
     private final JaroWinkler similarity = new JaroWinkler();
 
     /**
@@ -93,9 +93,9 @@ public abstract class Command extends ContextSensitive {
         if (!checkArguments(args)) {
             try {
                 MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
+                return;
             } catch (InsufficientPermissionException ex) {
-                messageContext.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel ->
-                        MessageSender.handlePermissionException(ex, messageContext.getTextChannel()));
+                MessageSender.handlePermissionException(ex, messageContext.getTextChannel());
                 return;
             }
         }
@@ -108,8 +108,7 @@ public abstract class Command extends ContextSensitive {
                 MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace(GeneralLocale.M_COOLDOWN.tag,
                         messageContext.getGuild(), currentCooldown + ""), messageContext.getTextChannel());
             } catch (InsufficientPermissionException ex) {
-                messageContext.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel ->
-                        MessageSender.handlePermissionException(ex, messageContext.getTextChannel()));
+                MessageSender.handlePermissionException(ex, messageContext.getTextChannel());
             }
             return;
         }
@@ -176,7 +175,7 @@ public abstract class Command extends ContextSensitive {
      *
      * @return an array of command arguments.
      */
-    private CommandArg[] getCommandArgs() {
+    public CommandArg[] getCommandArgs() {
         if (commandArgs == null) {
             commandArgs = new CommandArg[0];
         }
@@ -188,7 +187,7 @@ public abstract class Command extends ContextSensitive {
      *
      * @return an array of aliases.
      */
-    private String[] getCommandAliases() {
+    public String[] getCommandAliases() {
         return commandAliases;
     }
 
@@ -286,4 +285,15 @@ public abstract class Command extends ContextSensitive {
         }
         return cmdScore;
     }
+
+    /**
+     * Get a object which holds all information about the command.
+     *
+     * @return command info object
+     */
+    public CommandInfo getCommandInfo() {
+        return new CommandInfo(this);
+    }
+
+
 }
