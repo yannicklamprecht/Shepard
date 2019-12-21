@@ -104,6 +104,7 @@ public class Logger {
      * @param message Message to write
      */
     public void info(String message) {
+        MessageSender.logInfo(message);
         Arrays.stream(message.split(lineSeparator())).forEach(s -> log(s, LogType.INFO));
     }
 
