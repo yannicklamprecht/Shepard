@@ -27,6 +27,8 @@ public final class ShepardBot {
     private static ShepardBot instance;
     private static Logger logger;
 
+    private boolean loaded;
+
     private ShepardBot() {
         System.out.println("Startup in progress. Bot is heating up");
         System.out.println("Initialising Logger");
@@ -73,6 +75,7 @@ public final class ShepardBot {
 
         ApiHandler.getInstance();
 
+        instance.loaded = true;
     }
 
     /**
@@ -189,5 +192,13 @@ public final class ShepardBot {
         }
 
         System.exit(exitCode.code);
+    }
+
+    public static boolean isLoaded() {
+        if(instance == null){
+            return false;
+        }
+
+        return instance.loaded;
     }
 }
