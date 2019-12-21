@@ -45,6 +45,31 @@ public final class KudoData {
     }
 
     /**
+     * Try to take the points from the user.
+     *
+     * @param guild          guild where the points should be taken.
+     * @param user           user from who the points should be taken.
+     * @param points         points to take
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return true if the points where taken.
+     */
+    public static boolean tryTakeFreePoints(Guild guild, User user, int points, MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.try_take_free_rubber_points(?,?,?)")) {
+            statement.setString(1, guild.getId());
+            statement.setString(2, user.getId());
+            statement.setInt(3, points);
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return result.getBoolean(1);
+            }
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+        }
+        return false;
+    }
+
+    /**
      * Add the score to the score in the database. Negative score subtracts from score.
      *
      * @param guild          Guild where the score should be applied
