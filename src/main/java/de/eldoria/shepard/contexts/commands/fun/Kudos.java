@@ -83,7 +83,6 @@ public class Kudos extends Command {
 
         if (arg.isSubCommand(cmd, 2)) {
             sendTopScores(false, messageContext);
-
             return;
         }
 
@@ -97,6 +96,7 @@ public class Kudos extends Command {
     private void give(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length != 3) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            return;
         }
 
         Member member = ArgumentParser.getGuildMember(messageContext.getGuild(), args[1]);
