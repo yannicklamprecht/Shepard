@@ -8,6 +8,7 @@ import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.util.Replacer;
+import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -246,7 +247,7 @@ public final class MessageSender {
      * @param channel channel
      */
     public static void sendMessage(String message, TextChannel channel) {
-        if (message.isEmpty()) return;
+        if (message.isEmpty() || channel == null) return;
 
         String localizedMessage = TextLocalizer.localizeAll(message, channel);
 
@@ -312,5 +313,14 @@ public final class MessageSender {
                 }
             }
         });
+    }
+
+    public static void logInfo(String message) {
+        if (!ShepardBot.isLoaded()) {
+            return;
+        }
+
+        MessageSender.sendMessage("```" + lineSeparator() + "[" + TextFormatting.getTimeAsString() + "] "
+                + message + lineSeparator() + "```", Normandy.getLogChannel());
     }
 }
