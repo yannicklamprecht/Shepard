@@ -59,7 +59,8 @@ public class LanguageHandler {
             MessageSender.sendSimpleErrorEmbed("Missing localization for key: " + localeCode + " in language pack: "
                     + language.code + ". Using Fallback Language en_US", Normandy.getErrorChannel());
 
-            return getLanguageResource(LocaleCode.EN_US).getString(localeCode);
+            ResourceBundle bundle = getLanguageResource(LocaleCode.EN_US);
+            return bundle.containsKey(localeCode) ? bundle.getString(localeCode) : localeCode;
         }
     }
 
