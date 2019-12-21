@@ -133,7 +133,7 @@ public class Reminder extends Command {
         if (DATE.matcher(command).find()) {
             String date = args[args.length - 2];
             String time = args[args.length - 1];
-            String message = ArgumentParser.getMessage(args, 1, -4);
+            String message = ArgumentParser.getMessage(args, 1, -3);
 
             if (ReminderData.addReminderDate(messageContext.getGuild(), messageContext.getAuthor(),
                     messageContext.getTextChannel(), message, date, time, messageContext)) {
