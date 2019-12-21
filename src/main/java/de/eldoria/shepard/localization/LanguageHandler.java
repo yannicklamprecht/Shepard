@@ -58,8 +58,13 @@ public class LanguageHandler {
                     + language.code + ". Using Fallback Language en_US");
             MessageSender.sendSimpleErrorEmbed("Missing localization for key: " + localeCode + " in language pack: "
                     + language.code + ". Using Fallback Language en_US", Normandy.getErrorChannel());
-
             ResourceBundle bundle = getLanguageResource(LocaleCode.EN_US);
+
+            if (!bundle.containsKey(localeCode)) {
+                ShepardBot.getLogger().error("Missing localisation for key " + localeCode + " in fallback language."
+                + " Is this intended?");
+            }
+
             return bundle.containsKey(localeCode) ? bundle.getString(localeCode) : localeCode;
         }
     }
