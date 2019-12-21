@@ -27,15 +27,18 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
 public class KudoLotteryEvaluator extends BaseEvaluator {
     private final Map<Long, Integer> bet = new HashMap<>();
 
+    private final int maxBet;
+
     /**
      * Creates a new Kudo lottery evaluator.
      *
      * @param message message for evaluation
      * @param user    user for first bet.
      */
-    public KudoLotteryEvaluator(Message message, User user) {
+    public KudoLotteryEvaluator(Message message, User user, int maxBet) {
         super(message.getIdLong(), message.getChannel().getIdLong());
         bet.put(user.getIdLong(), 1);
+        this.maxBet = maxBet;
     }
 
     @Override
@@ -45,10 +48,12 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
             return;
         }
 
-
         List<Long> pool = new ArrayList<>();
 
         bet.forEach((key, value) -> {
+            if (value == -1) {
+                pool.add(key);
+            }
             for (int i = 0; i < value; i++) {
                 pool.add(key);
             }
@@ -66,22 +71,24 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
         }
 
 
-        int sum = bet.values().stream().mapToInt(Integer::intValue).sum();
+        int sum = bet.values().stream().mapToInt(Integer::intValue).map(num -> num == -1 ? 1 : num).sum();
+        int realSum = bet.values().stream().mapToInt(Integer::intValue).sum();
 
         if (bet.size() == 1) {
+            if (realSum == -1) {
+                return;
+            }
             MessageSender.sendMessage(M_NO_WINNER.tag, guildChannel);
-            KudoData.addFreeRubberPoints(guildChannel.getGuild(), userById, sum, null);
+            KudoData.addRubberPoints(guildChannel.getGuild(), userById, sum, null);
             Evaluator.getKudoLotteryScheduler().evaluationDone(guildChannel);
             return;
         }
 
-        int winnerPoints = bet.entrySet().stream().filter(set -> set.getKey().equals(userId))
-                .map(Map.Entry::getValue)
-                .mapToInt(Integer::intValue).sum();
+        if (bet.get(userId) == -1) {
+            sum -= 1;
+        }
 
-        KudoData.addRubberPoints(guildChannel.getGuild(), userById, sum - winnerPoints, null);
-
-        KudoData.addFreeRubberPoints(guildChannel.getGuild(), userById, winnerPoints, null);
+        KudoData.addRubberPoints(guildChannel.getGuild(), userById, sum, null);
 
         MessageSender.sendMessage(localizeAllAndReplace(M_CONGRATULATION.tag, guildChannel.getGuild(),
                 "**" + userById.getAsMention() + "**", "**" + sum + "**"), guildChannel);
@@ -102,27 +109,43 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
             return;
         }
 
-        if (amount != -1 && !KudoData.tryTakePoints(guild, user, amount, null)) {
+        int currentAmount = bet.getOrDefault(user.getIdLong(), 0);
+
+        if (currentAmount == maxBet || currentAmount + amount > maxBet) {
             return;
         }
+
+        if (amount != -1 && !KudoData.tryTakePoints(guild, user, amount, null)) {
+            if (KudoData.getUserScore(guild, user, null) != 0 && currentAmount != 0) {
+                return;
+            }
+            bet.put(user.getIdLong(), -1);
+            refreshEmbed(textChannel);
+            return;
+        }
+
         int finalAmount = amount;
         if (amount == -1) {
             finalAmount = 0;
-            while (KudoData.tryTakePoints(guild, user, 50, null)) {
+            while (currentAmount + finalAmount + 50 <= maxBet && KudoData.tryTakePoints(guild, user, 50, null)) {
                 finalAmount += 50;
             }
-            while (KudoData.tryTakePoints(guild, user, 20, null)) {
+            while (currentAmount + finalAmount + 20 <= maxBet && KudoData.tryTakePoints(guild, user, 20, null)) {
                 finalAmount += 20;
             }
-            while (KudoData.tryTakePoints(guild, user, 10, null)) {
+            while (currentAmount + finalAmount + 10 <= maxBet && KudoData.tryTakePoints(guild, user, 10, null)) {
                 finalAmount += 10;
             }
-            while (KudoData.tryTakePoints(guild, user, 5, null)) {
+            while (currentAmount + finalAmount + 5 <= maxBet && KudoData.tryTakePoints(guild, user, 5, null)) {
                 finalAmount += 5;
             }
-            while (KudoData.tryTakePoints(guild, user, 1, null)) {
+            while (currentAmount + finalAmount + 1 <= maxBet && KudoData.tryTakePoints(guild, user, 1, null)) {
                 finalAmount += 1;
             }
+        }
+
+        if (finalAmount == 0) {
+            return;
         }
 
         if (bet.containsKey(user.getIdLong())) {
@@ -131,14 +154,18 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
             bet.put(user.getIdLong(), finalAmount);
         }
 
-        int sum = bet.values().stream().mapToInt(Integer::intValue).sum();
+        refreshEmbed(textChannel);
+    }
+
+    private void refreshEmbed(TextChannel textChannel) {
+        int sum = bet.values().stream().mapToInt(Integer::intValue).map(num -> num == -1 ? 1 : num).sum();
 
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(textChannel.getGuild())
                 .setTitle(KudoLotteryLocale.M_EMBED_TITLE.tag)
                 .setDescription(localizeAllAndReplace(KudoLotteryLocale.M_EMBED_DESCRIPTION.tag,
                         textChannel.getGuild(), "3"))
                 .addField(localizeAllAndReplace(KudoLotteryLocale.M_EMBED_KUDOS_IN_POT.tag,
-                        textChannel.getGuild(), sum + ""),
+                        textChannel.getGuild(), "**" + sum + "**", "**" + maxBet + "**"),
                         localizeAllAndReplace(KudoLotteryLocale.M_EMBED_EXPLANATION.tag,
                                 textChannel.getGuild(),
                                 ShepardEmote.INFINITY.getEmote().getAsMention(),
@@ -149,5 +176,6 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
 
         textChannel.retrieveMessageById(messageId)
                 .queue(a -> a.editMessage(builder.build()).queue());
+
     }
 }
