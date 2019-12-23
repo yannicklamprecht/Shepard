@@ -36,7 +36,11 @@ public enum Emoji {
     /**
      * :tada: emoji
      */
-    TADA("🎉");
+    TADA("🎉"),
+    /**
+     * :diamond_shape_with_a_dot_inside: emoji
+     */
+    DIAMAOND_SHAPE_WITH_DOT("💠");
 
     /**
      * Returns the unicode of the emoji.
