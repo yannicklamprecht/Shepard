@@ -109,13 +109,19 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
             return;
         }
 
+        int tempAmount = amount;
+
         int currentAmount = bet.getOrDefault(user.getIdLong(), 0);
 
-        if (currentAmount == maxBet || currentAmount + amount > maxBet) {
+        if (currentAmount == maxBet) {
             return;
         }
 
-        if (amount != -1 && !KudoData.tryTakePoints(guild, user, amount, null)) {
+        if (currentAmount + tempAmount > maxBet) {
+            tempAmount = maxBet - currentAmount;
+        }
+
+        if (tempAmount != -1 && !KudoData.tryTakePoints(guild, user, tempAmount, null)) {
             if (KudoData.getUserScore(guild, user, null) != 0 && currentAmount != 0) {
                 return;
             }
@@ -124,8 +130,8 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
             return;
         }
 
-        int finalAmount = amount;
-        if (amount == -1) {
+        int finalAmount = tempAmount;
+        if (finalAmount == -1) {
             finalAmount = 0;
             while (currentAmount + finalAmount + 50 <= maxBet && KudoData.tryTakePoints(guild, user, 50, null)) {
                 finalAmount += 50;
