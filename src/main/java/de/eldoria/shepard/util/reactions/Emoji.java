@@ -27,7 +27,16 @@ public enum Emoji {
     /**
      * :gem: emoji.
      */
-    GEM("\uD83D\uDC8E");
+    GEM("\uD83D\uDC8E"),
+
+    /**
+     * :black_large_square: emoji
+     */
+    BLACK_LARGE_SQUARE("⬛"),
+    /**
+     * :tada: emoji
+     */
+    TADA("🎉");
 
     /**
      * Returns the unicode of the emoji.
