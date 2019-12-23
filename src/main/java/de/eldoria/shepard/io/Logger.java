@@ -1,5 +1,6 @@
 package de.eldoria.shepard.io;
 
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -104,7 +105,9 @@ public class Logger {
      * @param message Message to write
      */
     public void info(String message) {
-        MessageSender.logInfo(message);
+        if (ShepardBot.isLoaded()) {
+            MessageSender.logInfo(message);
+        }
         Arrays.stream(message.split(lineSeparator())).forEach(s -> log(s, LogType.INFO));
     }
 

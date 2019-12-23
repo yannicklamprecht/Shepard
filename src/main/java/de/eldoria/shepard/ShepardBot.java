@@ -193,6 +193,7 @@ public final class ShepardBot {
         }
 
         System.exit(exitCode.code);
+
     }
 
     public static boolean isLoaded() {
