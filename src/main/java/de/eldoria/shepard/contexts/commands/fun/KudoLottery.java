@@ -43,7 +43,7 @@ public class KudoLottery extends Command {
         boolean success = KudoData.tryTakePoints(messageContext.getGuild(),
                 messageContext.getAuthor(), 1, messageContext);
 
-        int maxBet = 200;
+        int maxBet = 100;
 
         if (args.length > 0) {
             Integer amount = ArgumentParser.parseInt(args[0]);
@@ -51,7 +51,7 @@ public class KudoLottery extends Command {
                 MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
                 return;
             }
-            maxBet = Math.min(Math.max(amount, 1), 200);
+            maxBet = Math.min(Math.max(amount, 1), 500);
         }
 
         if (!success) {
