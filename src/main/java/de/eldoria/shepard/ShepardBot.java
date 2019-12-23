@@ -169,6 +169,7 @@ public final class ShepardBot {
      *                 10 = restart
      */
     public void shutdown(ExitCode exitCode) {
+        loaded = false;
         if (exitCode == ExitCode.SHUTDOWN) {
             MessageSender.sendSimpleTextBox("Shutdown.",
                     "",
