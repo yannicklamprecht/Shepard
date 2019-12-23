@@ -116,6 +116,33 @@ public final class KudoData {
     }
 
     /**
+     * Add the score to the jackpot in the database.
+     *
+     * @param guild          guild where the score should be applied
+     * @param score          The score which should be applied
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return true if the query execution was successful
+     */
+    public static int addAndGetJackpot(Guild guild, int score,
+                                       MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT shepard_func.add_and_get_jackpot(?,?)")) {
+            statement.setString(1, guild.getId());
+            statement.setInt(2, score);
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return result.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+            return 0;
+        }
+        return 0;
+    }
+
+
+    /**
      * Add the amount to the amount in the database. Negative amount subtracts from amount.
      *
      * @param guild          Guild where the amount should be applied
@@ -206,6 +233,27 @@ public final class KudoData {
                 .prepareStatement("SELECT * from shepard_func.get_rubber_points_user_score(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, user.getId());
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return result.getInt(1);
+            }
+        } catch (SQLException e) {
+            handleExceptionAndIgnore(e, messageContext);
+        }
+        return -1;
+    }
+
+    /**
+     * Get the score of a user on a guild.
+     *
+     * @param guild          Guild for lookup
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return score of user.
+     */
+    public static int getAndClearJackpot(Guild guild, MessageEventDataWrapper messageContext) {
+        try (PreparedStatement statement = DatabaseConnector.getConn()
+                .prepareStatement("SELECT * from shepard_func.get_and_clear_jackpot(?)")) {
+            statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
             if (result.next()) {
                 return result.getInt(1);

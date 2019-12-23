@@ -20,19 +20,7 @@ import de.eldoria.shepard.contexts.commands.botconfig.ManageContextGuild;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContextUsers;
 import de.eldoria.shepard.contexts.commands.exclusive.PrivateAnswer;
 import de.eldoria.shepard.contexts.commands.exclusive.SendPrivateMessage;
-import de.eldoria.shepard.contexts.commands.fun.GuessGame;
-import de.eldoria.shepard.contexts.commands.fun.KudoLottery;
-import de.eldoria.shepard.contexts.commands.fun.Kudos;
-import de.eldoria.shepard.contexts.commands.fun.LargeEmote;
-import de.eldoria.shepard.contexts.commands.fun.MagicConch;
-import de.eldoria.shepard.contexts.commands.fun.MockingSpongebob;
-import de.eldoria.shepard.contexts.commands.fun.Oha;
-import de.eldoria.shepard.contexts.commands.fun.Owo;
-import de.eldoria.shepard.contexts.commands.fun.Quote;
-import de.eldoria.shepard.contexts.commands.fun.RandomJoke;
-import de.eldoria.shepard.contexts.commands.fun.Say;
-import de.eldoria.shepard.contexts.commands.fun.Someone;
-import de.eldoria.shepard.contexts.commands.fun.Uwu;
+import de.eldoria.shepard.contexts.commands.fun.*;
 import de.eldoria.shepard.contexts.commands.util.GetRaw;
 import de.eldoria.shepard.contexts.commands.util.Help;
 import de.eldoria.shepard.contexts.commands.util.HireMe;
@@ -89,6 +77,7 @@ public final class ContextRegister {
         new GuessGame();
         new Kudos();
         new KudoLottery();
+        new KudoGamble();
     }
 
     private static void registerExclusiveCommands() {
