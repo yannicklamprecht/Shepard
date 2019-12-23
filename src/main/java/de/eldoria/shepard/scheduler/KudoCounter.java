@@ -1,5 +1,6 @@
 package de.eldoria.shepard.scheduler;
 
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.KudoData;
 
 import java.util.concurrent.Executors;
@@ -11,6 +12,7 @@ public class KudoCounter implements Runnable {
      * Initializes the kudo counter if not active.
      */
     public void initialize() {
+        if (ShepardBot.getConfig().isBeta()) return;
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(this, 30, 60, TimeUnit.MINUTES);
     }
