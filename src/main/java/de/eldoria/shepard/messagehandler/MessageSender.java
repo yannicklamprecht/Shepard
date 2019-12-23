@@ -21,6 +21,8 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.Color;
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
@@ -28,6 +30,11 @@ import static java.lang.System.lineSeparator;
 
 public final class MessageSender {
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM. HH:mm:ss");
+
+    private static String timestamp() {
+        return "[" + DATE_TIME_FORMATTER.format(LocalDateTime.now()) + "]";
+    }
 
     /**
      * Sends a textbox to a channel.
@@ -320,7 +327,7 @@ public final class MessageSender {
             return;
         }
 
-        MessageSender.sendMessage("```" + lineSeparator() + "[" + TextFormatting.getTimeAsString() + "] "
+        MessageSender.sendMessage("```yaml" + lineSeparator() + timestamp() + " | "
                 + message + lineSeparator() + "```", Normandy.getLogChannel());
     }
 }
