@@ -100,7 +100,9 @@ public class KudoGamble extends Command {
 
         //Two are equal
         else if (win1 == win2 || win2 == win3) {
-            winAmount = (int) Math.round(amount * 1.2);
+            winAmount = (int) Math.round(amount * evaluatePairs(win2));
+        } else if (win1 == win3) {
+            winAmount = (int) Math.round(amount * evaluatePairs(win1));
         } else {
             winAmount = 0;
         }
@@ -168,5 +170,22 @@ public class KudoGamble extends Command {
         //Tier 4
         //10 of 100
         return tier4;
+    }
+
+    private double evaluatePairs(int tier) {
+        switch (tier) {
+            case bonus:
+                return 3;
+            case tier1:
+                return 1.4;
+            case tier2:
+                return 1.6;
+            case tier3:
+                return 1.8;
+            case tier4:
+                return 2;
+
+        }
+        return 0;
     }
 }
