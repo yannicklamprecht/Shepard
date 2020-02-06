@@ -109,8 +109,11 @@ public class Reminder extends Command {
     private void list(MessageEventDataWrapper messageContext) {
         List<ReminderSimple> reminders = ReminderData.getUserReminder(messageContext.getGuild(),
                 messageContext.getAuthor(), messageContext);
-        TextFormatting.TableBuilder tableBuilder
-                = TextFormatting.getTableBuilder(reminders, ID.tag, MESSAGE.tag, TIME.tag);
+        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
+                reminders,
+                TextLocalizer.localizeAll(ID.tag, messageContext.getGuild()),
+                TextLocalizer.localizeAll(MESSAGE.tag, messageContext.getGuild()),
+                TextLocalizer.localizeAll(TIME.tag, messageContext.getGuild()));
         for (ReminderSimple reminder : reminders) {
             tableBuilder.next();
             tableBuilder.setRow(
