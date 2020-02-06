@@ -9,6 +9,7 @@ import de.eldoria.shepard.database.queries.ReminderData;
 import de.eldoria.shepard.database.types.ReminderSimple;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.util.ReminderLocal;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.TextFormatting;
@@ -34,15 +35,15 @@ public class Reminder extends Command {
      */
     public Reminder() {
         commandName = "remind";
-        commandAliases = new String[] {"reminder"};
+        commandAliases = new String[] {"reminder", "timer"};
         commandDesc = ReminderLocal.DESCRIPTION.tag;
         commandArgs = new CommandArg[] {
                 new CommandArg("action", true,
-                        new SubArg("add", ReminderLocal.C_ADD.tag, true),
+                        new SubArg("create", ReminderLocal.C_ADD.tag, true),
                         new SubArg("remove", ReminderLocal.C_REMOVE.tag, true),
                         new SubArg("list", ReminderLocal.C_LIST.tag, true)),
                 new CommandArg("value", false,
-                        new SubArg("add", ReminderLocal.M_FORMAT.tag),
+                        new SubArg("create", ReminderLocal.M_FORMAT.tag),
                         new SubArg("remove", "[" + GeneralLocale.A_ID + "]"),
                         new SubArg("list", GeneralLocale.A_EMPTY.tag))
         };
@@ -77,7 +78,10 @@ public class Reminder extends Command {
 
         if (arg.isSubCommand(cmd, 0)) {
             add(args, messageContext);
+            return;
         }
+
+        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
     private void remove(String[] args, MessageEventDataWrapper messageContext) {
