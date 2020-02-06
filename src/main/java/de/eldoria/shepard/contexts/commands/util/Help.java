@@ -79,7 +79,7 @@ public class Help extends Command {
         List<LocalizedField> fields = new ArrayList<>();
 
         for (Command command : CommandCollection.getInstance().getCommands()) {
-            if (!command.isContextValid(messageContext)) {
+            if (!command.isContextValid(messageContext) || !command.hasPermission(messageContext)) {
                 continue;
             }
             commands.putIfAbsent(command.getCategory(), new ArrayList<>());
