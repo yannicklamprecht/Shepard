@@ -6,6 +6,7 @@ import de.eldoria.shepard.contexts.commands.admin.GuessGameConfig;
 import de.eldoria.shepard.contexts.commands.admin.Invite;
 import de.eldoria.shepard.contexts.commands.admin.Language;
 import de.eldoria.shepard.contexts.commands.admin.ManageQuote;
+import de.eldoria.shepard.contexts.commands.admin.McPing;
 import de.eldoria.shepard.contexts.commands.admin.Monitoring;
 import de.eldoria.shepard.contexts.commands.admin.Permission;
 import de.eldoria.shepard.contexts.commands.admin.Prefix;
@@ -111,6 +112,7 @@ public final class ContextRegister {
         new Monitoring();
         new Language();
         new RepeatCommand();
+        new McPing();
     }
 
     /**

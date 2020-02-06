@@ -197,7 +197,7 @@ public final class ShepardBot {
     }
 
     public static boolean isLoaded() {
-        if(instance == null){
+        if (instance == null) {
             return false;
         }
 
