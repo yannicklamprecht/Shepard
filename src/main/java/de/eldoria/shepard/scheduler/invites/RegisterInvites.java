@@ -29,12 +29,13 @@ class RegisterInvites implements Runnable {
     public void run() {
         while (true) {
             List<Guild> guilds;
+
             try {
                 guilds = ShepardBot.getJDA().getGuilds();
             } catch (IllegalArgumentException e) {
                 return;
             }
-            int sleepDuration = 10000 / guilds.size();
+            int sleepDuration = Math.max(10000 / guilds.size(),250);
 
             for (Guild guild : guilds) {
                 if (!Objects.requireNonNull(guild.getMember(ShepardBot.getJDA()
@@ -42,7 +43,7 @@ class RegisterInvites implements Runnable {
                     continue;
                 }
                 if (invites.containsKey(guild.getIdLong())) {
-                    guild.retrieveInvites().queue(createInviteListConsumer(guild));
+                    evaluateInvites(guild);
                 } else {
                     invites.put(guild.getIdLong(), InviteData.getInvites(guild, null).stream()
                             .map(DatabaseInvite::getCode)
@@ -51,23 +52,25 @@ class RegisterInvites implements Runnable {
                 try {
                     Thread.sleep(sleepDuration);
                 } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     return;
                 }
             }
         }
     }
 
-    private Consumer<List<Invite>> createInviteListConsumer(Guild guild) {
-        return guildInvites -> {
-            try {
-                guildInvites.stream()
-                        .filter(i -> !invites.get(guild.getIdLong()).contains(i.getCode()))
-                        .forEach(createInviteConsumer(guild));
-            } catch (InsufficientPermissionException e) {
-                ShepardBot.getLogger().error("Error occurred on guild " + guild.getName()
-                        + "(" + guild.getId() + ")", e);
-            }
-        };
+    private void evaluateInvites(Guild guild) {
+        List<Invite> guildInvites;
+        try {
+        guildInvites = guild.retrieveInvites().complete();
+        } catch (InsufficientPermissionException e) {
+            ShepardBot.getLogger().error("Error occurred on guild " + guild.getName()
+                    + "(" + guild.getId() + ")", e);
+            return;
+        }
+        guildInvites.stream()
+                .filter(i -> !invites.get(guild.getIdLong()).contains(i.getCode()))
+                .forEach(createInviteConsumer(guild));
     }
 
     private Consumer<Invite> createInviteConsumer(Guild guild) {
