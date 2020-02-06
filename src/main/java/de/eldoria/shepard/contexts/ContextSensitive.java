@@ -109,7 +109,7 @@ public abstract class ContextSensitive {
      * @param context message context
      * @return true if the user is allowed to execute this command
      */
-    protected boolean hasPermission(MessageEventDataWrapper context) {
+    public boolean hasPermission(MessageEventDataWrapper context) {
         if (!needsPermission(context.getGuild())) {
             return true;
         }
