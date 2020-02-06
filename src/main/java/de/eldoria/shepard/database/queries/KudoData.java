@@ -45,7 +45,7 @@ public final class KudoData {
     }
 
     /**
-     * Try to take the points from the user.
+     * Try to take the points from the user. Uses the free kudos first.
      *
      * @param guild          guild where the points should be taken.
      * @param user           user from who the points should be taken.
@@ -53,9 +53,9 @@ public final class KudoData {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the points where taken.
      */
-    public static boolean tryTakeFreePoints(Guild guild, User user, int points, MessageEventDataWrapper messageContext) {
+    public static boolean tryTakeCompletePoints(Guild guild, User user, int points, MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
-                .prepareStatement("SELECT * from shepard_func.try_take_free_rubber_points(?,?,?)")) {
+                .prepareStatement("SELECT * from shepard_func.try_take_complete_rubber_points(?,?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, user.getId());
             statement.setInt(3, points);
