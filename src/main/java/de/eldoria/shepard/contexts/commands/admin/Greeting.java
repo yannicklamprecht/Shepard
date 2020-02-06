@@ -58,7 +58,7 @@ public class Greeting extends Command {
             return;
         }
 
-        if (arg.isSubCommand(cmd, 3)) {
+        if (arg.isSubCommand(cmd, 2)) {
             setMessage(args, messageContext);
             return;
         }
