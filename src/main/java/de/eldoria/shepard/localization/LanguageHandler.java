@@ -9,10 +9,11 @@ import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 public class LanguageHandler {
     private static final String BUNDLE_PATH = "locale";
@@ -95,22 +96,25 @@ public class LanguageHandler {
         }
 
         ShepardBot.getLogger().info("Loaded " + languages.size() + " languages!");
-        List<String> keys = new ArrayList<>();
-        getLanguageResource(LocaleCode.EN_US).getKeys().asIterator().forEachRemaining(keys::add);
 
-        for (LocaleCode code : LocaleCode.values()) {
-            if (code == LocaleCode.EN_US) {
-                continue;
-            }
+        Set<String> keySet = new HashSet<>();
+        for (ResourceBundle resourceBundle : languages.values()) {
+            keySet.addAll(resourceBundle.keySet());
+        }
 
-            ResourceBundle languageResource = getLanguageResource(code);
-            List<String> missingKeys = keys.stream()
-                    .filter(k -> !languageResource.containsKey(k)).collect(Collectors.toUnmodifiableList());
-            if (!missingKeys.isEmpty()) {
-                MessageSender.sendSimpleErrorEmbed("Found missing keys in language pack " + code.code
-                                + System.lineSeparator() + String.join(System.lineSeparator(), missingKeys),
-                        Normandy.getErrorChannel());
+        List<String> missingKeys = new ArrayList<>();
+        for (ResourceBundle resourceBundle : languages.values()) {
+            for (String key : keySet) {
+                if (!resourceBundle.containsKey(key)) {
+                    missingKeys.add(key + "@" + resourceBundle.getLocale());
+                }
             }
+        }
+
+        if (!missingKeys.isEmpty()) {
+            MessageSender.sendSimpleErrorEmbed("Found missing keys in language packs"
+                            + System.lineSeparator() + String.join(System.lineSeparator(), missingKeys),
+                    Normandy.getErrorChannel());
         }
     }
 }
