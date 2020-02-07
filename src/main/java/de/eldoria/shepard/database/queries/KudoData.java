@@ -53,7 +53,8 @@ public final class KudoData {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the points where taken.
      */
-    public static boolean tryTakeCompletePoints(Guild guild, User user, int points, MessageEventDataWrapper messageContext) {
+    public static boolean tryTakeCompletePoints(Guild guild, User user, int points,
+                                                MessageEventDataWrapper messageContext) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * from shepard_func.try_take_complete_rubber_points(?,?,?)")) {
             statement.setString(1, guild.getId());

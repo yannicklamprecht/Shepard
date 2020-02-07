@@ -13,7 +13,6 @@ import de.eldoria.shepard.webapi.apiobjects.ApiCache;
 import de.eldoria.shepard.webapi.apiobjects.CommandSearchResponse;
 import de.eldoria.shepard.webapi.apiobjects.VoteInformation;
 import spark.Request;
-import spark.Response;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,8 +20,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.lang.System.lineSeparator;
-import static spark.Spark.*;
-import static spark.route.HttpMethod.options;
+import static spark.Spark.before;
+import static spark.Spark.get;
+import static spark.Spark.halt;
+import static spark.Spark.options;
+import static spark.Spark.port;
+import static spark.Spark.post;
 
 public final class ApiHandler {
     private static ApiHandler instance;
@@ -73,7 +76,7 @@ public final class ApiHandler {
 
         before((request, response) -> {
             response.header("Access-Control-Allow-Origin", "*");
-            if(!validateRequest(request)){
+            if (!validateRequest(request)) {
                 halt(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
             }
             logRequest(request.requestMethod() + " " + request.uri(), request);
@@ -136,8 +139,8 @@ public final class ApiHandler {
         String authorization = request.headers("Authorization");
         boolean result = authorization.equals(ShepardBot.getConfig().getBotlist().getAuthorization());
         if (!result) {
-            ShepardBot.getLogger().info("Denied access for request." + lineSeparator() +
-                    "Headers:" + lineSeparator()
+            ShepardBot.getLogger().info("Denied access for request." + lineSeparator()
+                    + "Headers:" + lineSeparator()
                     + request.headers().stream().map(h -> "   " + h + ": " + request.headers(h))
                     .collect(Collectors.joining(lineSeparator())) + lineSeparator()
                     + "Body:" + lineSeparator()

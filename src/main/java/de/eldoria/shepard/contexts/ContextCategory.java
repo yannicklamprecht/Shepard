@@ -2,6 +2,7 @@ package de.eldoria.shepard.contexts;
 
 import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
 
+@SuppressWarnings("CheckStyle")
 public enum ContextCategory {
     /**
      * Context is a command of category bot administration.

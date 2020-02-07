@@ -63,7 +63,7 @@ public class LanguageHandler {
 
             if (!bundle.containsKey(localeCode)) {
                 ShepardBot.getLogger().error("Missing localisation for key " + localeCode + " in fallback language."
-                + " Is this intended?");
+                        + " Is this intended?");
             }
 
             return bundle.containsKey(localeCode) ? bundle.getString(localeCode) : localeCode;

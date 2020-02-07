@@ -35,7 +35,7 @@ class RegisterInvites implements Runnable {
             } catch (IllegalArgumentException e) {
                 return;
             }
-            int sleepDuration = Math.max(10000 / guilds.size(),250);
+            int sleepDuration = Math.max(10000 / guilds.size(), 250);
 
             for (Guild guild : guilds) {
                 if (!Objects.requireNonNull(guild.getMember(ShepardBot.getJDA()
@@ -62,7 +62,7 @@ class RegisterInvites implements Runnable {
     private void evaluateInvites(Guild guild) {
         List<Invite> guildInvites;
         try {
-        guildInvites = guild.retrieveInvites().complete();
+            guildInvites = guild.retrieveInvites().complete();
         } catch (InsufficientPermissionException e) {
             ShepardBot.getLogger().error("Error occurred on guild " + guild.getName()
                     + "(" + guild.getId() + ")", e);

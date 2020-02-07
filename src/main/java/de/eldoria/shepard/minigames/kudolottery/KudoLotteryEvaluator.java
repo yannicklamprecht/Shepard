@@ -24,6 +24,13 @@ import static de.eldoria.shepard.localization.enums.minigames.KudoLotteryEvaluat
 import static de.eldoria.shepard.localization.enums.minigames.KudoLotteryEvaluatorLocale.M_NO_WINNER;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
+/**
+ * Creates a new Kudo lottery evaluator.
+ * The evaluator has a {@link KudoLotteryEvaluator#maxBet} which defines the max amount a single user can bet.
+ * via the {@link KudoLotteryEvaluator#addBet(Guild, User, int)} a user can add a bet.
+ * At least every user can set a amount of 1.
+ *
+ */
 public class KudoLotteryEvaluator extends BaseEvaluator {
     private final Map<Long, Integer> bet = new HashMap<>();
 
@@ -34,6 +41,7 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
      *
      * @param message message for evaluation
      * @param user    user for first bet.
+     * @param maxBet the max amount a single user can bet
      */
     public KudoLotteryEvaluator(Message message, User user, int maxBet) {
         super(message.getIdLong(), message.getChannel().getIdLong());
@@ -97,7 +105,8 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
     }
 
     /**
-     * Add the amount of kudos to the pot. Adds only if the user has enough kudos.
+     * Add the amount of kudos to the pot. Adds the given amount if the user has enough kudos or at least one per user.
+     * After adding the amount, the {@link KudoLotteryEvaluator#refreshEmbed(TextChannel)} will be executed.
      *
      * @param guild  guild where the kudos should be taken
      * @param user   user where the kudos should be taken

@@ -22,7 +22,15 @@ import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_S
 import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_STATUS_OF;
 import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_VERSION;
 
+/**
+ * the McPing command uses the {@link de.eldoria.shepard.util.PingMinecraftServer.MinecraftPing}
+ * class to ping a minecraft server.
+ * This command should be executed asynchronous.
+ */
 public class McPing extends Command {
+    /**
+     * Creates a new Message Ping command.
+     */
     public McPing() {
         commandName = "mcping";
         commandDesc = McPingLocale.DESCRIPTION.tag;

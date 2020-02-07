@@ -1,6 +1,6 @@
 package de.eldoria.shepard.util;
 
-import java.awt.*;
+import java.awt.Color;
 
 public final class Colors {
     public static final Color pastel_light_red = new Color(250, 132, 132);

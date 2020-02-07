@@ -196,6 +196,10 @@ public final class ShepardBot {
 
     }
 
+    /**
+     * Checks if the bot is fully loaded.
+     * @return true if the bot instance is not null and {@link ShepardBot#loaded} is true.
+     */
     public static boolean isLoaded() {
         if (instance == null) {
             return false;

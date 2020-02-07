@@ -8,7 +8,6 @@ import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.util.Replacer;
-import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -322,6 +321,10 @@ public final class MessageSender {
         });
     }
 
+    /**
+     * Logs a message to message channel if bot is loaded.
+     * @param message message to log
+     */
     public static void logInfo(String message) {
         if (!ShepardBot.isLoaded()) {
             return;

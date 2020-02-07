@@ -78,6 +78,11 @@ public class Normandy {
         return getNormandy().getTextChannelById(privateAnswerChannel);
     }
 
+    /**
+     * get the log channel if this instance has a connection to normandy guild.
+     *
+     * @return text channel or null if normandy is not connected.
+     */
     public static TextChannel getLogChannel() {
         if (getNormandy() != null) {
             return getNormandy().getTextChannelById(logChannel);

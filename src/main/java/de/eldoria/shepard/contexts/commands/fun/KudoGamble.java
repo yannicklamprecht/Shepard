@@ -4,7 +4,7 @@ import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArg;
 import de.eldoria.shepard.contexts.commands.argument.SubArg;
-import de.eldoria.shepard.database.queries.KudoData;
+import de.eldoria.shepard.database.queries.*;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.reactions.Emoji;
@@ -14,9 +14,24 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 
 import java.util.Random;
 
+/**
+ * Creates a gamble game.
+ * A gamble game can be started by every user per channel.
+ * The gamble game goes over three round. Every round forces a message edit.
+ * The result is pseudo random.
+ * This command requires asynchronous execution
+ */
 public class KudoGamble extends Command {
     private Random random = new Random();
+    private final int bonus = 64;
+    private final int tier1 = 16;
+    private final int tier2 = 4;
+    private final int tier3 = 1;
+    private final int tier4 = 0;
 
+    /**
+     * Create a new Kudo Gamble.
+     */
     public KudoGamble() {
         commandName = "kudoGamble";
         commandAliases = new String[] {"gamble"};
@@ -25,11 +40,6 @@ public class KudoGamble extends Command {
                 new SubArg("amount", "Amount you want to set."))};
     }
 
-    private final int bonus = 64;
-    private final int tier1 = 16;
-    private final int tier2 = 4;
-    private final int tier3 = 1;
-    private final int tier4 = 0;
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
@@ -44,8 +54,8 @@ public class KudoGamble extends Command {
             return;
         }
         MessageChannel channel = messageContext.getChannel();
-        StringBuilder messageText = new StringBuilder("Starting a gamble for **" + messageContext.getMember().getEffectiveName() +
-                "**. May the luck be with you!");
+        StringBuilder messageText = new StringBuilder("Starting a gamble for **" + messageContext.getMember()
+                .getEffectiveName() + "**. May the luck be with you!");
         message = channel.sendMessage(messageText.toString()).complete();
 
         messageText.append(System.lineSeparator()).append("**GAMBLE START**").append(System.lineSeparator());
@@ -91,15 +101,11 @@ public class KudoGamble extends Command {
         } else if (winId == bonus * 3) {
             winAmount = amount + KudoData.getAndClearJackpot(messageContext.getGuild(), messageContext);
             jackpot = true;
-        }
-
-        //Bonus
-        else if (win1 == bonus || win2 == bonus || win3 == bonus) {
+        } else if (win1 == bonus || win2 == bonus || win3 == bonus) {
+            //Bonus
             winAmount = (int) Math.round(amount * 1.5);
-        }
-
-        //Two are equal
-        else if (win1 == win2 || win2 == win3) {
+        } else if (win1 == win2 || win2 == win3) {
+            //Two are equal
             winAmount = (int) Math.round(amount * evaluatePairs(win2));
         } else if (win1 == win3) {
             winAmount = (int) Math.round(amount * evaluatePairs(win1));
@@ -115,12 +121,14 @@ public class KudoGamble extends Command {
         }
 
         if (!jackpot) {
-            message.editMessage(finalMessageText + System.lineSeparator() + "You win " + winAmount + " Kudos!").complete();
+            message.editMessage(finalMessageText + System.lineSeparator()
+                    + "You win " + winAmount + " Kudos!").complete();
             KudoData.addRubberPoints(messageContext.getGuild(), messageContext.getAuthor(), winAmount, messageContext);
             return;
         }
 
-        message.editMessage(finalMessageText + System.lineSeparator() + "**JACKPOT! YOU WIN " + winAmount + " KUDOS!**").complete();
+        message.editMessage(finalMessageText + System.lineSeparator()
+                + "**JACKPOT! YOU WIN " + winAmount + " KUDOS!**").complete();
         KudoData.addRubberPoints(messageContext.getGuild(), messageContext.getAuthor(), winAmount, messageContext);
 
 
@@ -138,8 +146,9 @@ public class KudoGamble extends Command {
                 return Emoji.DOLLAR.unicode;
             case bonus:
                 return Emoji.TADA.unicode;
+            default:
+                return Emoji.CROSS_MARK.unicode;
         }
-        return Emoji.CROSS_MARK.unicode;
     }
 
     private int getValue() {
@@ -184,8 +193,8 @@ public class KudoGamble extends Command {
                 return 1.8;
             case tier4:
                 return 2;
-
+            default:
+                return 0;
         }
-        return 0;
     }
 }
