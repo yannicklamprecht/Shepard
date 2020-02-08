@@ -1,7 +1,7 @@
 package de.eldoria.shepard.util;
 
 import com.google.api.client.util.IOUtils;
-import de.eldoria.shepard.ShepardBot;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+@Slf4j
 public class FileHelper {
     /**
      * Get every file from a url.
@@ -30,7 +31,7 @@ public class FileHelper {
 
             return tempFile;
         } catch (IOException e) {
-            ShepardBot.getLogger().error(e);
+            log.error("failed to fetch url {}", url, e);
         }
         return null;
     }

@@ -1,9 +1,9 @@
 package de.eldoria.shepard.collections;
 
-import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
  * It can also find a Command by similarity from a string ({@link #getSimilarCommands(String)}).
  * It provides information about every command by the {@link #getCommandInfos(ContextCategory...)} method
  */
+@Slf4j
 public final class CommandCollection {
     private static CommandCollection instance;
     private final List<Command> commands = new ArrayList<>();
@@ -98,7 +99,7 @@ public final class CommandCollection {
      * Prints a debug message for all commands to console.
      */
     public void debug() {
-        ShepardBot.getLogger().info("++++ DEBUG OF COMMANDS ++++");
+        log.info("++++ DEBUG OF COMMANDS ++++");
         for (Command c : commands) {
             c.printDebugInfo();
         }

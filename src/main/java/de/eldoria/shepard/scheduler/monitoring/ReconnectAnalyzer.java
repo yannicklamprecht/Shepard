@@ -5,6 +5,7 @@ import de.eldoria.shepard.database.types.Address;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.util.PingMinecraftServer;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.Color;
@@ -18,6 +19,7 @@ import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_V
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static de.eldoria.shepard.util.TextFormatting.getTimeAsString;
 
+@Slf4j
 public class ReconnectAnalyzer extends Analyzer {
     /**
      * Creates a new reconnect analyzer.
@@ -33,7 +35,7 @@ public class ReconnectAnalyzer extends Analyzer {
     public void run() {
 
         if (ShepardBot.getConfig().debugActive()) {
-            ShepardBot.getLogger().info("Checking Address " + address.getFullAddress());
+			log.info("Checking Address {}", address.getFullAddress());
         }
 
         if (address.isMinecraftIp()) {
@@ -57,11 +59,11 @@ public class ReconnectAnalyzer extends Analyzer {
                 channel.sendMessage(builder.build()).queue();
                 MonitoringScheduler.getInstance().markAsReachable(channel.getGuild().getIdLong(), address);
                 if (ShepardBot.getConfig().debugActive()) {
-                    ShepardBot.getLogger().info("Service is reachable again: " + address.getFullAddress());
+					log.info("Service is reachable again: {}", address.getFullAddress());
                 }
             } else {
                 if (ShepardBot.getConfig().debugActive()) {
-                    ShepardBot.getLogger().info("Service is still down: " + address.getFullAddress());
+					log.info("Service is still down: {}", address.getFullAddress());
                 }
             }
         } else {
@@ -76,7 +78,7 @@ public class ReconnectAnalyzer extends Analyzer {
                 channel.sendMessage(builder.build()).queue();
                 MonitoringScheduler.getInstance().markAsReachable(channel.getGuild().getIdLong(), address);
                 if (ShepardBot.getConfig().debugActive()) {
-                    ShepardBot.getLogger().info("Service is reachable again: " + address.getFullAddress());
+					log.info("Service is reachable again: {}", address.getFullAddress());
                 }
             } else {
                 LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
@@ -89,7 +91,7 @@ public class ReconnectAnalyzer extends Analyzer {
                 MonitoringScheduler.getInstance().markAsReachable(channel.getGuild().getIdLong(), address);
 
                 if (ShepardBot.getConfig().debugActive()) {
-                    ShepardBot.getLogger().info("Service is still down: " + address.getFullAddress());
+					log.info("Service is still down: {}", address.getFullAddress());
                 }
             }
         }

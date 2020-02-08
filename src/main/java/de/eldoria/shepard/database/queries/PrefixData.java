@@ -4,6 +4,7 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.util.DefaultMap;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.sql.PreparedStatement;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
+@Slf4j
 public final class PrefixData {
     private static final Map<Long, String> prefixes = new HashMap<>();
     private static final DefaultMap<Long, Boolean> cacheDirty = new DefaultMap<>(true);
@@ -40,8 +42,8 @@ public final class PrefixData {
             handleExceptionAndIgnore(e, messageContext);
             return false;
         }
-
-        ShepardBot.getLogger().info("Changed prefix of server " + guild.getName() + " to " + prefix);
+	
+		log.info("Changed prefix of server {} to {}", guild.getName(), prefix);
         return true;
     }
 

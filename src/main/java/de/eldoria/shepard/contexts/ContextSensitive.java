@@ -6,6 +6,7 @@ import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.database.types.ContextSettings;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -21,6 +22,7 @@ import java.util.Map;
 /**
  * A {@link ListenerAdapter} filtering events for different contexts.
  */
+@Slf4j
 public abstract class ContextSensitive {
     /**
      * Category of the context.
@@ -212,7 +214,7 @@ public abstract class ContextSensitive {
      * Prints debug info of the context.
      */
     public void printDebugInfo() {
-        ShepardBot.getLogger().info(getDebugInfo());
+        log.info(getDebugInfo());
     }
 
     /**

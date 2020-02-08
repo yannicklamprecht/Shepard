@@ -2,6 +2,7 @@ package de.eldoria.shepard.database;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.configuration.Database;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,7 +10,7 @@ import java.sql.SQLException;
 
 import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
-
+@Slf4j
 public final class DatabaseConnector {
     private static Connection conn = null;
 
@@ -32,7 +33,7 @@ public final class DatabaseConnector {
             conn = DriverManager.getConnection(String.format("jdbc:postgresql://%s:%s/%s",
                     config.getAddress(), config.getPort(), config.getDb()),
                     config.getUsername(), config.getPassword());
-            ShepardBot.getLogger().info(
+            log.info(
                     String.format("SQL connection established on %s:*******@%s:%s/%s",
                             config.getUsername(), config.getAddress(),
                             config.getPort(), config.getDb()));
@@ -47,7 +48,7 @@ public final class DatabaseConnector {
                 createConnection();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("failed to create db connect", e);
         }
     }
 }

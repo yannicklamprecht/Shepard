@@ -74,7 +74,7 @@ public class Config {
      *
      * @return true if active
      */
-    public boolean debugActive() {
+    public boolean debugActive() { // TODO: seems to be only used for debugging and can be removed
         return debug;
     }
 

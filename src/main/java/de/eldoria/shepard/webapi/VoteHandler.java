@@ -3,6 +3,7 @@ package de.eldoria.shepard.webapi;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.webapi.apiobjects.VoteInformation;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,8 +13,9 @@ import java.util.function.Consumer;
 
 import static java.lang.System.lineSeparator;
 
+@Slf4j
 public class VoteHandler implements Consumer<VoteInformation> {
-    private String[] messages = new String[] {
+    private String[] messages = {
             "Thank you, that you believe in me!" + lineSeparator()
                     + "Nothing makes me happier than your vote!" + lineSeparator()
                     + "Pls accept %0% Kudos a gift for you :3",
@@ -31,10 +33,10 @@ public class VoteHandler implements Consumer<VoteInformation> {
 
     @Override
     public void accept(VoteInformation voteInformation) {
-        ShepardBot.getLogger().info("Processing vote for user " + voteInformation.getUser());
+		log.info("Processing vote for user {}", voteInformation.getUser());
         User userById = ShepardBot.getJDA().getUserById(voteInformation.getUser());
         if (userById == null) {
-            ShepardBot.getLogger().info("No user found for vote");
+            log.info("No user found for vote");
             return;
         }
 
@@ -49,7 +51,7 @@ public class VoteHandler implements Consumer<VoteInformation> {
                     c.sendMessage(messages[ThreadLocalRandom.current().nextInt(messages.length)]
                             .replace("%0%", finalPointsToAdd + "")).queue();
                 });
-        ShepardBot.getLogger().info("Vote processed");
+        log.info("Vote processed");
     }
 
     @NotNull

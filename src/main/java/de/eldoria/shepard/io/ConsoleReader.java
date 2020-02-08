@@ -2,28 +2,21 @@ package de.eldoria.shepard.io;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.util.ExitCode;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Scanner;
 
+@Slf4j
 public final class ConsoleReader implements Runnable {
 
     private static Thread thread;
-    private static ConsoleReader instance;
+    private static ConsoleReader instance = new ConsoleReader();
 
     private final Scanner inputReader = new Scanner(System.in);
 
     private ConsoleReader() {
-        ShepardBot.getLogger().info("Console reader started!");
+        log.info("Console reader started!");
         start();
-    }
-
-    /**
-     * Initializes the console reader.
-     */
-    public static void initialize() {
-        if (instance == null) {
-            instance = new ConsoleReader();
-        }
     }
 
     @Override
@@ -47,12 +40,12 @@ public final class ConsoleReader implements Runnable {
                 continue;
             }
             if (input.equalsIgnoreCase("shutdown")) {
-                ShepardBot.getLogger().info(input);
+                log.info(input);
                 ShepardBot.getInstance().shutdown(ExitCode.SHUTDOWN);
                 return;
             }
             if (input.equalsIgnoreCase("restart")) {
-                ShepardBot.getLogger().info(input);
+                log.info(input);
                 ShepardBot.getInstance().shutdown(ExitCode.RESTART);
                 return;
             }
