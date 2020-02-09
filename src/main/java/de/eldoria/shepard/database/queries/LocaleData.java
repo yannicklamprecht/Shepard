@@ -1,10 +1,10 @@
 package de.eldoria.shepard.database.queries;
 
-import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.localization.util.LocaleCode;
 import de.eldoria.shepard.util.DefaultMap;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.sql.PreparedStatement;
@@ -16,6 +16,7 @@ import java.util.Objects;
 
 import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
+@Slf4j
 public final class LocaleData {
     private static final Map<Long, LocaleCode> languages = new HashMap<>();
     private static final DefaultMap<Long, Boolean> cacheDirty = new DefaultMap<>(true);
@@ -42,8 +43,8 @@ public final class LocaleData {
             handleExceptionAndIgnore(e, messageContext);
             return false;
         }
-
-        ShepardBot.getLogger().info("Changed languageCode of server " + guild.getName() + " to " + localeCode);
+	
+		log.debug("Changed languageCode of server {} to {}", guild.getName(), localeCode);
         return true;
     }
 

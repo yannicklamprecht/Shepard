@@ -1,6 +1,5 @@
 package de.eldoria.shepard.contexts.commands;
 
-import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.LatestCommandsCollection;
 import de.eldoria.shepard.contexts.ContextSensitive;
@@ -16,10 +15,11 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import info.debatty.java.stringsimilarity.JaroWinkler;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -32,6 +32,7 @@ import static java.lang.System.lineSeparator;
 /**
  * An abstract class for commands.
  */
+@Slf4j
 public abstract class Command extends ContextSensitive {
     /**
      * Language handler instance.
@@ -117,17 +118,19 @@ public abstract class Command extends ContextSensitive {
 
         CooldownManager.getInstance().renewCooldown(this, messageContext.getGuild(), messageContext.getAuthor());
 
+        MessageSender.logCommand(label, args, messageContext);
+        
         try {
             internalExecute(label, args, messageContext);
         } catch (InsufficientPermissionException e) {
             messageContext.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel ->
                     MessageSender.handlePermissionException(e, messageContext.getTextChannel()));
         } catch (RuntimeException e) {
-            ShepardBot.getLogger().error(e);
+            log.error("command execution failed", e);
             MessageSender.sendSimpleError(ErrorType.INTERNAL_ERROR, messageContext.getTextChannel());
             return;
         }
-        MessageSender.logCommand(label, args, messageContext);
+        
         LatestCommandsCollection.getInstance()
                 .saveLatestCommand(messageContext.getGuild(), messageContext.getAuthor(),
                         this, label, args);

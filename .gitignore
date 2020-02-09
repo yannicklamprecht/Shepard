@@ -33,7 +33,6 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
-*.xml
 Assets/Plugins/Editor/JetBrains/Unity3DRider.cs
 #Unity gitignore End
 
@@ -41,11 +40,9 @@ Assets/Plugins/Editor/JetBrains/Unity3DRider.cs
 
 #IntelliJ Gitignore Start
 # User-specific stuff
-.idea/**/workspace.xml
-.idea/**/tasks.xml
-.idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.idea/**/*.xml
 
 # Generated files
 .idea/**/contentModel.xml
@@ -114,6 +111,6 @@ target/
 
 .idea/checkstyleidea-libs/
 
-config/
+/config/
 
-logs/
+/logs/

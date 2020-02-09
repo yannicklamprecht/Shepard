@@ -1,7 +1,6 @@
 package de.eldoria.shepard.collections;
 
-import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.contexts.commands.Command;
+
 import de.eldoria.shepard.contexts.keywords.Keyword;
 import de.eldoria.shepard.contexts.keywords.KeywordArgs;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -87,15 +86,5 @@ public final class KeyWordCollection {
             }
         }
         return null;
-    }
-
-    /**
-     * Prints a debug for all keywords to console.
-     */
-    public void debug() {
-        ShepardBot.getLogger().info("++++ DEBUG OF KEYWORDS ++++");
-        for (Keyword c : keywords) {
-            c.printDebugInfo();
-        }
     }
 }

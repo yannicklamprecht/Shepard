@@ -3,6 +3,7 @@ package de.eldoria.shepard.configuration;
 /**
  * Class to deserialize the config.
  */
+// TODO: replace class with @Data
 public class Config {
     private String token = null;
     private boolean debug = false;
@@ -67,24 +68,6 @@ public class Config {
     public void setPrefix(String prefix) {
         if (this.prefix != null) return;
         this.prefix = prefix;
-    }
-
-    /**
-     * Check if the debug mode is active.
-     *
-     * @return true if active
-     */
-    public boolean debugActive() {
-        return debug;
-    }
-
-    /**
-     * Set the debug mode.
-     *
-     * @param debug true if active
-     */
-    public void setDebug(boolean debug) {
-        this.debug = debug;
     }
 
     /**

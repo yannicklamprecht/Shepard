@@ -12,6 +12,7 @@ import de.eldoria.shepard.database.queries.MinecraftLinkData;
 import de.eldoria.shepard.webapi.apiobjects.ApiCache;
 import de.eldoria.shepard.webapi.apiobjects.CommandSearchResponse;
 import de.eldoria.shepard.webapi.apiobjects.VoteInformation;
+import lombok.extern.slf4j.Slf4j;
 import spark.Request;
 
 import java.util.HashMap;
@@ -19,14 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static java.lang.System.lineSeparator;
-import static spark.Spark.before;
-import static spark.Spark.get;
-import static spark.Spark.halt;
-import static spark.Spark.options;
-import static spark.Spark.port;
-import static spark.Spark.post;
+import static spark.Spark.*;
 
+
+@Slf4j
 public final class ApiHandler {
     private static ApiHandler instance;
 
@@ -35,9 +32,9 @@ public final class ApiHandler {
     private BotListReporter botListReporter;
 
     private ApiHandler() {
-        ShepardBot.getLogger().info("Defining Routes");
+        log.info("Defining Routes");
         defineRoutes();
-        ShepardBot.getLogger().info("Routes Defined");
+        log.info("Routes Defined");
         botListReporter = BotListReporter.initialize();
     }
 
@@ -79,8 +76,9 @@ public final class ApiHandler {
             if (!validateRequest(request)) {
                 halt(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
             }
-            logRequest(request.requestMethod() + " " + request.uri(), request);
-        });
+			log.debug("Received request on route: {}\n{}", request.requestMethod() + " " + request.uri(), request.body());
+	
+		});
 
 
         post("/votes", (request, response) -> {
@@ -139,19 +137,11 @@ public final class ApiHandler {
         String authorization = request.headers("Authorization");
         boolean result = authorization.equals(ShepardBot.getConfig().getBotlist().getAuthorization());
         if (!result) {
-            ShepardBot.getLogger().info("Denied access for request." + lineSeparator()
-                    + "Headers:" + lineSeparator()
-                    + request.headers().stream().map(h -> "   " + h + ": " + request.headers(h))
-                    .collect(Collectors.joining(lineSeparator())) + lineSeparator()
-                    + "Body:" + lineSeparator()
-                    + request.body());
+			log.info("Denied access for request.\nHeaders:\n{}{}Body:\n\n",
+					request.headers().stream().map(h -> "   " + h + ": " + request.headers(h))
+							.collect(Collectors.joining("\n")),
+					request.body());
         }
         return result;
-    }
-
-    private void logRequest(String text, Request request) {
-        if (ShepardBot.getConfig().debugActive()) {
-            ShepardBot.getLogger().info("Received request on route: " + text + lineSeparator() + request.body());
-        }
     }
 }

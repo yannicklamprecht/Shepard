@@ -1,10 +1,8 @@
 package de.eldoria.shepard.localization;
 
-import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.database.queries.LocaleData;
 import de.eldoria.shepard.localization.util.LocaleCode;
-import de.eldoria.shepard.messagehandler.MessageSender;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.ArrayList;
@@ -15,6 +13,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+
+@Slf4j
 public class LanguageHandler {
     private static final String BUNDLE_PATH = "locale";
     private static LanguageHandler instance;
@@ -55,15 +55,11 @@ public class LanguageHandler {
         if (getLanguageResource(language).containsKey(localeCode)) {
             return getLanguageResource(language).getString(localeCode);
         } else {
-            ShepardBot.getLogger().error("Missing localization for key: " + localeCode + " in language pack: "
-                    + language.code + ". Using Fallback Language en_US");
-            MessageSender.sendSimpleErrorEmbed("Missing localization for key: " + localeCode + " in language pack: "
-                    + language.code + ". Using Fallback Language en_US", Normandy.getErrorChannel());
+			log.warn("Missing localization for key: {} in language pack: {}. Using Fallback Language en_US", localeCode, language.code);
             ResourceBundle bundle = getLanguageResource(LocaleCode.EN_US);
 
             if (!bundle.containsKey(localeCode)) {
-                ShepardBot.getLogger().error("Missing localisation for key " + localeCode + " in fallback language."
-                        + " Is this intended?");
+				log.warn("Missing localisation for key {} in fallback language. Is this intended?", localeCode);
             }
 
             return bundle.containsKey(localeCode) ? bundle.getString(localeCode) : localeCode;
@@ -94,8 +90,8 @@ public class LanguageHandler {
             ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_PATH, locale);
             languages.put(code, bundle);
         }
-
-        ShepardBot.getLogger().info("Loaded " + languages.size() + " languages!");
+	
+		log.debug("Loaded {} languages!", languages.size());
 
         Set<String> keySet = new HashSet<>();
         for (ResourceBundle resourceBundle : languages.values()) {
@@ -112,9 +108,7 @@ public class LanguageHandler {
         }
 
         if (!missingKeys.isEmpty()) {
-            MessageSender.sendSimpleErrorEmbed("Found missing keys in language packs"
-                            + System.lineSeparator() + String.join(System.lineSeparator(), missingKeys),
-                    Normandy.getErrorChannel());
+			log.warn("Found missing keys in language packs\n{}", String.join("\n", missingKeys));
         }
     }
 }

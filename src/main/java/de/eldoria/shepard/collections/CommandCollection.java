@@ -1,6 +1,5 @@
 package de.eldoria.shepard.collections;
 
-import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandInfo;
@@ -92,16 +91,6 @@ public final class CommandCollection {
 
         rankedCommands.sort(Collections.reverseOrder());
         return rankedCommands.stream().map(rankedCommand -> rankedCommand.command).collect(Collectors.toList());
-    }
-
-    /**
-     * Prints a debug message for all commands to console.
-     */
-    public void debug() {
-        ShepardBot.getLogger().info("++++ DEBUG OF COMMANDS ++++");
-        for (Command c : commands) {
-            c.printDebugInfo();
-        }
     }
 
     /**
