@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.User;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 
 import static java.lang.System.lineSeparator;
@@ -36,9 +37,8 @@ public class VoteHandler implements Consumer<VoteInformation> {
             ShepardBot.getLogger().info("No user found for vote");
             return;
         }
-        Random rand = new Random();
 
-        int pointsToAdd = 15 + rand.nextInt(15);
+        int pointsToAdd = 15 + ThreadLocalRandom.current().nextInt(15);
         pointsToAdd = pointsToAdd * (voteInformation.isWeekend() ? 2 : 1);
 
         KudoData.addFreeRubberPoints(userById, pointsToAdd, null);
@@ -46,7 +46,7 @@ public class VoteHandler implements Consumer<VoteInformation> {
         int finalPointsToAdd = pointsToAdd;
         userById.openPrivateChannel()
                 .queue(c -> {
-                    c.sendMessage(messages[rand.nextInt(messages.length)]
+                    c.sendMessage(messages[ThreadLocalRandom.current().nextInt(messages.length)]
                             .replace("%0%", finalPointsToAdd + "")).queue();
                 });
         ShepardBot.getLogger().info("Vote processed");

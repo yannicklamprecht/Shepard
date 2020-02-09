@@ -63,7 +63,7 @@ public class McPing extends Command {
                     .setColor(Color.green)
                     .setThumbnail(ShepardReactions.EXCITED.thumbnail);
             messageContext.getChannel().sendMessage(builder.build()).queue();
-        } else if (minecraftPing == null || !minecraftPing.isOnline()) {
+        } else {
             LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext.getGuild())
                     .setTitle(M_SERVER_DOWN.tag)
                     .setColor(Color.red)

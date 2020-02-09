@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Creates a gamble game.
@@ -64,9 +65,9 @@ public class KudoGamble extends Command {
 
         message.editMessage(messageText.toString() + square + " " + square + " " + square).complete();
 
-        int win1 = getValue();
-        int win2 = getValue();
-        int win3 = getValue();
+        int win1 = getRandomTier();
+        int win2 = getRandomTier();
+        int win3 = getRandomTier();
 
         String finalMessageText;
         try {
@@ -151,8 +152,8 @@ public class KudoGamble extends Command {
         }
     }
 
-    private int getValue() {
-        int value = random.nextInt(101);
+    private int getRandomTier() {
+        int value = ThreadLocalRandom.current().nextInt(101);
         //Bonus
         // 2 of 100
         if (value >= 98) {
