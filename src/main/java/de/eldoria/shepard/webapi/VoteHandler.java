@@ -5,9 +5,7 @@ import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.webapi.apiobjects.VoteInformation;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.User;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 
@@ -33,10 +31,10 @@ public class VoteHandler implements Consumer<VoteInformation> {
 
     @Override
     public void accept(VoteInformation voteInformation) {
-		log.info("Processing vote for user {}", voteInformation.getUser());
+		log.debug("Processing vote for user {}", voteInformation.getUser());
         User userById = ShepardBot.getJDA().getUserById(voteInformation.getUser());
         if (userById == null) {
-            log.info("No user found for vote");
+            log.debug("No user found for vote");
             return;
         }
 
@@ -51,12 +49,6 @@ public class VoteHandler implements Consumer<VoteInformation> {
                     c.sendMessage(messages[ThreadLocalRandom.current().nextInt(messages.length)]
                             .replace("%0%", finalPointsToAdd + "")).queue();
                 });
-        log.info("Vote processed");
-    }
-
-    @NotNull
-    @Override
-    public Consumer<VoteInformation> andThen(@NotNull Consumer<? super VoteInformation> after) {
-        return null;
+        log.debug("Vote processed");
     }
 }

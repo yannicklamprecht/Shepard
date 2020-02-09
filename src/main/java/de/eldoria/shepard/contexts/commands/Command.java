@@ -118,6 +118,8 @@ public abstract class Command extends ContextSensitive {
 
         CooldownManager.getInstance().renewCooldown(this, messageContext.getGuild(), messageContext.getAuthor());
 
+        MessageSender.logCommand(label, args, messageContext);
+        
         try {
             internalExecute(label, args, messageContext);
         } catch (InsufficientPermissionException e) {
@@ -128,7 +130,7 @@ public abstract class Command extends ContextSensitive {
             MessageSender.sendSimpleError(ErrorType.INTERNAL_ERROR, messageContext.getTextChannel());
             return;
         }
-        MessageSender.logCommand(label, args, messageContext);
+        
         LatestCommandsCollection.getInstance()
                 .saveLatestCommand(messageContext.getGuild(), messageContext.getAuthor(),
                         this, label, args);

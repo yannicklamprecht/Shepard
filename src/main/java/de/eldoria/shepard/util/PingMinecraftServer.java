@@ -50,7 +50,7 @@ public class PingMinecraftServer {
             Gson gson = new Gson();
             pingResult = gson.fromJson(response, MinecraftPing.class);
         } catch (JsonSyntaxException e) {
-            log.error("failed to parse ping response", e);
+            log.warn("failed to parse ping response", e);
         }
         return pingResult;
     }

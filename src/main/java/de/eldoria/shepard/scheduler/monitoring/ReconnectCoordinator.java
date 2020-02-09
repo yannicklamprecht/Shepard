@@ -24,9 +24,8 @@ class ReconnectCoordinator implements Runnable {
         if (MonitoringScheduler.getInstance().getUnreachable().isEmpty()) {
             return;
         }
-        if (ShepardBot.getConfig().debugActive()) {
-            log.info("Checking for unavailable Server.");
-        }
+        
+        log.debug("Checking for unavailable Server.");
         AtomicInteger delay = new AtomicInteger(0);
         for (Map.Entry<Long, List<Address>> set : MonitoringScheduler.getInstance().getUnreachable().entrySet()) {
             Guild guildById = ShepardBot.getJDA().getGuildById(set.getKey());

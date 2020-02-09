@@ -2,11 +2,8 @@ package de.eldoria.shepard;
 
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.KeyWordCollection;
-import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.configuration.Config;
 import de.eldoria.shepard.configuration.Loader;
-import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.register.ContextRegister;
 import de.eldoria.shepard.register.ListenerRegister;
 import de.eldoria.shepard.util.ExitCode;
@@ -17,7 +14,6 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.security.auth.login.LoginException;
-import java.awt.Color;
 import java.util.List;
 
 @Slf4j
@@ -89,24 +85,11 @@ public final class ShepardBot {
 
         ContextRegister.registerContexts();
         ListenerRegister.registerListener();
-		log.info("Registered {} Commands", CommandCollection.getInstance().getCommands().size());
-		log.info("Registered {} Keywords", KeyWordCollection.getInstance().getKeywords().size());
-		log.info("Registered on {} Guilds!", jda.getGuilds().size());
-
-        if (config.debugActive()) {
-            CommandCollection.getInstance().debug();
-            KeyWordCollection.getInstance().debug();
-        }
-
-        MessageSender.sendSimpleTextBox("Shepard meldet sich zum Dienst! Erwarte ihre Befehle!",
-                "Registered " + CommandCollection.getInstance().getCommands().size() + " Commands!"
-                        + System.lineSeparator()
-                        + "Registered " + KeyWordCollection.getInstance().getKeywords().size() + " Keywords!"
-                        + System.lineSeparator()
-                        + "Serving " + jda.getGuilds().size() + " Guilds!",
-                Color.GREEN, ShepardReactions.EXCITED, Normandy.getGeneralLogChannel());
-
-
+		log.info(C.STATUS, "Registered {} Commands,\n Registered {} Keywords,\n Registered on {} Guilds!",
+				CommandCollection.getInstance().getCommands().size(),
+				KeyWordCollection.getInstance().getKeywords().size(),
+				jda.getGuilds().size());
+		
         log.info("Setup complete!");
     }
 
@@ -140,29 +123,24 @@ public final class ShepardBot {
     public void shutdown(ExitCode exitCode) {
         loaded = false;
         if (exitCode == ExitCode.SHUTDOWN) {
-            MessageSender.sendSimpleTextBox("Shutdown.",
-                    "",
-                    Color.RED, ShepardReactions.ASLEEP, Normandy.getGeneralLogChannel());
+        	log.info(C.STATUS, "shutting down");
         }
         if (exitCode == ExitCode.RESTART) {
-            MessageSender.sendSimpleTextBox("Restarting",
-                    "",
-                    new Color(17, 209, 209), ShepardReactions.WINK, Normandy.getGeneralLogChannel());
+			log.info(C.STATUS, "restarting");
         }
 
         if (jda != null) {
             jda.shutdown();
-            log.info("JDA shut down. Closing Application in 2 Seconds!");
+            log.info(C.STATUS, "JDA shut down. Closing Application in 2 Seconds!");
         }
         jda = null;
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
-            log.info("Shutdown interrupted!");
+            log.error("Shutdown interrupted!");
         }
 
         System.exit(exitCode.code);
-
     }
 
     /**

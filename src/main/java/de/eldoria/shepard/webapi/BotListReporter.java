@@ -53,14 +53,14 @@ public final class BotListReporter implements Runnable {
      * Refresh the server count.
      */
     public void refreshInformation() {
-        log.info("Sending Server stats to top.gg");
+        log.debug("Sending Server stats to top.gg");
         try {
             CompletableFuture.allOf(api.setStats(ShepardBot.getJDA().getGuilds().size()).toCompletableFuture());
         } catch (RuntimeException e) {
-            log.error("failed to send server stats to top.gg", e);
+            log.warn("failed to send server stats to top.gg", e);
             return;
         }
-        log.info("Stats send!");
+        log.debug("Stats send!");
     }
 
     /**

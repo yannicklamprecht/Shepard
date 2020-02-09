@@ -43,7 +43,7 @@ public final class PrefixData {
             return false;
         }
 	
-		log.info("Changed prefix of server {} to {}", guild.getName(), prefix);
+		log.debug("Changed prefix of server {} to {}", guild.getName(), prefix);
         return true;
     }
 

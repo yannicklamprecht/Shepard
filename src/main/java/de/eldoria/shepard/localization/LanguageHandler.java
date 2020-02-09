@@ -1,13 +1,9 @@
 package de.eldoria.shepard.localization;
 
-import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.database.queries.LocaleData;
 import de.eldoria.shepard.localization.util.LocaleCode;
-import de.eldoria.shepard.messagehandler.MessageSender;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
-import retrofit2.http.HEAD;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,11 +55,11 @@ public class LanguageHandler {
         if (getLanguageResource(language).containsKey(localeCode)) {
             return getLanguageResource(language).getString(localeCode);
         } else {
-			log.error("Missing localization for key: {} in language pack: {}. Using Fallback Language en_US", localeCode, language.code);
+			log.warn("Missing localization for key: {} in language pack: {}. Using Fallback Language en_US", localeCode, language.code);
             ResourceBundle bundle = getLanguageResource(LocaleCode.EN_US);
 
             if (!bundle.containsKey(localeCode)) {
-				log.error("Missing localisation for key {} in fallback language. Is this intended?", localeCode);
+				log.warn("Missing localisation for key {} in fallback language. Is this intended?", localeCode);
             }
 
             return bundle.containsKey(localeCode) ? bundle.getString(localeCode) : localeCode;
@@ -95,7 +91,7 @@ public class LanguageHandler {
             languages.put(code, bundle);
         }
 	
-		log.info("Loaded {} languages!", languages.size());
+		log.debug("Loaded {} languages!", languages.size());
 
         Set<String> keySet = new HashSet<>();
         for (ResourceBundle resourceBundle : languages.values()) {
@@ -112,9 +108,7 @@ public class LanguageHandler {
         }
 
         if (!missingKeys.isEmpty()) {
-            MessageSender.sendSimpleErrorEmbed("Found missing keys in language packs"
-                            + System.lineSeparator() + String.join(System.lineSeparator(), missingKeys),
-                    Normandy.getErrorChannel());
+			log.warn("Found missing keys in language packs\n{}", String.join("\n", missingKeys));
         }
     }
 }

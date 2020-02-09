@@ -134,22 +134,25 @@ public final class DiscordWebhookAppender extends AbstractAppender {
 	
 	private void flush() {
 		synchronized (buffer) {
-			if (buffer.isEmpty())
-				return;
-			
-			// no need to copy buffer since library will already perform full copy
-			webhookClient.send(buffer);
-			buffer.clear();
-			
-			// timer is always reset after flush, since we not know cause of flush, we always cancel timer
-			flushTimer.cancel(); // timer can't flush empty buffer so no need for further synchronisation
-			flushTimer = new TimerTask() {
-				@Override
-				public void run() {
-					flush();
-				}
-			};
-			TIMER.schedule(flushTimer, FLUSH_INTERVAL);
+			try {
+				if (buffer.isEmpty())
+					return;
+				
+				// no need to copy buffer since library will already perform full copy
+				webhookClient.send(buffer);
+				buffer.clear();
+				
+			} finally {
+				// timer is always reset after flush, since we not know cause of flush, we always cancel timer
+				flushTimer.cancel(); // timer can't flush empty buffer so no need for further synchronisation
+				flushTimer = new TimerTask() {
+					@Override
+					public void run() {
+						flush();
+					}
+				};
+				TIMER.schedule(flushTimer, FLUSH_INTERVAL);
+			}
 		}
 	}
 	

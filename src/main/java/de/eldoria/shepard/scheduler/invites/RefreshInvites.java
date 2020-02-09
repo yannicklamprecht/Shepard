@@ -37,13 +37,11 @@ class RefreshInvites implements Runnable {
             }
             guild.retrieveInvites().queue(invites -> {
                 if (InviteData.updateInvite(guild, invites, null)) {
-                    if (ShepardBot.getConfig().debugActive()) {
-						log.info("Update Invites for guild {}({})", guild.getName(), guild.getId());
-                    }
+                	log.debug("Update Invites for guild {}({})", guild.getName(), guild.getId());
                 }
                 // will run when the last guild was updated successfully
                 if (counter.incrementAndGet() == guildCount) {
-					log.info("Cleaned up Invites");
+					log.debug("Cleaned up Invites");
                 }
             });
             try {

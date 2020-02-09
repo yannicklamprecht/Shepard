@@ -44,7 +44,7 @@ public final class LocaleData {
             return false;
         }
 	
-		log.info("Changed languageCode of server {} to {}", guild.getName(), localeCode);
+		log.debug("Changed languageCode of server {} to {}", guild.getName(), localeCode);
         return true;
     }
 

@@ -59,8 +59,8 @@ class RegisterInvites implements Runnable {
         List<Invite> guildInvites;
         try {
             guildInvites = guild.retrieveInvites().complete();
-        } catch (InsufficientPermissionException e) {
-			log.error("Error occurred on guild {}({})", guild.getName(), guild.getId(), e);
+        } catch (InsufficientPermissionException ignored) {
+        	// we prefer to silently fail on missing permissions since invites are not critical
             return;
         }
         guildInvites.stream()
@@ -73,7 +73,7 @@ class RegisterInvites implements Runnable {
             String name = i.getInviter() != null ? i.getInviter().getAsTag() : "unknown user";
             if (InviteData.addInvite(guild, i.getCode(), name, i.getUses(), null)) {
                 invites.get(guild.getIdLong()).add(i.getCode());
-				log.info("Auto registered invite {} on guild {}({})", i.getCode(), guild.getName(), guild.getId());
+				log.debug("Auto registered invite {} on guild {}({})", i.getCode(), guild.getName(), guild.getId());
             }
         };
     }

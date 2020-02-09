@@ -1,5 +1,6 @@
 package de.eldoria.shepard.listener;
 
+import de.eldoria.shepard.C;
 import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
@@ -12,7 +13,7 @@ import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
-import java.awt.*;
+import java.awt.Color;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -37,13 +38,13 @@ public class LogListener extends ListenerAdapter {
 
     @Override
     public void onReconnect(@Nonnull ReconnectedEvent event) {
-        log.info("JDA reconnected");
+        log.info(C.STATUS, "JDA reconnected");
     }
 
     @Override
     public void onDisconnect(@Nonnull DisconnectEvent event) {
         disconnected = LocalDateTime.now();
-		log.error("JDA disconnected");
+		log.warn(C.STATUS, "JDA disconnected");
     }
 
     @Override
@@ -53,6 +54,6 @@ public class LogListener extends ListenerAdapter {
             MessageSender.sendMessage("@here " + System.lineSeparator() + "Shepard was disconnected for "
                     + seconds + " seconds and is now back.", Normandy.getGeneralLogChannel());
         }
-		log.info("Shepard was disconnected for{} seconds. All connections reconnected. Everything is fine.", seconds);
+		log.info(C.STATUS, "Shepard was disconnected for {} seconds. All connections reconnected. Everything is fine.", seconds);
     }
 }

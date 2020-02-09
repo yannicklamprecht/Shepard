@@ -1,6 +1,6 @@
 package de.eldoria.shepard.messagehandler;
 
-import de.eldoria.shepard.collections.Normandy;
+import de.eldoria.shepard.C;
 import de.eldoria.shepard.database.types.GreetingSettings;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
@@ -171,7 +171,7 @@ public final class MessageSender {
         try {
             channel.sendMessage(builder.build()).queue();
         } catch (ErrorResponseException e) {
-            log.error(e.getMessage());
+            log.error("failed to send error embed", e);
         }
     }
 
@@ -237,14 +237,12 @@ public final class MessageSender {
      * @param messageContext context of command
      */
     public static void logCommand(String label, String[] args, MessageEventDataWrapper messageContext) {
-        String command = "```yaml" + lineSeparator()
-                + "Executor: " + messageContext.getAuthor().getAsTag() + lineSeparator()
-                + "Command:" + messageContext.getMessage().getContentStripped() + lineSeparator()
-                + "Guild: " + messageContext.getGuild().getName()
-                + " (" + messageContext.getGuild().getId() + ")" + lineSeparator()
-                + "```";
-        // TODO: ShepardBot.getLogger().command(command); reimplement command logging via slf4j
-        Normandy.getCommandLogChannel().sendMessage(command).queue();
+        var mention = messageContext.getAuthor().getAsTag();
+        var cmd = messageContext.getMessage().getContentStripped();
+        var guild = messageContext.getGuild().getName();
+        var guildId = messageContext.getGuild().getId();
+        
+        log.debug(C.COMMAND, "command execution by {} in guild {}({}): {}", mention, guild, guildId, cmd);
     }
 
     /**
