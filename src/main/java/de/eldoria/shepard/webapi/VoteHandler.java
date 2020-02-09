@@ -37,7 +37,7 @@ public class VoteHandler implements Consumer<VoteInformation> {
             return;
         }
 
-        int pointsToAdd = 15 + ThreadLocalRandom.current().nextInt(15);
+        int pointsToAdd = ThreadLocalRandom.current().nextInt(15,30);
         pointsToAdd = pointsToAdd * (voteInformation.isWeekend() ? 2 : 1);
 
         KudoData.addFreeRubberPoints(userById, pointsToAdd, null);
