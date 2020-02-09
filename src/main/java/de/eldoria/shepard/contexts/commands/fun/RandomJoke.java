@@ -16,6 +16,10 @@ import java.net.URL;
 import static de.eldoria.shepard.localization.enums.commands.fun.RandomJokeLocale.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.fun.RandomJokeLocale.M_JOKE;
 
+
+/**
+ * Receives a rancom joke from a web api.
+ */
 public class RandomJoke extends Command {
 
     /**

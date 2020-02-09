@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.MonitoringData;
 import de.eldoria.shepard.database.types.Address;
 import de.eldoria.shepard.localization.enums.WordsLocale;
@@ -40,6 +40,11 @@ import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLoc
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
+/**
+ * Command to modify the logging channel.
+ * The monitoring is done in {@link de.eldoria.shepard.scheduler.monitoring.MonitoringCoordinator}
+ *
+ */
 public class Monitoring extends Command {
     /**
      * Creates a new monitoring command object.
@@ -48,20 +53,20 @@ public class Monitoring extends Command {
         commandName = "monitoring";
         commandAliases = new String[] {"monitor"};
         commandDesc = DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("action", true,
-                        new SubArg("add", C_ADD.tag, true),
-                        new SubArg("remove", C_REMOVE.tag, true),
-                        new SubArg("list", C_LIST.tag, true),
-                        new SubArg("enable", C_ENABLE.tag, true),
-                        new SubArg("disable", C_DISABLE.tag, true)),
-                new CommandArg("value", false,
-                        new SubArg("add", A_ADDRESS + " " + A_NAME + " "
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("action", true,
+                        new SubArgument("add", C_ADD.tag, true),
+                        new SubArgument("remove", C_REMOVE.tag, true),
+                        new SubArgument("list", C_LIST.tag, true),
+                        new SubArgument("enable", C_ENABLE.tag, true),
+                        new SubArgument("disable", C_DISABLE.tag, true)),
+                new CommandArgument("value", false,
+                        new SubArgument("add", A_ADDRESS + " " + A_NAME + " "
                                 + A_BOOLEAN + lineSeparator() + A_ADD_TEXT),
-                        new SubArg("remove", GeneralLocale.A_ID.tag),
-                        new SubArg("list", GeneralLocale.A_EMPTY.tag),
-                        new SubArg("enable", GeneralLocale.A_CHANNEL_MENTION_OR_EXECUTE.tag),
-                        new SubArg("disable", A_EMPTY.tag))
+                        new SubArgument("remove", GeneralLocale.A_ID.tag),
+                        new SubArgument("list", GeneralLocale.A_EMPTY.tag),
+                        new SubArgument("enable", GeneralLocale.A_CHANNEL_MENTION_OR_EXECUTE.tag),
+                        new SubArgument("disable", A_EMPTY.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -74,7 +79,7 @@ public class Monitoring extends Command {
         }
 
         String cmd = args[0];
-        CommandArg arg = commandArgs[0];
+        CommandArgument arg = commandArguments[0];
         if (arg.isSubCommand(cmd, 2)) {
             list(messageContext);
             return;

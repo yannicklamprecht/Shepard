@@ -4,8 +4,8 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
@@ -23,6 +23,10 @@ import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLoca
 import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_LOTTERY_RUNNING;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
+/**
+ * Command to start a new KudoLottery.
+ * A started lottery will be handled by {@link KudoLotteryEvaluator}
+ */
 public class KudoLottery extends Command {
     /**
      * Creates a new kudo lottery command object.
@@ -30,9 +34,9 @@ public class KudoLottery extends Command {
     public KudoLottery() {
         commandName = "kudoLottery";
         commandAliases = new String[] {"lottery", "kl"};
-        commandArgs = new CommandArg[] {
-                new CommandArg("maximumBet", false,
-                        new SubArg("maximumBet", KudoLotteryLocale.C_MAX_BET.tag))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("maximumBet", false,
+                        new SubArgument("maximumBet", KudoLotteryLocale.C_MAX_BET.tag))
         };
         commandDesc = DESCRIPTION.tag;
         category = ContextCategory.FUN;

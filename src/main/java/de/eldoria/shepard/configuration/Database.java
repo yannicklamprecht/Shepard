@@ -1,5 +1,8 @@
 package de.eldoria.shepard.configuration;
 
+/**
+ * Class to save Database Configuration.
+ */
 public class Database {
     private String username = null;
     private String password = null;

@@ -5,6 +5,10 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
+/**
+ * The normandy provides several static channel for logging.
+ * Should be removed in future update and replaced by webhooks.
+ */
 public class Normandy {
     private static final long normandy = 538084337984208906L;
     private static final long errorChannel = 616986329447792661L;

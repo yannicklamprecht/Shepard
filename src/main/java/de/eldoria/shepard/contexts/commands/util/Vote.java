@@ -7,6 +7,9 @@ import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
+/**
+ * Command which provides a vote link to the botlist.
+ */
 public class Vote extends Command {
 
     /**

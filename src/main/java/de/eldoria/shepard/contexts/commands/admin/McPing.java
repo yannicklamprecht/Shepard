@@ -2,8 +2,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.localization.enums.commands.admin.McPingLocale;
 import de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
@@ -34,8 +34,8 @@ public class McPing extends Command {
     public McPing() {
         commandName = "mcping";
         commandDesc = McPingLocale.DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {new CommandArg("address", true,
-                new SubArg("address", MonitoringLocale.A_ADDRESS.tag))};
+        commandArguments = new CommandArgument[] {new CommandArgument("address", true,
+                new SubArgument("address", MonitoringLocale.A_ADDRESS.tag))};
         category = ContextCategory.ADMIN;
     }
 

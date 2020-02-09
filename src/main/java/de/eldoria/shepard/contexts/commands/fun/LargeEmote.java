@@ -2,8 +2,8 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.FileHelper;
@@ -17,6 +17,9 @@ import java.util.stream.Collectors;
 import static de.eldoria.shepard.localization.enums.commands.fun.LargeEmoteLocale.A_EMOTE;
 import static de.eldoria.shepard.localization.enums.commands.fun.LargeEmoteLocale.DESCRIPTION;
 
+/**
+ * Command to get up to five emotes as the possible largest image.
+ */
 public class LargeEmote extends Command {
     /**
      * Create new large emote command object.
@@ -24,9 +27,9 @@ public class LargeEmote extends Command {
     public LargeEmote() {
         commandName = "largeEmote";
         commandDesc = DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("emotes", true,
-                        new SubArg("emotes", A_EMOTE.tag))};
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("emotes", true,
+                        new SubArgument("emotes", A_EMOTE.tag))};
         commandAliases = new String[] {"lemote"};
         category = ContextCategory.FUN;
     }

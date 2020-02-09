@@ -2,8 +2,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.LocaleData;
 import de.eldoria.shepard.localization.util.LocaleCode;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -23,6 +23,10 @@ import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocal
 import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocale.M_LIST;
 import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocale.M_SUBMIT;
 
+/**
+ * Command to specify the bot config.
+ * Languages are loaded from {@link de.eldoria.shepard.localization.LanguageHandler}
+ */
 public class Language extends Command {
 
     /**
@@ -32,15 +36,15 @@ public class Language extends Command {
         commandName = "language";
         commandAliases = new String[] {"locale"};
         commandDesc = DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("action", true,
-                        new SubArg("set", C_SET.tag, true),
-                        new SubArg("reset", C_RESET.tag, true),
-                        new SubArg("list", C_LIST.tag, true)),
-                new CommandArg("value", false,
-                        new SubArg("set", A_LANGUAGE_CODE_FORMAT.tag),
-                        new SubArg("reset", A_EMPTY.tag),
-                        new SubArg("list", A_EMPTY.tag))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("action", true,
+                        new SubArgument("set", C_SET.tag, true),
+                        new SubArgument("reset", C_RESET.tag, true),
+                        new SubArgument("list", C_LIST.tag, true)),
+                new CommandArgument("value", false,
+                        new SubArgument("set", A_LANGUAGE_CODE_FORMAT.tag),
+                        new SubArgument("reset", A_EMPTY.tag),
+                        new SubArgument("list", A_EMPTY.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -48,7 +52,7 @@ public class Language extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArg arg = commandArgs[0];
+        CommandArgument arg = commandArguments[0];
         if (arg.isSubCommand(cmd, 0)) {
             set(args, messageContext);
             return;

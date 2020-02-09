@@ -2,6 +2,9 @@ package de.eldoria.shepard.contexts;
 
 import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
 
+/**
+ * Enum to specify the category of a context.
+ */
 @SuppressWarnings("CheckStyle")
 public enum ContextCategory {
     /**

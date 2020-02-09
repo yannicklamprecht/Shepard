@@ -1,5 +1,8 @@
 package de.eldoria.shepard.configuration;
 
+/**
+ * Saves all required information of the botlist.
+ */
 public class BotList {
     private String token = null;
     private String authorization = null;

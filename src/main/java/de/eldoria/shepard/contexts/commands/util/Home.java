@@ -9,6 +9,9 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.awt.Color;
 
+/**
+ * Command which provides a invite link to normandy.
+ */
 public class Home extends Command {
     /**
      * Creates a new home command object.

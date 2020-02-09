@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.GreetingData;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -23,6 +23,9 @@ import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLoca
 import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.M_SET_MESSAGE;
 import static java.lang.System.lineSeparator;
 
+/**
+ * Command to configure the greeting message and channel.
+ */
 public class Greeting extends Command {
     /**
      * Creates a new greeting command object.
@@ -30,15 +33,15 @@ public class Greeting extends Command {
     public Greeting() {
         commandName = "greeting";
         commandDesc = DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("action", true,
-                        new SubArg("setChannel", C_SET_CHANNEL.tag, true),
-                        new SubArg("removeChannel", C_REMOVE_CHANNEL.tag, true),
-                        new SubArg("setMessage", C_SET_MESSAGE.tag, true)),
-                new CommandArg("value", false,
-                        new SubArg("setChannel", A_CHANNEL_MENTION_OR_EXECUTE.tag),
-                        new SubArg("removeChannel", A_EMPTY.tag),
-                        new SubArg("setMessage", A_MESSAGE_MENTION.tag))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("action", true,
+                        new SubArgument("setChannel", C_SET_CHANNEL.tag, true),
+                        new SubArgument("removeChannel", C_REMOVE_CHANNEL.tag, true),
+                        new SubArgument("setMessage", C_SET_MESSAGE.tag, true)),
+                new CommandArgument("value", false,
+                        new SubArgument("setChannel", A_CHANNEL_MENTION_OR_EXECUTE.tag),
+                        new SubArgument("removeChannel", A_EMPTY.tag),
+                        new SubArgument("setMessage", A_MESSAGE_MENTION.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -47,7 +50,7 @@ public class Greeting extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArg arg = commandArgs[0];
+        CommandArgument arg = commandArguments[0];
         if (arg.isSubCommand(cmd, 0)) {
             setChannel(args, messageContext);
             return;

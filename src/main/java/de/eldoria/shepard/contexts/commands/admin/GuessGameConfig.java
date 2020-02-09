@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -34,6 +34,11 @@ import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConf
 import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_STARTED_REGISTRATION;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
+/**
+ * Command to configure the guess game.
+ * Allows adding and removal of images.
+ * Reflagging of a image is also possible.
+ */
 public class GuessGameConfig extends Command {
 
     /**
@@ -43,20 +48,20 @@ public class GuessGameConfig extends Command {
         commandName = "guessGameConfig";
         commandAliases = new String[] {"ggconfig"};
         commandDesc = DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("action", true,
-                        new SubArg("addImage", C_ADD_IMAGE.tag, true),
-                        new SubArg("removeImage", C_REMOVE_IMAGE.tag, true),
-                        new SubArg("changeFlag", C_CHANGE_FLAG.tag, true),
-                        new SubArg("showImageSet", C_SHOW_IMAGE_SET.tag, true),
-                        new SubArg("cancelRegistration", C_CANCEL_REGISTRATION.tag, true)),
-                new CommandArg("values", false,
-                        new SubArg("addImage", A_FLAG.tag),
-                        new SubArg("removeImage", A_URL.tag),
-                        new SubArg("changeFlag", A_URL + " "
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("action", true,
+                        new SubArgument("addImage", C_ADD_IMAGE.tag, true),
+                        new SubArgument("removeImage", C_REMOVE_IMAGE.tag, true),
+                        new SubArgument("changeFlag", C_CHANGE_FLAG.tag, true),
+                        new SubArgument("showImageSet", C_SHOW_IMAGE_SET.tag, true),
+                        new SubArgument("cancelRegistration", C_CANCEL_REGISTRATION.tag, true)),
+                new CommandArgument("values", false,
+                        new SubArgument("addImage", A_FLAG.tag),
+                        new SubArgument("removeImage", A_URL.tag),
+                        new SubArgument("changeFlag", A_URL + " "
                                 + A_FLAG),
-                        new SubArg("showImageSet", A_URL.tag),
-                        new SubArg("cancelRegistration", A_EMPTY.tag))
+                        new SubArgument("showImageSet", A_URL.tag),
+                        new SubArgument("cancelRegistration", A_EMPTY.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -64,7 +69,7 @@ public class GuessGameConfig extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArg arg = commandArgs[0];
+        CommandArgument arg = commandArguments[0];
         if (arg.isSubCommand(cmd, 0)) {
             addImage(args, messageContext);
             return;

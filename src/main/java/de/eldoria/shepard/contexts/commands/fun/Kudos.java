@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.fun;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.database.types.Rank;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -32,6 +32,9 @@ import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_S
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
+/**
+ * Command to give Kudos and see the top Kudos owner.
+ */
 public class Kudos extends Command {
     /**
      * Create a new kudos command object.
@@ -39,16 +42,16 @@ public class Kudos extends Command {
     public Kudos() {
         commandName = "kudos";
         commandDesc = DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("action", false,
-                        new SubArg("leave empty", C_EMPTY.tag, false),
-                        new SubArg("give", C_GIVE.tag, true),
-                        new SubArg("top", C_TOP.tag, true),
-                        new SubArg("topGlobal", C_TOP_GLOBAL.tag, true)),
-                new CommandArg("values", false,
-                        new SubArg("give", A_USER + " " + A_POINTS),
-                        new SubArg("top", A_EMPTY.tag),
-                        new SubArg("topGlobal", A_EMPTY.tag))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("action", false,
+                        new SubArgument("leave empty", C_EMPTY.tag, false),
+                        new SubArgument("give", C_GIVE.tag, true),
+                        new SubArgument("top", C_TOP.tag, true),
+                        new SubArgument("topGlobal", C_TOP_GLOBAL.tag, true)),
+                new CommandArgument("values", false,
+                        new SubArgument("give", A_USER + " " + A_POINTS),
+                        new SubArgument("top", A_EMPTY.tag),
+                        new SubArgument("topGlobal", A_EMPTY.tag))
         };
         category = ContextCategory.FUN;
     }
@@ -74,7 +77,7 @@ public class Kudos extends Command {
         }
 
         String cmd = args[0];
-        CommandArg arg = commandArgs[0];
+        CommandArgument arg = commandArguments[0];
 
         if (arg.isSubCommand(cmd, 1)) {
             give(args, messageContext);

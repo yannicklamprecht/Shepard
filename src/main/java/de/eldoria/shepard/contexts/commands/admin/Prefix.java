@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -17,6 +17,9 @@ import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.
 import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.M_CHANGED;
 
+/**
+ * Command to change the bot prefix on a guild.
+ */
 public class Prefix extends Command {
 
     /**
@@ -25,13 +28,13 @@ public class Prefix extends Command {
     public Prefix() {
         commandName = "prefix";
         commandDesc = DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("action", true,
-                        new SubArg("set", C_SET.tag, true),
-                        new SubArg("reset", C_RESET.tag, true)),
-                new CommandArg("value", false,
-                        new SubArg("set", A_PREFIX_FORMAT.tag),
-                        new SubArg("reset", A_EMPTY.tag))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("action", true,
+                        new SubArgument("set", C_SET.tag, true),
+                        new SubArgument("reset", C_RESET.tag, true)),
+                new CommandArgument("value", false,
+                        new SubArgument("set", A_PREFIX_FORMAT.tag),
+                        new SubArgument("reset", A_EMPTY.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -39,7 +42,7 @@ public class Prefix extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArg arg = commandArgs[0];
+        CommandArgument arg = commandArguments[0];
         if (arg.isSubCommand(cmd, 0)) {
             set(args, messageContext);
             return;

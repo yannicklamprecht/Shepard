@@ -13,6 +13,9 @@ import java.util.Set;
 
 import static de.eldoria.shepard.database.queries.TicketData.getChannelOwnerRoles;
 
+/**
+ * Holds methods used in {@link Ticket} and {@link TicketSettings}.
+ */
 final class TicketHelper {
     private TicketHelper() {
     }

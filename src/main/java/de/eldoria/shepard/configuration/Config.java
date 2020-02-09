@@ -1,5 +1,8 @@
 package de.eldoria.shepard.configuration;
 
+/**
+ * Class to deserialize the config.
+ */
 public class Config {
     private String token = null;
     private boolean debug = false;

@@ -4,9 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CommandArgInfo {
+/**
+ * Class to save a {@link CommandArgument} for serialization.
+ */
+public class CommandArgumentInfo {
     private final String argName;
-    private final List<SubArgInfo> subArgs;
+    private final List<SubArgumentInfo> subArgs;
     private final boolean required;
 
     /**
@@ -14,9 +17,9 @@ public class CommandArgInfo {
      *
      * @param arg Command arg for information retrieval.
      */
-    public CommandArgInfo(CommandArg arg) {
+    public CommandArgumentInfo(CommandArgument arg) {
         argName = arg.getArgName();
         required = arg.isRequired();
-        subArgs = Arrays.stream(arg.getSubArgs()).map(subArg -> new SubArgInfo(subArg)).collect(Collectors.toList());
+        subArgs = Arrays.stream(arg.getSubArguments()).map(subArg -> new SubArgumentInfo(subArg)).collect(Collectors.toList());
     }
 }

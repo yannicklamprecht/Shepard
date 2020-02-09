@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.QuoteData;
 import de.eldoria.shepard.database.types.QuoteElement;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -31,6 +31,9 @@ import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLo
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
+/**
+ * Command to add, remove, alter and list quotes.
+ */
 public class ManageQuote extends Command {
 
     /**
@@ -40,17 +43,17 @@ public class ManageQuote extends Command {
         commandName = "manageQuotes";
         commandAliases = new String[] {"mq"};
         commandDesc = DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("action", true,
-                        new SubArg("add", C_ADD.tag, true),
-                        new SubArg("alter", C_ALTER.tag, true),
-                        new SubArg("remove", C_REMOVE.tag, true),
-                        new SubArg("list", C_LIST.tag, true)),
-                new CommandArg("action", false,
-                        new SubArg("add", A_TEXT.tag),
-                        new SubArg("alter", A_ID + " " + A_TEXT),
-                        new SubArg("remove", A_ID.tag),
-                        new SubArg("list", A_KEYWORD.tag))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("action", true,
+                        new SubArgument("add", C_ADD.tag, true),
+                        new SubArgument("alter", C_ALTER.tag, true),
+                        new SubArgument("remove", C_REMOVE.tag, true),
+                        new SubArgument("list", C_LIST.tag, true)),
+                new CommandArgument("action", false,
+                        new SubArgument("add", A_TEXT.tag),
+                        new SubArgument("alter", A_ID + " " + A_TEXT),
+                        new SubArgument("remove", A_ID.tag),
+                        new SubArgument("list", A_KEYWORD.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -58,7 +61,7 @@ public class ManageQuote extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArg arg = commandArgs[0];
+        CommandArgument arg = commandArguments[0];
         if (arg.isSubCommand(cmd, 0)) {
             add(args, messageContext);
             return;

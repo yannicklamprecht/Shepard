@@ -16,6 +16,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Class to load the config from a specific path.
+ */
 public final class Loader {
     private static Loader loader;
 

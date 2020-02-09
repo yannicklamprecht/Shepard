@@ -1,5 +1,8 @@
 package de.eldoria.shepard.configuration;
 
+/**
+ * Class to save the presence config.
+ */
 public class Presence {
     private String[] playing;
     private String[] listening;

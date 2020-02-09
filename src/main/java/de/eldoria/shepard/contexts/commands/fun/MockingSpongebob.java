@@ -11,6 +11,10 @@ import java.io.File;
 
 import static de.eldoria.shepard.localization.enums.commands.fun.MockingSpongebobLocale.DESCRIPTION;
 
+/**
+ * Command which queries a web api to receive a mocking spongenbob image with a specific text
+ * Should be executed asynchronous.
+ */
 public class MockingSpongebob extends Command {
     private static final String BASE_URL = "https://mockingspongebob.org/";
 

@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.util;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.util.UserInfoLocale;
@@ -38,8 +38,8 @@ public class UserInfo extends Command {
         commandName = "userInfo";
         commandAliases = new String[] {"aboutuser"};
         commandDesc = UserInfoLocale.DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {new CommandArg("user", false,
-                new SubArg("user", GeneralLocale.A_USER.tag))
+        commandArguments = new CommandArgument[] {new CommandArgument("user", false,
+                new SubArgument("user", GeneralLocale.A_USER.tag))
         };
         category = ContextCategory.UTIL;
     }

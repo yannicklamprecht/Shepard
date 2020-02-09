@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.util;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.ReminderData;
 import de.eldoria.shepard.database.types.ReminderSimple;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
@@ -24,6 +24,9 @@ import static de.eldoria.shepard.localization.enums.WordsLocale.MESSAGE;
 import static de.eldoria.shepard.localization.enums.WordsLocale.TIME;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
+/**
+ * Reminder command which reminds user on a specific time and date or at a interval.
+ */
 public class Reminder extends Command {
     private static final Pattern INTERVAL = Pattern.compile("in\\s([0-9])+\\s(((min|hour|day|week)s?)|month)",
             Pattern.MULTILINE);
@@ -37,15 +40,15 @@ public class Reminder extends Command {
         commandName = "remind";
         commandAliases = new String[] {"reminder", "timer"};
         commandDesc = ReminderLocal.DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("action", true,
-                        new SubArg("create", ReminderLocal.C_ADD.tag, true),
-                        new SubArg("remove", ReminderLocal.C_REMOVE.tag, true),
-                        new SubArg("list", ReminderLocal.C_LIST.tag, true)),
-                new CommandArg("value", false,
-                        new SubArg("create", ReminderLocal.M_FORMAT.tag),
-                        new SubArg("remove", "[" + GeneralLocale.A_ID + "]"),
-                        new SubArg("list", GeneralLocale.A_EMPTY.tag))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("action", true,
+                        new SubArgument("create", ReminderLocal.C_ADD.tag, true),
+                        new SubArgument("remove", ReminderLocal.C_REMOVE.tag, true),
+                        new SubArgument("list", ReminderLocal.C_LIST.tag, true)),
+                new CommandArgument("value", false,
+                        new SubArgument("create", ReminderLocal.M_FORMAT.tag),
+                        new SubArgument("remove", "[" + GeneralLocale.A_ID + "]"),
+                        new SubArgument("list", GeneralLocale.A_EMPTY.tag))
         };
         category = ContextCategory.UTIL;
     }
@@ -53,7 +56,7 @@ public class Reminder extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArg arg = commandArgs[0];
+        CommandArgument arg = commandArguments[0];
 
         if (arg.isSubCommand(cmd, 2)) {
             list(messageContext);

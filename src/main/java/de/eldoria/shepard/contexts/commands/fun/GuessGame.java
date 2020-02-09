@@ -2,8 +2,8 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.database.types.Rank;
@@ -38,6 +38,11 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
+/**
+ * Command to start a guess game.
+ * A started guess game will be manages by a {@link GuessGameEvaluator}.
+ * Provides information about user scores.
+ */
 public class GuessGame extends Command {
 
     /**
@@ -47,13 +52,13 @@ public class GuessGame extends Command {
         commandName = "guessGame";
         commandAliases = new String[] {"gg", "nsfwornot"};
         commandDesc = GuessGameLocale.DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("action", false,
-                        new SubArg("start game", C_START.tag),
-                        new SubArg("score", C_SCORE.tag, true),
-                        new SubArg("scoreGlobal", C_SCORE_GLOBAL.tag, true),
-                        new SubArg("top", C_TOP.tag, true),
-                        new SubArg("topGlobal", C_TOP_GLOBAL.tag, true))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("action", false,
+                        new SubArgument("start game", C_START.tag),
+                        new SubArgument("score", C_SCORE.tag, true),
+                        new SubArgument("scoreGlobal", C_SCORE_GLOBAL.tag, true),
+                        new SubArgument("top", C_TOP.tag, true),
+                        new SubArgument("topGlobal", C_TOP_GLOBAL.tag, true))
         };
         category = ContextCategory.FUN;
     }
@@ -75,7 +80,7 @@ public class GuessGame extends Command {
         }
 
         String cmd = args[0];
-        CommandArg arg = commandArgs[0];
+        CommandArgument arg = commandArguments[0];
 
         if (arg.isSubCommand(cmd, 1)) {
             int userScore = GuessGameData.getUserScore(messageContext.getGuild(),

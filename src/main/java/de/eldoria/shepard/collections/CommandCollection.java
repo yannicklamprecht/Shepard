@@ -12,6 +12,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The command collection holds every registered and active {@link Command} object.
+ * Provides a method {@link #getCommand(String)} to find a command by a alias or command name.
+ * It can also find a Command by similarity from a string ({@link #getSimilarCommands(String)}).
+ * It provides information about every command by the {@link #getCommandInfos(ContextCategory...)} method
+ */
 public final class CommandCollection {
     private static CommandCollection instance;
     private final List<Command> commands = new ArrayList<>();

@@ -5,6 +5,9 @@ import de.eldoria.shepard.contexts.commands.CommandInfo;
 
 import java.util.List;
 
+/**
+ * A class to serialise a list of {@link CommandInfo} to a json object.
+ */
 public class CommandInfos {
     private List<CommandInfo> infos;
 

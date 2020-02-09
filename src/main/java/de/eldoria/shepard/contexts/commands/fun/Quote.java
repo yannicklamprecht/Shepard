@@ -2,8 +2,8 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.QuoteData;
 import de.eldoria.shepard.database.types.QuoteElement;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -17,6 +17,9 @@ import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.A_E
 import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.M_NO_QUOTE_FOUND;
 
+/**
+ * Command which draws a random quote from database or a quote containing a keyword.
+ */
 public class Quote extends Command {
 
     /**
@@ -25,9 +28,9 @@ public class Quote extends Command {
     public Quote() {
         commandName = "Quote";
         commandDesc = DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("keyword", false,
-                        new SubArg("keyword", A_EMPTY_OR_WORD.tag))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("keyword", false,
+                        new SubArgument("keyword", A_EMPTY_OR_WORD.tag))
         };
         category = ContextCategory.FUN;
     }

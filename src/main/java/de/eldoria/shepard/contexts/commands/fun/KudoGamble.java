@@ -2,8 +2,8 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.*;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -36,8 +36,8 @@ public class KudoGamble extends Command {
         commandName = "kudoGamble";
         commandAliases = new String[] {"gamble"};
         commandDesc = "Gamble your Kudos. Challenge your Luck!";
-        commandArgs = new CommandArg[] {new CommandArg("amount", true,
-                new SubArg("amount", "Amount you want to set."))};
+        commandArguments = new CommandArgument[] {new CommandArgument("amount", true,
+                new SubArgument("amount", "Amount you want to set."))};
     }
 
 

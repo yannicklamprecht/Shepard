@@ -7,6 +7,9 @@ import de.eldoria.shepard.util.reactions.Emoji;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
 
+/**
+ * Helper methods which are used in {@link PrivateAnswer} and {@link SendPrivateMessage}.
+ */
 public final class PrivateMessageHelper {
 
     private PrivateMessageHelper() {

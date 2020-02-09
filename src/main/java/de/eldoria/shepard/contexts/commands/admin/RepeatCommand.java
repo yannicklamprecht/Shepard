@@ -9,6 +9,10 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import static de.eldoria.shepard.localization.enums.commands.admin.RepeatCommandLocale.DESCRIPTION;
 
+/**
+ * Command to execute the last executed command.
+ * Uses the {@link LatestCommandsCollection} to find the last used command.
+ */
 public class RepeatCommand extends Command {
     /**
      * Creates a new repeat command object.

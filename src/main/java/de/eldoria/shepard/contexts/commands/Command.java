@@ -4,7 +4,7 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.LatestCommandsCollection;
 import de.eldoria.shepard.contexts.ContextSensitive;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
@@ -52,7 +52,7 @@ public abstract class Command extends ContextSensitive {
     /**
      * Command args as command arg array.
      */
-    protected CommandArg[] commandArgs = new CommandArg[0];
+    protected CommandArgument[] commandArguments = new CommandArgument[0];
     private final JaroWinkler similarity = new JaroWinkler();
 
     /**
@@ -177,11 +177,11 @@ public abstract class Command extends ContextSensitive {
      *
      * @return an array of command arguments.
      */
-    public CommandArg[] getCommandArgs() {
-        if (commandArgs == null) {
-            commandArgs = new CommandArg[0];
+    public CommandArgument[] getCommandArguments() {
+        if (commandArguments == null) {
+            commandArguments = new CommandArgument[0];
         }
-        return commandArgs;
+        return commandArguments;
     }
 
     /**
@@ -220,7 +220,7 @@ public abstract class Command extends ContextSensitive {
      */
     public boolean checkArguments(String[] args) {
         int requiredArguments = 0;
-        for (CommandArg a : commandArgs) {
+        for (CommandArgument a : commandArguments) {
             if (a.isRequired()) {
                 requiredArguments++;
             }
@@ -244,7 +244,7 @@ public abstract class Command extends ContextSensitive {
                     + String.join(", ", getCommandAliases()));
         }
 
-        String args = Arrays.stream(getCommandArgs()).map(CommandArg::getHelpString)
+        String args = Arrays.stream(getCommandArguments()).map(CommandArgument::getHelpString)
                 .collect(Collectors.joining(" "));
 
 
@@ -253,9 +253,9 @@ public abstract class Command extends ContextSensitive {
                 false, channel));
 
         StringBuilder desc = new StringBuilder();
-        if (commandArgs.length != 0) {
+        if (commandArguments.length != 0) {
             String title = "__**" + HelpLocale.W_ARGUMENTS + ":**__";
-            for (CommandArg arg : commandArgs) {
+            for (CommandArgument arg : commandArguments) {
                 desc.setLength(0);
                 desc.append(">>> ").append(TextLocalizer.localizeAll(arg.getArgHelpString(), channel.getGuild()))
                         .append(lineSeparator()).append(lineSeparator());

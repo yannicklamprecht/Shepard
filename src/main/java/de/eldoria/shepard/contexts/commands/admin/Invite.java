@@ -2,8 +2,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -44,17 +44,17 @@ public class Invite extends Command {
     public Invite() {
         commandName = "invite";
         commandDesc = DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("action", true,
-                        new SubArg("add", C_ADD_INVITE.tag, true),
-                        new SubArg("remove", C_REMOVE_INVITE.tag, true),
-                        new SubArg("refresh", C_REFRESH_INVITES.tag, true),
-                        new SubArg("show", C_SHOW_INVITES.tag, true)),
-                new CommandArg("values", false,
-                        new SubArg("add", A_CODE.tag + " " + A_INVITE_NAME.tag),
-                        new SubArg("remove", A_CODE.tag),
-                        new SubArg("refresh", A_EMPTY.tag),
-                        new SubArg("show", A_EMPTY.tag))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("action", true,
+                        new SubArgument("add", C_ADD_INVITE.tag, true),
+                        new SubArgument("remove", C_REMOVE_INVITE.tag, true),
+                        new SubArgument("refresh", C_REFRESH_INVITES.tag, true),
+                        new SubArgument("show", C_SHOW_INVITES.tag, true)),
+                new CommandArgument("values", false,
+                        new SubArgument("add", A_CODE.tag + " " + A_INVITE_NAME.tag),
+                        new SubArgument("remove", A_CODE.tag),
+                        new SubArgument("refresh", A_EMPTY.tag),
+                        new SubArgument("show", A_EMPTY.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -63,7 +63,7 @@ public class Invite extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArg arg = commandArgs[0];
+        CommandArgument arg = commandArguments[0];
         if (arg.isSubCommand(cmd, 0)) {
             addInvite(args, messageContext);
             return;

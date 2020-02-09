@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.ChangelogData;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -33,6 +33,12 @@ import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLoca
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
+/**
+ * Command which configure the logging channel.
+ * Will grow when the bot receives more moderation features.
+ * Similar to AuditLog, but can also log bot actions in the future.
+ * The logging events are present in {@link de.eldoria.shepard.listener.ChangelogListener}.
+ */
 public class Changelog extends Command {
     /**
      * Creates a new changelog command object.
@@ -41,19 +47,19 @@ public class Changelog extends Command {
         commandName = "changelog";
         commandAliases = new String[] {"log"};
         commandDesc = DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("action", true,
-                        new SubArg("addRole", C_ADD_ROLE.tag, true),
-                        new SubArg("removeRole", C_REMOVE_ROLE.tag, true),
-                        new SubArg("activate", C_ACTIVATE.tag, true),
-                        new SubArg("deactivate", C_DEACTIVATE.tag, true),
-                        new SubArg("roles", C_ROLES.tag, true)),
-                new CommandArg("value", false,
-                        new SubArg("addRole", A_ROLE.tag),
-                        new SubArg("removeRole", A_ROLE.tag),
-                        new SubArg("activate", A_CHANNEL.tag),
-                        new SubArg("deactivate", A_EMPTY.tag),
-                        new SubArg("roles", A_EMPTY.tag))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("action", true,
+                        new SubArgument("addRole", C_ADD_ROLE.tag, true),
+                        new SubArgument("removeRole", C_REMOVE_ROLE.tag, true),
+                        new SubArgument("activate", C_ACTIVATE.tag, true),
+                        new SubArgument("deactivate", C_DEACTIVATE.tag, true),
+                        new SubArgument("roles", C_ROLES.tag, true)),
+                new CommandArgument("value", false,
+                        new SubArgument("addRole", A_ROLE.tag),
+                        new SubArgument("removeRole", A_ROLE.tag),
+                        new SubArgument("activate", A_CHANNEL.tag),
+                        new SubArgument("deactivate", A_EMPTY.tag),
+                        new SubArgument("roles", A_EMPTY.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -61,7 +67,7 @@ public class Changelog extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArg arg = commandArgs[0];
+        CommandArgument arg = commandArguments[0];
         if (arg.isSubCommand(cmd, 0) || arg.isSubCommand(cmd, 1)) {
             modifyRoles(args, messageContext, cmd);
             return;
@@ -131,7 +137,7 @@ public class Changelog extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ROLE, messageContext.getTextChannel());
             return;
         }
-        CommandArg arg = commandArgs[0];
+        CommandArgument arg = commandArguments[0];
 
         if (arg.isSubCommand(cmd, 0)) {
             if (ChangelogData.addRole(messageContext.getGuild(), role, messageContext)) {
