@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -119,7 +119,7 @@ public abstract class Command extends ContextSensitive {
         CooldownManager.getInstance().renewCooldown(this, messageContext.getGuild(), messageContext.getAuthor());
 
         MessageSender.logCommand(label, args, messageContext);
-        
+
         try {
             internalExecute(label, args, messageContext);
         } catch (InsufficientPermissionException e) {
@@ -130,7 +130,7 @@ public abstract class Command extends ContextSensitive {
             MessageSender.sendSimpleError(ErrorType.INTERNAL_ERROR, messageContext.getTextChannel());
             return;
         }
-        
+
         LatestCommandsCollection.getInstance()
                 .saveLatestCommand(messageContext.getGuild(), messageContext.getAuthor(),
                         this, label, args);

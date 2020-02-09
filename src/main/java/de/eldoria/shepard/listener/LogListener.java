@@ -44,7 +44,7 @@ public class LogListener extends ListenerAdapter {
     @Override
     public void onDisconnect(@Nonnull DisconnectEvent event) {
         disconnected = LocalDateTime.now();
-		log.warn(C.STATUS, "JDA disconnected");
+        log.warn(C.STATUS, "JDA disconnected");
     }
 
     @Override
@@ -54,6 +54,6 @@ public class LogListener extends ListenerAdapter {
             MessageSender.sendMessage("@here " + System.lineSeparator() + "Shepard was disconnected for "
                     + seconds + " seconds and is now back.", Normandy.getGeneralLogChannel());
         }
-		log.info(C.STATUS, "Shepard was disconnected for {} seconds. All connections reconnected. Everything is fine.", seconds);
+        log.info(C.STATUS, "Shepard was disconnected for {} seconds. All connections reconnected. Everything is fine.", seconds);
     }
 }

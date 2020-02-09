@@ -20,7 +20,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static spark.Spark.*;
+import static spark.Spark.before;
+import static spark.Spark.get;
+import static spark.Spark.halt;
+import static spark.Spark.options;
+import static spark.Spark.port;
+import static spark.Spark.post;
 
 
 @Slf4j
@@ -76,9 +81,9 @@ public final class ApiHandler {
             if (!validateRequest(request)) {
                 halt(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
             }
-			log.debug("Received request on route: {}\n{}", request.requestMethod() + " " + request.uri(), request.body());
-	
-		});
+            log.debug("Received request on route: {}\n{}", request.requestMethod() + " " + request.uri(), request.body());
+
+        });
 
 
         post("/votes", (request, response) -> {
@@ -137,10 +142,10 @@ public final class ApiHandler {
         String authorization = request.headers("Authorization");
         boolean result = authorization.equals(ShepardBot.getConfig().getBotlist().getAuthorization());
         if (!result) {
-			log.info("Denied access for request.\nHeaders:\n{}{}Body:\n\n",
-					request.headers().stream().map(h -> "   " + h + ": " + request.headers(h))
-							.collect(Collectors.joining("\n")),
-					request.body());
+            log.info("Denied access for request.\nHeaders:\n{}{}Body:\n\n",
+                    request.headers().stream().map(h -> "   " + h + ": " + request.headers(h))
+                            .collect(Collectors.joining("\n")),
+                    request.body());
         }
         return result;
     }

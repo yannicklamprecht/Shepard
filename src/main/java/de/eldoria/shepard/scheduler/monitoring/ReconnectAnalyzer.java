@@ -9,7 +9,12 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.Color;
 
-import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.*;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_PLAYER_COUNT;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVER_REACHABLE;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVICE_ADDRESS;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVICE_REACHABLE;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVICE_STILL_DOWN;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_VERSION;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static de.eldoria.shepard.util.TextFormatting.getTimeAsString;
 
@@ -28,7 +33,7 @@ public class ReconnectAnalyzer extends Analyzer {
     @Override
     public void run() {
 
-    	log.debug("Checking Address {}", address.getFullAddress());
+        log.debug("Checking Address {}", address.getFullAddress());
 
         if (address.isMinecraftIp()) {
             PingMinecraftServer.MinecraftPing minecraftPing = checkMinecraftServer();
@@ -49,9 +54,9 @@ public class ReconnectAnalyzer extends Analyzer {
                         .setThumbnail(ShepardReactions.WINK.thumbnail);
                 channel.sendMessage(builder.build()).queue();
                 MonitoringScheduler.getInstance().markAsReachable(channel.getGuild().getIdLong(), address);
-					log.debug("Service is reachable again: {}", address.getFullAddress());
+                log.debug("Service is reachable again: {}", address.getFullAddress());
             } else {
-					log.debug("Service is still down: {}", address.getFullAddress());
+                log.debug("Service is still down: {}", address.getFullAddress());
             }
         } else {
             boolean addressReachable = isAddressReachable();
@@ -74,7 +79,7 @@ public class ReconnectAnalyzer extends Analyzer {
                         .setThumbnail(ShepardReactions.WINK.thumbnail);
                 channel.sendMessage(builder.build()).queue();
                 MonitoringScheduler.getInstance().markAsReachable(channel.getGuild().getIdLong(), address);
-                
+
                 log.debug("Service is still down: {}", address.getFullAddress());
             }
         }

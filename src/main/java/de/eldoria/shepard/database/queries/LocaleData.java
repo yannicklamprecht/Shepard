@@ -43,8 +43,8 @@ public final class LocaleData {
             handleExceptionAndIgnore(e, messageContext);
             return false;
         }
-	
-		log.debug("Changed languageCode of server {} to {}", guild.getName(), localeCode);
+
+        log.debug("Changed languageCode of server {} to {}", guild.getName(), localeCode);
         return true;
     }
 

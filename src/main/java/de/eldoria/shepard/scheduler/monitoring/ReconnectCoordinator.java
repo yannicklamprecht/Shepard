@@ -24,7 +24,7 @@ class ReconnectCoordinator implements Runnable {
         if (MonitoringScheduler.getInstance().getUnreachable().isEmpty()) {
             return;
         }
-        
+
         log.debug("Checking for unavailable Server.");
         AtomicInteger delay = new AtomicInteger(0);
         for (Map.Entry<Long, List<Address>> set : MonitoringScheduler.getInstance().getUnreachable().entrySet()) {

@@ -29,8 +29,8 @@ import static java.lang.System.lineSeparator;
 
 @Slf4j
 public final class MessageSender {
-	
-	private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM. HH:mm:ss");
+
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM. HH:mm:ss");
 
     private static String timestamp() {
         return "[" + DATE_TIME_FORMATTER.format(LocalDateTime.now()) + "]";
@@ -241,7 +241,7 @@ public final class MessageSender {
         var cmd = messageContext.getMessage().getContentStripped();
         var guild = messageContext.getGuild().getName();
         var guildId = messageContext.getGuild().getId();
-        
+
         log.debug(C.COMMAND, "command execution by {} in guild {}({}): {}", mention, guild, guildId, cmd);
     }
 

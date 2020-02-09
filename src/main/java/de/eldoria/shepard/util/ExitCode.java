@@ -11,6 +11,7 @@ public enum ExitCode {
 
     /**
      * Creates a new exit code with a integer identifier.
+     *
      * @param code identifier
      */
     ExitCode(int code) {

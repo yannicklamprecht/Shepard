@@ -42,8 +42,8 @@ public final class PrefixData {
             handleExceptionAndIgnore(e, messageContext);
             return false;
         }
-	
-		log.debug("Changed prefix of server {} to {}", guild.getName(), prefix);
+
+        log.debug("Changed prefix of server {} to {}", guild.getName(), prefix);
         return true;
     }
 

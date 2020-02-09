@@ -43,7 +43,6 @@ import static java.lang.System.lineSeparator;
 /**
  * Command to modify the logging channel.
  * The monitoring is done in {@link de.eldoria.shepard.scheduler.monitoring.MonitoringCoordinator}
- *
  */
 public class Monitoring extends Command {
     /**

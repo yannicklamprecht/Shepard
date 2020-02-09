@@ -4,7 +4,7 @@ import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
 import de.eldoria.shepard.contexts.commands.argument.SubArgument;
-import de.eldoria.shepard.database.queries.*;
+import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.reactions.Emoji;
@@ -23,12 +23,12 @@ import java.util.concurrent.ThreadLocalRandom;
  * This command requires asynchronous execution
  */
 public class KudoGamble extends Command {
-    private Random random = new Random();
     private final int bonus = 64;
     private final int tier1 = 16;
     private final int tier2 = 4;
     private final int tier3 = 1;
     private final int tier4 = 0;
+    private Random random = new Random();
 
     /**
      * Create a new Kudo Gamble.

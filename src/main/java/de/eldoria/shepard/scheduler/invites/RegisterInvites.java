@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 @Slf4j
 class RegisterInvites implements Runnable {
     private final Map<Long, Set<String>> invites = new HashMap<>();
-	
-	@Override
+
+    @Override
     public void run() {
         while (true) {
             List<Guild> guilds;
@@ -54,13 +54,13 @@ class RegisterInvites implements Runnable {
             }
         }
     }
-    
+
     private void evaluateInvites(Guild guild) {
         List<Invite> guildInvites;
         try {
             guildInvites = guild.retrieveInvites().complete();
         } catch (InsufficientPermissionException ignored) {
-        	// we prefer to silently fail on missing permissions since invites are not critical
+            // we prefer to silently fail on missing permissions since invites are not critical
             return;
         }
         guildInvites.stream()
@@ -73,7 +73,7 @@ class RegisterInvites implements Runnable {
             String name = i.getInviter() != null ? i.getInviter().getAsTag() : "unknown user";
             if (InviteData.addInvite(guild, i.getCode(), name, i.getUses(), null)) {
                 invites.get(guild.getIdLong()).add(i.getCode());
-				log.debug("Auto registered invite {} on guild {}({})", i.getCode(), guild.getName(), guild.getId());
+                log.debug("Auto registered invite {} on guild {}({})", i.getCode(), guild.getName(), guild.getId());
             }
         };
     }

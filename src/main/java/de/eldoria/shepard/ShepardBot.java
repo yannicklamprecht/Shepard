@@ -23,11 +23,11 @@ public final class ShepardBot {
     private static ShepardBot instance;
 
     private boolean loaded;
-	
-	private ShepardBot() {
-		log.info(C.STATUS, "Startup in progress. Bot is heating up");
-		config = Loader.getConfigLoader().getConfig();
-	}
+
+    private ShepardBot() {
+        log.info(C.STATUS, "Startup in progress. Bot is heating up");
+        config = Loader.getConfigLoader().getConfig();
+    }
 
     /**
      * Returns the Shepard Bot instance.
@@ -44,18 +44,18 @@ public final class ShepardBot {
      * @param args Arguments.
      */
     public static void main(String[] args) {
-    	try {
-			instance = new ShepardBot();
-		
-		
-			instance.setup();
-		
-			ApiHandler.getInstance();
-		
-			instance.loaded = true;
-		} catch (Exception e) {
-    		log.error("failed to start bot", e);
-		}
+        try {
+            instance = new ShepardBot();
+
+
+            instance.setup();
+
+            ApiHandler.getInstance();
+
+            instance.loaded = true;
+        } catch (Exception e) {
+            log.error("failed to start bot", e);
+        }
     }
 
     /**
@@ -76,6 +76,20 @@ public final class ShepardBot {
         return config;
     }
 
+    /**
+     * Checks if the bot is fully loaded.
+     *
+     * @return true if the bot instance is not null and {@link ShepardBot#loaded} is true.
+     * False if the bot is starting or going to shut down.
+     */
+    public static boolean isLoaded() {
+        if (instance == null) {
+            return false;
+        }
+
+        return instance.loaded;
+    }
+
     private void setup() {
         try {
             initiateJda();
@@ -85,11 +99,11 @@ public final class ShepardBot {
 
         ContextRegister.registerContexts();
         ListenerRegister.registerListener();
-		log.info(C.STATUS, "Registered {} Commands,\n Registered {} Keywords,\n Registered on {} Guilds!",
-				CommandCollection.getInstance().getCommands().size(),
-				KeyWordCollection.getInstance().getKeywords().size(),
-				jda.getGuilds().size());
-		
+        log.info(C.STATUS, "Registered {} Commands,\n Registered {} Keywords,\n Registered on {} Guilds!",
+                CommandCollection.getInstance().getCommands().size(),
+                KeyWordCollection.getInstance().getKeywords().size(),
+                jda.getGuilds().size());
+
         log.info("Setup complete!");
     }
 
@@ -123,10 +137,10 @@ public final class ShepardBot {
     public void shutdown(ExitCode exitCode) {
         loaded = false;
         if (exitCode == ExitCode.SHUTDOWN) {
-        	log.info(C.STATUS, "shutting down");
+            log.info(C.STATUS, "shutting down");
         }
         if (exitCode == ExitCode.RESTART) {
-			log.info(C.STATUS, "restarting");
+            log.info(C.STATUS, "restarting");
         }
 
         if (jda != null) {
@@ -141,19 +155,5 @@ public final class ShepardBot {
         }
 
         System.exit(exitCode.code);
-    }
-
-    /**
-     * Checks if the bot is fully loaded.
-     *
-     * @return true if the bot instance is not null and {@link ShepardBot#loaded} is true.
-     * False if the bot is starting or going to shut down.
-     */
-    public static boolean isLoaded() {
-        if (instance == null) {
-            return false;
-        }
-
-        return instance.loaded;
     }
 }

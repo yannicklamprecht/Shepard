@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
  * Hold a list of {@link Action} objects.
  * Registered Actions via {@link #addReactionAction(TextChannel, Message, Action)} must be removed by
  * {@link #removeAction(UniqueMessageIdentifier, Action)} if the reaction is not {@link Action#isUsed()}.
- *
  */
 public final class ReactionActionCollection {
     private static ReactionActionCollection instance;

@@ -29,7 +29,6 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
  * The evaluator has a {@link KudoLotteryEvaluator#maxBet} which defines the max amount a single user can bet.
  * via the {@link KudoLotteryEvaluator#addBet(Guild, User, int)} a user can add a bet.
  * At least every user can set a amount of 1.
- *
  */
 public class KudoLotteryEvaluator extends BaseEvaluator {
     private final Map<Long, Integer> bet = new HashMap<>();
@@ -41,7 +40,7 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
      *
      * @param message message for evaluation
      * @param user    user for first bet.
-     * @param maxBet the max amount a single user can bet
+     * @param maxBet  the max amount a single user can bet
      */
     public KudoLotteryEvaluator(Message message, User user, int maxBet) {
         super(message.getIdLong(), message.getChannel().getIdLong());

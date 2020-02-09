@@ -19,6 +19,8 @@ import de.eldoria.shepard.contexts.commands.botconfig.ContextInfo;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContext;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContextGuild;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContextUsers;
+import de.eldoria.shepard.contexts.commands.botconfig.Restart;
+import de.eldoria.shepard.contexts.commands.botconfig.Upgrade;
 import de.eldoria.shepard.contexts.commands.exclusive.PrivateAnswer;
 import de.eldoria.shepard.contexts.commands.exclusive.SendPrivateMessage;
 import de.eldoria.shepard.contexts.commands.fun.GuessGame;
@@ -44,8 +46,6 @@ import de.eldoria.shepard.contexts.commands.util.SystemInfo;
 import de.eldoria.shepard.contexts.commands.util.Test;
 import de.eldoria.shepard.contexts.commands.util.UserInfo;
 import de.eldoria.shepard.contexts.commands.util.Vote;
-import de.eldoria.shepard.contexts.commands.botconfig.Restart;
-import de.eldoria.shepard.contexts.commands.botconfig.Upgrade;
 
 public final class ContextRegister {
 

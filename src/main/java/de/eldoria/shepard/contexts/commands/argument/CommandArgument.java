@@ -21,9 +21,9 @@ public class CommandArgument {
     /**
      * Create a new argument with a name, description and whether it is required or not.
      *
-     * @param argName  the name of the argument.
-     * @param subArguments  subarguments, which can be entered at this state of command.
-     * @param required whether the argument is required or not.
+     * @param argName      the name of the argument.
+     * @param subArguments subarguments, which can be entered at this state of command.
+     * @param required     whether the argument is required or not.
      */
     public CommandArgument(String argName, boolean required, SubArgument... subArguments) {
         this.argName = argName;

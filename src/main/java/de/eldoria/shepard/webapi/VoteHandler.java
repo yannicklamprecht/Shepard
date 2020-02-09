@@ -26,12 +26,11 @@ public class VoteHandler implements Consumer<VoteInformation> {
                     + "Thank you so much <3. Pls accept %0% Kudos as a gift.",
             "Thank you for the vote." + lineSeparator()
                     + "I have only %0% Kudos left to give you, but i hope you are as happy as I am."
-
     };
 
     @Override
     public void accept(VoteInformation voteInformation) {
-		log.debug("Processing vote for user {}", voteInformation.getUser());
+        log.debug("Processing vote for user {}", voteInformation.getUser());
         User userById = ShepardBot.getJDA().getUserById(voteInformation.getUser());
         if (userById == null) {
             log.debug("No user found for vote");

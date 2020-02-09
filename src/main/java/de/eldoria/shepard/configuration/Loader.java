@@ -4,7 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,33 +57,33 @@ public final class Loader {
         Path configDir = Paths.get(home, "/config");
 
         if (!Files.exists(configDir)) {
-			log.info("{} not found. Trying to create", configDir);
+            log.info("{} not found. Trying to create", configDir);
             try {
                 Files.createDirectory(configDir);
             } catch (IOException e) {
-				log.error("Directory for config could not be created!", e);
+                log.error("Directory for config could not be created!", e);
                 return;
             }
         } else {
-			log.info("Config directory found!");
+            log.info("Config directory found!");
         }
 
         Path configFile = Paths.get(configDir + "/config.yml");
 
         if (!Files.exists(configFile)) {
-			log.info("Config file not found! Trying to create a default config!");
+            log.info("Config file not found! Trying to create a default config!");
 
             try {
                 Files.createFile(configFile);
             } catch (IOException e) {
-				log.error("Could not create config file", e);
+                log.error("Could not create config file", e);
             }
             InputStream systemResource = getClass().getClassLoader().getResourceAsStream("config.yml");
             if (systemResource == null) {
                 return;
             }
-	
-			log.info("Loading config template!");
+
+            log.info("Loading config template!");
 
             OutputStream os = null;
             try {
@@ -89,7 +95,7 @@ public final class Loader {
                 }
 
             } catch (IOException e) {
-				log.error("failed to read config file", e);
+                log.error("failed to read config file", e);
             } finally {
                 try {
                     systemResource.close();
@@ -98,7 +104,7 @@ public final class Loader {
                     }
 
                 } catch (IOException e) {
-					log.error("", e);
+                    log.error("", e);
                 }
             }
 

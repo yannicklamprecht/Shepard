@@ -33,7 +33,7 @@ public final class DatabaseConnector {
             conn = DriverManager.getConnection(String.format("jdbc:postgresql://%s:%s/%s",
                     config.getAddress(), config.getPort(), config.getDb()),
                     config.getUsername(), config.getPassword());
-			log.info("SQL connection established on {}:*******@{}:{}/{}", config.getUsername(), config.getAddress(), config.getPort(), config.getDb());
+            log.info("SQL connection established on {}:*******@{}:{}/{}", config.getUsername(), config.getAddress(), config.getPort(), config.getDb());
         } catch (SQLException ex) {
             handleExceptionAndIgnore(ex, null);
         }

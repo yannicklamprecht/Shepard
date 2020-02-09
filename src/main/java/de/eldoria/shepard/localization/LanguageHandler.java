@@ -55,11 +55,11 @@ public class LanguageHandler {
         if (getLanguageResource(language).containsKey(localeCode)) {
             return getLanguageResource(language).getString(localeCode);
         } else {
-			log.warn("Missing localization for key: {} in language pack: {}. Using Fallback Language en_US", localeCode, language.code);
+            log.warn("Missing localization for key: {} in language pack: {}. Using Fallback Language en_US", localeCode, language.code);
             ResourceBundle bundle = getLanguageResource(LocaleCode.EN_US);
 
             if (!bundle.containsKey(localeCode)) {
-				log.warn("Missing localisation for key {} in fallback language. Is this intended?", localeCode);
+                log.warn("Missing localisation for key {} in fallback language. Is this intended?", localeCode);
             }
 
             return bundle.containsKey(localeCode) ? bundle.getString(localeCode) : localeCode;
@@ -90,8 +90,8 @@ public class LanguageHandler {
             ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_PATH, locale);
             languages.put(code, bundle);
         }
-	
-		log.debug("Loaded {} languages!", languages.size());
+
+        log.debug("Loaded {} languages!", languages.size());
 
         Set<String> keySet = new HashSet<>();
         for (ResourceBundle resourceBundle : languages.values()) {
@@ -108,7 +108,7 @@ public class LanguageHandler {
         }
 
         if (!missingKeys.isEmpty()) {
-			log.warn("Found missing keys in language packs\n{}", String.join("\n", missingKeys));
+            log.warn("Found missing keys in language packs\n{}", String.join("\n", missingKeys));
         }
     }
 }
