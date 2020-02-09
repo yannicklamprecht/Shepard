@@ -1,126 +1,34 @@
 package de.eldoria.shepard.configuration;
 
+import lombok.Data;
+
 /**
  * Class to deserialize the config.
  */
-// TODO: replace class with @Data
+@Data
 public class Config {
+    /**
+     * Bot API token.
+     */
     private String token = null;
-    private boolean debug = false;
+    /**
+     * Beta state of bot.
+     */
     private boolean beta = false;
+    /**
+     * Botlist Configuration.
+     */
     private BotList botlist = null;
+    /**
+     * Presence Configuration.
+     */
     private Presence presence = null;
+    /**
+     * Database Configuration.
+     */
     private Database database = null;
+    /**
+     * Default prefix.
+     */
     private String prefix = null;
-
-    /**
-     * get the Database Object.
-     *
-     * @return Database object. Can ben null.
-     */
-    public Database getDatabase() {
-        return database;
-    }
-
-    /**
-     * Sets the database object. Only works when the current database object is not set
-     *
-     * @param database Database object
-     */
-    public void setDatabase(Database database) {
-        if (this.database != null) return;
-        this.database = database;
-    }
-
-    /**
-     * Gets the application token of the bot.
-     *
-     * @return Token as string. Can be null.
-     */
-    public String getToken() {
-        return token;
-    }
-
-    /**
-     * Sets the application token. Only works when the current token is not set.
-     *
-     * @param token Token to set.
-     */
-    public void setToken(String token) {
-        if (this.token != null) return;
-        this.token = token;
-    }
-
-    /**
-     * Get the default prefix of the bot.
-     *
-     * @return Prefix as string. Can be null
-     */
-    public String getPrefix() {
-        return prefix;
-    }
-
-    /**
-     * Sets the default prefix of the bot. Only works, when the current prefix is not set.
-     *
-     * @param prefix Prefix to set
-     */
-    public void setPrefix(String prefix) {
-        if (this.prefix != null) return;
-        this.prefix = prefix;
-    }
-
-    /**
-     * Get the botlist object.
-     *
-     * @return botlist object.
-     */
-    public BotList getBotlist() {
-        return botlist;
-    }
-
-    /**
-     * Set the botlist object.
-     *
-     * @param botlist botlist object
-     */
-    public void setBotlist(BotList botlist) {
-        this.botlist = botlist;
-    }
-
-    /**
-     * Get the presence object.
-     *
-     * @return presence object
-     */
-    public Presence getPresence() {
-        return presence;
-    }
-
-    /**
-     * Set the presence object.
-     *
-     * @param presence presence object
-     */
-    public void setPresence(Presence presence) {
-        this.presence = presence;
-    }
-
-    /**
-     * Get the state of the bot.
-     *
-     * @return true if this is a beta bot
-     */
-    public boolean isBeta() {
-        return beta;
-    }
-
-    /**
-     * Set the beta status of the bot.
-     *
-     * @param beta true if bot is beta
-     */
-    public void setBeta(boolean beta) {
-        this.beta = beta;
-    }
 }
