@@ -29,6 +29,9 @@ import java.util.stream.Collectors;
 import static de.eldoria.shepard.database.DbUtil.getIdRaw;
 import static de.eldoria.shepard.util.Verifier.isValidId;
 
+/**
+ * Class which has multiple methods to parse a command input.
+ */
 public final class ArgumentParser {
     private static final Pattern DISCORD_TAG = Pattern.compile(".+?#[0-9]{4}");
 

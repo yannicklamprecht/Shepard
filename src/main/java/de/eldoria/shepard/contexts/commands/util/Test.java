@@ -15,7 +15,7 @@ public class Test extends Command {
     public Test() {
         commandName = "test";
         commandDesc = "Testcommand!";
-        category = ContextCategory.UTIL;
+        category = ContextCategory.EXCLUSIVE;
     }
 
     @Override

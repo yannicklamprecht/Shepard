@@ -9,6 +9,9 @@ import java.util.Random;
 
 import static de.eldoria.shepard.localization.enums.commands.fun.OhaLocale.DESCRIPTION;
 
+/**
+ * Provides a command which send a "oha" with a random amount of a's at the end.
+ */
 public class Oha extends Command {
 
     /**

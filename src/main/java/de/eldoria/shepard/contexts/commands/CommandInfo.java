@@ -1,8 +1,8 @@
 package de.eldoria.shepard.contexts.commands;
 
 import de.eldoria.shepard.contexts.ContextCategory;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgInfo;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgumentInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,13 +10,16 @@ import java.util.stream.Collectors;
 
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
+/**
+ * Class for serialization of a command.
+ */
 public class CommandInfo {
     private String contextName;
     private String name;
     private String[] aliases;
     private String description;
     private ContextCategory category;
-    private List<CommandArgInfo> arguments;
+    private List<CommandArgumentInfo> arguments;
 
     /**
      * Creates a new CommandInfo object.
@@ -32,9 +35,9 @@ public class CommandInfo {
         aliases = command.getCommandAliases();
         description = localizeAllAndReplace(command.getCommandDesc(), null);
         category = command.getCategory();
-        CommandArg[] commandArgs = command.getCommandArgs();
+        CommandArgument[] commandArguments = command.getCommandArguments();
 
-        arguments = Arrays.stream(commandArgs).map(CommandArgInfo::new)
+        arguments = Arrays.stream(commandArguments).map(CommandArgumentInfo::new)
                 .collect(Collectors.toList());
     }
 

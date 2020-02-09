@@ -7,6 +7,9 @@ import net.dv8tion.jda.api.entities.User;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Caches the last used {@link Command} for a {@link User} on a {@link Guild} as a {@link SavedCommand}.
+ */
 public final class LatestCommandsCollection {
     private static final Map<Long, Map<Long, SavedCommand>> latestCommands = new HashMap<>();
     private static LatestCommandsCollection instance;

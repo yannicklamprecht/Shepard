@@ -7,6 +7,9 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import static de.eldoria.shepard.localization.enums.commands.fun.UwuLocale.DESCRIPTION;
 
+/**
+ * Command which sends a uwu to the chat with large emoji letters.
+ */
 public class Uwu extends Command {
 
     /**

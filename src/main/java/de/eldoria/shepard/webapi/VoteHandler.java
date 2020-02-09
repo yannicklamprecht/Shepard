@@ -3,15 +3,17 @@ package de.eldoria.shepard.webapi;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.KudoData;
 import de.eldoria.shepard.webapi.apiobjects.VoteInformation;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.User;
-import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 
 import static java.lang.System.lineSeparator;
 
+@Slf4j
 public class VoteHandler implements Consumer<VoteInformation> {
-    private String[] messages = new String[] {
+    private String[] messages = {
             "Thank you, that you believe in me!" + lineSeparator()
                     + "Nothing makes me happier than your vote!" + lineSeparator()
                     + "Pls accept %0% Kudos a gift for you :3",
@@ -24,18 +26,18 @@ public class VoteHandler implements Consumer<VoteInformation> {
                     + "Thank you so much <3. Pls accept %0% Kudos as a gift.",
             "Thank you for the vote." + lineSeparator()
                     + "I have only %0% Kudos left to give you, but i hope you are as happy as I am."
-
     };
 
     @Override
     public void accept(VoteInformation voteInformation) {
-        ShepardBot.getLogger().info("Processing vote for user " + voteInformation.getUser());
+        log.debug("Processing vote for user {}", voteInformation.getUser());
         User userById = ShepardBot.getJDA().getUserById(voteInformation.getUser());
         if (userById == null) {
-            ShepardBot.getLogger().info("No user found for vote");
+            log.debug("No user found for vote");
             return;
         }
-        int pointsToAdd = 15 + Math.round((float) Math.random() * 10);
+
+        int pointsToAdd = ThreadLocalRandom.current().nextInt(15,30);
         pointsToAdd = pointsToAdd * (voteInformation.isWeekend() ? 2 : 1);
 
         KudoData.addFreeRubberPoints(userById, pointsToAdd, null);
@@ -43,15 +45,9 @@ public class VoteHandler implements Consumer<VoteInformation> {
         int finalPointsToAdd = pointsToAdd;
         userById.openPrivateChannel()
                 .queue(c -> {
-                    c.sendMessage(messages[Math.round((float) Math.random() * messages.length - 1)]
+                    c.sendMessage(messages[ThreadLocalRandom.current().nextInt(messages.length)]
                             .replace("%0%", finalPointsToAdd + "")).queue();
                 });
-        ShepardBot.getLogger().info("Vote processed");
-    }
-
-    @NotNull
-    @Override
-    public Consumer<VoteInformation> andThen(@NotNull Consumer<? super VoteInformation> after) {
-        return null;
+        log.debug("Vote processed");
     }
 }

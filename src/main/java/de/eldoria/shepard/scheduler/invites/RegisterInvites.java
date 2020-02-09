@@ -3,6 +3,7 @@ package de.eldoria.shepard.scheduler.invites;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
@@ -16,29 +17,21 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+@Slf4j
 class RegisterInvites implements Runnable {
     private final Map<Long, Set<String>> invites = new HashMap<>();
-
-    /**
-     * Creates a mew register invite object.
-     */
-    RegisterInvites() {
-    }
 
     @Override
     public void run() {
         while (true) {
             List<Guild> guilds;
+
             try {
                 guilds = ShepardBot.getJDA().getGuilds();
             } catch (IllegalArgumentException e) {
                 return;
             }
-            int sleepDuration = 10000 / guilds.size();
-
-            if (ShepardBot.getConfig().debugActive()) {
-                ShepardBot.getLogger().info("Looking for unregistered invites.");
-            }
+            int sleepDuration = Math.max(10000 / guilds.size(), 250);
 
             for (Guild guild : guilds) {
                 if (!Objects.requireNonNull(guild.getMember(ShepardBot.getJDA()
@@ -46,7 +39,7 @@ class RegisterInvites implements Runnable {
                     continue;
                 }
                 if (invites.containsKey(guild.getIdLong())) {
-                    guild.retrieveInvites().queue(createInviteListConsumer(guild));
+                    evaluateInvites(guild);
                 } else {
                     invites.put(guild.getIdLong(), InviteData.getInvites(guild, null).stream()
                             .map(DatabaseInvite::getCode)
@@ -55,23 +48,24 @@ class RegisterInvites implements Runnable {
                 try {
                     Thread.sleep(sleepDuration);
                 } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     return;
                 }
             }
         }
     }
 
-    private Consumer<List<Invite>> createInviteListConsumer(Guild guild) {
-        return guildInvites -> {
-            try {
-                guildInvites.stream()
-                        .filter(i -> !invites.get(guild.getIdLong()).contains(i.getCode()))
-                        .forEach(createInviteConsumer(guild));
-            } catch (InsufficientPermissionException e) {
-                ShepardBot.getLogger().error("Error occurred on guild " + guild.getName()
-                        + "(" + guild.getId() + ")", e);
-            }
-        };
+    private void evaluateInvites(Guild guild) {
+        List<Invite> guildInvites;
+        try {
+            guildInvites = guild.retrieveInvites().complete();
+        } catch (InsufficientPermissionException ignored) {
+            // we prefer to silently fail on missing permissions since invites are not critical
+            return;
+        }
+        guildInvites.stream()
+                .filter(i -> !invites.get(guild.getIdLong()).contains(i.getCode()))
+                .forEach(createInviteConsumer(guild));
     }
 
     private Consumer<Invite> createInviteConsumer(Guild guild) {
@@ -79,8 +73,7 @@ class RegisterInvites implements Runnable {
             String name = i.getInviter() != null ? i.getInviter().getAsTag() : "unknown user";
             if (InviteData.addInvite(guild, i.getCode(), name, i.getUses(), null)) {
                 invites.get(guild.getIdLong()).add(i.getCode());
-                ShepardBot.getLogger().info("Auto registered invite " + i.getCode()
-                        + " on guild " + guild.getName() + "(" + guild.getId() + ")");
+                log.debug("Auto registered invite {} on guild {}({})", i.getCode(), guild.getName(), guild.getId());
             }
         };
     }

@@ -1,9 +1,10 @@
 package de.eldoria.shepard.listener;
 
-import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.C;
 import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.DisconnectEvent;
 import net.dv8tion.jda.api.events.ReconnectedEvent;
 import net.dv8tion.jda.api.events.ResumedEvent;
@@ -16,6 +17,7 @@ import java.awt.Color;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+@Slf4j
 public class LogListener extends ListenerAdapter {
     private LocalDateTime disconnected;
 
@@ -36,13 +38,13 @@ public class LogListener extends ListenerAdapter {
 
     @Override
     public void onReconnect(@Nonnull ReconnectedEvent event) {
-        ShepardBot.getLogger().info("JDA reconnected");
+        log.info(C.STATUS, "JDA reconnected");
     }
 
     @Override
     public void onDisconnect(@Nonnull DisconnectEvent event) {
         disconnected = LocalDateTime.now();
-        ShepardBot.getLogger().error("JDA disconnected");
+        log.warn(C.STATUS, "JDA disconnected");
     }
 
     @Override
@@ -52,7 +54,6 @@ public class LogListener extends ListenerAdapter {
             MessageSender.sendMessage("@here " + System.lineSeparator() + "Shepard was disconnected for "
                     + seconds + " seconds and is now back.", Normandy.getGeneralLogChannel());
         }
-        ShepardBot.getLogger().info("Shepard was disconnected for" + seconds + " seconds. "
-                + "All connections reconnected. Everything is fine.");
+        log.info(C.STATUS, "Shepard was disconnected for {} seconds. All connections reconnected. Everything is fine.", seconds);
     }
 }

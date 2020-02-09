@@ -98,7 +98,7 @@ public class CommandListener extends ListenerAdapter {
         }
 
         List<Command> similarCommand = CommandCollection.getInstance().getSimilarCommands(label);
-        if (similarCommand.size() != 0) {
+        if (!similarCommand.isEmpty()) {
             for (Command cmd : similarCommand) {
                 if (!cmd.isContextValid(messageContext)) continue;
 

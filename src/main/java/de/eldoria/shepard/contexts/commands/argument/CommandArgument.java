@@ -11,23 +11,24 @@ import static java.lang.System.lineSeparator;
 
 /**
  * An argument of a command.
+ * An CommandArg is the highest instance to define the arguments of a command.
  */
-public class CommandArg {
+public class CommandArgument {
     private final String argName;
-    private final SubArg[] subArgs;
+    private final SubArgument[] subArguments;
     private final boolean required;
 
     /**
      * Create a new argument with a name, description and whether it is required or not.
      *
-     * @param argName  the name of the argument.
-     * @param subArgs  subarguments, which can be entered at this state of command.
-     * @param required whether the argument is required or not.
+     * @param argName      the name of the argument.
+     * @param subArguments subarguments, which can be entered at this state of command.
+     * @param required     whether the argument is required or not.
      */
-    public CommandArg(String argName, boolean required, SubArg... subArgs) {
+    public CommandArgument(String argName, boolean required, SubArgument... subArguments) {
         this.argName = argName;
         this.required = required;
-        this.subArgs = subArgs;
+        this.subArguments = subArguments;
         generateShortCommands();
     }
 
@@ -71,14 +72,14 @@ public class CommandArg {
             if (finalIteration != 0) {
                 getNotUniqueSubArgs().forEach(subArg -> subArg.generateShortCommand(finalIteration));
             } else {
-                Arrays.stream(subArgs).forEach(subArg -> subArg.generateShortCommand(finalIteration));
+                Arrays.stream(subArguments).forEach(subArg -> subArg.generateShortCommand(finalIteration));
             }
             iteration++;
         } while (!getNotUniqueSubArgs().isEmpty());
     }
 
     private String getSubArgHelpString() {
-        return Arrays.stream(subArgs).map(SubArg::getArgumentDesc)
+        return Arrays.stream(subArguments).map(SubArgument::getArgumentDesc)
                 .collect(Collectors.joining(lineSeparator()));
     }
 
@@ -90,10 +91,10 @@ public class CommandArg {
      * @return true if the command or alias matches. case ignore
      */
     public boolean isSubCommand(String cmd, int index) {
-        if (index >= subArgs.length || index < 0) {
+        if (index >= subArguments.length || index < 0) {
             return false;
         }
-        return subArgs[index].isSubCommand(cmd);
+        return subArguments[index].isSubCommand(cmd);
     }
 
     /**
@@ -104,7 +105,7 @@ public class CommandArg {
      * @return true if the command or alias matches. case ignore
      */
     public boolean isSubCommand(String cmd, String subCommand) {
-        for (SubArg arg : subArgs) {
+        for (SubArgument arg : subArguments) {
             if (arg.getArgumentName().equalsIgnoreCase(subCommand)) {
                 return arg.isSubCommand(cmd);
             }
@@ -112,11 +113,11 @@ public class CommandArg {
         return false;
     }
 
-    private Set<SubArg> getNotUniqueSubArgs() {
-        Set<SubArg> result = new HashSet<>();
-        for (SubArg arg : subArgs) {
+    private Set<SubArgument> getNotUniqueSubArgs() {
+        Set<SubArgument> result = new HashSet<>();
+        for (SubArgument arg : subArguments) {
             if (arg.isSubCommand()) {
-                for (SubArg otherArg : subArgs) {
+                for (SubArgument otherArg : subArguments) {
                     if (arg != otherArg && arg.getShortCommand().equals(otherArg.getShortCommand())) {
                         result.add(otherArg);
                     }
@@ -140,8 +141,8 @@ public class CommandArg {
      *
      * @return array of sub arguments Is empty when no arguments are set.
      */
-    public SubArg[] getSubArgs() {
-        return subArgs;
+    public SubArgument[] getSubArguments() {
+        return subArguments;
     }
 }
 

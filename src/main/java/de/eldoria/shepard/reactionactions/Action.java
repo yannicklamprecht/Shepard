@@ -91,6 +91,7 @@ public abstract class Action {
 
     /**
      * Check if the action is used and cant be used anymore.
+     * This only applies to {@link #oneTime} actions.
      *
      * @return true if action is used
      */

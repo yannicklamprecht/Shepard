@@ -1,7 +1,6 @@
 package de.eldoria.shepard.messagehandler;
 
-import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.collections.Normandy;
+import de.eldoria.shepard.C;
 import de.eldoria.shepard.database.types.GreetingSettings;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
@@ -9,6 +8,7 @@ import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.util.Replacer;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -20,13 +20,21 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.Color;
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
 import static java.lang.System.lineSeparator;
 
+@Slf4j
 public final class MessageSender {
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM. HH:mm:ss");
+
+    private static String timestamp() {
+        return "[" + DATE_TIME_FORMATTER.format(LocalDateTime.now()) + "]";
+    }
 
     /**
      * Sends a textbox to a channel.
@@ -163,7 +171,7 @@ public final class MessageSender {
         try {
             channel.sendMessage(builder.build()).queue();
         } catch (ErrorResponseException e) {
-            ShepardBot.getLogger().error(e.getMessage());
+            log.error("failed to send error embed", e);
         }
     }
 
@@ -229,14 +237,12 @@ public final class MessageSender {
      * @param messageContext context of command
      */
     public static void logCommand(String label, String[] args, MessageEventDataWrapper messageContext) {
-        String command = "```yaml" + lineSeparator()
-                + "Executor: " + messageContext.getAuthor().getAsTag() + lineSeparator()
-                + "Command:" + messageContext.getMessage().getContentStripped() + lineSeparator()
-                + "Guild: " + messageContext.getGuild().getName()
-                + " (" + messageContext.getGuild().getId() + ")" + lineSeparator()
-                + "```";
-        ShepardBot.getLogger().command(command);
-        Normandy.getCommandLogChannel().sendMessage(command).queue();
+        var mention = messageContext.getAuthor().getAsTag();
+        var cmd = messageContext.getMessage().getContentStripped();
+        var guild = messageContext.getGuild().getName();
+        var guildId = messageContext.getGuild().getId();
+
+        log.debug(C.COMMAND, "command execution by {} in guild {}({}): {}", mention, guild, guildId, cmd);
     }
 
     /**
@@ -246,7 +252,7 @@ public final class MessageSender {
      * @param channel channel
      */
     public static void sendMessage(String message, TextChannel channel) {
-        if (message.isEmpty()) return;
+        if (message.isEmpty() || channel == null) return;
 
         String localizedMessage = TextLocalizer.localizeAll(message, channel);
 

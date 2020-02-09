@@ -12,16 +12,23 @@ import de.eldoria.shepard.database.queries.MinecraftLinkData;
 import de.eldoria.shepard.webapi.apiobjects.ApiCache;
 import de.eldoria.shepard.webapi.apiobjects.CommandSearchResponse;
 import de.eldoria.shepard.webapi.apiobjects.VoteInformation;
+import lombok.extern.slf4j.Slf4j;
 import spark.Request;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import static spark.Spark.before;
 import static spark.Spark.get;
+import static spark.Spark.halt;
+import static spark.Spark.options;
 import static spark.Spark.port;
 import static spark.Spark.post;
 
+
+@Slf4j
 public final class ApiHandler {
     private static ApiHandler instance;
 
@@ -30,9 +37,9 @@ public final class ApiHandler {
     private BotListReporter botListReporter;
 
     private ApiHandler() {
-        ShepardBot.getLogger().info("Defining Routes");
+        log.info("Defining Routes");
         defineRoutes();
-        ShepardBot.getLogger().info("Routes Defined");
+        log.info("Routes Defined");
         botListReporter = BotListReporter.initialize();
     }
 
@@ -51,14 +58,35 @@ public final class ApiHandler {
     private void defineRoutes() {
         port(34555);
 
-        post("/votes", (request, response) -> {
-            if (!validateRequest(request)) {
-                response.status(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
-                return HttpStatusCodes.STATUS_CODE_UNAUTHORIZED;
+        options("/*", (request, response) -> {
+            String accessControlRequestHeaders = request
+                    .headers("Access-Control-Request-Headers");
+            if (accessControlRequestHeaders != null) {
+                response.header("Access-Control-Allow-Headers",
+                        accessControlRequestHeaders);
             }
 
-            logRequest("Votes", request);
+            String accessControlRequestMethod = request
+                    .headers("Access-Control-Request-Method");
+            if (accessControlRequestMethod != null) {
+                response.header("Access-Control-Allow-Methods",
+                        accessControlRequestMethod);
+            }
 
+            return "OK";
+        });
+
+        before((request, response) -> {
+            response.header("Access-Control-Allow-Origin", "*");
+            if (!validateRequest(request)) {
+                halt(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
+            }
+            log.debug("Received request on route: {}\n{}", request.requestMethod() + " " + request.uri(), request.body());
+
+        });
+
+
+        post("/votes", (request, response) -> {
             response.type("application/json");
             VoteInformation voteInformation = new Gson().fromJson(request.body(), VoteInformation.class);
             botListReporter.handleVote(voteInformation);
@@ -67,23 +95,13 @@ public final class ApiHandler {
         });
 
         post("/minecraftlink/", (request, response) -> {
-            if (!validateRequest(request)) {
-                response.status(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
-                return HttpStatusCodes.STATUS_CODE_UNAUTHORIZED;
-            }
-
-            logRequest("/votes", request);
-
             MinecraftLinkData.addLinkCode("", "", null);
             return HttpStatusCodes.STATUS_CODE_OK;
         });
 
         get("/commands", (request, response) -> {
             String cacheName = "commands";
-            if (!validateRequest(request)) {
-                response.status(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
-                return HttpStatusCodes.STATUS_CODE_UNAUTHORIZED;
-            }
+
             if (cache.containsKey(cacheName) && cache.get(cacheName).isValid()) {
                 return (cache.get(cacheName)).getObject();
             }
@@ -99,12 +117,6 @@ public final class ApiHandler {
         });
 
         get("/commandsearch/:text", (request, response) -> {
-            if (!validateRequest(request)) {
-                response.status(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
-                return HttpStatusCodes.STATUS_CODE_UNAUTHORIZED;
-            }
-            logRequest("/commandsearch/:text", request);
-
             CommandCollection instance = CommandCollection.getInstance();
             Command command = instance.getCommand(request.params(":text"));
             List<Command> similarCommands = instance.getSimilarCommands(request.params(":text"));
@@ -112,18 +124,13 @@ public final class ApiHandler {
         });
 
         get("/command/:text", (request, response) -> {
-            if (!validateRequest(request)) {
-                response.status(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
-                return HttpStatusCodes.STATUS_CODE_UNAUTHORIZED;
-            }
-            logRequest("/command/:text", request);
-
             CommandCollection instance = CommandCollection.getInstance();
             Command command = instance.getCommand(request.params(":text"));
             return new Gson().toJson(new CommandInfo(command));
         });
 
     }
+
 
     /**
      * Validates if a request has the right header.
@@ -133,12 +140,13 @@ public final class ApiHandler {
      */
     private boolean validateRequest(Request request) {
         String authorization = request.headers("Authorization");
-        return authorization.equals(ShepardBot.getConfig().getBotlist().getAuthorization());
-    }
-
-    private void logRequest(String text, Request request) {
-        if (ShepardBot.getConfig().debugActive()) {
-            ShepardBot.getLogger().info(text + System.lineSeparator() + request.body());
+        boolean result = authorization.equals(ShepardBot.getConfig().getBotlist().getAuthorization());
+        if (!result) {
+            log.info("Denied access for request.\nHeaders:\n{}{}Body:\n\n",
+                    request.headers().stream().map(h -> "   " + h + ": " + request.headers(h))
+                            .collect(Collectors.joining("\n")),
+                    request.body());
         }
+        return result;
     }
 }

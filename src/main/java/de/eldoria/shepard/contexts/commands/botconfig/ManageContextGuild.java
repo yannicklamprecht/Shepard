@@ -4,8 +4,8 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.ContextData;
@@ -33,6 +33,9 @@ import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageCon
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.M_REMOVED_GUILDS;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
+/**
+ * Manage the guild settings of a registered and active {@link ContextSensitive}.
+ */
 public class ManageContextGuild extends Command {
     /**
      * Creates a new Manage context guild command object.
@@ -41,19 +44,19 @@ public class ManageContextGuild extends Command {
         commandName = "manageContextGuild";
         commandAliases = new String[] {"mcg"};
         commandDesc = DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("context name", true,
-                        new SubArg("context name", A_CONTEXT_NAME.tag)),
-                new CommandArg("action", true,
-                        new SubArg("setActive", C_SET_ACTIVE.tag, true),
-                        new SubArg("setListType", C_SET_LIST_TYPE.tag, true),
-                        new SubArg("addGuild", C_ADD_GUILD.tag, true),
-                        new SubArg("removeGuild", C_REMOVE_GUILD.tag, true)),
-                new CommandArg("value", true,
-                        new SubArg("setActive", A_BOOLEAN.tag),
-                        new SubArg("setListType", A_LIST_TYPE.tag),
-                        new SubArg("addGuild", A_GUILDS.tag),
-                        new SubArg("removeGuild", A_GUILDS.tag))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("context name", true,
+                        new SubArgument("context name", A_CONTEXT_NAME.tag)),
+                new CommandArgument("action", true,
+                        new SubArgument("setActive", C_SET_ACTIVE.tag, true),
+                        new SubArgument("setListType", C_SET_LIST_TYPE.tag, true),
+                        new SubArgument("addGuild", C_ADD_GUILD.tag, true),
+                        new SubArgument("removeGuild", C_REMOVE_GUILD.tag, true)),
+                new CommandArgument("value", true,
+                        new SubArgument("setActive", A_BOOLEAN.tag),
+                        new SubArgument("setListType", A_LIST_TYPE.tag),
+                        new SubArgument("addGuild", A_GUILDS.tag),
+                        new SubArgument("removeGuild", A_GUILDS.tag))
         };
         category = ContextCategory.BOT_CONFIG;
     }
@@ -61,7 +64,7 @@ public class ManageContextGuild extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[1];
-        CommandArg arg = commandArgs[1];
+        CommandArgument arg = commandArguments[1];
 
         ContextSensitive context = ArgumentParser.getContext(args[0], messageContext);
 

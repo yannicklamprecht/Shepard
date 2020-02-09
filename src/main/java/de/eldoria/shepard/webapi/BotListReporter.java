@@ -2,6 +2,7 @@ package de.eldoria.shepard.webapi;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.webapi.apiobjects.VoteInformation;
+import lombok.extern.slf4j.Slf4j;
 import org.discordbots.api.client.DiscordBotListAPI;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+@Slf4j
 public final class BotListReporter implements Runnable {
     private static BotListReporter instance;
     private final DiscordBotListAPI api;
@@ -51,14 +53,14 @@ public final class BotListReporter implements Runnable {
      * Refresh the server count.
      */
     public void refreshInformation() {
-        ShepardBot.getLogger().info("Sending Server stats to top.gg");
+        log.debug("Sending Server stats to top.gg");
         try {
             CompletableFuture.allOf(api.setStats(ShepardBot.getJDA().getGuilds().size()).toCompletableFuture());
         } catch (RuntimeException e) {
-            ShepardBot.getLogger().error(e);
+            log.warn("failed to send server stats to top.gg", e);
             return;
         }
-        ShepardBot.getLogger().info("Stats send!");
+        log.debug("Stats send!");
     }
 
     /**

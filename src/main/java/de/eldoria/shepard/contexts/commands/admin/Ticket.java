@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
 import de.eldoria.shepard.localization.enums.WordsLocale;
@@ -48,6 +48,10 @@ import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
+/**
+ * Command to manage tickets.
+ * Allows open, close of tickets and ticket category info.
+ */
 public class Ticket extends Command {
 
     /**
@@ -57,15 +61,15 @@ public class Ticket extends Command {
         commandName = "ticket";
         commandAliases = new String[] {"t"};
         commandDesc = DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("action", true,
-                        new SubArg("open", C_OPEN.tag, true),
-                        new SubArg("close", C_CLOSE.tag, true),
-                        new SubArg("info", C_INFO.tag, true)),
-                new CommandArg("value", false,
-                        new SubArg("open", A_TICKET_TYPE + " " + GeneralLocale.A_USER),
-                        new SubArg("close", A_CLOSE.tag),
-                        new SubArg("info", A_INFO.tag))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("action", true,
+                        new SubArgument("open", C_OPEN.tag, true),
+                        new SubArgument("close", C_CLOSE.tag, true),
+                        new SubArgument("info", C_INFO.tag, true)),
+                new CommandArgument("value", false,
+                        new SubArgument("open", A_TICKET_TYPE + " " + GeneralLocale.A_USER),
+                        new SubArgument("close", A_CLOSE.tag),
+                        new SubArgument("info", A_INFO.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -73,7 +77,7 @@ public class Ticket extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArg arg = commandArgs[0];
+        CommandArgument arg = commandArguments[0];
 
         if (arg.isSubCommand(cmd, 0)) {
             open(args, messageContext);

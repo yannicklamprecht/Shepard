@@ -1,6 +1,6 @@
 package de.eldoria.shepard.collections;
 
-import de.eldoria.shepard.ShepardBot;
+
 import de.eldoria.shepard.contexts.keywords.Keyword;
 import de.eldoria.shepard.contexts.keywords.KeywordArgs;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -10,6 +10,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The command collection holds every registered and active {@link Keyword} object.
+ * Provides a method {@link #getKeyword(GuildMessageReceivedEvent)} (String)} to find
+ * a command by a alias or command name.
+ */
 public final class KeyWordCollection {
     private static KeyWordCollection instance;
 
@@ -81,15 +86,5 @@ public final class KeyWordCollection {
             }
         }
         return null;
-    }
-
-    /**
-     * Prints a debug for all keywords to console.
-     */
-    public void debug() {
-        ShepardBot.getLogger().info("++++ DEBUG OF KEYWORDS ++++");
-        for (Keyword c : keywords) {
-            c.printDebugInfo();
-        }
     }
 }

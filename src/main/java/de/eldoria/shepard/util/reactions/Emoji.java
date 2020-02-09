@@ -1,5 +1,6 @@
 package de.eldoria.shepard.util.reactions;
 
+@SuppressWarnings("CheckStyle")
 public enum Emoji {
     /**
      * :white_check_mark: emoji.
@@ -27,7 +28,20 @@ public enum Emoji {
     /**
      * :gem: emoji.
      */
-    GEM("\uD83D\uDC8E");
+    GEM("\uD83D\uDC8E"),
+
+    /**
+     * :black_large_square: emoji.
+     */
+    BLACK_LARGE_SQUARE("⬛"),
+    /**
+     * :tada: emoji.
+     */
+    TADA("🎉"),
+    /**
+     * :diamond_shape_with_a_dot_inside: emoji.
+     */
+    DIAMAOND_SHAPE_WITH_DOT("💠");
 
     /**
      * Returns the unicode of the emoji.

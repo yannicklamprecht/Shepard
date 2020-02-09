@@ -16,6 +16,9 @@ import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocal
 import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.M_ANSWER;
 
 
+/**
+ * Command which provides magic conch sentences.
+ */
 public class MagicConch extends Command {
     /**
      * Creates a new MagicConch command object.

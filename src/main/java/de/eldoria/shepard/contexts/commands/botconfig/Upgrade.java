@@ -11,8 +11,16 @@ import net.dv8tion.jda.api.entities.Message;
 import java.io.File;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * Command which downloads a send file and replaces the current ShepardBot.jar
+ * File must be a jar. Use with extreme caution.
+ * TODO: Check filesize.  If the file size is much larger or smaller than the current file deny the upgrade process.
+ */
 public class Upgrade extends Command {
 
+    /**
+     * Creates a new Upgrade Command.
+     */
     public Upgrade() {
         commandName = "upgrade";
         category = ContextCategory.BOT_CONFIG;
@@ -31,7 +39,8 @@ public class Upgrade extends Command {
         File jar = new File(home + "/Shepard.jar");
 
         if (!jar.exists()) {
-            MessageSender.sendMessage("Couldn't find a old Version of myself. Thats weird.", messageContext.getTextChannel());
+            MessageSender.sendMessage("Couldn't find a old Version of myself. Thats weird.",
+                    messageContext.getTextChannel());
         }
 
         if (messageContext.getMessage().getAttachments().isEmpty()) {

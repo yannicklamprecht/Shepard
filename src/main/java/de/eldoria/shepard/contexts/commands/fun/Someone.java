@@ -17,6 +17,9 @@ import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.M
 import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.M_SOMEONE;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
+/**
+ * Command to tag someone in a channel who is online.
+ */
 public class Someone extends Command {
     /**
      * Creates a new someone command object.

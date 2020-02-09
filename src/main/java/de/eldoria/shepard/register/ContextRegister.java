@@ -6,6 +6,7 @@ import de.eldoria.shepard.contexts.commands.admin.GuessGameConfig;
 import de.eldoria.shepard.contexts.commands.admin.Invite;
 import de.eldoria.shepard.contexts.commands.admin.Language;
 import de.eldoria.shepard.contexts.commands.admin.ManageQuote;
+import de.eldoria.shepard.contexts.commands.admin.McPing;
 import de.eldoria.shepard.contexts.commands.admin.Monitoring;
 import de.eldoria.shepard.contexts.commands.admin.Permission;
 import de.eldoria.shepard.contexts.commands.admin.Prefix;
@@ -18,9 +19,12 @@ import de.eldoria.shepard.contexts.commands.botconfig.ContextInfo;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContext;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContextGuild;
 import de.eldoria.shepard.contexts.commands.botconfig.ManageContextUsers;
+import de.eldoria.shepard.contexts.commands.botconfig.Restart;
+import de.eldoria.shepard.contexts.commands.botconfig.Upgrade;
 import de.eldoria.shepard.contexts.commands.exclusive.PrivateAnswer;
 import de.eldoria.shepard.contexts.commands.exclusive.SendPrivateMessage;
 import de.eldoria.shepard.contexts.commands.fun.GuessGame;
+import de.eldoria.shepard.contexts.commands.fun.KudoGamble;
 import de.eldoria.shepard.contexts.commands.fun.KudoLottery;
 import de.eldoria.shepard.contexts.commands.fun.Kudos;
 import de.eldoria.shepard.contexts.commands.fun.LargeEmote;
@@ -42,8 +46,6 @@ import de.eldoria.shepard.contexts.commands.util.SystemInfo;
 import de.eldoria.shepard.contexts.commands.util.Test;
 import de.eldoria.shepard.contexts.commands.util.UserInfo;
 import de.eldoria.shepard.contexts.commands.util.Vote;
-import de.eldoria.shepard.contexts.commands.botconfig.Restart;
-import de.eldoria.shepard.contexts.commands.botconfig.Upgrade;
 
 public final class ContextRegister {
 
@@ -89,6 +91,7 @@ public final class ContextRegister {
         new GuessGame();
         new Kudos();
         new KudoLottery();
+        new KudoGamble();
     }
 
     private static void registerExclusiveCommands() {
@@ -122,6 +125,7 @@ public final class ContextRegister {
         new Monitoring();
         new Language();
         new RepeatCommand();
+        new McPing();
     }
 
     /**

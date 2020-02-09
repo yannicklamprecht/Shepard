@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -42,6 +42,9 @@ import static de.eldoria.shepard.localization.enums.commands.admin.TicketSetting
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
+/**
+ * Command to configure the Ticket types on a guild.
+ */
 public class TicketSettings extends Command {
     /**
      * Creates a new ticket setting command object.
@@ -50,21 +53,21 @@ public class TicketSettings extends Command {
         commandName = "ticketSettings";
         commandDesc = DESCRIPTION.tag;
         commandAliases = new String[] {"ts"};
-        commandArgs = new CommandArg[] {
-                new CommandArg("action", true,
-                        new SubArg("createType", C_CREATE_TYPE.tag, true),
-                        new SubArg("removeType", C_REMOVE_TYPE.tag, true),
-                        new SubArg("setOwnerRoles", C_SET_OWNER_ROLES.tag, true),
-                        new SubArg("setSupportRoles", C_SET_SUPPORT_ROLES.tag, true),
-                        new SubArg("setChannelCategory", C_SET_CATEGORY.tag, true),
-                        new SubArg("setCreationMessage", C_SET_CREATION_MESSAGE.tag, true)),
-                new CommandArg("value", true,
-                        new SubArg("createType", A_NAME + " " + A_CATEGORY),
-                        new SubArg("removeType", A_NAME.tag),
-                        new SubArg("setOwnerRoles", A_NAME + " " + A_ROLES),
-                        new SubArg("setSupportRoles", A_NAME + " " + A_ROLES),
-                        new SubArg("setChannelCategory", A_NAME + " " + A_CATEGORY),
-                        new SubArg("setCreationMessage", A_NAME + " " + A_MESSAGE_MENTION))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("action", true,
+                        new SubArgument("createType", C_CREATE_TYPE.tag, true),
+                        new SubArgument("removeType", C_REMOVE_TYPE.tag, true),
+                        new SubArgument("setOwnerRoles", C_SET_OWNER_ROLES.tag, true),
+                        new SubArgument("setSupportRoles", C_SET_SUPPORT_ROLES.tag, true),
+                        new SubArgument("setChannelCategory", C_SET_CATEGORY.tag, true),
+                        new SubArgument("setCreationMessage", C_SET_CREATION_MESSAGE.tag, true)),
+                new CommandArgument("value", true,
+                        new SubArgument("createType", A_NAME + " " + A_CATEGORY),
+                        new SubArgument("removeType", A_NAME.tag),
+                        new SubArgument("setOwnerRoles", A_NAME + " " + A_ROLES),
+                        new SubArgument("setSupportRoles", A_NAME + " " + A_ROLES),
+                        new SubArgument("setChannelCategory", A_NAME + " " + A_CATEGORY),
+                        new SubArgument("setCreationMessage", A_NAME + " " + A_MESSAGE_MENTION))
         };
         category = ContextCategory.ADMIN;
     }
@@ -76,7 +79,7 @@ public class TicketSettings extends Command {
         Optional<TicketType> ticket = TicketData.getTypes(messageContext.getGuild(), messageContext).stream()
                 .filter(ticketType -> ticketType.getKeyword().equalsIgnoreCase(type)).findFirst();
 
-        CommandArg arg = commandArgs[0];
+        CommandArgument arg = commandArguments[0];
 
         //All validation operations are inside the method except when they are needed for more than one method.
         if (arg.isSubCommand(cmd, 0)) {
@@ -163,7 +166,7 @@ public class TicketSettings extends Command {
         String roleMentions = validRoles.stream().map(IMentionable::getAsMention)
                 .collect(Collectors.joining(lineSeparator()));
 
-        if (commandArgs[0].isSubCommand(cmd, 2)) {
+        if (commandArguments[0].isSubCommand(cmd, 2)) {
             if (TicketData.setTypeOwnerRoles(messageContext.getGuild(), scopeTicket.getKeyword(),
                     validRoles, messageContext)) {
 

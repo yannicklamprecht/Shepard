@@ -1,10 +1,9 @@
 package de.eldoria.shepard.contexts.commands;
 
-import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.LatestCommandsCollection;
 import de.eldoria.shepard.contexts.ContextSensitive;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
@@ -16,6 +15,7 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import info.debatty.java.stringsimilarity.JaroWinkler;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
@@ -32,6 +32,7 @@ import static java.lang.System.lineSeparator;
 /**
  * An abstract class for commands.
  */
+@Slf4j
 public abstract class Command extends ContextSensitive {
     /**
      * Language handler instance.
@@ -52,7 +53,7 @@ public abstract class Command extends ContextSensitive {
     /**
      * Command args as command arg array.
      */
-    protected CommandArg[] commandArgs = new CommandArg[0];
+    protected CommandArgument[] commandArguments = new CommandArgument[0];
     private final JaroWinkler similarity = new JaroWinkler();
 
     /**
@@ -117,17 +118,19 @@ public abstract class Command extends ContextSensitive {
 
         CooldownManager.getInstance().renewCooldown(this, messageContext.getGuild(), messageContext.getAuthor());
 
+        MessageSender.logCommand(label, args, messageContext);
+
         try {
             internalExecute(label, args, messageContext);
         } catch (InsufficientPermissionException e) {
             messageContext.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel ->
                     MessageSender.handlePermissionException(e, messageContext.getTextChannel()));
         } catch (RuntimeException e) {
-            ShepardBot.getLogger().error(e);
+            log.error("command execution failed", e);
             MessageSender.sendSimpleError(ErrorType.INTERNAL_ERROR, messageContext.getTextChannel());
             return;
         }
-        MessageSender.logCommand(label, args, messageContext);
+
         LatestCommandsCollection.getInstance()
                 .saveLatestCommand(messageContext.getGuild(), messageContext.getAuthor(),
                         this, label, args);
@@ -177,11 +180,11 @@ public abstract class Command extends ContextSensitive {
      *
      * @return an array of command arguments.
      */
-    public CommandArg[] getCommandArgs() {
-        if (commandArgs == null) {
-            commandArgs = new CommandArg[0];
+    public CommandArgument[] getCommandArguments() {
+        if (commandArguments == null) {
+            commandArguments = new CommandArgument[0];
         }
-        return commandArgs;
+        return commandArguments;
     }
 
     /**
@@ -220,7 +223,7 @@ public abstract class Command extends ContextSensitive {
      */
     public boolean checkArguments(String[] args) {
         int requiredArguments = 0;
-        for (CommandArg a : commandArgs) {
+        for (CommandArgument a : commandArguments) {
             if (a.isRequired()) {
                 requiredArguments++;
             }
@@ -244,7 +247,7 @@ public abstract class Command extends ContextSensitive {
                     + String.join(", ", getCommandAliases()));
         }
 
-        String args = Arrays.stream(getCommandArgs()).map(CommandArg::getHelpString)
+        String args = Arrays.stream(getCommandArguments()).map(CommandArgument::getHelpString)
                 .collect(Collectors.joining(" "));
 
 
@@ -253,9 +256,9 @@ public abstract class Command extends ContextSensitive {
                 false, channel));
 
         StringBuilder desc = new StringBuilder();
-        if (commandArgs.length != 0) {
+        if (commandArguments.length != 0) {
             String title = "__**" + HelpLocale.W_ARGUMENTS + ":**__";
-            for (CommandArg arg : commandArgs) {
+            for (CommandArgument arg : commandArguments) {
                 desc.setLength(0);
                 desc.append(">>> ").append(TextLocalizer.localizeAll(arg.getArgHelpString(), channel.getGuild()))
                         .append(lineSeparator()).append(lineSeparator());

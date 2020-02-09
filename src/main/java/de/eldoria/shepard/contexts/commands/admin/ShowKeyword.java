@@ -13,6 +13,10 @@ import java.util.List;
 
 import static de.eldoria.shepard.localization.enums.commands.admin.ShowKeywordLocale.DESCRIPTION;
 
+/**
+ * Command to show the current registered {@link Keyword}.
+ * Currently inactive due to deactivation of the Keyword Feature.
+ */
 public class ShowKeyword extends Command {
     /**
      * Creates a new show keyword command object.
@@ -20,7 +24,7 @@ public class ShowKeyword extends Command {
     public ShowKeyword() {
         commandName = "showKeywords";
         commandDesc = DESCRIPTION.tag;
-        category = ContextCategory.ADMIN;
+        category = ContextCategory.EXCLUSIVE;
     }
 
     @Override

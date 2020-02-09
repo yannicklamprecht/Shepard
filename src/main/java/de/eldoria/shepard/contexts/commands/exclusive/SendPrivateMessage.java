@@ -4,8 +4,8 @@ import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -15,6 +15,9 @@ import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USE
 import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.A_MESSAGE;
 import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.MESSAGE_DESCRIPTION;
 
+/**
+ * Command which makes it possible to send private messages as the bot.
+ */
 public class SendPrivateMessage extends Command {
     /**
      * Creates a new private message command object.
@@ -23,11 +26,11 @@ public class SendPrivateMessage extends Command {
         commandName = "privateMessage";
         commandAliases = new String[] {"pm", "sendMessage"};
         commandDesc = MESSAGE_DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("name", true,
-                        new SubArg("name", A_USER.tag)),
-                new CommandArg("message", false,
-                        new SubArg("message", A_MESSAGE.tag))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("name", true,
+                        new SubArgument("name", A_USER.tag)),
+                new CommandArgument("message", false,
+                        new SubArgument("message", A_MESSAGE.tag))
         };
         category = ContextCategory.EXCLUSIVE;
     }

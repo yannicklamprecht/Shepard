@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Collection so save the last users, which send a private message to the bot instance.
+ */
 public final class PrivateMessageCollection {
 
     private static PrivateMessageCollection instance;

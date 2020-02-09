@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.util;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.PrefixData;
 import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
 import de.eldoria.shepard.localization.util.LocalizedField;
@@ -25,6 +25,7 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
 
 /**
  * A command for listing all possible commands.
+ * Only Command which are allowed to be executed by this user on this guild are displayed.
  */
 public class Help extends Command {
 
@@ -35,9 +36,9 @@ public class Help extends Command {
         commandName = "help";
         commandAliases = new String[] {"sendhelp"};
         commandDesc = HelpLocale.DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("Command", false,
-                        new SubArg("Command", HelpLocale.A_COMMAND.tag))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("Command", false,
+                        new SubArgument("Command", HelpLocale.A_COMMAND.tag))
         };
         category = ContextCategory.UTIL;
     }
@@ -79,7 +80,7 @@ public class Help extends Command {
         List<LocalizedField> fields = new ArrayList<>();
 
         for (Command command : CommandCollection.getInstance().getCommands()) {
-            if (!command.isContextValid(messageContext)) {
+            if (!command.isContextValid(messageContext) || !command.hasPermission(messageContext)) {
                 continue;
             }
             commands.putIfAbsent(command.getCategory(), new ArrayList<>());

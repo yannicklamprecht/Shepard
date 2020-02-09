@@ -13,6 +13,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+/**
+ * Cooldown Manager.
+ * Saves a cooldown for a user. Removes invalid cooldowns every 10 minutes.
+ * Cooldowns are user and not guild restricted.
+ */
 public final class CooldownManager implements Runnable {
     private static CooldownManager instance;
 

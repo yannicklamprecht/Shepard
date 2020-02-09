@@ -15,6 +15,9 @@ import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLoca
 import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.M_USED_MEMORY;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
+/**
+ * Command which provides information about the system the bot is running on.
+ */
 public class SystemInfo extends Command {
     /**
      * Creates a new system info command object.

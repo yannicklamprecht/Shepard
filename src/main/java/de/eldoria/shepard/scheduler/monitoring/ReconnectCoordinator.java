@@ -3,6 +3,7 @@ package de.eldoria.shepard.scheduler.monitoring;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.MonitoringData;
 import de.eldoria.shepard.database.types.Address;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -13,6 +14,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Slf4j
 class ReconnectCoordinator implements Runnable {
     private static final int API_REQUEST_DELAY = 5;
     private final ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(10);
@@ -22,9 +24,8 @@ class ReconnectCoordinator implements Runnable {
         if (MonitoringScheduler.getInstance().getUnreachable().isEmpty()) {
             return;
         }
-        if (ShepardBot.getConfig().debugActive()) {
-            ShepardBot.getLogger().info("Checking for unavailable Server.");
-        }
+
+        log.debug("Checking for unavailable Server.");
         AtomicInteger delay = new AtomicInteger(0);
         for (Map.Entry<Long, List<Address>> set : MonitoringScheduler.getInstance().getUnreachable().entrySet()) {
             Guild guildById = ShepardBot.getJDA().getGuildById(set.getKey());

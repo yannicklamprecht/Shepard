@@ -4,8 +4,8 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.ContextData;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale;
@@ -24,6 +24,9 @@ import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageCon
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_SET_GUILD_COOLDOWN;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_SET_USER_COOLDOWN;
 
+/**
+ * Manage the basic settings of a registered and active {@link ContextSensitive}.
+ */
 public class ManageContext extends Command {
 
     /**
@@ -33,19 +36,19 @@ public class ManageContext extends Command {
         commandName = "manageContext";
         commandAliases = new String[] {"mc"};
         commandDesc = ManageContextLocale.DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("context name", true,
-                        new SubArg("context name", GeneralLocale.A_CONTEXT_NAME.tag)),
-                new CommandArg("action", true,
-                        new SubArg("setNsfw", C_NSFW.tag, true),
-                        new SubArg("setAdminOnly", C_ADMIN.tag, true),
-                        new SubArg("setUserCooldown", ManageContextLocale.C_USER_COOLDOWN.tag, true),
-                        new SubArg("setGuildCooldown", ManageContextLocale.C_GUILD_COOLDOWN.tag, true)),
-                new CommandArg("value", true,
-                        new SubArg("boolean", GeneralLocale.A_BOOLEAN.tag),
-                        new SubArg("boolean", GeneralLocale.A_BOOLEAN.tag),
-                        new SubArg("seconds", GeneralLocale.A_SECONDS.tag),
-                        new SubArg("seconds", GeneralLocale.A_SECONDS.tag)
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("context name", true,
+                        new SubArgument("context name", GeneralLocale.A_CONTEXT_NAME.tag)),
+                new CommandArgument("action", true,
+                        new SubArgument("setNsfw", C_NSFW.tag, true),
+                        new SubArgument("setAdminOnly", C_ADMIN.tag, true),
+                        new SubArgument("setUserCooldown", ManageContextLocale.C_USER_COOLDOWN.tag, true),
+                        new SubArgument("setGuildCooldown", ManageContextLocale.C_GUILD_COOLDOWN.tag, true)),
+                new CommandArgument("value", true,
+                        new SubArgument("boolean", GeneralLocale.A_BOOLEAN.tag),
+                        new SubArgument("boolean", GeneralLocale.A_BOOLEAN.tag),
+                        new SubArgument("seconds", GeneralLocale.A_SECONDS.tag),
+                        new SubArgument("seconds", GeneralLocale.A_SECONDS.tag)
                 )
         };
         category = ContextCategory.BOT_CONFIG;
@@ -55,7 +58,7 @@ public class ManageContext extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         ContextSensitive context = ArgumentParser.getContext(args[0], messageContext);
         String cmd = args[1];
-        CommandArg arg = commandArgs[1];
+        CommandArgument arg = commandArguments[1];
 
         if (context == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND, messageContext.getTextChannel());
@@ -89,7 +92,7 @@ public class ManageContext extends Command {
             return;
         }
 
-        boolean userCooldown = commandArgs[1].isSubCommand(cmd, 2);
+        boolean userCooldown = commandArguments[1].isSubCommand(cmd, 2);
 
         if (userCooldown) {
             if (!ContextData.setContextUserCooldown(context, seconds, messageContext)) {

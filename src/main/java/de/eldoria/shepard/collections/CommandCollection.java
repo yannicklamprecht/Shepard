@@ -1,6 +1,5 @@
 package de.eldoria.shepard.collections;
 
-import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.CommandInfo;
@@ -12,6 +11,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * The command collection holds every registered and active {@link Command} object.
+ * Provides a method {@link #getCommand(String)} to find a command by a alias or command name.
+ * It can also find a Command by similarity from a string ({@link #getSimilarCommands(String)}).
+ * It provides information about every command by the {@link #getCommandInfos(ContextCategory...)} method
+ */
 public final class CommandCollection {
     private static CommandCollection instance;
     private final List<Command> commands = new ArrayList<>();
@@ -86,16 +91,6 @@ public final class CommandCollection {
 
         rankedCommands.sort(Collections.reverseOrder());
         return rankedCommands.stream().map(rankedCommand -> rankedCommand.command).collect(Collectors.toList());
-    }
-
-    /**
-     * Prints a debug message for all commands to console.
-     */
-    public void debug() {
-        ShepardBot.getLogger().info("++++ DEBUG OF COMMANDS ++++");
-        for (Command c : commands) {
-            c.printDebugInfo();
-        }
     }
 
     /**

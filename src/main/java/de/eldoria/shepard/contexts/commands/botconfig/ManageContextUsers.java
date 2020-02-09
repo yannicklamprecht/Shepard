@@ -4,8 +4,8 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArg;
-import de.eldoria.shepard.contexts.commands.argument.SubArg;
+import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.ContextData;
@@ -33,6 +33,9 @@ import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageCon
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_REMOVED_USERS;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
+/**
+ * Manage the user settings of a registered and active {@link ContextSensitive}.
+ */
 public class ManageContextUsers extends Command {
     /**
      * Creates a new Manage context user command object.
@@ -41,19 +44,19 @@ public class ManageContextUsers extends Command {
         commandName = "manageContextUser";
         commandAliases = new String[] {"mcu"};
         commandDesc = DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {
-                new CommandArg("context name", true,
-                        new SubArg("context name", A_CONTEXT_NAME.tag)),
-                new CommandArg("action", true,
-                        new SubArg("setActive", C_SET_ACTIVE.tag, true),
-                        new SubArg("setListType", C_SET_LIST_TYPE.tag, true),
-                        new SubArg("addUser", C_ADD_USER.tag, true),
-                        new SubArg("removeUser", C_REMOVE_USER.tag, true)),
-                new CommandArg("value", true,
-                        new SubArg("setActive", A_BOOLEAN.tag),
-                        new SubArg("setListType", A_LIST_TYPE.tag),
-                        new SubArg("addUser", A_USERS.tag),
-                        new SubArg("removeUser", A_USERS.tag))
+        commandArguments = new CommandArgument[] {
+                new CommandArgument("context name", true,
+                        new SubArgument("context name", A_CONTEXT_NAME.tag)),
+                new CommandArgument("action", true,
+                        new SubArgument("setActive", C_SET_ACTIVE.tag, true),
+                        new SubArgument("setListType", C_SET_LIST_TYPE.tag, true),
+                        new SubArgument("addUser", C_ADD_USER.tag, true),
+                        new SubArgument("removeUser", C_REMOVE_USER.tag, true)),
+                new CommandArgument("value", true,
+                        new SubArgument("setActive", A_BOOLEAN.tag),
+                        new SubArgument("setListType", A_LIST_TYPE.tag),
+                        new SubArgument("addUser", A_USERS.tag),
+                        new SubArgument("removeUser", A_USERS.tag))
         };
         category = ContextCategory.BOT_CONFIG;
     }
@@ -62,7 +65,7 @@ public class ManageContextUsers extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         ContextSensitive context = ArgumentParser.getContext(args[0], messageContext);
         String cmd = args[1];
-        CommandArg arg = commandArgs[1];
+        CommandArgument arg = commandArguments[1];
 
         if (context == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND, messageContext.getTextChannel());

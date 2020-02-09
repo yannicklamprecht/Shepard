@@ -1,11 +1,11 @@
 package de.eldoria.shepard.database;
 
 import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.database.types.Rank;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.User;
 
 import java.sql.ResultSet;
@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 
 import static java.lang.System.lineSeparator;
 
+@Slf4j
 public final class DbUtil {
     private static final Pattern ID_PATTERN = Pattern.compile("(?:<[@#!&]{1,2})?(?<id>[0-9]{18})(?:>)?");
 
@@ -70,12 +71,11 @@ public final class DbUtil {
         builder.append("SQLException: ").append(ex.getMessage()).append(lineSeparator())
                 .append("SQLState: ").append(ex.getSQLState()).append(lineSeparator())
                 .append("VendorError: ").append(ex.getErrorCode());
-        ShepardBot.getLogger().error(builder.toString());
+        log.error(builder.toString(), ex);
 
         if (event != null) {
             MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, event.getTextChannel());
         }
-        MessageSender.sendSimpleErrorEmbed(builder.toString(), Normandy.getErrorChannel());
         throw ex;
     }
 
@@ -89,7 +89,7 @@ public final class DbUtil {
         try {
             handleException(ex, event);
         } catch (SQLException e) {
-            //DO NOTHING
+            log.error("failed to handle exception", e);
         }
     }
 

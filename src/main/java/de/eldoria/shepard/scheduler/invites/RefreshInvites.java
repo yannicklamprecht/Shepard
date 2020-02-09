@@ -2,6 +2,7 @@ package de.eldoria.shepard.scheduler.invites;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.InviteData;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -10,6 +11,7 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Slf4j
 class RefreshInvites implements Runnable {
     /**
      * Creates a new RefreshInvite object.
@@ -35,18 +37,15 @@ class RefreshInvites implements Runnable {
             }
             guild.retrieveInvites().queue(invites -> {
                 if (InviteData.updateInvite(guild, invites, null)) {
-                    if (ShepardBot.getConfig().debugActive()) {
-                        ShepardBot.getLogger().info("Update Invites for guild " + guild.getName()
-                                + "(" + guild.getId() + ")");
-                    }
+                    log.debug("Update Invites for guild {}({})", guild.getName(), guild.getId());
                 }
                 // will run when the last guild was updated successfully
                 if (counter.incrementAndGet() == guildCount) {
-                    ShepardBot.getLogger().info("Cleaned up Invites");
+                    log.debug("Cleaned up Invites");
                 }
             });
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 return;
             }
