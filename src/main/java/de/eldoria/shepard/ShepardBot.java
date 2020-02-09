@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.security.auth.login.LoginException;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 @Slf4j
@@ -24,9 +25,9 @@ public final class ShepardBot {
 
     private boolean loaded;
 
-    private ShepardBot() {
+    private ShepardBot() throws FileNotFoundException {
         log.info(C.STATUS, "Startup in progress. Bot is heating up");
-        config = Loader.getConfigLoader().getConfig();
+            config = Loader.loadConfig();
     }
 
     /**
@@ -46,7 +47,6 @@ public final class ShepardBot {
     public static void main(String[] args) {
         try {
             instance = new ShepardBot();
-
 
             instance.setup();
 
