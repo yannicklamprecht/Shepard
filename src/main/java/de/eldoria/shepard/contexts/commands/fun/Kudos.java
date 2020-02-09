@@ -40,7 +40,8 @@ public class Kudos extends Command {
      * Create a new kudos command object.
      */
     public Kudos() {
-        commandName = "kudos";
+        commandName = "kudo";
+        commandAliases = new String[] {"kudos"};
         commandDesc = DESCRIPTION.tag;
         commandArguments = new CommandArgument[] {
                 new CommandArgument("action", false,
