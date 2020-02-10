@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
-import java.awt.Color;
+import java.awt.*;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.Period;

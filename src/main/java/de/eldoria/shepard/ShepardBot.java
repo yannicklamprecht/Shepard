@@ -25,9 +25,7 @@ public final class ShepardBot {
 
     private boolean loaded;
 
-    private ShepardBot() throws FileNotFoundException {
-        log.info(C.STATUS, "Startup in progress. Bot is heating up");
-            config = Loader.loadConfig();
+    private ShepardBot() {
     }
 
     /**
@@ -90,7 +88,10 @@ public final class ShepardBot {
         return instance.loaded;
     }
 
-    private void setup() {
+    private void setup() throws FileNotFoundException {
+        log.info(C.STATUS, "Startup in progress. Bot is heating up");
+        config = Loader.loadConfig();
+
         try {
             initiateJda();
         } catch (LoginException | InterruptedException e) {

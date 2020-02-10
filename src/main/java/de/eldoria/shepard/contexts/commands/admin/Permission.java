@@ -19,39 +19,14 @@ import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 
-import java.awt.Color;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CONTEXT_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_ROLES;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USERS;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_ADD_ROLE;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_ADD_USER;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_INFO;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_LIST_ROLE;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_LIST_USER;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_REMOVE_ROLE;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_REMOVE_USER;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_SET_PERMISSION_OVERRIDE;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ADMIN_ONLY;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_GENERAL_INFORMATION;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_INFO_TITLE;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_OVERRIDE_ACTIVE;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_PERMISSION_REQUIRED;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ROLES_WITH_PERMISSION;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ROLE_ACCESS;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ROLE_ACCESS_GRANTED;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ROLE_ACCESS_REVOKED;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_ACCESS;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_ACCESS_GRANTED;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_ACCESS_REVOKED;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_WITH_PERMISSION;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.*;
 import static java.lang.System.lineSeparator;
 
 /**
