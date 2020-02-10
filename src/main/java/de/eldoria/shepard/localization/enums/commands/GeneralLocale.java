@@ -62,6 +62,10 @@ public enum GeneralLocale {
      */
     A_SECONDS("command.general.argument.seconds"),
     /**
+     * Localization kex for argument [amount] Only full positive numbers
+     */
+    A_AMOUNT("command.general.argument.amount"),
+    /**
      * Localization key for argument [true|false].
      */
     A_BOOLEAN("command.general.argument.boolean"),
