@@ -18,7 +18,17 @@ import java.util.List;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USER;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.A_POINTS;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.C_EMPTY;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.C_GIVE;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.C_TOP;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.C_TOP_GLOBAL;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_DESCRIPTION_EXTENDED;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_DESCRIPTION_GENERAL;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_GLOBAL_RANKING;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_RECEIVED_KUDOS;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_SERVER_RANKING;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 

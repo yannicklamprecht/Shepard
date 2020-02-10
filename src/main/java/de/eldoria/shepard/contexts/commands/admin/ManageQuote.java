@@ -11,14 +11,23 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_ID;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_TEXT;
-import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.A_KEYWORD;
+import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_ADD;
+import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_ALTER;
+import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_LIST;
+import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_REMOVE;
+import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_CHANGED_QUOTE;
+import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_NO_QUOTES;
+import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_REMOVED_QUOTE;
+import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_SAVED_QUOTE;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 

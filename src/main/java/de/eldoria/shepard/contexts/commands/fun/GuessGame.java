@@ -20,7 +20,20 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.util.List;
 
-import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_SCORE;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_SCORE_GLOBAL;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_START;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_TOP;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_TOP_GLOBAL;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_GAME_DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_GAME_FOOTER;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_GLOBAL_RANKING;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_MINIGAME_CHANNEL;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_ROUND_IN_PROGRESS;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_SCORE;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_SCORE_GLOBAL;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_SERVER_RANKING;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_TITLE;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;

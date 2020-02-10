@@ -21,8 +21,22 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.List;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.*;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_NAME;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.A_ADDRESS;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.A_ADD_TEXT;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.C_ADD;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.C_DISABLE;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.C_ENABLE;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.C_LIST;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.C_REMOVE;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REGISTERED_ADDRESS;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REGISTERED_ADDRESSES;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REGISTERED_CHANNEL;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REMOVED_ADDRESS;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REMOVED_CHANNEL;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 

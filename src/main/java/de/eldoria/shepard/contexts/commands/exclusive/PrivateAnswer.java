@@ -11,7 +11,9 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
 
-import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.ANSWER_DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.A_MESSAGE;
+import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.A_NAME;
 
 /**
  * Command to answer a received message by a bot instance.

@@ -17,7 +17,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.A_CODE;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.A_INVITE_NAME;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.C_ADD_INVITE;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.C_REFRESH_INVITES;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.C_REMOVE_INVITE;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.C_SHOW_INVITES;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_ADDED_INVITE;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_CODE;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_INVITE_NAME;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_REGISTERED_INVITES;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_REMOVED_INVITE;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_REMOVED_NON_EXISTENT_INVITES;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_USAGE_COUNT;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 

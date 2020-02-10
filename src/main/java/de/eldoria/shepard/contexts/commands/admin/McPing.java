@@ -15,9 +15,12 @@ import de.eldoria.shepard.util.PingMinecraftServer;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
-import java.awt.*;
+import java.awt.Color;
 
-import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.*;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_PLAYER_COUNT;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVER_DOWN;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_STATUS_OF;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_VERSION;
 
 /**
  * the McPing command uses the {@link de.eldoria.shepard.util.PingMinecraftServer.MinecraftPing}
