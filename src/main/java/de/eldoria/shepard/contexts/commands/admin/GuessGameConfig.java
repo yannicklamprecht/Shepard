@@ -15,23 +15,11 @@ import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.File;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.A_FLAG;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.A_URL;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.C_ADD_IMAGE;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.C_CANCEL_REGISTRATION;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.C_CHANGE_FLAG;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.C_REMOVE_IMAGE;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.C_SHOW_IMAGE_SET;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_CHANGED_FLAG;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_DISPLAY_IMAGE;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_REGISTRATION_CANCELED;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_REMOVED_IMAGE;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_STARTED_REGISTRATION;
+import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**

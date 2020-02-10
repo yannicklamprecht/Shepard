@@ -7,17 +7,11 @@ import de.eldoria.shepard.util.PingMinecraftServer;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
 import java.net.Socket;
 
-import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_PLAYER_COUNT;
-import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVER_DOWN;
-import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVER_DOWN_MESSAGE;
-import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVICE_ADDRESS;
-import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVICE_NAME_UNAVAILABLE;
-import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_STATUS_OF;
-import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_VERSION;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static de.eldoria.shepard.util.TextFormatting.getTimeAsString;
 

@@ -16,20 +16,8 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_ROLE;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.C_ACTIVATE;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.C_ADD_ROLE;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.C_DEACTIVATE;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.C_REMOVE_ROLE;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.C_ROLES;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_ACTIVATED;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_ADDED_ROLE;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_DEACTIVATED;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_LOGGED_ROLES;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_REMOVED_ROLE;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 

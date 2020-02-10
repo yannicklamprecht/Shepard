@@ -10,10 +10,7 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import java.util.Collections;
 import java.util.Random;
 
-import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.ANSWER_NEGATIVE;
-import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.ANSWER_NEUTRAL;
-import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.ANSWER_POSITIVE;
-import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.M_ANSWER;
+import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.*;
 
 
 /**

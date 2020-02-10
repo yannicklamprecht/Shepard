@@ -18,15 +18,12 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
-import java.awt.Color;
+import java.awt.*;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_BOT_ANSWER;
-import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_COMMAND_NOT_FOUND;
-import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_HELP_COMMAND;
-import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_SUGGESTION;
+import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 
