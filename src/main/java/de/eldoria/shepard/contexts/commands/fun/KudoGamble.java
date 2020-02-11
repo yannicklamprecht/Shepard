@@ -44,8 +44,8 @@ public class KudoGamble extends Command {
         commandName = "kudoGamble";
         commandAliases = new String[] {"gamble"};
         commandDesc = KudoGambleLocale.DESCRIPTION.tag;
-        commandArgs = new CommandArg[] {new CommandArg("amount", true,
-                new SubArg("amount", GeneralLocale.A_AMOUNT.tag))};
+        commandArguments = new CommandArgument[] {new CommandArgument("amount", true,
+                new SubArgument("amount", GeneralLocale.A_AMOUNT.tag))};
     }
 
 
