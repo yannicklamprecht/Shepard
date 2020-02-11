@@ -15,7 +15,14 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_ADMIN;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_NSFW;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_ACTIVATED_ADMIN;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_ACTIVATED_NSFW;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_DEACTIVATED_ADMIN;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_DEACTIVATED_NSFW;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_SET_GUILD_COOLDOWN;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_SET_USER_COOLDOWN;
 
 /**
  * Manage the basic settings of a registered and active {@link ContextSensitive}.

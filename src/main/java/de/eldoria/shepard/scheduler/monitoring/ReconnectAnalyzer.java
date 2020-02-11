@@ -7,9 +7,14 @@ import de.eldoria.shepard.util.PingMinecraftServer;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import java.awt.*;
+import java.awt.Color;
 
-import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.*;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_PLAYER_COUNT;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVER_REACHABLE;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVICE_ADDRESS;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVICE_REACHABLE;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVICE_STILL_DOWN;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_VERSION;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static de.eldoria.shepard.util.TextFormatting.getTimeAsString;
 

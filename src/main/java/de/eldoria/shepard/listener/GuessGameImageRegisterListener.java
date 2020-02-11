@@ -10,9 +10,12 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
-import java.awt.*;
+import java.awt.Color;
 
-import static de.eldoria.shepard.localization.enums.listener.GuessGameImageRegisterListenerLocale.*;
+import static de.eldoria.shepard.localization.enums.listener.GuessGameImageRegisterListenerLocale.M_ADDED_NSFW;
+import static de.eldoria.shepard.localization.enums.listener.GuessGameImageRegisterListenerLocale.M_ADDED_SFW;
+import static de.eldoria.shepard.localization.enums.listener.GuessGameImageRegisterListenerLocale.M_COPPED_REGISTERED;
+import static de.eldoria.shepard.localization.enums.listener.GuessGameImageRegisterListenerLocale.M_SET_REGISTERED;
 
 public class GuessGameImageRegisterListener extends ListenerAdapter {
     @Override

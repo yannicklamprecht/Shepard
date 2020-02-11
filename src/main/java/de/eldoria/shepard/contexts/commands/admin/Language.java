@@ -14,7 +14,14 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import java.util.Arrays;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
-import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocale.A_LANGUAGE_CODE_FORMAT;
+import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocale.C_LIST;
+import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocale.C_RESET;
+import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocale.C_SET;
+import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocale.M_CHANGED;
+import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocale.M_LIST;
+import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocale.M_SUBMIT;
 
 /**
  * Command to specify the bot config.

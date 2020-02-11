@@ -3,7 +3,12 @@ package de.eldoria.shepard.database.queries;
 import de.eldoria.shepard.database.DatabaseConnector;
 import de.eldoria.shepard.database.types.TicketType;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Category;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.ISnowflake;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
 import java.sql.Array;
 import java.sql.PreparedStatement;

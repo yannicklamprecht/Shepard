@@ -11,8 +11,16 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.*;
-import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CHANNEL_MENTION_OR_EXECUTE;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_MESSAGE_MENTION;
+import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.C_REMOVE_CHANNEL;
+import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.C_SET_CHANNEL;
+import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.C_SET_MESSAGE;
+import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.M_REMOVED_CHANNEL;
+import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.M_SET_CHANNEL;
+import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.M_SET_MESSAGE;
 import static java.lang.System.lineSeparator;
 
 /**

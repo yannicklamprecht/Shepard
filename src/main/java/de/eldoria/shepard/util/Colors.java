@@ -1,6 +1,6 @@
 package de.eldoria.shepard.util;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * Contains static color objects for {@link Pastel} colors and {@link Strong} colors.

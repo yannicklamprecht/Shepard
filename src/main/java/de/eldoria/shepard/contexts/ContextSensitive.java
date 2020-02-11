@@ -227,7 +227,7 @@ public abstract class ContextSensitive {
      * @return true of a permission is needed to execute this command
      */
     public boolean needsPermission(Guild guild) {
-        return overrideActive(guild) ? !isAdmin() : isAdmin();
+        return overrideActive(guild) != isAdmin();
     }
 
     /**

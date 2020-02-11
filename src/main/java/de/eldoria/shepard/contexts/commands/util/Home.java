@@ -7,7 +7,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
-import java.awt.*;
+import java.awt.Color;
 
 /**
  * Command which provides a invite link to normandy.

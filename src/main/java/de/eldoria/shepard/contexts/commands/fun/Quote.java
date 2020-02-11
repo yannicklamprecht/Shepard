@@ -13,7 +13,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.A_EMPTY_OR_WORD;
+import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.M_NO_QUOTE_FOUND;
 
 /**
  * Command which draws a random quote from database or a quote containing a keyword.

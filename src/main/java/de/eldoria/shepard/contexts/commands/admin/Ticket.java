@@ -28,8 +28,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.database.queries.TicketData.*;
-import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.*;
+import static de.eldoria.shepard.database.queries.TicketData.getTypeOwnerRoles;
+import static de.eldoria.shepard.database.queries.TicketData.getTypeSupportRoles;
+import static de.eldoria.shepard.database.queries.TicketData.removeChannel;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.A_CLOSE;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.A_INFO;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.A_TICKET_TYPE;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.C_CLOSE;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.C_INFO;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.C_OPEN;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.M_CHANNEL_CATEGORY;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.M_CREATION_MESSAGE;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.M_OPEN;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.M_TICKET_OWNER_ROLES;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.M_TICKET_SUPPORT_ROLES;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.M_TYPE_ABOUT;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.M_TYPE_LIST;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
