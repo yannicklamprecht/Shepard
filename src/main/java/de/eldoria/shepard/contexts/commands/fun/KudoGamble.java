@@ -5,6 +5,8 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
 import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.KudoData;
+import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
+import de.eldoria.shepard.localization.enums.commands.fun.KudoGambleLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.reactions.Emoji;
@@ -12,8 +14,13 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**
  * Creates a gamble game.
@@ -36,9 +43,9 @@ public class KudoGamble extends Command {
     public KudoGamble() {
         commandName = "kudoGamble";
         commandAliases = new String[] {"gamble"};
-        commandDesc = "Gamble your Kudos. Challenge your Luck!";
-        commandArguments = new CommandArgument[] {new CommandArgument("amount", true,
-                new SubArgument("amount", "Amount you want to set."))};
+        commandDesc = KudoGambleLocale.DESCRIPTION.tag;
+        commandArgs = new CommandArg[] {new CommandArg("amount", true,
+                new SubArg("amount", GeneralLocale.A_AMOUNT.tag))};
     }
 
 
@@ -46,7 +53,7 @@ public class KudoGamble extends Command {
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         Message message;
         Integer amount = ArgumentParser.parseInt(args[0]);
-        if (amount == null) {
+        if (amount == null || amount < 1) {
             MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
             return;
         }
@@ -55,11 +62,12 @@ public class KudoGamble extends Command {
             return;
         }
         MessageChannel channel = messageContext.getChannel();
-        StringBuilder messageText = new StringBuilder("Starting a gamble for **" + messageContext.getMember()
-                .getEffectiveName() + "**. May the luck be with you!");
+        StringBuilder messageText = new StringBuilder(
+                localizeAllAndReplace(KudoGambleLocale.M_START.tag, messageContext.getGuild(),
+                        "**" + messageContext.getMember().getEffectiveName() + "**"));
         message = channel.sendMessage(messageText.toString()).complete();
 
-        messageText.append(System.lineSeparator()).append("**GAMBLE START**").append(System.lineSeparator());
+        messageText.append(System.lineSeparator()).append("**" + localizeAll(KudoGambleLocale.M_GAMBLE.tag, messageContext.getGuild()) + "**").append(System.lineSeparator());
 
         String square = Emoji.BLACK_LARGE_SQUARE.unicode;
 
@@ -94,11 +102,11 @@ public class KudoGamble extends Command {
         if (winId == tier4 * 3) {
             winAmount *= 50;
         } else if (winId == tier3 * 3) {
-            winAmount *= 10;
+            winAmount *= 25;
         } else if (winId == tier2 * 3) {
-            winAmount *= 5;
+            winAmount *= 10;
         } else if (winId == tier1 * 3) {
-            winAmount = (int) Math.round(amount * 2.5);
+            winAmount = amount * 5;
         } else if (winId == bonus * 3) {
             winAmount = amount + KudoData.getAndClearJackpot(messageContext.getGuild(), messageContext);
             jackpot = true;
@@ -115,21 +123,33 @@ public class KudoGamble extends Command {
         }
 
         if (winAmount == 0) {
-            int i = KudoData.addAndGetJackpot(messageContext.getGuild(), amount, messageContext);
-            message.editMessage(finalMessageText + System.lineSeparator() + "Sad. You don't win anything this time."
-                    + System.lineSeparator() + "Jackpot is now on " + i + " Kudos").complete();
+            int jackpotAmount = KudoData.addAndGetJackpot(messageContext.getGuild(), amount, messageContext);
+            message.editMessage(finalMessageText + System.lineSeparator()
+                    + localizeAllAndReplace(KudoGambleLocale.M_LOSE.tag, messageContext.getGuild(),
+                    "**" + jackpotAmount + "**")).complete();
+            return;
+        }
+
+        if (winAmount < amount) {
+            int jackpotAmount = KudoData.addAndGetJackpot(messageContext.getGuild(), amount - winAmount, messageContext);
+            KudoData.addRubberPoints(messageContext.getGuild(), messageContext.getAuthor(), winAmount, messageContext);
+            message.editMessage(finalMessageText + System.lineSeparator()
+                    + localizeAllAndReplace(KudoGambleLocale.M_PART_LOSE.tag, messageContext.getGuild(),
+                    "**" + winAmount + "**", "**" + jackpotAmount + "**")).complete();
             return;
         }
 
         if (!jackpot) {
             message.editMessage(finalMessageText + System.lineSeparator()
-                    + "You win " + winAmount + " Kudos!").complete();
+                    + localizeAllAndReplace(KudoGambleLocale.M_WIN.tag, messageContext.getGuild(),
+                    "**" + winAmount + "**")).complete();
             KudoData.addRubberPoints(messageContext.getGuild(), messageContext.getAuthor(), winAmount, messageContext);
             return;
         }
 
-        message.editMessage(finalMessageText + System.lineSeparator()
-                + "**JACKPOT! YOU WIN " + winAmount + " KUDOS!**").complete();
+        message.editMessage(finalMessageText + System.lineSeparator() + "**"
+                + localizeAllAndReplace(KudoGambleLocale.M_JACKPOT.tag + "**", messageContext.getGuild(),
+                winAmount + "")).complete();
         KudoData.addRubberPoints(messageContext.getGuild(), messageContext.getAuthor(), winAmount, messageContext);
 
 
@@ -185,13 +205,13 @@ public class KudoGamble extends Command {
     private double evaluatePairs(int tier) {
         switch (tier) {
             case bonus:
-                return 3;
+                return 5;
             case tier1:
-                return 1.4;
+                return 0.875;
             case tier2:
-                return 1.6;
+                return 2;
             case tier3:
-                return 1.8;
+                return 3;
             case tier4:
                 return 2;
             default:
