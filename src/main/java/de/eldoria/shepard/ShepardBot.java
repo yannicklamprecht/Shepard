@@ -3,7 +3,6 @@ package de.eldoria.shepard;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.KeyWordCollection;
 import de.eldoria.shepard.configuration.Config;
-import de.eldoria.shepard.configuration.Loader;
 import de.eldoria.shepard.register.ContextRegister;
 import de.eldoria.shepard.register.ListenerRegister;
 import de.eldoria.shepard.util.ExitCode;
@@ -25,8 +24,6 @@ public final class ShepardBot {
     private boolean loaded;
 
     private ShepardBot() {
-        log.info(C.STATUS, "Startup in progress. Bot is heating up");
-        config = Loader.getConfigLoader().getConfig();
     }
 
     /**
@@ -46,7 +43,6 @@ public final class ShepardBot {
     public static void main(String[] args) {
         try {
             instance = new ShepardBot();
-
 
             instance.setup();
 
