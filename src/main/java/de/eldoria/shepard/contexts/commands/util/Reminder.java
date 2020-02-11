@@ -19,9 +19,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.WordsLocale.ID;
-import static de.eldoria.shepard.localization.enums.WordsLocale.MESSAGE;
-import static de.eldoria.shepard.localization.enums.WordsLocale.TIME;
+import static de.eldoria.shepard.localization.enums.WordsLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**

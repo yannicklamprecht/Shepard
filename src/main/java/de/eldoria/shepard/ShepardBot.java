@@ -88,10 +88,7 @@ public final class ShepardBot {
         return instance.loaded;
     }
 
-    private void setup() throws IOException {
-        log.info(C.STATUS, "Startup in progress. Bot is heating up");
-        config = Loader.loadConfig();
-
+    private void setup() {
         try {
             initiateJda();
         } catch (LoginException | InterruptedException e) {

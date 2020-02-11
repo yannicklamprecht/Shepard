@@ -11,11 +11,7 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import static de.eldoria.shepard.database.queries.PrefixData.setPrefix;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
-import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.A_PREFIX_FORMAT;
-import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.C_RESET;
-import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.C_SET;
-import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.M_CHANGED;
+import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.*;
 
 /**
  * Command to change the bot prefix on a guild.

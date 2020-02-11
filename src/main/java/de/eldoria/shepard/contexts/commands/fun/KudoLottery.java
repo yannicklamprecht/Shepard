@@ -17,7 +17,7 @@ import de.eldoria.shepard.minigames.kudolottery.KudoLotteryEvaluator;
 import de.eldoria.shepard.util.reactions.ShepardEmote;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
-import java.awt.Color;
+import java.awt.*;
 
 import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_LOTTERY_RUNNING;
