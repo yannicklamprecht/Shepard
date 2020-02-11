@@ -3,6 +3,7 @@ package de.eldoria.shepard;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.KeyWordCollection;
 import de.eldoria.shepard.configuration.Config;
+import de.eldoria.shepard.configuration.Loader;
 import de.eldoria.shepard.register.ContextRegister;
 import de.eldoria.shepard.register.ListenerRegister;
 import de.eldoria.shepard.util.ExitCode;
@@ -13,6 +14,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.security.auth.login.LoginException;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -86,7 +88,9 @@ public final class ShepardBot {
         return instance.loaded;
     }
 
-    private void setup() {
+    private void setup() throws IOException {
+        config = Loader.loadConfig();
+
         try {
             initiateJda();
         } catch (LoginException | InterruptedException e) {
