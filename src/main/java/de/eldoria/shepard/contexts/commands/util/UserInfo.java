@@ -78,8 +78,8 @@ public class UserInfo extends Command {
                         : UserInfoLocale.W_UNKOWN.tag,
                 true,
                 messageContext))
-                .addField(new LocalizedField(UserInfoLocale.W_MINECRAFT_NAME.tag, "Not implemented yet",
-                        true, messageContext))
+                //.addField(new LocalizedField(UserInfoLocale.W_MINECRAFT_NAME.tag, "Not implemented yet",
+                //        true, messageContext))
                 .addField(UserInfoLocale.W_MENTION.tag, user.getAsMention(), false)
                 .setAuthor(user.getAsTag(), user.getEffectiveAvatarUrl(), user.getEffectiveAvatarUrl())
                 .setColor(member != null ? member.getColor() : Color.gray);
