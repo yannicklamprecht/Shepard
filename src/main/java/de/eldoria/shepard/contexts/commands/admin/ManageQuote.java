@@ -45,12 +45,12 @@ public class ManageQuote extends Command {
         commandDesc = DESCRIPTION.tag;
         commandArguments = new CommandArgument[] {
                 new CommandArgument("action", true,
-                        new SubArgument("add", C_ADD.tag, true),
+                        new SubArgument("create", C_ADD.tag, true),
                         new SubArgument("alter", C_ALTER.tag, true),
                         new SubArgument("remove", C_REMOVE.tag, true),
                         new SubArgument("list", C_LIST.tag, true)),
                 new CommandArgument("action", false,
-                        new SubArgument("add", A_TEXT.tag),
+                        new SubArgument("create", A_TEXT.tag),
                         new SubArgument("alter", A_ID + " " + A_TEXT),
                         new SubArgument("remove", A_ID.tag),
                         new SubArgument("list", A_KEYWORD.tag))
@@ -63,7 +63,7 @@ public class ManageQuote extends Command {
         String cmd = args[0];
         CommandArgument arg = commandArguments[0];
         if (arg.isSubCommand(cmd, 0)) {
-            add(args, messageContext);
+            create(args, messageContext);
             return;
         }
 
@@ -142,7 +142,7 @@ public class ManageQuote extends Command {
         }
     }
 
-    private void add(String[] args, MessageEventDataWrapper messageContext) {
+    private void create(String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 1) {
             MessageSender.sendSimpleError(ErrorType.NO_QUOTE_FOUND, messageContext.getTextChannel());
             return;
