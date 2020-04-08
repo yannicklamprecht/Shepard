@@ -104,6 +104,22 @@ public final class ArgumentParser {
     }
 
     /**
+     * Searches for a user. First on a guild and after this on all users the bot currently know.
+     * Equal to calling {@link ArgumentParser getGuildUser()} and {@link ArgumentParser getUser()}.
+     *
+     * @param userString string for lookup
+     * @param guild      guild for lookup
+     * @return user object or null if no user is found
+     */
+    public static User getUserDeepSearch(String userString, Guild guild) {
+        User user = getGuildUser(guild, userString);
+        if (user == null) {
+            user = getUser(userString);
+        }
+        return user;
+    }
+
+    /**
      * Get a user object by id, name or tag.
      *
      * @param userString string for lookup
