@@ -1,19 +1,10 @@
 package de.eldoria.shepard.localization.enums.commands.fun;
 
-public enum QuoteLocale {
+public enum MassEffectLocale {
     /**
      * Localization key for description.
      */
-    DESCRIPTION("command.quote.description"),
-    /**
-     * Localization key for argument empty or word.
-     */
-    A_EMPTY_OR_WORD("command.quote.argument.emptyOrWord"),
-    /**
-     * Localization key for message no quote found.
-     */
-    M_NO_QUOTE_FOUND("command.quote.message.noQuoteFound"),
-    M_NO_QUOTE_DEFINED("command.quote.message.noQuoteDefined");
+    DESCRIPTION("command.massEffect.description");
 
     /**
      * Get the escaped locale code for auto translation.
@@ -25,7 +16,7 @@ public enum QuoteLocale {
      *
      * @param localeCode locale code
      */
-    QuoteLocale(String localeCode) {
+    MassEffectLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }
 
@@ -33,5 +24,4 @@ public enum QuoteLocale {
     public String toString() {
         return tag;
     }
-
 }
