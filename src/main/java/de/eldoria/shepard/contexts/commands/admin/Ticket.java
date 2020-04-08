@@ -9,7 +9,9 @@ import de.eldoria.shepard.database.queries.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
 import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
+import de.eldoria.shepard.localization.enums.commands.admin.TicketLocale;
 import de.eldoria.shepard.localization.util.LocalizedField;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.Replacer;
@@ -17,6 +19,7 @@ import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -146,11 +149,16 @@ public class Ticket extends Command {
         if (args.length == 1) {
 
             TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
-                    tickets, WordsLocale.KEYWORD.tag, "", WordsLocale.CATEGORY.tag);
+                    tickets,
+                    TextLocalizer.localizeAll(WordsLocale.KEYWORD.tag, messageContext.getGuild()), "",
+                    TextLocalizer.localizeAll(WordsLocale.CATEGORY.tag, messageContext.getGuild()));
 
             for (TicketType type : tickets) {
                 tableBuilder.next();
-                tableBuilder.setRow(type.getKeyword(), ":", type.getCategory().getName());
+                Category category = type.getCategory();
+                tableBuilder.setRow(type.getKeyword(), ":",
+                        category != null ? category.getName()
+                                : TextLocalizer.localizeAll(WordsLocale.INVALID.tag, messageContext.getGuild()));
             }
 
             MessageSender.sendMessage("**__" + M_TYPE_LIST + "__**" + lineSeparator()
@@ -211,6 +219,11 @@ public class Ticket extends Command {
             return;
         }
 
+        if (ticket.getCategory() == null) {
+            MessageSender.sendMessage(TicketLocale.M_CATEGORY_NOT_FOUND.tag, messageContext.getTextChannel());
+            return;
+        }
+
         //Set Channel Name
         String channelName = TicketData.getNextTicketCount(messageContext.getGuild(), messageContext)
                 + " " + member.getUser().getName();
@@ -223,8 +236,13 @@ public class Ticket extends Command {
                     //Manage permissions for @everyone and deny read permission
                     Role everyone = messageContext.getGuild().getPublicRole();
                     ChannelManager manager = channel.getManager().getChannel().getManager();
+                    PermissionOverrideAction everyoneOverride;
+                    try {
+                        everyoneOverride = manager.getChannel().createPermissionOverride(everyone);
 
-                    PermissionOverrideAction everyoneOverride = manager.getChannel().createPermissionOverride(everyone);
+                    } catch (IllegalStateException e) {
+                        everyoneOverride = manager.getChannel().upsertPermissionOverride(everyone);
+                    }
                     everyoneOverride.setDeny(Permission.MESSAGE_READ).queue();
 
                     PermissionOverrideAction memberOverride;
@@ -232,7 +250,7 @@ public class Ticket extends Command {
                         //Gives ticket owner read permission in channel
                         memberOverride = manager.getChannel().createPermissionOverride(member);
                     } catch (IllegalStateException e) {
-                        memberOverride = manager.getChannel().putPermissionOverride(member);
+                        memberOverride = manager.getChannel().upsertPermissionOverride(member);
                     }
                     memberOverride.setAllow(Permission.MESSAGE_READ).queue();
 
@@ -256,7 +274,12 @@ public class Ticket extends Command {
                     }
 
                     for (Role role : supportRoles) {
-                        PermissionOverrideAction override = manager.getChannel().createPermissionOverride(role);
+                        PermissionOverrideAction override;
+                        try {
+                            override = manager.getChannel().createPermissionOverride(role);
+                        } catch (IllegalStateException e) {
+                            override = manager.getChannel().upsertPermissionOverride(role);
+                        }
                         override.setAllow(Permission.MESSAGE_READ).queue();
                     }
 
@@ -266,7 +289,8 @@ public class Ticket extends Command {
                             channel);
 
                     MessageSender.sendMessage(localizeAllAndReplace(M_OPEN.tag, messageContext.getGuild(),
-                            channel.getAsMention(), member.getAsMention()), messageContext.getTextChannel());
+                            channel.getAsMention(), "**" + member.getEffectiveName() + "**"),
+                            messageContext.getTextChannel());
                 });
     }
 }
