@@ -37,6 +37,7 @@ import de.eldoria.shepard.contexts.commands.fun.RandomJoke;
 import de.eldoria.shepard.contexts.commands.fun.Say;
 import de.eldoria.shepard.contexts.commands.fun.Someone;
 import de.eldoria.shepard.contexts.commands.fun.Uwu;
+import de.eldoria.shepard.contexts.commands.util.Avatar;
 import de.eldoria.shepard.contexts.commands.util.GetRaw;
 import de.eldoria.shepard.contexts.commands.util.Help;
 import de.eldoria.shepard.contexts.commands.util.HireMe;
@@ -68,6 +69,7 @@ public final class ContextRegister {
     private static void registerUtilCommands() {
         new Reminder();
         new UserInfo();
+        new Avatar();
         new Help();
         new HireMe();
         new Vote();
