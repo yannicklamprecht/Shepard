@@ -79,7 +79,7 @@ public final class ShepardBot {
      * Checks if the bot is fully loaded.
      *
      * @return true if the bot instance is not null and {@link ShepardBot#loaded} is true.
-     * False if the bot is starting or going to shut down.
+     *      False if the bot is starting or going to shut down.
      */
     public static boolean isLoaded() {
         if (instance == null) {

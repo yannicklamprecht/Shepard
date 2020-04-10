@@ -75,7 +75,8 @@ public class Help extends Command {
             command.sendCommandUsage(messageContext.getTextChannel());
         } else {
             MessageSender.sendMessage(localizeAllAndReplace(M_INSUFFICIENT_PERMISSION.tag,
-                    messageContext.getGuild(), "**" + command.getContextName() + "**"), messageContext.getTextChannel());
+                    messageContext.getGuild(), "**" + command.getContextName() + "**"),
+                    messageContext.getTextChannel());
         }
     }
 

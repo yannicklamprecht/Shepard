@@ -21,8 +21,11 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class MassEffect extends Command {
-    List<String> quotes;
+    private List<String> quotes;
 
+    /**
+     * Create a new mass effect quote command.
+     */
     public MassEffect() {
         commandName = "massEffect";
         commandAliases = new String[] {"shepQuote"};

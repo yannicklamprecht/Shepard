@@ -81,7 +81,8 @@ public final class ApiHandler {
             if (!validateRequest(request)) {
                 halt(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
             }
-            log.debug("Received request on route: {}\n{}", request.requestMethod() + " " + request.uri(), request.body());
+            log.debug("Received request on route: {}\n{}",
+                    request.requestMethod() + " " + request.uri(), request.body());
 
         });
 

@@ -55,7 +55,8 @@ public class LanguageHandler {
         if (getLanguageResource(language).containsKey(localeCode)) {
             return getLanguageResource(language).getString(localeCode);
         } else {
-            log.warn("Missing localization for key: {} in language pack: {}. Using Fallback Language en_US", localeCode, language.code);
+            log.warn("Missing localization for key: {} in language pack: {}. Using Fallback Language en_US",
+                    localeCode, language.code);
             ResourceBundle bundle = getLanguageResource(LocaleCode.EN_US);
 
             if (!bundle.containsKey(localeCode)) {

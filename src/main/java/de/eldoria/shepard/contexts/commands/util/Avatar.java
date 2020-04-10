@@ -16,6 +16,9 @@ import net.dv8tion.jda.api.entities.User;
 import java.io.File;
 
 public class Avatar extends Command {
+    /**
+     * Create a new Avatar command.
+     */
     public Avatar() {
         commandName = "avatar";
         commandDesc = AvatarLocale.DESCRIPTION.tag;
@@ -55,7 +58,9 @@ public class Avatar extends Command {
             MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, messageContext.getTextChannel());
             return;
         }
-        MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace(AvatarLocale.M_AVATAR.tag, messageContext.getGuild(), "**" + user.getAsTag() + "**"), messageContext.getTextChannel());
+        MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace(AvatarLocale.M_AVATAR.tag,
+                messageContext.getGuild(), "**" + user.getAsTag() + "**"),
+                messageContext.getTextChannel());
         messageContext.getTextChannel().sendFile(fileFromURL).queue();
     }
 }

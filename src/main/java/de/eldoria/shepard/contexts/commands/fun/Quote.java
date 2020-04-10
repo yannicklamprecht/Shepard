@@ -6,7 +6,6 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
 import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.QuoteData;
 import de.eldoria.shepard.database.types.QuoteElement;
-import de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 

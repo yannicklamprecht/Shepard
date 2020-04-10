@@ -20,6 +20,9 @@ public class Feedback extends Command {
     private static final OkHttpClient OK_HTTP_CLIENT = new OkHttpClient.Builder().build();
     private WebhookClient webhookClient;
 
+    /**
+     * Create a new feedback command.
+     */
     public Feedback() {
         commandName = "feedback";
         commandAliases = new String[] {"bugreport"};
@@ -60,6 +63,7 @@ public class Feedback extends Command {
         }
         webhookClient.send(builder.build());
 
-        MessageSender.sendMessage("Thank you for your feedback. If needed we will reach you out.", messageContext.getTextChannel());
+        MessageSender.sendMessage(FeedbackLocale.M_THANK_YOU.tag,
+                messageContext.getTextChannel());
     }
 }

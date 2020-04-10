@@ -14,8 +14,6 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -67,7 +65,9 @@ public class KudoGamble extends Command {
                         "**" + messageContext.getMember().getEffectiveName() + "**"));
         message = channel.sendMessage(messageText.toString()).complete();
 
-        messageText.append(System.lineSeparator()).append("**" + localizeAll(KudoGambleLocale.M_GAMBLE.tag, messageContext.getGuild()) + "**").append(System.lineSeparator());
+        messageText.append(System.lineSeparator()).append("**"
+                + localizeAll(KudoGambleLocale.M_GAMBLE.tag, messageContext.getGuild()) + "**")
+                .append(System.lineSeparator());
 
         String square = Emoji.BLACK_LARGE_SQUARE.unicode;
 
@@ -131,7 +131,8 @@ public class KudoGamble extends Command {
         }
 
         if (winAmount < amount) {
-            int jackpotAmount = KudoData.addAndGetJackpot(messageContext.getGuild(), amount - winAmount, messageContext);
+            int jackpotAmount = KudoData.addAndGetJackpot(messageContext.getGuild(),
+                    amount - winAmount, messageContext);
             KudoData.addRubberPoints(messageContext.getGuild(), messageContext.getAuthor(), winAmount, messageContext);
             message.editMessage(finalMessageText + System.lineSeparator()
                     + localizeAllAndReplace(KudoGambleLocale.M_PART_LOSE.tag, messageContext.getGuild(),
