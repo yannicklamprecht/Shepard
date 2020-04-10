@@ -1,31 +1,23 @@
 package de.eldoria.shepard.webapi;
 
 import com.google.api.client.http.HttpStatusCodes;
-import com.google.gson.Gson;
 import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.collections.CommandCollection;
-import de.eldoria.shepard.collections.CommandInfos;
-import de.eldoria.shepard.contexts.ContextCategory;
-import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.CommandInfo;
-import de.eldoria.shepard.database.queries.MinecraftLinkData;
 import de.eldoria.shepard.webapi.apiobjects.ApiCache;
-import de.eldoria.shepard.webapi.apiobjects.CommandSearchResponse;
-import de.eldoria.shepard.webapi.apiobjects.VoteInformation;
+import de.eldoria.shepard.webapi.endpoints.BotListEnpoint;
+import de.eldoria.shepard.webapi.endpoints.CommandEndpoint;
+import de.eldoria.shepard.webapi.endpoints.KudosEndpoint;
+import de.eldoria.shepard.webapi.endpoints.MinecraftLinkEndpoint;
 import lombok.extern.slf4j.Slf4j;
 import spark.Request;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static spark.Spark.before;
-import static spark.Spark.get;
 import static spark.Spark.halt;
 import static spark.Spark.options;
 import static spark.Spark.port;
-import static spark.Spark.post;
 
 
 @Slf4j
@@ -34,13 +26,13 @@ public final class ApiHandler {
 
     private Map<String, ApiCache> cache = new HashMap<>();
 
-    private BotListReporter botListReporter;
 
     private ApiHandler() {
-        log.info("Defining Routes");
+        log.info("Initializing api");
+        initializeApi();
+        log.info("API initialized. Defining Routes");
         defineRoutes();
-        log.info("Routes Defined");
-        botListReporter = BotListReporter.initialize();
+        log.info("Routes Defined. API setup completed!");
     }
 
     /**
@@ -56,80 +48,46 @@ public final class ApiHandler {
     }
 
     private void defineRoutes() {
-        port(34555);
+        new BotListEnpoint(BotListReporter.initialize());
+        new CommandEndpoint();
+        new MinecraftLinkEndpoint();
+        new KudosEndpoint();
+    }
+
+    private void initializeApi() {
+        port(ShepardBot.getConfig().getApi().getPort());
 
         options("/*", (request, response) -> {
             String accessControlRequestHeaders = request
                     .headers("Access-Control-Request-Headers");
             if (accessControlRequestHeaders != null) {
                 response.header("Access-Control-Allow-Headers",
-                        accessControlRequestHeaders);
+                        "Authorization");
             }
 
             String accessControlRequestMethod = request
                     .headers("Access-Control-Request-Method");
             if (accessControlRequestMethod != null) {
                 response.header("Access-Control-Allow-Methods",
-                        accessControlRequestMethod);
+                        "HEAD, GET, OPTIONS, POST");
             }
 
             return "OK";
         });
 
         before((request, response) -> {
+            log.info("Received request on route: {}\nHeaders:\n{}\nBody:\n{}",
+                    request.requestMethod() + " " + request.uri(),
+                    request.headers().stream().map(h -> "   " + h + ": " + request.headers(h))
+                            .collect(Collectors.joining("\n")),
+                    request.body());
             response.header("Access-Control-Allow-Origin", "*");
+            response.header("Access-Control-Allow-Headers", "*");
             if (!validateRequest(request)) {
                 halt(HttpStatusCodes.STATUS_CODE_UNAUTHORIZED);
             }
-            log.debug("Received request on route: {}\n{}",
-                    request.requestMethod() + " " + request.uri(), request.body());
-
-        });
-
-
-        post("/votes", (request, response) -> {
             response.type("application/json");
-            VoteInformation voteInformation = new Gson().fromJson(request.body(), VoteInformation.class);
-            botListReporter.handleVote(voteInformation);
-
-            return HttpStatusCodes.STATUS_CODE_OK;
         });
-
-        post("/minecraftlink/", (request, response) -> {
-            MinecraftLinkData.addLinkCode("", "", null);
-            return HttpStatusCodes.STATUS_CODE_OK;
-        });
-
-        get("/commands", (request, response) -> {
-            String cacheName = "commands";
-
-            if (cache.containsKey(cacheName) && cache.get(cacheName).isValid()) {
-                return (cache.get(cacheName)).getObject();
-            }
-
-            CommandInfos commandInfos = CommandCollection.getInstance()
-                    .getCommandInfos(ContextCategory.BOT_CONFIG, ContextCategory.EXCLUSIVE);
-            if (cache.containsKey(cacheName)) {
-                ((ApiCache<String>) cache.get(cacheName)).update(commandInfos.asJson());
-            } else {
-                cache.put(cacheName, new ApiCache<>(commandInfos.asJson(), 5));
-            }
-            return commandInfos.asJson();
-        });
-
-        get("/commandsearch/:text", (request, response) -> {
-            CommandCollection instance = CommandCollection.getInstance();
-            Command command = instance.getCommand(request.params(":text"));
-            List<Command> similarCommands = instance.getSimilarCommands(request.params(":text"));
-            return new Gson().toJson(new CommandSearchResponse(command, similarCommands));
-        });
-
-        get("/command/:text", (request, response) -> {
-            CommandCollection instance = CommandCollection.getInstance();
-            Command command = instance.getCommand(request.params(":text"));
-            return new Gson().toJson(new CommandInfo(command));
-        });
-
     }
 
 
@@ -140,14 +98,17 @@ public final class ApiHandler {
      * @return true if the header is correct.
      */
     private boolean validateRequest(Request request) {
-        String authorization = request.headers("Authorization");
-        boolean result = authorization.equals(ShepardBot.getConfig().getBotlist().getAuthorization());
-        if (!result) {
-            log.info("Denied access for request.\nHeaders:\n{}{}Body:\n\n",
-                    request.headers().stream().map(h -> "   " + h + ": " + request.headers(h))
-                            .collect(Collectors.joining("\n")),
-                    request.body());
+        if (request.requestMethod().equals("OPTIONS")) {
+            log.info("Allowed access for request");
+            return true;
         }
-        return result;
+        String authorization = request.headers("Authorization");
+        if (authorization == null || !authorization.equals(ShepardBot.getConfig().getApi().getAuthorization())) {
+            log.info("Denied access for request");
+            return false;
+        }
+        log.info("Allowed access for request");
+
+        return true;
     }
 }
