@@ -1,5 +1,6 @@
 package de.eldoria.shepard.webapi;
 
+import de.eldoria.shepard.C;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.webapi.apiobjects.VoteInformation;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +8,6 @@ import org.discordbots.api.client.DiscordBotListAPI;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +28,7 @@ public final class BotListReporter implements Runnable {
         addEventHandler(new VoteHandler());
         if (!ShepardBot.getConfig().isBeta()) {
             ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-            executor.scheduleAtFixedRate(this, 10, 600, TimeUnit.SECONDS);
+            executor.scheduleAtFixedRate(this, 120, 3600, TimeUnit.SECONDS);
         }
     }
 
@@ -53,14 +53,15 @@ public final class BotListReporter implements Runnable {
      * Refresh the server count.
      */
     public void refreshInformation() {
-        log.debug("Sending Server stats to top.gg");
-        try {
-            CompletableFuture.allOf(api.setStats(ShepardBot.getJDA().getGuilds().size()).toCompletableFuture());
-        } catch (RuntimeException e) {
-            log.warn("failed to send server stats to top.gg", e);
-            return;
-        }
-        log.debug("Stats send!");
+        log.debug("Sending Server stats to top.gg. Current Server count is: " + ShepardBot.getJDA().getGuilds().size());
+        api.setStats(ShepardBot.getJDA().getGuilds().size()).toCompletableFuture()
+                .thenAccept(aVoid -> {
+                    log.debug("Stats send!");
+                })
+                .exceptionally(e -> {
+                    log.warn(C.NOTIFY_ADMIN, "failed to send server stats to top.gg", e);
+                    return null;
+                });
     }
 
     /**
