@@ -21,6 +21,14 @@ public class GuildRankingResponse extends GlobalRankingResponse {
      */
     private String iconUrl;
 
+    /**
+     * Create a new guild ranking response.
+     *
+     * @param guild    guild which was requested
+     * @param ranking  list of ranking objects
+     * @param page     page which was requests
+     * @param maxPages amount of pages which can requested
+     */
     public GuildRankingResponse(Guild guild, List<ApiRank> ranking, int page, int maxPages) {
         super(ranking, page, maxPages);
         if (guild != null) {

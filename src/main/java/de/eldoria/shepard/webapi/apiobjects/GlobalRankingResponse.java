@@ -20,6 +20,13 @@ public class GlobalRankingResponse {
      */
     private int maxPages;
 
+    /**
+     * A global ranking response object.
+     *
+     * @param ranking  list of api ranks.
+     * @param page     number of the displayed page
+     * @param maxPages number of maximum pages
+     */
     public GlobalRankingResponse(List<ApiRank> ranking, int page, int maxPages) {
         this.ranking = ranking;
         this.page = page;

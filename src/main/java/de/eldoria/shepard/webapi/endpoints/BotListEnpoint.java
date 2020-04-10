@@ -16,6 +16,11 @@ public class BotListEnpoint {
 
     }
 
+    /**
+     * Create a new bot list endpoint.
+     *
+     * @param botListReporter the botlist reporter instance used for vote handling.
+     */
     public BotListEnpoint(BotListReporter botListReporter) {
         this.botListReporter = botListReporter;
         defineRoutes();

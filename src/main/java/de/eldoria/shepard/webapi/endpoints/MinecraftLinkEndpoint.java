@@ -7,6 +7,9 @@ import static spark.Spark.path;
 import static spark.Spark.post;
 
 public class MinecraftLinkEndpoint {
+    /**
+     * Create a new minecraft link endpoint.
+     */
     public MinecraftLinkEndpoint() {
         defineRoutes();
     }

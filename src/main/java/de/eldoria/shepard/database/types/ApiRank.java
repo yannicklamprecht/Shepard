@@ -14,6 +14,13 @@ public class ApiRank {
     private String avatarUrl;
     private long score;
 
+    /**
+     * Create a new API Rank object.
+     *
+     * @param rank  rank as number
+     * @param user  user of the rank
+     * @param score score of the user
+     */
     public ApiRank(int rank, User user, long score) {
         id = user.getIdLong();
         tag = user.getAsTag();
@@ -22,6 +29,14 @@ public class ApiRank {
         this.score = score;
     }
 
+    /**
+     * Creates a new API Rank object without assigning a user.
+     * This rank has a default {@link ApiRank#avatarUrl} and the id as {@link ApiRank#tag}
+     *
+     * @param rank  rank rank as number
+     * @param id    id of the user will used as name
+     * @param score score of the user
+     */
     public ApiRank(int rank, long id, long score) {
         this.rank = rank;
         this.tag = id + "";
