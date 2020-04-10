@@ -1,7 +1,7 @@
 package de.eldoria.shepard.minigames.guessgame;
 
 import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.database.queries.GuessGameData;
+import de.eldoria.shepard.database.queries.commands.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;

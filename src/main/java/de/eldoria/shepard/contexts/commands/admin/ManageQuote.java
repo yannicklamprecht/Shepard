@@ -5,7 +5,7 @@ import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
 import de.eldoria.shepard.contexts.commands.argument.SubArgument;
-import de.eldoria.shepard.database.queries.QuoteData;
+import de.eldoria.shepard.database.queries.commands.QuoteData;
 import de.eldoria.shepard.database.types.QuoteElement;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;

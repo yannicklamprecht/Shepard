@@ -4,7 +4,7 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
 import de.eldoria.shepard.contexts.commands.argument.SubArgument;
-import de.eldoria.shepard.database.queries.InviteData;
+import de.eldoria.shepard.database.queries.commands.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;

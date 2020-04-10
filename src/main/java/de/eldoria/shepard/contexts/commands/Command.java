@@ -5,7 +5,7 @@ import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.LatestCommandsCollection;
 import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.database.queries.PrefixData;
+import de.eldoria.shepard.database.queries.commands.PrefixData;
 import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;

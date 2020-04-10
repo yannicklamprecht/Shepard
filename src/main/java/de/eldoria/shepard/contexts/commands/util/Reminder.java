@@ -5,7 +5,7 @@ import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
 import de.eldoria.shepard.contexts.commands.argument.SubArgument;
-import de.eldoria.shepard.database.queries.ReminderData;
+import de.eldoria.shepard.database.queries.commands.ReminderData;
 import de.eldoria.shepard.database.types.ReminderSimple;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.util.ReminderLocal;

@@ -1,6 +1,6 @@
 package de.eldoria.shepard.listener;
 
-import de.eldoria.shepard.database.queries.ChangelogData;
+import de.eldoria.shepard.database.queries.commands.ChangelogData;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;

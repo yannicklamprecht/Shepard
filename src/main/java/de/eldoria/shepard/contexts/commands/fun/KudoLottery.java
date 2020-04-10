@@ -6,7 +6,7 @@ import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
 import de.eldoria.shepard.contexts.commands.argument.SubArgument;
-import de.eldoria.shepard.database.queries.KudoData;
+import de.eldoria.shepard.database.queries.commands.KudoData;
 import de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ErrorType;

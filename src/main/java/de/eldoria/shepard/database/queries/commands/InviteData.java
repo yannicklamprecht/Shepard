@@ -1,4 +1,4 @@
-package de.eldoria.shepard.database.queries;
+package de.eldoria.shepard.database.queries.commands;
 
 import de.eldoria.shepard.database.types.DatabaseInvite;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;

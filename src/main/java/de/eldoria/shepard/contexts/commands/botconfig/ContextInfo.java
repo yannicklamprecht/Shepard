@@ -6,7 +6,7 @@ import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
 import de.eldoria.shepard.contexts.commands.argument.SubArgument;
-import de.eldoria.shepard.database.queries.ContextData;
+import de.eldoria.shepard.database.queries.commands.ContextData;
 import de.eldoria.shepard.database.types.ContextSettings;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;

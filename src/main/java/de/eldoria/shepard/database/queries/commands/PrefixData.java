@@ -1,4 +1,4 @@
-package de.eldoria.shepard.database.queries;
+package de.eldoria.shepard.database.queries.commands;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.DatabaseConnector;
