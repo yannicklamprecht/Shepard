@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -447,6 +448,34 @@ public final class ArgumentParser {
         }
     }
 
+    /**
+     * Parse a string to float.
+     *
+     * @param number number as string
+     * @return number or null if parse failed
+     */
+    public static Float parseFloat(String number) {
+        try {
+            return Float.parseFloat(number);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Parse a string to long.
+     *
+     * @param number number as string
+     * @return number or null if parse failed
+     */
+    public static Long parseLong(String number) {
+        try {
+            return Long.parseLong(number);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
     private static <T> T byId(String id, Function<String, T> convert) {
         if (isValidId(id)) {
             return convert.apply(getIdRaw(id));
@@ -460,5 +489,85 @@ public final class ArgumentParser {
             return null;
         }
         return nameMatches.get(0);
+    }
+
+    public static List<User> fuzzyGlobalUserSearch(String userString) {
+        List<User> result = new ArrayList<>();
+        if (userString == null) {
+            return null;
+        }
+
+        JDA jda = ShepardBot.getJDA();
+        User user = byId(userString, jda::getUserById);
+        if (user != null) {
+            return Collections.singletonList(user);
+        }
+
+        String idRaw = getIdRaw(userString);
+        if (isValidId(idRaw)) {
+            user = jda.getUserById(idRaw);
+            if (user != null) {
+                return Collections.singletonList(user);
+            }
+        }
+
+        if (DISCORD_TAG.matcher(userString).matches()) {
+            user = jda.getUserByTag(userString);
+            if (user != null) {
+                return Collections.singletonList(user);
+            }
+        }
+
+        return jda.getUserCache().stream()
+                .filter(cu -> cu.getName().toLowerCase().contains(userString.toLowerCase()))
+                .collect(Collectors.toList());
+    }
+
+    public static List<User> fuzzyGuildUserSearch(Long guildId, String userString) {
+        Guild guild = ShepardBot.getJDA().getGuildById(guildId);
+        if (guild == null) {
+            return Collections.emptyList();
+        }
+        //Lookup by id
+        Member foundUser = byId(userString, guild::getMemberById);
+        if (foundUser != null) {
+            return Collections.singletonList(foundUser.getUser());
+        }
+
+        //Lookup by tag
+        if (DISCORD_TAG.matcher(userString).matches()) {
+            foundUser = guild.getMemberByTag(userString);
+            if (foundUser != null) {
+                return Collections.singletonList(foundUser.getUser());
+            }
+        }
+
+        //lookup by nickname
+        foundUser = byName(userString, s -> guild.getMembersByNickname(s, true));
+        if (foundUser != null) {
+            return Collections.singletonList(foundUser.getUser());
+        }
+
+        //lookup by effective name
+        foundUser = byName(userString, s -> guild.getMembersByEffectiveName(s, true));
+        if (foundUser != null) {
+            return Collections.singletonList(foundUser.getUser());
+        }
+
+        //lookup by name
+        foundUser = byName(userString, s -> guild.getMembersByName(s, true));
+        if (foundUser != null) {
+            return Collections.singletonList(foundUser.getUser());
+        }
+
+        return guild.getMembers().stream()
+                .filter(m -> {
+                    boolean effectiveNameMatch = m.getEffectiveName().toLowerCase().contains(userString.toLowerCase());
+                    boolean nameMatch = m.getUser().getName().toLowerCase().contains(userString.toLowerCase());
+                    return effectiveNameMatch || nameMatch;
+                }).map(Member::getUser)
+                .collect(Collectors.toList());
+
+
     }
 }
