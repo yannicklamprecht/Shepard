@@ -19,7 +19,7 @@ public class Home extends Command {
     public Home() {
         commandName = "home";
         commandDesc = HomeLocale.DESCRIPTION.tag;
-        commandAliases = new String[] {"normandy"};
+        commandAliases = new String[] {"normandy", "support"};
         category = ContextCategory.UTIL;
     }
 
