@@ -16,6 +16,10 @@ public class Config {
      */
     private boolean beta = false;
     /**
+     * Api configuration.
+     */
+    private Api api = null;
+    /**
      * Botlist Configuration.
      */
     private BotList botlist = null;
