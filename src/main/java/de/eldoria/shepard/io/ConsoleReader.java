@@ -8,15 +8,23 @@ import java.util.Scanner;
 
 @Slf4j
 public final class ConsoleReader implements Runnable {
-
     private static Thread thread;
-    private static ConsoleReader instance = new ConsoleReader();
+    private static ConsoleReader instance;
 
     private final Scanner inputReader = new Scanner(System.in);
 
     private ConsoleReader() {
         log.info("Console reader started!");
         start();
+    }
+
+    /**
+     * Initializes a new console reade.
+     */
+    public static void initialize() {
+        if (instance == null) {
+            instance = new ConsoleReader();
+        }
     }
 
     @Override

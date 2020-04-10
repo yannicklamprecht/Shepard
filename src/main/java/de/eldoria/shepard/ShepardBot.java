@@ -4,6 +4,7 @@ import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.KeyWordCollection;
 import de.eldoria.shepard.configuration.Config;
 import de.eldoria.shepard.configuration.Loader;
+import de.eldoria.shepard.io.ConsoleReader;
 import de.eldoria.shepard.register.ContextRegister;
 import de.eldoria.shepard.register.ListenerRegister;
 import de.eldoria.shepard.util.ExitCode;
@@ -90,6 +91,8 @@ public final class ShepardBot {
 
     private void setup() throws IOException {
         config = Loader.loadConfig();
+
+        ConsoleReader.initialize();
 
         try {
             initiateJda();
