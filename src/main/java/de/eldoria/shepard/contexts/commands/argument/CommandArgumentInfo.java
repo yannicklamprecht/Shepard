@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
  * Class to save a {@link CommandArgument} for serialization.
  */
 public class CommandArgumentInfo {
-    private final String argName;
-    private final List<SubArgumentInfo> subArgs;
+    private final String argumentName;
+    private final List<SubArgumentInfo> subArguments;
     private final boolean required;
 
     /**
@@ -18,10 +18,8 @@ public class CommandArgumentInfo {
      * @param arg Command arg for information retrieval.
      */
     public CommandArgumentInfo(CommandArgument arg) {
-        argName = arg.getArgName();
+        argumentName = arg.getArgName();
         required = arg.isRequired();
-        subArgs = Arrays.stream(arg.getSubArguments())
-                .map(subArg -> new SubArgumentInfo(subArg))
-                .collect(Collectors.toList());
+        subArguments = Arrays.stream(arg.getSubArguments()).map(subArg -> new SubArgumentInfo(subArg)).collect(Collectors.toList());
     }
 }
