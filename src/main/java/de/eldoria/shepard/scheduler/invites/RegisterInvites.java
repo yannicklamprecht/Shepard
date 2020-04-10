@@ -1,7 +1,7 @@
 package de.eldoria.shepard.scheduler.invites;
 
 import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.database.queries.InviteData;
+import de.eldoria.shepard.database.queries.commands.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;

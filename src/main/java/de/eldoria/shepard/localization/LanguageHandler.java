@@ -1,6 +1,6 @@
 package de.eldoria.shepard.localization;
 
-import de.eldoria.shepard.database.queries.LocaleData;
+import de.eldoria.shepard.database.queries.commands.LocaleData;
 import de.eldoria.shepard.localization.util.LocaleCode;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;

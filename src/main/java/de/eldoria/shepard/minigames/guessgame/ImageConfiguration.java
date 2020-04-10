@@ -1,6 +1,6 @@
 package de.eldoria.shepard.minigames.guessgame;
 
-import de.eldoria.shepard.database.queries.GuessGameData;
+import de.eldoria.shepard.database.queries.commands.GuessGameData;
 
 public class ImageConfiguration {
     private final boolean nsfw;

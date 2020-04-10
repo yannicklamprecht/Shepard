@@ -1,7 +1,7 @@
 package de.eldoria.shepard.minigames.kudolottery;
 
 import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.database.queries.KudoData;
+import de.eldoria.shepard.database.queries.commands.KudoData;
 import de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.MessageSender;

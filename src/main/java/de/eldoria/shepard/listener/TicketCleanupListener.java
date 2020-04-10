@@ -8,8 +8,8 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-import static de.eldoria.shepard.database.queries.TicketData.getChannelIdsByOwner;
-import static de.eldoria.shepard.database.queries.TicketData.removeChannel;
+import static de.eldoria.shepard.database.queries.commands.TicketData.getChannelIdsByOwner;
+import static de.eldoria.shepard.database.queries.commands.TicketData.removeChannel;
 
 public class TicketCleanupListener extends ListenerAdapter {
     @Override

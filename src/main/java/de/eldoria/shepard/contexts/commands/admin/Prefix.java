@@ -9,7 +9,7 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
-import static de.eldoria.shepard.database.queries.PrefixData.setPrefix;
+import static de.eldoria.shepard.database.queries.commands.PrefixData.setPrefix;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
 import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.A_PREFIX_FORMAT;
 import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.C_RESET;

@@ -7,7 +7,7 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
 import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
-import de.eldoria.shepard.database.queries.ContextData;
+import de.eldoria.shepard.database.queries.commands.ContextData;
 import de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;

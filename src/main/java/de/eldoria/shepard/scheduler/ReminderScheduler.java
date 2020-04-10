@@ -1,6 +1,6 @@
 package de.eldoria.shepard.scheduler;
 
-import de.eldoria.shepard.database.queries.ReminderData;
+import de.eldoria.shepard.database.queries.commands.ReminderData;
 import de.eldoria.shepard.database.types.ReminderComplex;
 import de.eldoria.shepard.localization.enums.scheduler.ReminderLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
