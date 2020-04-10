@@ -23,6 +23,7 @@ public class Rank {
     /**
      * Creates a new rank.
      *
+     * @param rank  rank of user
      * @param user  user for rank
      * @param score score of the user.
      */

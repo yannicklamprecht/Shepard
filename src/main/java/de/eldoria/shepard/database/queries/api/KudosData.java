@@ -19,6 +19,13 @@ import static de.eldoria.shepard.database.DatabaseConnector.getConn;
 import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
 
 public class KudosData {
+    /**
+     * Get the global kudo ranking.
+     *
+     * @param page     page of ranking
+     * @param pagesize size of page
+     * @return sorted list of ranking objects
+     */
     public static List<ApiRank> getGlobalRanking(int page, int pagesize) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * FROM shepard_api.kudos_globaluser(?,?)")) {
@@ -31,6 +38,12 @@ public class KudosData {
         }
     }
 
+    /**
+     * Get amount of pages available for global ranking.
+     *
+     * @param pagesize size of pages.
+     * @return amount of pages which can be requested
+     */
     public static int getGlobalRankingPagecount(int pagesize) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_api.kudos_globaluser_pagecount(?)")) {
@@ -46,6 +59,14 @@ public class KudosData {
         return 0;
     }
 
+    /**
+     * Get the global kudo ranking filtered by players.
+     *
+     * @param users    users for filtering
+     * @param page     page of ranking
+     * @param pagesize size of page
+     * @return sorted and filtered list of ranking objects
+     */
     public static List<ApiRank> getGlobalRankingFilter(List<User> users, int page, int pagesize) {
         List<ApiRank> result = new ArrayList<>();
         try (PreparedStatement statement = DatabaseConnector.getConn()
@@ -59,7 +80,11 @@ public class KudosData {
             while (resultSet.next()) {
                 User user = ShepardBot.getJDA().getUserById(resultSet.getLong("user_id"));
                 if (user == null) {
-                    result.add(new ApiRank(resultSet.getInt("rank"), resultSet.getLong("user_id"), resultSet.getLong("score")));
+                    result.add(
+                            new ApiRank(
+                                    resultSet.getInt("rank"),
+                                    resultSet.getLong("user_id"),
+                                    resultSet.getLong("score")));
                     continue;
                 }
                 result.add(new ApiRank(resultSet.getInt("rank"), user, resultSet.getLong("score")));
@@ -71,6 +96,13 @@ public class KudosData {
         }
     }
 
+    /**
+     * Get the pagecount of a filtered global ranking.
+     *
+     * @param users    users for filtering
+     * @param pagesize size of pages.
+     * @return amount of pages which can be requested
+     */
     public static int getGlobalRankingFilterPagecount(List<User> users, int pagesize) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_api.kudos_globaluser_filter_pagecount(?,?)")) {
@@ -89,6 +121,14 @@ public class KudosData {
         return 0;
     }
 
+    /**
+     * Get the global kudo ranking.
+     *
+     * @param guild    guild for filtering
+     * @param page     page of ranking
+     * @param pagesize size of pages.
+     * @return sorted list of ranking objects
+     */
     public static List<ApiRank> getGuildRanking(long guild, int page, int pagesize) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT * FROM shepard_api.kudos_guild(?,?,?)")) {
@@ -102,6 +142,13 @@ public class KudosData {
         }
     }
 
+    /**
+     * Get amount of pages available for guild ranking.
+     *
+     * @param guild    guild for filtering
+     * @param pagesize size of pages.
+     * @return amount of pages which can be requested
+     */
     public static int getGuildRankingPagecount(long guild, int pagesize) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_api.kudos_guild_pagecount(?,?)")) {
@@ -118,6 +165,15 @@ public class KudosData {
         return 0;
     }
 
+    /**
+     * Get the guild kudo ranking filtered by players.
+     *
+     * @param users    users for filtering
+     * @param guild    guild for filtering
+     * @param page     page of ranking
+     * @param pagesize size of page
+     * @return sorted and filtered list of ranking objects
+     */
     public static List<ApiRank> getGuildRankingFilter(List<User> users, Long guild, int page, int pagesize) {
         List<ApiRank> result = new ArrayList<>();
 
@@ -133,7 +189,11 @@ public class KudosData {
             while (resultSet.next()) {
                 User user = ShepardBot.getJDA().getUserById(resultSet.getLong("user_id"));
                 if (user == null) {
-                    result.add(new ApiRank(resultSet.getInt("rank"), resultSet.getLong("user_id"), resultSet.getLong("score")));
+                    result.add(
+                            new ApiRank(
+                                    resultSet.getInt("rank"),
+                                    resultSet.getLong("user_id"),
+                                    resultSet.getLong("score")));
                     continue;
                 }
                 result.add(new ApiRank(resultSet.getInt("rank"), user, resultSet.getLong("score")));
@@ -145,6 +205,14 @@ public class KudosData {
         }
     }
 
+    /**
+     * Get amount of pages available for filtered guild ranking.
+     *
+     * @param users    users for filtering
+     * @param guild    guild for filtering
+     * @param pagesize size of pages.
+     * @return amount of pages which can be requested
+     */
     public static int getGuildRankingFilterPagecount(List<User> users, long guild, int pagesize) {
         try (PreparedStatement statement = DatabaseConnector.getConn()
                 .prepareStatement("SELECT shepard_api.kudos_globaluser_filter_pagecount(?,?,?)")) {
@@ -164,6 +232,15 @@ public class KudosData {
         return 0;
     }
 
+    /**
+     * Get the list from a ranking statement.
+     *
+     * @param page      page of ranking
+     * @param pagesize  size of page
+     * @param statement statement to process
+     * @return sorted list of ranking objects
+     * @throws SQLException if the statement failed
+     */
     private static List<ApiRank> getRanking(int page, int pagesize, PreparedStatement statement) throws SQLException {
         List<ApiRank> result = new ArrayList<>();
         ResultSet resultSet = statement.executeQuery();

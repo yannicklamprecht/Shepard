@@ -20,6 +20,8 @@ public class CommandArgumentInfo {
     public CommandArgumentInfo(CommandArgument arg) {
         argumentName = arg.getArgName();
         required = arg.isRequired();
-        subArguments = Arrays.stream(arg.getSubArguments()).map(subArg -> new SubArgumentInfo(subArg)).collect(Collectors.toList());
+        subArguments = Arrays.stream(arg.getSubArguments())
+                .map(subArg -> new SubArgumentInfo(subArg))
+                .collect(Collectors.toList());
     }
 }

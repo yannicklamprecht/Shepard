@@ -22,6 +22,9 @@ public class CommandEndpoint {
 
     private Map<String, ApiCache> cache = new HashMap<>();
 
+    /**
+     * Create a new command endpoint.
+     */
     public CommandEndpoint() {
         defineRoutes();
     }

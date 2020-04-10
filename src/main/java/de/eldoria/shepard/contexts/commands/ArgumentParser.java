@@ -491,6 +491,12 @@ public final class ArgumentParser {
         return nameMatches.get(0);
     }
 
+    /**
+     * Search a user by fuzzy search.
+     *
+     * @param userString user string to search
+     * @return a list of users. if a direct match was found only
+     */
     public static List<User> fuzzyGlobalUserSearch(String userString) {
         List<User> result = new ArrayList<>();
         if (userString == null) {
@@ -522,6 +528,15 @@ public final class ArgumentParser {
                 .filter(cu -> cu.getName().toLowerCase().contains(userString.toLowerCase()))
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Search a user by fuzzy search on a guild.
+     *
+     * @param userString user string to search
+     * @param guildId    guild if to search
+     * @return a list of users. if a direct match was found only 1 user.
+     *      if guild id is invalid a empty list is returned.
+     */
 
     public static List<User> fuzzyGuildUserSearch(Long guildId, String userString) {
         Guild guild = ShepardBot.getJDA().getGuildById(guildId);
