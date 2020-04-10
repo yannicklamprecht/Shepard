@@ -1,8 +1,8 @@
 package de.eldoria.shepard.listener;
 
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
-import de.eldoria.shepard.database.queries.GreetingData;
-import de.eldoria.shepard.database.queries.InviteData;
+import de.eldoria.shepard.database.queries.commands.GreetingData;
+import de.eldoria.shepard.database.queries.commands.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
 import de.eldoria.shepard.database.types.GreetingSettings;
 import de.eldoria.shepard.messagehandler.MessageSender;

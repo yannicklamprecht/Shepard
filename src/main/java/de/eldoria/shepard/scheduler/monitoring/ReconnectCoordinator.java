@@ -1,7 +1,7 @@
 package de.eldoria.shepard.scheduler.monitoring;
 
 import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.database.queries.MonitoringData;
+import de.eldoria.shepard.database.queries.commands.MonitoringData;
 import de.eldoria.shepard.database.types.Address;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;

@@ -2,7 +2,7 @@ package de.eldoria.shepard.contexts;
 
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.database.ListType;
-import de.eldoria.shepard.database.queries.ContextData;
+import de.eldoria.shepard.database.queries.commands.ContextData;
 import de.eldoria.shepard.database.types.ContextSettings;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.Permission;

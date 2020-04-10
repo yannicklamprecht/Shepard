@@ -1,7 +1,7 @@
 package de.eldoria.shepard.scheduler;
 
 import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.database.queries.KudoData;
+import de.eldoria.shepard.database.queries.commands.KudoData;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

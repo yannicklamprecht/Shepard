@@ -2,7 +2,7 @@ package de.eldoria.shepard.util;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.DbUtil;
-import de.eldoria.shepard.database.queries.PrefixData;
+import de.eldoria.shepard.database.queries.commands.PrefixData;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ISnowflake;

@@ -1,7 +1,7 @@
 package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
-import de.eldoria.shepard.database.queries.TicketData;
+import de.eldoria.shepard.database.queries.commands.TicketData;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static de.eldoria.shepard.database.queries.TicketData.getChannelOwnerRoles;
+import static de.eldoria.shepard.database.queries.commands.TicketData.getChannelOwnerRoles;
 
 /**
  * Holds methods used in {@link Ticket} and {@link TicketSettings}.
