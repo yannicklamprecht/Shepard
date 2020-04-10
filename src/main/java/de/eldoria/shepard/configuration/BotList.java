@@ -11,8 +11,4 @@ public class BotList {
      * Botlist api token.
      */
     private String token = null;
-    /**
-     * Botlist auth token.
-     */
-    private String authorization = null;
 }
