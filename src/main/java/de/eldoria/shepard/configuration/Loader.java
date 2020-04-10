@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 public final class Loader {
     /**
      * Load the config from config path.
+     *
      * @return config object
      * @throws IOException If the file could not be found or serialized.
      */
