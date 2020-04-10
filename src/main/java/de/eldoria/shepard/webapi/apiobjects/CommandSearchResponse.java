@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CommandSearchResponse {
-    private CommandSearchInfo directMatch;
+    private CommandSearchInfo directMatch = null;
     private List<CommandSearchInfo> fuzzyMatches;
 
     /**
