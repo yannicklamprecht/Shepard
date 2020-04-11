@@ -76,7 +76,7 @@ public final class ApiHandler {
         });
 
         before((request, response) -> {
-            log.info("Received request on route: {}\nHeaders:\n{}\nBody:\n{}",
+            log.debug("Received request on route: {}\nHeaders:\n{}\nBody:\n{}",
                     request.requestMethod() + " " + request.uri(),
                     request.headers().stream().map(h -> "   " + h + ": " + request.headers(h))
                             .collect(Collectors.joining("\n")),
@@ -99,15 +99,15 @@ public final class ApiHandler {
      */
     private boolean validateRequest(Request request) {
         if (request.requestMethod().equals("OPTIONS")) {
-            log.info("Allowed access for request");
+            log.debug("Allowed access for request");
             return true;
         }
         String authorization = request.headers("Authorization");
         if (authorization == null || !authorization.equals(ShepardBot.getConfig().getApi().getAuthorization())) {
-            log.info("Denied access for request");
+            log.debug("Denied access for request");
             return false;
         }
-        log.info("Allowed access for request");
+        log.debug("Allowed access for request");
 
         return true;
     }
