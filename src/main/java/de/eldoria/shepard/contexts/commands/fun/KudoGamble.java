@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands.fun;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
@@ -44,6 +45,7 @@ public class KudoGamble extends Command {
         commandDesc = KudoGambleLocale.DESCRIPTION.tag;
         commandArguments = new CommandArgument[] {new CommandArgument("amount", true,
                 new SubArgument("amount", GeneralLocale.A_AMOUNT.tag))};
+        category = ContextCategory.EXCLUSIVE;
     }
 
 
