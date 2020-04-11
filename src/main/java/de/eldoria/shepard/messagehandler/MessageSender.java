@@ -1,6 +1,7 @@
 package de.eldoria.shepard.messagehandler;
 
 import de.eldoria.shepard.C;
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.types.GreetingSettings;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
@@ -22,6 +23,7 @@ import java.awt.Color;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
@@ -191,16 +193,18 @@ public final class MessageSender {
         try {
             channel.sendMessage(builder.build()).queue();
         } catch (InsufficientPermissionException e) {
-            channel.getGuild().getOwner().getUser().openPrivateChannel().queue(a -> {
-                EmbedBuilder privateBuilder = new EmbedBuilder()
-                        .setTitle("ERROR!")
-                        .setDescription("There was an Error on your server **" + channel.getGuild().getName()
-                                + "** in Channel **" + channel.getName() + "**, while doing my job.")
-                        .addField("Error", error.getMessage(), false)
-                        .setColor(Color.red)
-                        .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
-                a.sendMessage(privateBuilder.build()).queue();
-            });
+            if (Arrays.stream(ShepardBot.getConfig().getBotlist().getGuildIds()).noneMatch(id -> id == channel.getGuild().getIdLong())) {
+                channel.getGuild().getOwner().getUser().openPrivateChannel().queue(a -> {
+                    EmbedBuilder privateBuilder = new EmbedBuilder()
+                            .setTitle("ERROR!")
+                            .setDescription("There was an Error on your server **" + channel.getGuild().getName()
+                                    + "** in Channel **" + channel.getName() + "**, while doing my job.")
+                            .addField("Error", error.getMessage(), false)
+                            .setColor(Color.red)
+                            .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
+                    a.sendMessage(privateBuilder.build()).queue();
+                });
+            }
         }
     }
 

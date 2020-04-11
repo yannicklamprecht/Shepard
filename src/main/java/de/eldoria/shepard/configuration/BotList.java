@@ -11,4 +11,8 @@ public class BotList {
      * Botlist api token.
      */
     private String token = null;
+    /**
+     * Array of botlist guild ids.
+     */
+    private long[] guildIds = new long[0];
 }
