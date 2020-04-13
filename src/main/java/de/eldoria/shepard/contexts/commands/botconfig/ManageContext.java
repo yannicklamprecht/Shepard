@@ -4,19 +4,25 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.ContextData;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
-import de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_SECONDS;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_SECONDS;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_ADMIN;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_GUILD_COOLDOWN;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_NSFW;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_USER_COOLDOWN;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_ACTIVATED_ADMIN;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_ACTIVATED_NSFW;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_DEACTIVATED_ADMIN;
@@ -33,48 +39,51 @@ public class ManageContext extends Command {
      * Creates a new manage context command object.
      */
     public ManageContext() {
-        commandName = "manageContext";
-        commandAliases = new String[] {"mc"};
-        commandDesc = ManageContextLocale.DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("context name", true,
-                        new SubArgument("context name", GeneralLocale.A_CONTEXT_NAME.tag)),
-                new CommandArgument("action", true,
-                        new SubArgument("setNsfw", C_NSFW.tag, true),
-                        new SubArgument("setAdminOnly", C_ADMIN.tag, true),
-                        new SubArgument("setUserCooldown", ManageContextLocale.C_USER_COOLDOWN.tag, true),
-                        new SubArgument("setGuildCooldown", ManageContextLocale.C_GUILD_COOLDOWN.tag, true)),
-                new CommandArgument("value", true,
-                        new SubArgument("boolean", GeneralLocale.A_BOOLEAN.tag),
-                        new SubArgument("boolean", GeneralLocale.A_BOOLEAN.tag),
-                        new SubArgument("seconds", GeneralLocale.A_SECONDS.tag),
-                        new SubArgument("seconds", GeneralLocale.A_SECONDS.tag)
-                )
-        };
-        category = ContextCategory.BOT_CONFIG;
+        super("manageContext",
+                new String[] {"mc"},
+                DESCRIPTION.tag,
+                SubCommand.builder("manageContext")
+                        .addSubcommand(C_NSFW.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("setNsfw"),
+                                Parameter.createInput(A_BOOLEAN.tag, null, true))
+                        .addSubcommand(C_ADMIN.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("setAdminOnly"),
+                                Parameter.createInput(A_BOOLEAN.tag, null, true))
+                        .addSubcommand(C_USER_COOLDOWN.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("setUserCooldown"),
+                                Parameter.createInput(A_SECONDS.tag, AD_SECONDS.tag, true))
+                        .addSubcommand(C_GUILD_COOLDOWN.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("setGuildCooldown"),
+                                Parameter.createInput(A_SECONDS.tag, AD_SECONDS.tag, true))
+                        .build(),
+                ContextCategory.BOT_CONFIG);
     }
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         ContextSensitive context = ArgumentParser.getContext(args[0], messageContext);
         String cmd = args[1];
-        CommandArgument arg = commandArguments[1];
+        SubCommand arg = subCommands[1];
 
         if (context == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND, messageContext.getTextChannel());
             return;
         }
 
-        if (arg.isSubCommand(cmd, 0)) {
+        if (isSubCommand(cmd, 0)) {
             setNsfw(args, context, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 1)) {
             setAdminOnly(args, context, messageContext);
             return;
         }
-        if (arg.isSubCommand(cmd, 2) || arg.isSubCommand(cmd, 3)) {
+        if (isSubCommand(cmd, 2) || isSubCommand(cmd, 3)) {
             setCooldown(cmd, args, context, messageContext);
             return;
         }
@@ -92,7 +101,7 @@ public class ManageContext extends Command {
             return;
         }
 
-        boolean userCooldown = commandArguments[1].isSubCommand(cmd, 2);
+        boolean userCooldown = isSubCommand(cmd, 2);
 
         if (userCooldown) {
             if (!ContextData.setContextUserCooldown(context, seconds, messageContext)) {

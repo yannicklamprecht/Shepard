@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -18,7 +18,8 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import java.awt.Color;
 import java.io.File;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
+import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.AD_FLAG;
+import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.AD_URL;
 import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.A_FLAG;
 import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.A_URL;
 import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.C_ADD_IMAGE;
@@ -45,50 +46,52 @@ public class GuessGameConfig extends Command {
      * Creates a new guess game config command object.
      */
     public GuessGameConfig() {
-        commandName = "guessGameConfig";
-        commandAliases = new String[] {"ggconfig"};
-        commandDesc = DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("action", true,
-                        new SubArgument("addImage", C_ADD_IMAGE.tag, true),
-                        new SubArgument("removeImage", C_REMOVE_IMAGE.tag, true),
-                        new SubArgument("changeFlag", C_CHANGE_FLAG.tag, true),
-                        new SubArgument("showImageSet", C_SHOW_IMAGE_SET.tag, true),
-                        new SubArgument("cancelRegistration", C_CANCEL_REGISTRATION.tag, true)),
-                new CommandArgument("values", false,
-                        new SubArgument("addImage", A_FLAG.tag),
-                        new SubArgument("removeImage", A_URL.tag),
-                        new SubArgument("changeFlag", A_URL + " "
-                                + A_FLAG),
-                        new SubArgument("showImageSet", A_URL.tag),
-                        new SubArgument("cancelRegistration", A_EMPTY.tag))
-        };
-        category = ContextCategory.ADMIN;
+        super("guessGameConfig",
+                new String[] {"ggconfig"},
+                DESCRIPTION.tag,
+                SubCommand.builder("guessGameConfig")
+                        .addSubcommand(C_ADD_IMAGE.tag,
+                                Parameter.createCommand("addImage"),
+                                Parameter.createInput(A_FLAG.tag, AD_FLAG.tag, true))
+                        .addSubcommand(C_REMOVE_IMAGE.tag,
+                                Parameter.createCommand("removeImage"),
+                                Parameter.createInput(A_URL.tag, AD_URL.tag, true))
+                        .addSubcommand(C_CHANGE_FLAG.tag,
+                                Parameter.createCommand("changeFlag"),
+                                Parameter.createInput(A_URL.tag, AD_URL.tag, true),
+                                Parameter.createInput(A_FLAG.tag, AD_FLAG.tag, true))
+                        .addSubcommand(C_SHOW_IMAGE_SET.tag,
+                                Parameter.createCommand("showImageSet"),
+                                Parameter.createInput(A_URL.tag, AD_URL.tag, true))
+                        .addSubcommand(C_CANCEL_REGISTRATION.tag,
+                                Parameter.createCommand("cancelRegistration"))
+                        .build(),
+                ContextCategory.ADMIN);
     }
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArgument arg = commandArguments[0];
-        if (arg.isSubCommand(cmd, 0)) {
+        SubCommand arg = subCommands[0];
+        if (isSubCommand(cmd, 0)) {
             addImage(args, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 1)) {
             removeImage(args, messageContext);
             return;
         }
-        if (arg.isSubCommand(cmd, 2)) {
+        if (isSubCommand(cmd, 2)) {
             changeFlag(args, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 3)) {
+        if (isSubCommand(cmd, 3)) {
             showImageSet(args, messageContext);
             return;
         }
-        if (arg.isSubCommand(cmd, 4)) {
+        if (isSubCommand(cmd, 4)) {
             ImageRegister.getInstance().cancelConfiguration(messageContext);
             MessageSender.sendMessage(M_REGISTRATION_CANCELED.tag, messageContext.getTextChannel());
             return;

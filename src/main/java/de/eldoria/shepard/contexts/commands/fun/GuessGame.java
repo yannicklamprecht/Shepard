@@ -2,8 +2,8 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.GuessGameData;
 import de.eldoria.shepard.database.types.GuessGameImage;
 import de.eldoria.shepard.database.types.Rank;
@@ -23,8 +23,6 @@ import java.util.List;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_SCORE;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_SCORE_GLOBAL;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_START;
-import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_TOP;
-import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_TOP_GLOBAL;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_GAME_DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_GAME_FOOTER;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_GLOBAL_RANKING;
@@ -49,18 +47,21 @@ public class GuessGame extends Command {
      * Create a new guess game command.
      */
     public GuessGame() {
-        commandName = "guessGame";
-        commandAliases = new String[] {"gg", "nsfwornot"};
-        commandDesc = GuessGameLocale.DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("action", false,
-                        new SubArgument("start game", C_START.tag),
-                        new SubArgument("score", C_SCORE.tag, true),
-                        new SubArgument("scoreGlobal", C_SCORE_GLOBAL.tag, true),
-                        new SubArgument("top", C_TOP.tag, true),
-                        new SubArgument("topGlobal", C_TOP_GLOBAL.tag, true))
-        };
-        category = ContextCategory.FUN;
+        super("guessGame",
+                new String[] {"gg", "nsfwornot"},
+                GuessGameLocale.DESCRIPTION.tag,
+                SubCommand.builder("guessGame")
+                        .addSubcommand(C_SCORE.tag,
+                                Parameter.createCommand("score"))
+                        .addSubcommand(C_SCORE_GLOBAL.tag,
+                                Parameter.createCommand("scoreGlobal"))
+                        .addSubcommand(C_SCORE.tag,
+                                Parameter.createCommand("top"))
+                        .addSubcommand(C_SCORE_GLOBAL.tag,
+                                Parameter.createCommand("topGlobal"))
+                        .build(),
+                C_START.tag,
+                ContextCategory.FUN);
     }
 
     @Override
@@ -80,25 +81,25 @@ public class GuessGame extends Command {
         }
 
         String cmd = args[0];
-        CommandArgument arg = commandArguments[0];
+        SubCommand arg = subCommands[0];
 
-        if (arg.isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 1)) {
             int userScore = GuessGameData.getUserScore(messageContext.getGuild(),
                     messageContext.getAuthor(), messageContext);
             MessageSender.sendMessage(M_SCORE + " **" + userScore + "**", messageContext.getTextChannel());
             return;
         }
 
-        if (arg.isSubCommand(cmd, 2)) {
+        if (isSubCommand(cmd, 2)) {
             int userScore = GuessGameData.getGlobalUserScore(messageContext.getAuthor(), messageContext);
             MessageSender.sendMessage(M_SCORE_GLOBAL + " **" + userScore, messageContext.getTextChannel());
             return;
         }
 
-        if (arg.isSubCommand(cmd, 3)) {
+        if (isSubCommand(cmd, 3)) {
             sendTopScores(false, messageContext);
         }
-        if (arg.isSubCommand(cmd, 4)) {
+        if (isSubCommand(cmd, 4)) {
             sendTopScores(true, messageContext);
         }
     }

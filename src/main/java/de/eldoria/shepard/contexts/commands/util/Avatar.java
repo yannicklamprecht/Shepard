@@ -1,10 +1,10 @@
 package de.eldoria.shepard.contexts.commands.util;
 
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.localization.enums.commands.util.AvatarLocale;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -15,16 +15,23 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.io.File;
 
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_USER;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USER;
+
 public class Avatar extends Command {
     /**
      * Create a new Avatar command.
      */
     public Avatar() {
-        commandName = "avatar";
-        commandDesc = AvatarLocale.DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {new CommandArgument("user", false,
-                new SubArgument("user", GeneralLocale.A_USER.tag))
-        };
+        super("avatar",
+                null,
+                AvatarLocale.DESCRIPTION.tag,
+                SubCommand.builder("avatar")
+                        .addSubcommand(AvatarLocale.C_OTHER.tag,
+                                Parameter.createInput(A_USER.tag, AD_USER.tag, false))
+                        .build(),
+                AvatarLocale.C_DEFAULT.tag,
+                ContextCategory.UTIL);
     }
 
     @Override

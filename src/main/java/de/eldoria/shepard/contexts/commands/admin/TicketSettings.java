@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -22,10 +22,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CATEGORY;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_MESSAGE_MENTION;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_ROLES;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CATEGORY;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_MESSAGE_MENTION;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_MESSAGE;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_ROLES;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.A_TICKET_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.C_CREATE_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.C_REMOVE_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.C_SET_CATEGORY;
@@ -50,26 +53,35 @@ public class TicketSettings extends Command {
      * Creates a new ticket setting command object.
      */
     public TicketSettings() {
-        commandName = "ticketSettings";
-        commandDesc = DESCRIPTION.tag;
-        commandAliases = new String[] {"ts"};
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("action", true,
-                        new SubArgument("createType", C_CREATE_TYPE.tag, true),
-                        new SubArgument("removeType", C_REMOVE_TYPE.tag, true),
-                        new SubArgument("setOwnerRoles", C_SET_OWNER_ROLES.tag, true),
-                        new SubArgument("setSupportRoles", C_SET_SUPPORT_ROLES.tag, true),
-                        new SubArgument("setChannelCategory", C_SET_CATEGORY.tag, true),
-                        new SubArgument("setCreationMessage", C_SET_CREATION_MESSAGE.tag, true)),
-                new CommandArgument("value", true,
-                        new SubArgument("createType", A_NAME + " " + A_CATEGORY),
-                        new SubArgument("removeType", A_NAME.tag),
-                        new SubArgument("setOwnerRoles", A_NAME + " " + A_ROLES),
-                        new SubArgument("setSupportRoles", A_NAME + " " + A_ROLES),
-                        new SubArgument("setChannelCategory", A_NAME + " " + A_CATEGORY),
-                        new SubArgument("setCreationMessage", A_NAME + " " + A_MESSAGE_MENTION))
-        };
-        category = ContextCategory.ADMIN;
+        super("ticketSettings",
+                new String[] {"ts"},
+                DESCRIPTION.tag,
+                SubCommand.builder("ticketSettings")
+                        .addSubcommand(C_CREATE_TYPE.tag,
+                                Parameter.createCommand("createType"),
+                                Parameter.createInput(A_TICKET_TYPE.tag, null, true),
+                                Parameter.createInput(A_CATEGORY.tag, AD_CATEGORY.tag, true))
+                        .addSubcommand(C_REMOVE_TYPE.tag,
+                                Parameter.createCommand("removeType"),
+                                Parameter.createInput(A_TICKET_TYPE.tag, null, true))
+                        .addSubcommand(C_SET_OWNER_ROLES.tag,
+                                Parameter.createCommand("setOwnerRoles"),
+                                Parameter.createInput(A_TICKET_TYPE.tag, null, true),
+                                Parameter.createInput(A_ROLES.tag, AD_ROLES.tag, true))
+                        .addSubcommand(C_SET_SUPPORT_ROLES.tag,
+                                Parameter.createCommand("setSupportRoles"),
+                                Parameter.createInput(A_TICKET_TYPE.tag, null, true),
+                                Parameter.createInput(A_ROLES.tag, AD_ROLES.tag, true))
+                        .addSubcommand(C_SET_CATEGORY.tag,
+                                Parameter.createCommand("setChannelCategory"),
+                                Parameter.createInput(A_TICKET_TYPE.tag, null, true),
+                                Parameter.createInput(A_CATEGORY.tag, AD_CATEGORY.tag, true))
+                        .addSubcommand(C_SET_CREATION_MESSAGE.tag,
+                                Parameter.createCommand("setCreationMessage"),
+                                Parameter.createInput(A_TICKET_TYPE.tag, null, true),
+                                Parameter.createInput(A_MESSAGE.tag, AD_MESSAGE_MENTION.tag, true))
+                        .build(),
+                ContextCategory.ADMIN);
     }
 
     @Override
@@ -79,10 +91,10 @@ public class TicketSettings extends Command {
         Optional<TicketType> ticket = TicketData.getTypes(messageContext.getGuild(), messageContext).stream()
                 .filter(ticketType -> ticketType.getKeyword().equalsIgnoreCase(type)).findFirst();
 
-        CommandArgument arg = commandArguments[0];
+        SubCommand arg = subCommands[0];
 
         //All validation operations are inside the method except when they are needed for more than one method.
-        if (arg.isSubCommand(cmd, 0)) {
+        if (isSubCommand(cmd, 0)) {
             if (ticket.isEmpty()) {
                 createType(args, messageContext, type);
             } else {
@@ -96,22 +108,22 @@ public class TicketSettings extends Command {
             return;
         }
 
-        if (arg.isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 1)) {
             removeType(args, messageContext, ticket.get());
             return;
         }
 
-        if (arg.isSubCommand(cmd, 2) || arg.isSubCommand(cmd, 3)) {
+        if (isSubCommand(cmd, 2) || isSubCommand(cmd, 3)) {
             setRoles(args, messageContext, cmd, ticket.get());
             return;
         }
 
-        if (arg.isSubCommand(cmd, 4) || cmd.equalsIgnoreCase("scc")) {
+        if (isSubCommand(cmd, 4) || cmd.equalsIgnoreCase("scc")) {
             setChannelCategory(args, messageContext, ticket.get());
             return;
         }
 
-        if (arg.isSubCommand(cmd, 5)) {
+        if (isSubCommand(cmd, 5)) {
             setCreationMessage(args, messageContext, ticket.get());
             return;
         }
@@ -166,7 +178,7 @@ public class TicketSettings extends Command {
         String roleMentions = validRoles.stream().map(IMentionable::getAsMention)
                 .collect(Collectors.joining(lineSeparator()));
 
-        if (commandArguments[0].isSubCommand(cmd, 2)) {
+        if (isSubCommand(cmd, 2)) {
             if (TicketData.setTypeOwnerRoles(messageContext.getGuild(), scopeTicket.getKeyword(),
                     validRoles, messageContext)) {
 

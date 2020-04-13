@@ -2,6 +2,7 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.localization.enums.commands.fun.RandomJokeLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -25,9 +26,10 @@ public class Someone extends Command {
      * Creates a new someone command object.
      */
     public Someone() {
-        commandName = "Someone";
-        commandDesc = DESCRIPTION.tag;
-        category = ContextCategory.FUN;
+        super("Someone",
+                null,
+                DESCRIPTION.tag,
+                ContextCategory.FUN);
     }
 
     @Override

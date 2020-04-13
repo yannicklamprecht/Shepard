@@ -22,8 +22,11 @@ public class Upgrade extends Command {
      * Creates a new Upgrade Command.
      */
     public Upgrade() {
-        commandName = "upgrade";
-        category = ContextCategory.BOT_CONFIG;
+        super("upgrade",
+                null,
+                "",
+                null,
+                ContextCategory.BOT_CONFIG);
     }
 
     @Override

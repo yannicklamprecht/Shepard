@@ -22,9 +22,11 @@ public class ShowKeyword extends Command {
      * Creates a new show keyword command object.
      */
     public ShowKeyword() {
-        commandName = "showKeywords";
-        commandDesc = DESCRIPTION.tag;
-        category = ContextCategory.EXCLUSIVE;
+        super("showKeywords",
+                null,
+                DESCRIPTION.tag,
+                null,
+                ContextCategory.EXCLUSIVE);
     }
 
     @Override

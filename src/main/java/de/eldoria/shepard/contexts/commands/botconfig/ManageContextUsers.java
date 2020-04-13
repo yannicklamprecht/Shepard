@@ -4,11 +4,12 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.commands.ContextData;
+import de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.BooleanState;
@@ -17,8 +18,12 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_GUILDS;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_USERS;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_GUILDS;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USERS;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.A_LIST_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.C_ADD_USER;
@@ -41,53 +46,57 @@ public class ManageContextUsers extends Command {
      * Creates a new Manage context user command object.
      */
     public ManageContextUsers() {
-        commandName = "manageContextUser";
-        commandAliases = new String[] {"mcu"};
-        commandDesc = DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("context name", true,
-                        new SubArgument("context name", A_CONTEXT_NAME.tag)),
-                new CommandArgument("action", true,
-                        new SubArgument("setActive", C_SET_ACTIVE.tag, true),
-                        new SubArgument("setListType", C_SET_LIST_TYPE.tag, true),
-                        new SubArgument("addUser", C_ADD_USER.tag, true),
-                        new SubArgument("removeUser", C_REMOVE_USER.tag, true)),
-                new CommandArgument("value", true,
-                        new SubArgument("setActive", A_BOOLEAN.tag),
-                        new SubArgument("setListType", A_LIST_TYPE.tag),
-                        new SubArgument("addUser", A_USERS.tag),
-                        new SubArgument("removeUser", A_USERS.tag))
-        };
-        category = ContextCategory.BOT_CONFIG;
+        super("manageContextUser",
+                new String[] {"mcu"},
+                DESCRIPTION.tag,
+                SubCommand.builder("manageContextUser")
+                        .addSubcommand(C_SET_ACTIVE.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("setActive"),
+                                Parameter.createInput(A_BOOLEAN.tag, null, true))
+                        .addSubcommand(C_SET_LIST_TYPE.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("setListType"),
+                                Parameter.createInput(A_LIST_TYPE.tag, ManageContextUserLocale.AD_LIST_TYPE.tag, true))
+                        .addSubcommand(C_ADD_USER.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("addUser"),
+                                Parameter.createInput(A_USERS.tag, AD_USERS.tag, true))
+                        .addSubcommand(C_REMOVE_USER.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("removeUser"),
+                                Parameter.createInput(A_USERS.tag, AD_USERS.tag, true))
+                        .build(),
+                ContextCategory.BOT_CONFIG);
     }
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         ContextSensitive context = ArgumentParser.getContext(args[0], messageContext);
         String cmd = args[1];
-        CommandArgument arg = commandArguments[1];
+        SubCommand arg = subCommands[1];
 
         if (context == null) {
             MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND, messageContext.getTextChannel());
             return;
         }
 
-        if (arg.isSubCommand(cmd, 0)) {
+        if (isSubCommand(cmd, 0)) {
             setActive(args, context, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 1)) {
             setListType(args, context, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 2)) {
+        if (isSubCommand(cmd, 2)) {
             addUser(args, context, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 3)) {
+        if (isSubCommand(cmd, 3)) {
             removeUser(args, context, messageContext);
             return;
         }

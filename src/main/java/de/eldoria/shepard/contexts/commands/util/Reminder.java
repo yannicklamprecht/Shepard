@@ -3,12 +3,10 @@ package de.eldoria.shepard.contexts.commands.util;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.ReminderData;
 import de.eldoria.shepard.database.types.ReminderSimple;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
-import de.eldoria.shepard.localization.enums.commands.util.ReminderLocal;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -22,6 +20,19 @@ import java.util.stream.Collectors;
 import static de.eldoria.shepard.localization.enums.WordsLocale.ID;
 import static de.eldoria.shepard.localization.enums.WordsLocale.MESSAGE;
 import static de.eldoria.shepard.localization.enums.WordsLocale.TIME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_ID;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_ID;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_MESSAGE;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.AD_TIMESTAMP;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.A_TIMESTAMP;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_ADD;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_LIST;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_REMOVE;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_CURRENT_REMINDERS;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_REMIND_DATE;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_REMIND_TIME;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_REMOVED;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**
@@ -37,28 +48,29 @@ public class Reminder extends Command {
      * Creates a new reminder command object.
      */
     public Reminder() {
-        commandName = "remind";
-        commandAliases = new String[] {"reminder", "timer"};
-        commandDesc = ReminderLocal.DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("action", true,
-                        new SubArgument("create", ReminderLocal.C_ADD.tag, true),
-                        new SubArgument("remove", ReminderLocal.C_REMOVE.tag, true),
-                        new SubArgument("list", ReminderLocal.C_LIST.tag, true)),
-                new CommandArgument("value", false,
-                        new SubArgument("create", ReminderLocal.M_FORMAT.tag),
-                        new SubArgument("remove", "[" + GeneralLocale.A_ID + "]"),
-                        new SubArgument("list", GeneralLocale.A_EMPTY.tag))
-        };
-        category = ContextCategory.UTIL;
+        super("remind",
+                new String[] {"reminder", "timer"},
+                DESCRIPTION.tag,
+                SubCommand.builder("remind")
+                        .addSubcommand(C_ADD.tag,
+                                Parameter.createCommand("create"),
+                                Parameter.createInput(A_MESSAGE.tag, null, true),
+                                Parameter.createInput(A_TIMESTAMP.tag, AD_TIMESTAMP.tag, true))
+                        .addSubcommand(C_REMOVE.tag,
+                                Parameter.createCommand("remove"),
+                                Parameter.createInput(A_ID.tag, AD_ID.tag, true))
+                        .addSubcommand(C_LIST.tag,
+                                Parameter.createCommand("list"))
+                        .build(),
+                ContextCategory.UTIL);
     }
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArgument arg = commandArguments[0];
+        SubCommand arg = subCommands[0];
 
-        if (arg.isSubCommand(cmd, 2)) {
+        if (isSubCommand(cmd, 2)) {
             list(messageContext);
             return;
         }
@@ -68,7 +80,7 @@ public class Reminder extends Command {
             return;
         }
 
-        if (arg.isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 1)) {
             remove(args, messageContext);
             return;
         }
@@ -79,7 +91,7 @@ public class Reminder extends Command {
             return;
         }
 
-        if (arg.isSubCommand(cmd, 0)) {
+        if (isSubCommand(cmd, 0)) {
             add(args, messageContext);
             return;
         }
@@ -106,7 +118,7 @@ public class Reminder extends Command {
 
         if (ReminderData.removeUserReminder(messageContext.getGuild(), messageContext.getAuthor(),
                 number, messageContext)) {
-            MessageSender.sendMessage(localizeAllAndReplace(ReminderLocal.M_REMOVED.tag,
+            MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED.tag,
                     messageContext.getGuild(), reminder.getReminderId() + "",
                     TextFormatting.cropText(reminder.getText(), "...", 20, true),
                     reminder.getTime()), messageContext.getTextChannel());
@@ -129,7 +141,7 @@ public class Reminder extends Command {
                     reminder.getTime());
         }
 
-        MessageSender.sendMessage(ReminderLocal.M_CURRENT_REMINDERS + System.lineSeparator() + tableBuilder,
+        MessageSender.sendMessage(M_CURRENT_REMINDERS + System.lineSeparator() + tableBuilder,
                 messageContext.getTextChannel());
     }
 
@@ -147,7 +159,7 @@ public class Reminder extends Command {
 
             if (ReminderData.addReminderDate(messageContext.getGuild(), messageContext.getAuthor(),
                     messageContext.getTextChannel(), message, date, time, messageContext)) {
-                MessageSender.sendMessage(localizeAllAndReplace(ReminderLocal.M_REMIND_DATE.tag,
+                MessageSender.sendMessage(localizeAllAndReplace(M_REMIND_DATE.tag,
                         messageContext.getGuild(), date, time) + System.lineSeparator() + message,
                         messageContext.getTextChannel());
             }
@@ -159,7 +171,7 @@ public class Reminder extends Command {
 
         if (ReminderData.addReminderInterval(messageContext.getGuild(), messageContext.getAuthor(),
                 messageContext.getTextChannel(), message, interval, messageContext)) {
-            MessageSender.sendMessage(localizeAllAndReplace(ReminderLocal.M_REMIND_TIME.tag,
+            MessageSender.sendMessage(localizeAllAndReplace(M_REMIND_TIME.tag,
                     messageContext.getGuild(), interval) + System.lineSeparator() + message,
                     messageContext.getTextChannel());
         }

@@ -9,6 +9,8 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.awt.Color;
 
+import static de.eldoria.shepard.localization.enums.commands.util.HomeLocale.*;
+
 /**
  * Command which provides a invite link to normandy.
  */
@@ -17,16 +19,16 @@ public class Home extends Command {
      * Creates a new home command object.
      */
     public Home() {
-        commandName = "home";
-        commandDesc = HomeLocale.DESCRIPTION.tag;
-        commandAliases = new String[] {"normandy", "support"};
-        category = ContextCategory.UTIL;
+        super("home",
+                new String[] {"normandy", "support"},
+                DESCRIPTION.tag,
+                ContextCategory.FUN);
     }
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        MessageSender.sendSimpleTextBox(HomeLocale.M_COME_ON_BOARD.tag,
-                "[" + HomeLocale.M_JOIN_NOW + "](https://discord.gg/AJyFGAj)",
+        MessageSender.sendSimpleTextBox(M_COME_ON_BOARD.tag,
+                "[" + M_JOIN_NOW + "](https://discord.gg/AJyFGAj)",
                 Color.green, ShepardReactions.CAT, messageContext.getTextChannel());
     }
 }

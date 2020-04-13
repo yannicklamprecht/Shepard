@@ -2,6 +2,7 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.localization.enums.commands.fun.MockingSpongebobLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
@@ -18,10 +19,10 @@ public class Oha extends Command {
      * creates a new oha keyword object.
      */
     public Oha() {
-        commandName = "oha";
-        commandDesc = DESCRIPTION.tag;
-        commandAliases = new String[] {"ohad"};
-        category = ContextCategory.FUN;
+        super("oha",
+                new String[] {"ohad"},
+                DESCRIPTION.tag,
+                ContextCategory.FUN);
     }
 
     @Override

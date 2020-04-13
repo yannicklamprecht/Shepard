@@ -4,8 +4,8 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -13,8 +13,8 @@ import de.eldoria.shepard.scheduler.PresenceChanger;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.managers.Presence;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_TEXT;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_URL;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.A_TWITCH_URL;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.C_CLEAR;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.C_LISTENING;
@@ -36,22 +36,24 @@ public class BotPresence extends Command {
      * Creates a new bot presence command object.
      */
     public BotPresence() {
-        presenceChanger = PresenceChanger.getInstance();
-        commandName = "presence";
-        commandDesc = BotPresenceLocale.DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("action", true,
-                        new SubArgument("playing", C_PLAYING.tag, true),
-                        new SubArgument("streaming", C_STREAMING.tag, true),
-                        new SubArgument("listening", C_LISTENING.tag, true),
-                        new SubArgument("clear", C_CLEAR.tag, true)),
-                new CommandArgument("values", false,
-                        new SubArgument("playing", A_TEXT.tag),
-                        new SubArgument("streaming", A_TEXT + " " + A_TWITCH_URL),
-                        new SubArgument("listening", A_TEXT.tag),
-                        new SubArgument("clear", A_EMPTY.tag))
-        };
-        category = ContextCategory.BOT_CONFIG;
+        super("presence",
+                null,
+                BotPresenceLocale.DESCRIPTION.tag,
+                SubCommand.builder("presence")
+                        .addSubcommand(C_PLAYING.tag,
+                                Parameter.createCommand("playing"),
+                                Parameter.createInput(A_TEXT.tag, null, true))
+                        .addSubcommand(C_STREAMING.tag,
+                                Parameter.createCommand("streaming"),
+                                Parameter.createInput(A_TEXT.tag, null, true),
+                                Parameter.createInput(A_URL.tag, A_TWITCH_URL.tag, true))
+                        .addSubcommand(C_LISTENING.tag,
+                                Parameter.createCommand("listening"),
+                                Parameter.createInput(A_TEXT.tag, null, true))
+                        .addSubcommand(C_CLEAR.tag,
+                                Parameter.createCommand("clear"))
+                        .build(),
+                ContextCategory.BOT_CONFIG);
     }
 
     @Override
@@ -63,10 +65,10 @@ public class BotPresence extends Command {
         Presence presence = ShepardBot.getJDA().getPresence();
 
         String activity = args[0];
-        CommandArgument arg = commandArguments[0];
+        SubCommand arg = subCommands[0];
 
 
-        if (arg.isSubCommand(activity, 3)) {
+        if (isSubCommand(activity, 3)) {
             presenceChanger.clearPresence();
             MessageSender.sendMessage(M_CLEAR.tag, messageContext.getTextChannel());
             return;
@@ -77,14 +79,14 @@ public class BotPresence extends Command {
             return;
         }
 
-        if (arg.isSubCommand(activity, 0)) {
+        if (isSubCommand(activity, 0)) {
             String message = ArgumentParser.getMessage(args, 1);
             presenceChanger.setPlaying(message);
             MessageSender.sendMessage(localizeAllAndReplace(M_PLAYING.tag, messageContext.getGuild(),
                     "**" + message + "**"), messageContext.getTextChannel());
             return;
         }
-        if (arg.isSubCommand(activity, 1)) {
+        if (isSubCommand(activity, 1)) {
             if (args.length > 2) {
                 String message = ArgumentParser.getMessage(args, 1, -1);
                 String url = ArgumentParser.getMessage(args, -1);
@@ -105,7 +107,7 @@ public class BotPresence extends Command {
             return;
         }*/
 
-        if (arg.isSubCommand(activity, 2)) {
+        if (isSubCommand(activity, 2)) {
             String message = ArgumentParser.getMessage(args, 1);
             presenceChanger.setListening(message);
             MessageSender.sendMessage(localizeAllAndReplace(M_LISTENING.tag, messageContext.getGuild(),
@@ -115,7 +117,5 @@ public class BotPresence extends Command {
 
 
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
-
-
     }
 }

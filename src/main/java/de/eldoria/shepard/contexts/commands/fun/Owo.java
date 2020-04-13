@@ -2,10 +2,9 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.localization.enums.commands.fun.OwoLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-
-import static de.eldoria.shepard.localization.enums.commands.fun.OwoLocale.DESCRIPTION;
 
 /**
  * Command which sends a owo to the chat with large emoji letters.
@@ -16,10 +15,10 @@ public class Owo extends Command {
      * Creates a new owo keyword object.
      */
     public Owo() {
-        commandName = "owo";
-        commandDesc = DESCRIPTION.tag;
-        commandAliases = new String[] {"owod"};
-        category = ContextCategory.FUN;
+        super("owo",
+                new String[] {"owod"},
+                OwoLocale.DESCRIPTION.tag,
+                ContextCategory.FUN);
     }
 
     @Override

@@ -16,9 +16,10 @@ public class Vote extends Command {
      * Creates a new vote command object.
      */
     public Vote() {
-        commandName = "vote";
-        commandDesc = VoteLocale.DESCRIPTION.tag;
-        category = ContextCategory.UTIL;
+        super("vote",
+                null,
+                VoteLocale.DESCRIPTION.tag,
+                ContextCategory.FUN);
     }
 
     @Override

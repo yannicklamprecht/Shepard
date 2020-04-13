@@ -4,9 +4,10 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.KudoData;
+import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -32,14 +33,15 @@ public class KudoLottery extends Command {
      * Creates a new kudo lottery command object.
      */
     public KudoLottery() {
-        commandName = "kudoLottery";
-        commandAliases = new String[] {"lottery", "kl"};
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("maximumBet", false,
-                        new SubArgument("maximumBet", KudoLotteryLocale.C_MAX_BET.tag))
-        };
-        commandDesc = DESCRIPTION.tag;
-        category = ContextCategory.FUN;
+        super("kudoLottery",
+                new String[] {"lottery", "kl"},
+                DESCRIPTION.tag,
+                SubCommand.builder("kudoLottery")
+                        .addSubcommand("",
+                                Parameter.createInput(GeneralLocale.AD_AMOUNT.tag, KudoLotteryLocale.C_MAX_BET.tag, false))
+                        .build(),
+                KudoLotteryLocale.C_DEFAULT.tag,
+                ContextCategory.FUN);
     }
 
     @Override

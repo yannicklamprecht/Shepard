@@ -26,9 +26,10 @@ public class RandomJoke extends Command {
      * Creates a new random joke command object.
      */
     public RandomJoke() {
-        commandName = "joke";
-        commandDesc = DESCRIPTION.tag;
-        category = ContextCategory.FUN;
+        super("joke",
+                null,
+                DESCRIPTION.tag,
+                ContextCategory.FUN);
     }
 
     @Override

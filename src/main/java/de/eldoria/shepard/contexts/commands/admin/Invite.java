@@ -2,10 +2,11 @@ package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
+import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.AD_CODE;
 import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.A_CODE;
 import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.A_INVITE_NAME;
 import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.C_ADD_INVITE;
@@ -43,41 +44,43 @@ public class Invite extends Command {
      * Creates a new Invite command object.
      */
     public Invite() {
-        commandName = "invite";
-        commandDesc = DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("action", true,
-                        new SubArgument("add", C_ADD_INVITE.tag, true),
-                        new SubArgument("remove", C_REMOVE_INVITE.tag, true),
-                        new SubArgument("refresh", C_REFRESH_INVITES.tag, true),
-                        new SubArgument("list", C_SHOW_INVITES.tag, true)),
-                new CommandArgument("values", false,
-                        new SubArgument("add", A_CODE.tag + " " + A_INVITE_NAME.tag),
-                        new SubArgument("remove", A_CODE.tag),
-                        new SubArgument("refresh", A_EMPTY.tag),
-                        new SubArgument("list", A_EMPTY.tag))
-        };
-        category = ContextCategory.ADMIN;
+        super("invite",
+                null,
+                DESCRIPTION.tag,
+                SubCommand.builder("invite")
+                        .addSubcommand(C_ADD_INVITE.tag,
+                                Parameter.createCommand("add"),
+                                Parameter.createInput(A_CODE.tag, AD_CODE.tag, true),
+                                Parameter.createInput(GeneralLocale.A_NAME.tag, A_INVITE_NAME.tag, true))
+                        .addSubcommand(C_REMOVE_INVITE.tag,
+                                Parameter.createCommand("remove"),
+                                Parameter.createInput(A_CODE.tag, AD_CODE.tag, true))
+                        .addSubcommand(C_REFRESH_INVITES.tag,
+                                Parameter.createCommand("refresh"))
+                        .addSubcommand(C_SHOW_INVITES.tag,
+                                Parameter.createCommand("list"))
+                        .build(),
+                ContextCategory.ADMIN);
     }
 
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArgument arg = commandArguments[0];
-        if (arg.isSubCommand(cmd, 0)) {
+        SubCommand arg = subCommands[0];
+        if (isSubCommand(cmd, 0)) {
             addInvite(args, messageContext);
             return;
         }
-        if (arg.isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 1)) {
             removeInvite(args, messageContext);
             return;
         }
-        if (arg.isSubCommand(cmd, 2)) {
+        if (isSubCommand(cmd, 2)) {
             refreshInvites(messageContext);
             return;
         }
-        if (arg.isSubCommand(cmd, 3)) {
+        if (isSubCommand(cmd, 3)) {
             listInvites(messageContext);
             return;
         }

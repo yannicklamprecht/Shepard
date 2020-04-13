@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.util;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.util.UserInfoLocale;
@@ -35,13 +35,15 @@ public class UserInfo extends Command {
      * Creates new User info command object.
      */
     public UserInfo() {
-        commandName = "userInfo";
-        commandAliases = new String[] {"aboutuser"};
-        commandDesc = UserInfoLocale.DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {new CommandArgument("user", false,
-                new SubArgument("user", GeneralLocale.A_USER.tag))
-        };
-        category = ContextCategory.UTIL;
+        super("userInfo",
+                new String[] {"aboutuser"},
+                UserInfoLocale.DESCRIPTION.tag,
+                SubCommand.builder("userInfo")
+                        .addSubcommand(UserInfoLocale.DESCRIPTION.tag,
+                                Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true))
+                        .build(),
+                UserInfoLocale.C_DEFAULT.tag,
+                ContextCategory.UTIL);
     }
 
     @Override

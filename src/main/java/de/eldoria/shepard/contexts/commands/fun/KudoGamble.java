@@ -3,10 +3,9 @@ package de.eldoria.shepard.contexts.commands.fun;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.KudoData;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.KudoGambleLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -18,6 +17,8 @@ import net.dv8tion.jda.api.entities.MessageChannel;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_AMOUNT;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_AMOUNT;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
@@ -40,12 +41,15 @@ public class KudoGamble extends Command {
      * Create a new Kudo Gamble.
      */
     public KudoGamble() {
-        commandName = "kudoGamble";
-        commandAliases = new String[] {"gamble"};
-        commandDesc = KudoGambleLocale.DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {new CommandArgument("amount", true,
-                new SubArgument("amount", GeneralLocale.A_AMOUNT.tag))};
-        category = ContextCategory.EXCLUSIVE;
+        super("kudoGamble",
+                new String[] {"gamble"},
+                KudoGambleLocale.DESCRIPTION.tag,
+                SubCommand.builder("kudoGamble")
+                        .addSubcommand(KudoGambleLocale.DESCRIPTION.tag,
+                                Parameter.createInput(A_AMOUNT.tag, AD_AMOUNT.tag, true))
+                        .build(),
+                ContextCategory.FUN
+        );
     }
 
 

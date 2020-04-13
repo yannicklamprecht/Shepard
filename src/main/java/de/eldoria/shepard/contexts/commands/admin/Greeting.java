@@ -3,17 +3,18 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.GreetingData;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.TextChannel;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CHANNEL_MENTION_OR_EXECUTE;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_MESSAGE_MENTION;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CHANNEL_MENTION_OR_EXECUTE;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_MESSAGE_MENTION;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CHANNEL;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_MESSAGE;
 import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.C_REMOVE_CHANNEL;
 import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.C_SET_CHANNEL;
 import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.C_SET_MESSAGE;
@@ -31,37 +32,38 @@ public class Greeting extends Command {
      * Creates a new greeting command object.
      */
     public Greeting() {
-        commandName = "greeting";
-        commandDesc = DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("action", true,
-                        new SubArgument("setChannel", C_SET_CHANNEL.tag, true),
-                        new SubArgument("removeChannel", C_REMOVE_CHANNEL.tag, true),
-                        new SubArgument("setMessage", C_SET_MESSAGE.tag, true)),
-                new CommandArgument("value", false,
-                        new SubArgument("setChannel", A_CHANNEL_MENTION_OR_EXECUTE.tag),
-                        new SubArgument("removeChannel", A_EMPTY.tag),
-                        new SubArgument("setMessage", A_MESSAGE_MENTION.tag))
-        };
-        category = ContextCategory.ADMIN;
+        super("greeting",
+                null,
+                DESCRIPTION.tag,
+                SubCommand.builder("greeting")
+                        .addSubcommand(C_SET_CHANNEL.tag,
+                                Parameter.createCommand("setChannel"),
+                                Parameter.createInput(A_CHANNEL.tag, AD_CHANNEL_MENTION_OR_EXECUTE.tag, false))
+                        .addSubcommand(C_REMOVE_CHANNEL.tag,
+                                Parameter.createCommand("removeChannel"))
+                        .addSubcommand(C_SET_MESSAGE.tag,
+                                Parameter.createCommand("setMessage"),
+                                Parameter.createInput(A_MESSAGE.tag, AD_MESSAGE_MENTION.tag, true))
+                        .build(),
+                ContextCategory.ADMIN);
     }
 
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArgument arg = commandArguments[0];
-        if (arg.isSubCommand(cmd, 0)) {
+        SubCommand arg = subCommands[0];
+        if (isSubCommand(cmd, 0)) {
             setChannel(args, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 1)) {
             removeChannel(messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 2)) {
+        if (isSubCommand(cmd, 2)) {
             setMessage(args, messageContext);
             return;
         }

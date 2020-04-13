@@ -2,8 +2,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.LocaleData;
 import de.eldoria.shepard.localization.util.LocaleCode;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -13,7 +13,7 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.util.Arrays;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
+import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocale.AD_LANGUAGE_CODE_FORMAT;
 import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocale.A_LANGUAGE_CODE_FORMAT;
 import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocale.C_LIST;
 import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocale.C_RESET;
@@ -33,35 +33,33 @@ public class Language extends Command {
      * Creates a new prefix command object.
      */
     public Language() {
-        commandName = "language";
-        commandAliases = new String[] {"locale"};
-        commandDesc = DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("action", true,
-                        new SubArgument("set", C_SET.tag, true),
-                        new SubArgument("reset", C_RESET.tag, true),
-                        new SubArgument("list", C_LIST.tag, true)),
-                new CommandArgument("value", false,
-                        new SubArgument("set", A_LANGUAGE_CODE_FORMAT.tag),
-                        new SubArgument("reset", A_EMPTY.tag),
-                        new SubArgument("list", A_EMPTY.tag))
-        };
-        category = ContextCategory.ADMIN;
+        super("language",
+                null,
+                DESCRIPTION.tag,
+                SubCommand.builder("language")
+                        .addSubcommand(C_SET.tag,
+                                Parameter.createCommand("set"),
+                                Parameter.createInput(A_LANGUAGE_CODE_FORMAT.tag, AD_LANGUAGE_CODE_FORMAT.tag, true))
+                        .addSubcommand(C_RESET.tag,
+                                Parameter.createCommand("reset"))
+                        .addSubcommand(C_LIST.tag,
+                                Parameter.createCommand("list"))
+                        .build(),
+                ContextCategory.ADMIN);
     }
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArgument arg = commandArguments[0];
-        if (arg.isSubCommand(cmd, 0)) {
+        if (isSubCommand(cmd, 0)) {
             set(args, messageContext);
             return;
         }
-        if (arg.isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 1)) {
             reset(messageContext);
             return;
         }
-        if (arg.isSubCommand(cmd, 2)) {
+        if (isSubCommand(cmd, 2)) {
             list(messageContext);
             return;
         }

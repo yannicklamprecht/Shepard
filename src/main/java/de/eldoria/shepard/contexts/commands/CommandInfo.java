@@ -1,14 +1,9 @@
 package de.eldoria.shepard.contexts.commands;
 
 import de.eldoria.shepard.contexts.ContextCategory;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgumentInfo;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
+import de.eldoria.shepard.contexts.commands.argument.ParameterInfo;
+import de.eldoria.shepard.contexts.commands.argument.SubCommandInfo;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 
 /**
  * Class for serialization of a command.
@@ -17,28 +12,18 @@ public class CommandInfo {
     private String contextName;
     private String name;
     private String[] aliases;
-    private String description;
+    private final String description;
     private ContextCategory category;
-    private List<CommandArgumentInfo> arguments;
+    private final SubCommandInfo[] subCommands;
 
-    /**
-     * Creates a new CommandInfo object.
-     *
-     * @param command command for information retrieval
-     */
-    public CommandInfo(Command command) {
-        if (command == null) {
-            return;
-        }
-        contextName = command.getContextName();
-        name = command.getCommandName();
-        aliases = command.getCommandAliases();
-        description = localizeAllAndReplace(command.getCommandDesc(), null);
-        category = command.getCategory();
-        CommandArgument[] commandArguments = command.getCommandArguments();
-
-        arguments = Arrays.stream(commandArguments).map(CommandArgumentInfo::new)
-                .collect(Collectors.toList());
+    public CommandInfo(String contextName, String commandName, String[] commandAliases,
+                       String commandDesc, ContextCategory category, SubCommandInfo[] subCommands) {
+        this.contextName = contextName;
+        name = commandName;
+        aliases = commandAliases;
+        this.description = TextLocalizer.localizeAllAndReplace(commandDesc, null);
+        this.category = category;
+        this.subCommands = subCommands;
     }
 
     /**

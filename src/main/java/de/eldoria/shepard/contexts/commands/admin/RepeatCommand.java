@@ -18,10 +18,11 @@ public class RepeatCommand extends Command {
      * Creates a new repeat command object.
      */
     public RepeatCommand() {
-        commandName = "repeatCommand";
-        commandDesc = DESCRIPTION.tag;
-        commandAliases = new String[] {"repeat", "rc"};
-        category = ContextCategory.ADMIN;
+        super("repeatCommand",
+                new String[] {"repeat", "rc"},
+                DESCRIPTION.tag,
+                null,
+                ContextCategory.ADMIN);
     }
 
     @Override
