@@ -1,5 +1,6 @@
 package de.eldoria.shepard.contexts.commands;
 
+import de.eldoria.shepard.C;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.LatestCommandsCollection;
 import de.eldoria.shepard.contexts.ContextSensitive;
@@ -126,7 +127,7 @@ public abstract class Command extends ContextSensitive {
             messageContext.getGuild().getOwner().getUser().openPrivateChannel().queue(privateChannel ->
                     MessageSender.handlePermissionException(e, messageContext.getTextChannel()));
         } catch (RuntimeException e) {
-            log.error("command execution failed", e);
+            log.error(C.NOTIFY_ADMIN, "command execution failed", e);
             MessageSender.sendSimpleError(ErrorType.INTERNAL_ERROR, messageContext.getTextChannel());
             return;
         }

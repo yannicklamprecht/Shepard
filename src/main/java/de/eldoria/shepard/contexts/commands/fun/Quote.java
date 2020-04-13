@@ -15,6 +15,7 @@ import java.util.Random;
 
 import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.A_EMPTY_OR_WORD;
 import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.M_NO_QUOTE_DEFINED;
 import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.M_NO_QUOTE_FOUND;
 
 /**
@@ -44,6 +45,10 @@ public class Quote extends Command {
 
         } else {
             quotes = QuoteData.getQuotes(messageContext.getGuild(), messageContext);
+            if (quotes.size() == 0) {
+                MessageSender.sendMessage(M_NO_QUOTE_DEFINED.tag, messageContext.getTextChannel());
+                return;
+            }
         }
 
         if (quotes.size() == 0) {

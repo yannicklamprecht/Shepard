@@ -17,6 +17,12 @@ import java.nio.file.Paths;
 @Slf4j
 @UtilityClass
 public final class Loader {
+    /**
+     * Load the config from config path.
+     *
+     * @return config object
+     * @throws IOException If the file could not be found or serialized.
+     */
     public static Config loadConfig() throws IOException {
         String home = new File(".").getAbsoluteFile().getParentFile().toString();
 

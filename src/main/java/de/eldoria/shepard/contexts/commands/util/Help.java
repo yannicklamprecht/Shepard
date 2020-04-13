@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_INSUFFICIENT_PERMISSION;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**
@@ -70,7 +71,13 @@ public class Help extends Command {
 
     /* Sends help for a specific command with description, alias and usage.*/
     private void commandHelp(MessageEventDataWrapper messageContext, Command command) {
-        command.sendCommandUsage(messageContext.getTextChannel());
+        if (command.isContextValid(messageContext) && command.hasPermission(messageContext)) {
+            command.sendCommandUsage(messageContext.getTextChannel());
+        } else {
+            MessageSender.sendMessage(localizeAllAndReplace(M_INSUFFICIENT_PERMISSION.tag,
+                    messageContext.getGuild(), "**" + command.getContextName() + "**"),
+                    messageContext.getTextChannel());
+        }
     }
 
     /* Sends a list of all commands with description */

@@ -30,7 +30,8 @@ import java.util.function.Predicate;
 import static net.dv8tion.jda.api.entities.Message.MAX_CONTENT_LENGTH;
 
 /**
- * This appender implements a discord webhook sink. Since webhooks are rate limited, the appender tries tries to buffer bursts of log messages to make use of multiple
+ * This appender implements a discord webhook sink. Since webhooks are rate limited,
+ * the appender tries tries to buffer bursts of log messages to make use of multiple
  * outputs within the same webhook call.
  */
 
@@ -43,7 +44,8 @@ public final class DiscordWebhookAppender extends AbstractAppender {
 
     private static final int MAX_EMBED = 10; // discord allows up to 10 embeds per call
 
-    // TODO: it's probably a bad idea to keep multiple clients lying around but since they are blocking, i have no better clue. ask me again for better solution
+    // TODO: it's probably a bad idea to keep multiple clients lying around but since they are blocking,
+    //  i have no better clue. ask me again for better solution
     private static final OkHttpClient OK_HTTP_CLIENT = new OkHttpClient.Builder().build();
 
     private static final Predicate<String> WEBHOOK_PREDICATE = WebhookClientBuilder.WEBHOOK_PATTERN.asMatchPredicate();
@@ -137,7 +139,8 @@ public final class DiscordWebhookAppender extends AbstractAppender {
                 .setTitle(new WebhookEmbed.EmbedTitle(logEvent.getLevel().name(), null))
                 .setTimestamp(Instant.ofEpochMilli(logEvent.getInstant().getEpochMillisecond()))
                 .setColor(resolveColor(logEvent.getLevel()).getRGB())
-                .setFooter(new WebhookEmbed.EmbedFooter(logEvent.getLoggerName() + "@" + logEvent.getThreadName(), null));
+                .setFooter(new WebhookEmbed.EmbedFooter(
+                        logEvent.getLoggerName() + "@" + logEvent.getThreadName(), null));
 
         var desc = StringUtils.abbreviate(logEvent.getMessage().getFormattedMessage(), MAX_CONTENT_LENGTH);
 

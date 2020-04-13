@@ -6,6 +6,7 @@ import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
 import de.eldoria.shepard.contexts.commands.argument.SubArgument;
 import de.eldoria.shepard.database.queries.InviteData;
 import de.eldoria.shepard.database.types.DatabaseInvite;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.TextFormatting;
@@ -49,12 +50,12 @@ public class Invite extends Command {
                         new SubArgument("add", C_ADD_INVITE.tag, true),
                         new SubArgument("remove", C_REMOVE_INVITE.tag, true),
                         new SubArgument("refresh", C_REFRESH_INVITES.tag, true),
-                        new SubArgument("show", C_SHOW_INVITES.tag, true)),
+                        new SubArgument("list", C_SHOW_INVITES.tag, true)),
                 new CommandArgument("values", false,
                         new SubArgument("add", A_CODE.tag + " " + A_INVITE_NAME.tag),
                         new SubArgument("remove", A_CODE.tag),
                         new SubArgument("refresh", A_EMPTY.tag),
-                        new SubArgument("show", A_EMPTY.tag))
+                        new SubArgument("list", A_EMPTY.tag))
         };
         category = ContextCategory.ADMIN;
     }
@@ -77,20 +78,22 @@ public class Invite extends Command {
             return;
         }
         if (arg.isSubCommand(cmd, 3)) {
-            showInvites(messageContext);
+            listInvites(messageContext);
             return;
         }
         MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
-    private void showInvites(MessageEventDataWrapper messageContext) {
+    private void listInvites(MessageEventDataWrapper messageContext) {
         List<DatabaseInvite> invites = InviteData.getInvites(messageContext.getGuild(), messageContext);
 
         StringBuilder message = new StringBuilder();
         message.append(M_REGISTERED_INVITES.tag).append(lineSeparator());
 
         TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
-                invites, M_CODE.tag, M_USAGE_COUNT.tag, M_INVITE_NAME.tag);
+                invites, TextLocalizer.localizeAll(M_CODE.tag, messageContext.getGuild()),
+                TextLocalizer.localizeAll(M_USAGE_COUNT.tag, messageContext.getGuild()),
+                TextLocalizer.localizeAll(M_INVITE_NAME.tag, messageContext.getGuild()));
         for (DatabaseInvite invite : invites) {
             tableBuilder.next();
             tableBuilder.setRow(invite.getCode(), invite.getUsedCount() + "", invite.getSource());

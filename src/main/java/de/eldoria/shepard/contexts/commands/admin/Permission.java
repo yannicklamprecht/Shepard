@@ -54,9 +54,6 @@ import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLoc
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_WITH_PERMISSION;
 import static java.lang.System.lineSeparator;
 
-/**
- *
- */
 public class Permission extends Command {
     /**
      * Creates a new permission command object.

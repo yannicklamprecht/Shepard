@@ -31,4 +31,9 @@ public class Config {
      * Default prefix.
      */
     private String prefix = null;
+
+    /**
+     * Webhook address.
+     */
+    private Webhooks webhooks = null;
 }

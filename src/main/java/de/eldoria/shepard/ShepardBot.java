@@ -4,6 +4,7 @@ import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.KeyWordCollection;
 import de.eldoria.shepard.configuration.Config;
 import de.eldoria.shepard.configuration.Loader;
+import de.eldoria.shepard.io.ConsoleReader;
 import de.eldoria.shepard.register.ContextRegister;
 import de.eldoria.shepard.register.ListenerRegister;
 import de.eldoria.shepard.util.ExitCode;
@@ -78,7 +79,7 @@ public final class ShepardBot {
      * Checks if the bot is fully loaded.
      *
      * @return true if the bot instance is not null and {@link ShepardBot#loaded} is true.
-     * False if the bot is starting or going to shut down.
+     *      False if the bot is starting or going to shut down.
      */
     public static boolean isLoaded() {
         if (instance == null) {
@@ -90,6 +91,8 @@ public final class ShepardBot {
 
     private void setup() throws IOException {
         config = Loader.loadConfig();
+
+        ConsoleReader.initialize();
 
         try {
             initiateJda();

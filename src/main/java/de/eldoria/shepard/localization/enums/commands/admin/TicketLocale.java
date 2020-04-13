@@ -56,7 +56,8 @@ public enum TicketLocale {
     /**
      * Localization key for message ticket support roles.
      */
-    M_TICKET_SUPPORT_ROLES("command.ticket.message.ticketSupporterRoles");
+    M_TICKET_SUPPORT_ROLES("command.ticket.message.ticketSupporterRoles"),
+    M_CATEGORY_NOT_FOUND("command.ticket.message.categoryNotFound");
 
     /**
      * Get the escaped locale code for auto translation.
