@@ -2,7 +2,7 @@ package de.eldoria.shepard.webapi;
 
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.queries.commands.KudoData;
-import de.eldoria.shepard.webapi.apiobjects.VoteInformation;
+import de.eldoria.shepard.webapi.apiobjects.botlists.VoteInformation;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.User;
 
