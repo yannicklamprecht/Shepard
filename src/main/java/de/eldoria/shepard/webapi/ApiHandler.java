@@ -30,9 +30,9 @@ public final class ApiHandler {
     private ApiHandler() {
         log.info("Initializing api");
         initializeApi();
-        log.info("API initialized. Defining Routes");
+        log.info("Defining Routes");
         defineRoutes();
-        log.info("Routes Defined. API setup completed!");
+        log.info("API setup completed!");
     }
 
     /**

@@ -10,6 +10,7 @@ import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.contexts.commands.argument.SubCommandInfo;
 import de.eldoria.shepard.database.queries.commands.PrefixData;
 import de.eldoria.shepard.localization.LanguageHandler;
+import de.eldoria.shepard.localization.enums.commands.CommandLocale;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
@@ -31,6 +32,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.commands.CommandLocale.*;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_COMMAND_NOT_FOUND;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_INSUFFICIENT_PERMISSION;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
@@ -391,7 +393,7 @@ public abstract class Command extends ContextSensitive {
         // Build main command field. Only present when command has a standalone function and subcommands.
         if (standalone && subCommands.length != 0) {
             // TODO: Add locale codes
-            builder.addField("**__" + "Basic Command" + "__**:",
+            builder.addField("**__" + BASE_COMMAND.tag + "__**:",
                     "**" + prefix + commandName + "**\n" + standaloneDescription, false);
         }
 
@@ -413,7 +415,7 @@ public abstract class Command extends ContextSensitive {
             if (builder.length() != 0) {
                 chunks.add(sBuilder.toString());
             }
-            // TODO: Add locale codes
+
             for (var c : chunks) {
                 builder.addField("",
                         c.replace("{prefix}", prefix), false);
