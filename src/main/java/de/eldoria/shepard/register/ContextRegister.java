@@ -1,5 +1,6 @@
 package de.eldoria.shepard.register;
 
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.commands.admin.Changelog;
 import de.eldoria.shepard.contexts.commands.admin.Greeting;
 import de.eldoria.shepard.contexts.commands.admin.GuessGameConfig;
@@ -11,7 +12,6 @@ import de.eldoria.shepard.contexts.commands.admin.Monitoring;
 import de.eldoria.shepard.contexts.commands.admin.Permission;
 import de.eldoria.shepard.contexts.commands.admin.Prefix;
 import de.eldoria.shepard.contexts.commands.admin.RepeatCommand;
-import de.eldoria.shepard.contexts.commands.admin.ShowKeyword;
 import de.eldoria.shepard.contexts.commands.admin.Ticket;
 import de.eldoria.shepard.contexts.commands.admin.TicketSettings;
 import de.eldoria.shepard.contexts.commands.botconfig.BotPresence;
@@ -24,7 +24,6 @@ import de.eldoria.shepard.contexts.commands.botconfig.Upgrade;
 import de.eldoria.shepard.contexts.commands.exclusive.PrivateAnswer;
 import de.eldoria.shepard.contexts.commands.exclusive.SendPrivateMessage;
 import de.eldoria.shepard.contexts.commands.fun.GuessGame;
-import de.eldoria.shepard.contexts.commands.fun.KudoGamble;
 import de.eldoria.shepard.contexts.commands.fun.KudoLottery;
 import de.eldoria.shepard.contexts.commands.fun.Kudos;
 import de.eldoria.shepard.contexts.commands.fun.LargeEmote;
@@ -78,7 +77,9 @@ public final class ContextRegister {
         new Home();
         new SystemInfo();
         new GetRaw();
-        new Test();
+        if (ShepardBot.getConfig().isBeta()) {
+            new Test();
+        }
         new Feedback();
     }
 
@@ -96,7 +97,7 @@ public final class ContextRegister {
         new GuessGame();
         new Kudos();
         new KudoLottery();
-        new KudoGamble();
+        //new KudoGamble();
         new MassEffect();
     }
 
@@ -118,7 +119,7 @@ public final class ContextRegister {
         new Greeting();
         new Invite();
         new Prefix();
-        new ShowKeyword();
+        //new ShowKeyword();
         new TicketSettings();
         new Ticket();
         new Changelog();
