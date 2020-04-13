@@ -16,7 +16,6 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -440,11 +439,11 @@ public final class ArgumentParser {
      * @param number number as string
      * @return number or null if parse failed
      */
-    public static Integer parseInt(String number) {
+    public static Optional<Integer> parseInt(String number) {
         try {
-            return Integer.parseInt(number);
+            return Optional.of(Integer.parseInt(number));
         } catch (NumberFormatException e) {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -454,11 +453,11 @@ public final class ArgumentParser {
      * @param number number as string
      * @return number or null if parse failed
      */
-    public static Float parseFloat(String number) {
+    public static Optional<Float> parseFloat(String number) {
         try {
-            return Float.parseFloat(number);
+            return Optional.of(Float.parseFloat(number));
         } catch (NumberFormatException e) {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -468,11 +467,11 @@ public final class ArgumentParser {
      * @param number number as string
      * @return number or null if parse failed
      */
-    public static Long parseLong(String number) {
+    public static Optional<Long> parseLong(String number) {
         try {
-            return Long.parseLong(number);
+            return Optional.of(Long.parseLong(number));
         } catch (NumberFormatException e) {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -498,7 +497,6 @@ public final class ArgumentParser {
      * @return a list of users. if a direct match was found only
      */
     public static List<User> fuzzyGlobalUserSearch(String userString) {
-        List<User> result = new ArrayList<>();
         if (userString == null) {
             return null;
         }
@@ -535,10 +533,10 @@ public final class ArgumentParser {
      * @param userString user string to search
      * @param guildId    guild if to search
      * @return a list of users. if a direct match was found only 1 user.
-     *      if guild id is invalid a empty list is returned.
+     * if guild id is invalid a empty list is returned.
      */
 
-    public static List<User> fuzzyGuildUserSearch(Long guildId, String userString) {
+    public static List<User> fuzzyGuildUserSearch(long guildId, String userString) {
         Guild guild = ShepardBot.getJDA().getGuildById(guildId);
         if (guild == null) {
             return Collections.emptyList();
@@ -582,7 +580,5 @@ public final class ArgumentParser {
                     return effectiveNameMatch || nameMatch;
                 }).map(Member::getUser)
                 .collect(Collectors.toList());
-
-
     }
 }
