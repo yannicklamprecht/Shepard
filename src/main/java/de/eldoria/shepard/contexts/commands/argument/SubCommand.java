@@ -55,7 +55,7 @@ public class SubCommand {
             } else {
                 params.add(p.isRequired() ? "<" + p.getInputName() + ">" : "[" + p.getInputName() + "]");
                 if (p.getInputDescription() != null) {
-                    paramsDescription.add(p.getInputDesc(p.isRequired()));
+                    paramsDescription.add(p.getInputDesc());
                 }
             }
         }

@@ -14,6 +14,8 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_ID;
@@ -169,16 +171,16 @@ public class ManageQuote extends Command {
      */
     private int verifyId(String number, MessageEventDataWrapper messageContext) {
         int quotesCount = QuoteData.getQuotesCount(messageContext.getGuild(), messageContext);
-        Integer quoteId = ArgumentParser.parseInt(number);
-        if (quoteId == null) {
+        OptionalInt quoteId = ArgumentParser.parseInt(number);
+        if (quoteId.isEmpty()) {
             MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
             return -1;
         }
 
-        if (quoteId > quotesCount || quoteId < 0) {
+        if (quoteId.getAsInt() > quotesCount || quoteId.getAsInt() < 0) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getTextChannel());
             return -1;
         }
-        return quoteId;
+        return quoteId.getAsInt();
     }
 }

@@ -15,6 +15,8 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Member;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_AMOUNT;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_USER;
@@ -116,26 +118,26 @@ public class Kudos extends Command {
             return;
         }
 
-        Integer points = ArgumentParser.parseInt(args[2]);
+        OptionalInt points = ArgumentParser.parseInt(args[2]);
 
-        if (points == null) {
+        if (points.isEmpty()) {
             MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
             return;
         }
 
-        if (points <= 0) {
+        if (points.getAsInt() <= 0) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
 
 
         if (!KudoData.tryTakeCompletePoints(
-                messageContext.getGuild(), messageContext.getAuthor(), points, messageContext)) {
+                messageContext.getGuild(), messageContext.getAuthor(), points.getAsInt(), messageContext)) {
             MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_KUDOS, messageContext.getTextChannel());
             return;
         }
         if (!KudoData.addRubberPoints(
-                messageContext.getGuild(), member.getUser(), points, messageContext)) {
+                messageContext.getGuild(), member.getUser(), points.getAsInt(), messageContext)) {
             return;
         }
         MessageSender.sendMessage(localizeAllAndReplace(M_RECEIVED_KUDOS.tag, messageContext.getGuild(),

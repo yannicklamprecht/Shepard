@@ -20,6 +20,7 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.List;
+import java.util.OptionalInt;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CHANNEL_MENTION_OR_EXECUTE;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
@@ -158,12 +159,12 @@ public class Monitoring extends Command {
     }
 
     private void remove(String arg, MessageEventDataWrapper messageContext) {
-        Integer integer = ArgumentParser.parseInt(arg);
-        if (integer == null) {
+        OptionalInt integer = ArgumentParser.parseInt(arg);
+        if (integer.isEmpty()) {
             MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
             return;
         }
-        if (MonitoringData.removeMonitoringAddressByIndex(messageContext.getGuild(), integer, messageContext)) {
+        if (MonitoringData.removeMonitoringAddressByIndex(messageContext.getGuild(), integer.getAsInt(), messageContext)) {
             MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED_ADDRESS.tag, messageContext.getGuild(),
                     "**" + integer + "**"), messageContext.getTextChannel());
         }

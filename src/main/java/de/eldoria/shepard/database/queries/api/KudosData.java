@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.OptionalLong;
 
 import static de.eldoria.shepard.database.DatabaseConnector.getConn;
 import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
@@ -246,8 +247,7 @@ public class KudosData {
         ResultSet resultSet = statement.executeQuery();
         int rank = (page - 1) * pagesize;
         while (resultSet.next()) {
-            String scoreS = resultSet.getString("score");
-            long score = ArgumentParser.parseLong(scoreS);
+            long score = resultSet.getLong("score");
             rank++;
             User user = ShepardBot.getJDA().getUserById(resultSet.getLong("user_id"));
             if (user == null) {

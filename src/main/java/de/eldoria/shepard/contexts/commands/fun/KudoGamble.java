@@ -14,6 +14,7 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
+import java.util.OptionalInt;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -56,12 +57,12 @@ public class KudoGamble extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         Message message;
-        Integer amount = ArgumentParser.parseInt(args[0]);
-        if (amount == null || amount < 1) {
+        OptionalInt amount = ArgumentParser.parseInt(args[0]);
+        if (amount.isEmpty() || amount.getAsInt() < 1) {
             MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
             return;
         }
-        if (!KudoData.tryTakePoints(messageContext.getGuild(), messageContext.getAuthor(), amount, messageContext)) {
+        if (!KudoData.tryTakePoints(messageContext.getGuild(), messageContext.getAuthor(), amount.getAsInt(), messageContext)) {
             MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_KUDOS, messageContext.getTextChannel());
             return;
         }
@@ -96,11 +97,11 @@ public class KudoGamble extends Command {
                     + getEmoji(win2) + " " + getEmoji(win3);
             message.editMessage(finalMessageText).complete();
         } catch (InterruptedException e) {
-            KudoData.addRubberPoints(messageContext.getGuild(), messageContext.getAuthor(), amount, messageContext);
+            KudoData.addRubberPoints(messageContext.getGuild(), messageContext.getAuthor(), amount.getAsInt(), messageContext);
             return;
         }
 
-        int winAmount = amount;
+        int winAmount = amount.getAsInt();
         int winId = (win1) + (win2) + (win3);
         boolean jackpot = false;
 
@@ -112,33 +113,33 @@ public class KudoGamble extends Command {
         } else if (winId == tier2 * 3) {
             winAmount *= 10;
         } else if (winId == tier1 * 3) {
-            winAmount = amount * 5;
+            winAmount = amount.getAsInt() * 5;
         } else if (winId == bonus * 3) {
-            winAmount = amount + KudoData.getAndClearJackpot(messageContext.getGuild(), messageContext);
+            winAmount = amount.getAsInt() + KudoData.getAndClearJackpot(messageContext.getGuild(), messageContext);
             jackpot = true;
         } else if (win1 == bonus || win2 == bonus || win3 == bonus) {
             //Bonus
-            winAmount = (int) Math.round(amount * 1.5);
+            winAmount = (int) Math.round(amount.getAsInt() * 1.5);
         } else if (win1 == win2 || win2 == win3) {
             //Two are equal
-            winAmount = (int) Math.round(amount * evaluatePairs(win2));
+            winAmount = (int) Math.round(amount.getAsInt() * evaluatePairs(win2));
         } else if (win1 == win3) {
-            winAmount = (int) Math.round(amount * evaluatePairs(win1));
+            winAmount = (int) Math.round(amount.getAsInt() * evaluatePairs(win1));
         } else {
             winAmount = 0;
         }
 
         if (winAmount == 0) {
-            int jackpotAmount = KudoData.addAndGetJackpot(messageContext.getGuild(), amount, messageContext);
+            int jackpotAmount = KudoData.addAndGetJackpot(messageContext.getGuild(), amount.getAsInt(), messageContext);
             message.editMessage(finalMessageText + System.lineSeparator()
                     + localizeAllAndReplace(KudoGambleLocale.M_LOSE.tag, messageContext.getGuild(),
                     "**" + jackpotAmount + "**")).complete();
             return;
         }
 
-        if (winAmount < amount) {
+        if (winAmount < amount.getAsInt()) {
             int jackpotAmount = KudoData.addAndGetJackpot(messageContext.getGuild(),
-                    amount - winAmount, messageContext);
+                    amount.getAsInt() - winAmount, messageContext);
             KudoData.addRubberPoints(messageContext.getGuild(), messageContext.getAuthor(), winAmount, messageContext);
             message.editMessage(finalMessageText + System.lineSeparator()
                     + localizeAllAndReplace(KudoGambleLocale.M_PART_LOSE.tag, messageContext.getGuild(),

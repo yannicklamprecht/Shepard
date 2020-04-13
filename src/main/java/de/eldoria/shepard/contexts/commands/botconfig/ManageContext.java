@@ -13,6 +13,8 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
+import java.util.OptionalInt;
+
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CONTEXT_NAME;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_SECONDS;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
@@ -93,10 +95,10 @@ public class ManageContext extends Command {
 
     private void setCooldown(String cmd, String[] args, ContextSensitive context,
                              MessageEventDataWrapper messageContext) {
-        Integer seconds = ArgumentParser.parseInt(args[2]);
+        OptionalInt seconds = ArgumentParser.parseInt(args[2]);
 
 
-        if (seconds == null) {
+        if (seconds.isEmpty()) {
             MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
             return;
         }
@@ -104,11 +106,11 @@ public class ManageContext extends Command {
         boolean userCooldown = isSubCommand(cmd, 2);
 
         if (userCooldown) {
-            if (!ContextData.setContextUserCooldown(context, seconds, messageContext)) {
+            if (!ContextData.setContextUserCooldown(context, seconds.getAsInt(), messageContext)) {
                 return;
             }
         } else {
-            if (!ContextData.setContextGuildCooldown(context, seconds, messageContext)) {
+            if (!ContextData.setContextGuildCooldown(context, seconds.getAsInt(), messageContext)) {
                 return;
             }
         }

@@ -22,6 +22,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -439,11 +442,11 @@ public final class ArgumentParser {
      * @param number number as string
      * @return number or null if parse failed
      */
-    public static Optional<Integer> parseInt(String number) {
+    public static OptionalInt parseInt(String number) {
         try {
-            return Optional.of(Integer.parseInt(number));
+            return OptionalInt.of(Integer.parseInt(number));
         } catch (NumberFormatException e) {
-            return Optional.empty();
+            return OptionalInt.empty();
         }
     }
 
@@ -453,11 +456,11 @@ public final class ArgumentParser {
      * @param number number as string
      * @return number or null if parse failed
      */
-    public static Optional<Float> parseFloat(String number) {
+    public static OptionalDouble parseFloat(String number) {
         try {
-            return Optional.of(Float.parseFloat(number));
+            return OptionalDouble.of(Float.parseFloat(number));
         } catch (NumberFormatException e) {
-            return Optional.empty();
+            return OptionalDouble.empty();
         }
     }
 
@@ -467,11 +470,11 @@ public final class ArgumentParser {
      * @param number number as string
      * @return number or null if parse failed
      */
-    public static Optional<Long> parseLong(String number) {
+    public static OptionalLong parseLong(String number) {
         try {
-            return Optional.of(Long.parseLong(number));
+            return OptionalLong.of(Long.parseLong(number));
         } catch (NumberFormatException e) {
-            return Optional.empty();
+            return OptionalLong.empty();
         }
     }
 

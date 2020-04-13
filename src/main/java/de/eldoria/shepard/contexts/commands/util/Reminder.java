@@ -14,6 +14,7 @@ import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.util.List;
+import java.util.OptionalInt;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -100,24 +101,24 @@ public class Reminder extends Command {
     }
 
     private void remove(String[] args, MessageEventDataWrapper messageContext) {
-        Integer number = ArgumentParser.parseInt(args[2]);
-        if (number == null) {
+        OptionalInt number = ArgumentParser.parseInt(args[2]);
+        if (number.isEmpty()) {
             MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
             return;
         }
 
         List<ReminderSimple> userReminder = ReminderData.getUserReminder(messageContext.getGuild(),
                 messageContext.getAuthor(), messageContext);
-        if (number > userReminder.size()) {
+        if (number.getAsInt() > userReminder.size()) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getTextChannel());
             return;
         }
 
         ReminderSimple reminder = userReminder.stream().filter(reminderSimple ->
-                reminderSimple.getReminderId() == number).collect(Collectors.toList()).get(0);
+                reminderSimple.getReminderId() == number.getAsInt()).collect(Collectors.toList()).get(0);
 
         if (ReminderData.removeUserReminder(messageContext.getGuild(), messageContext.getAuthor(),
-                number, messageContext)) {
+                number.getAsInt(), messageContext)) {
             MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED.tag,
                     messageContext.getGuild(), reminder.getReminderId() + "",
                     TextFormatting.cropText(reminder.getText(), "...", 20, true),

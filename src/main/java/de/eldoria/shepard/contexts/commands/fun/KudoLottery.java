@@ -18,6 +18,7 @@ import de.eldoria.shepard.util.reactions.ShepardEmote;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.awt.Color;
+import java.util.OptionalInt;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_AMOUNT;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_AMOUNT;
@@ -54,12 +55,12 @@ public class KudoLottery extends Command {
         int maxBet = 100;
 
         if (args.length > 0) {
-            Integer amount = ArgumentParser.parseInt(args[0]);
-            if (amount == null) {
+            OptionalInt amount = ArgumentParser.parseInt(args[0]);
+            if (amount.isEmpty()) {
                 MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
                 return;
             }
-            maxBet = Math.min(Math.max(amount, 1), 500);
+            maxBet = Math.min(Math.max(amount.getAsInt(), 1), 500);
         }
 
         if (!success) {
