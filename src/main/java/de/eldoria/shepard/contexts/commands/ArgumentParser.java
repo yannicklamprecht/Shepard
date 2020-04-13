@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -573,12 +574,13 @@ public final class ArgumentParser {
             return Collections.singletonList(foundUser.getUser());
         }
 
+        Predicate<Member> effectiveNameMatch = member -> member.getEffectiveName().toLowerCase()
+                .contains(userString.toLowerCase());
+        Predicate<Member> nameMatch = member -> member.getUser().getName().toLowerCase()
+                .contains(userString.toLowerCase());
         return guild.getMembers().stream()
-                .filter(m -> {
-                    boolean effectiveNameMatch = m.getEffectiveName().toLowerCase().contains(userString.toLowerCase());
-                    boolean nameMatch = m.getUser().getName().toLowerCase().contains(userString.toLowerCase());
-                    return effectiveNameMatch || nameMatch;
-                }).map(Member::getUser)
+                .filter(effectiveNameMatch.or(nameMatch))
+                .map(Member::getUser)
                 .collect(Collectors.toList());
     }
 }
