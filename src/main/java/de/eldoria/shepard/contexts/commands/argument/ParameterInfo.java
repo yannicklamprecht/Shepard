@@ -5,22 +5,22 @@ import lombok.Getter;
 
 @Getter
 public class ParameterInfo {
-    private String shortCommand;
+    private boolean command;
     private String inputName;
     private String inputDescription;
     private boolean required;
-    private boolean command;
     private String commandName;
+    private String shortCommand;
 
     /**
      * Create a new parameter info.
      *
-     * @param command true if parameter is a command
-     * @param commandName name of command
-     * @param shortCommand short command
-     * @param inputName name of input
+     * @param command          true if parameter is a command
+     * @param commandName      name of command
+     * @param shortCommand     short command
+     * @param inputName        name of input
      * @param inputDescription description of input
-     * @param required true if command is required
+     * @param required         true if command is required
      */
     public ParameterInfo(boolean command, String commandName, String shortCommand, String inputName, String inputDescription, boolean required) {
         this.command = command;
@@ -28,6 +28,6 @@ public class ParameterInfo {
         this.shortCommand = shortCommand;
         this.inputName = TextLocalizer.localizeAllAndReplace(inputName, null);
         this.inputDescription = TextLocalizer.localizeAllAndReplace(inputDescription, null);
-        this.required = required;
+        this.required = required || command;
     }
 }

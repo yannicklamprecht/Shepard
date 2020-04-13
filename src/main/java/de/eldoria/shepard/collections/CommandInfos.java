@@ -1,6 +1,6 @@
 package de.eldoria.shepard.collections;
 
-import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import de.eldoria.shepard.contexts.commands.CommandInfo;
 
 import java.util.List;
@@ -26,6 +26,6 @@ public class CommandInfos {
      * @return object as json string
      */
     public String asJson() {
-        return new Gson().toJson(this);
+        return new GsonBuilder().serializeNulls().create().toJson(this);
     }
 }
