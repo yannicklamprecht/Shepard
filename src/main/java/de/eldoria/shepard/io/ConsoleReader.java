@@ -19,7 +19,7 @@ public final class ConsoleReader implements Runnable {
     }
 
     /**
-     * Initializes a new console reade.
+     * Initializes a new console reader.
      */
     public static void initialize() {
         if (instance == null) {

@@ -30,19 +30,7 @@ public class Avatar extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         if (args.length == 0) {
-            String effectiveAvatarUrl = messageContext.getAuthor().getEffectiveAvatarUrl();
-            File fileFromURL = FileHelper.getFileFromURL(effectiveAvatarUrl);
-            if (fileFromURL == null) {
-                MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, messageContext.getTextChannel());
-                return;
-            }
-            MessageSender.sendMessage(
-                    TextLocalizer.localizeAllAndReplace(
-                            AvatarLocale.M_AVATAR.tag,
-                            messageContext.getGuild(),
-                            "**" + messageContext.getAuthor().getAsTag() + "**"),
-                    messageContext.getTextChannel());
-            messageContext.getChannel().sendFile(fileFromURL).queue();
+            sendAvatar(messageContext.getAuthor(), messageContext);
             return;
         }
 
@@ -53,6 +41,10 @@ public class Avatar extends Command {
             return;
         }
 
+        sendAvatar(user, messageContext);
+    }
+
+    private void sendAvatar(User user, MessageEventDataWrapper messageContext) {
         File fileFromURL = FileHelper.getFileFromURL(user.getEffectiveAvatarUrl());
         if (fileFromURL == null) {
             MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, messageContext.getTextChannel());
@@ -62,5 +54,6 @@ public class Avatar extends Command {
                 messageContext.getGuild(), "**" + user.getAsTag() + "**"),
                 messageContext.getTextChannel());
         messageContext.getTextChannel().sendFile(fileFromURL).queue();
+
     }
 }
