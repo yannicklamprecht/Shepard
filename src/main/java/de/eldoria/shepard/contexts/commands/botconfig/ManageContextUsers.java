@@ -9,7 +9,6 @@ import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.ListType;
 import de.eldoria.shepard.database.queries.commands.ContextData;
-import de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.BooleanState;
@@ -19,13 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CONTEXT_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_GUILDS;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_LIST_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_USERS;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CONTEXT_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_GUILDS;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_LIST_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USERS;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.A_LIST_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.C_ADD_USER;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.C_REMOVE_USER;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.C_SET_ACTIVE;
@@ -57,7 +55,7 @@ public class ManageContextUsers extends Command {
                         .addSubcommand(C_SET_LIST_TYPE.tag,
                                 Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
                                 Parameter.createCommand("setListType"),
-                                Parameter.createInput(A_LIST_TYPE.tag, ManageContextUserLocale.AD_LIST_TYPE.tag, true))
+                                Parameter.createInput(A_LIST_TYPE.tag, AD_LIST_TYPE.tag, true))
                         .addSubcommand(C_ADD_USER.tag,
                                 Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
                                 Parameter.createCommand("addUser"),

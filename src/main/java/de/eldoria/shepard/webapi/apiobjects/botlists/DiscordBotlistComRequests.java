@@ -12,6 +12,14 @@ public class DiscordBotlistComRequests {
     @SerializedName("voice_connections")
     private int voiceConnections;
 
+    /**
+     * Create a new dicsord.botlist.com request payload
+     *
+     * @param shardId id of the shard
+     * @param guilds guild count
+     * @param users users count
+     * @param voiceConnections voice connections count
+     */
     public DiscordBotlistComRequests(int shardId, int guilds, long users, int voiceConnections) {
         this.shardId = shardId;
         this.guilds = guilds;

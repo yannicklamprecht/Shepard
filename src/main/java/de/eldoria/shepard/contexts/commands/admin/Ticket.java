@@ -35,7 +35,6 @@ import static de.eldoria.shepard.database.queries.commands.TicketData.getTypeOwn
 import static de.eldoria.shepard.database.queries.commands.TicketData.getTypeSupportRoles;
 import static de.eldoria.shepard.database.queries.commands.TicketData.removeChannel;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.AD_TICKET_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.A_CLOSE;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.A_INFO;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.A_TICKET_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.C_CLOSE;

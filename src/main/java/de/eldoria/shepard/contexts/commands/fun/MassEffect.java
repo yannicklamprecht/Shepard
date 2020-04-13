@@ -34,7 +34,7 @@ public class MassEffect extends Command {
                 new String[] {"shepQuote"},
                 MassEffectLocale.DESCRIPTION.tag,
                 SubCommand.builder("massEffect")
-                        .addSubcommand(MassEffectLocale.DESCRIPTION.tag,
+                        .addSubcommand(null,
                                 Parameter.createInput(GeneralLocale.A_KEYWORD.tag, GeneralLocale.AD_KEYWORD.tag, false))
                         .build(),
                 MassEffectLocale.DESCRIPTION.tag,

@@ -22,11 +22,6 @@ public enum ManageContextUserLocale {
      */
     C_REMOVE_USER("command.manageContextUser.subcommand.removeUser"),
     /**
-     * Localization key for argument listType.
-     */
-    A_LIST_TYPE("command.manageContextUser.argument.listType"),
-    AD_LIST_TYPE("command.manageContextUser.argumentDescription.listType"),
-    /**
      * Localization key for message added users.
      */
     M_ADDED_USERS("command.manageContextUser.message.addedUser"),

@@ -31,7 +31,7 @@ public class Quote extends Command {
                 null,
                 DESCRIPTION.tag,
                 SubCommand.builder("quote")
-                        .addSubcommand(DESCRIPTION.tag,
+                        .addSubcommand(null,
                                 Parameter.createInput(GeneralLocale.A_KEYWORD.tag, GeneralLocale.AD_KEYWORD.tag, false))
                         .build(),
                 DESCRIPTION.tag,

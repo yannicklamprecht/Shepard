@@ -27,11 +27,11 @@ public class SendPrivateMessage extends Command {
         super("privateMessage",
                 new String[] {"pm", "sendMessage"},
                 MESSAGE_DESCRIPTION.tag,
-                new SubCommand[] {
-                        new SubCommand("privateMessage", MESSAGE_DESCRIPTION.tag,
-                                Parameter.createInput(A_USER.tag, AD_USER.tag, true),
-                                Parameter.createInput(GeneralLocale.A_MESSAGE.tag, null, true))
-                },
+                SubCommand.builder("privateMessage")
+                        .addSubcommand(null,
+                                Parameter.createInput(GeneralLocale.A_MESSAGE.tag, null, true),
+                                Parameter.createInput(A_USER.tag, AD_USER.tag, true))
+                        .build(),
                 ContextCategory.EXCLUSIVE
         );
     }

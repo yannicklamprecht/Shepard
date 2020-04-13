@@ -39,7 +39,7 @@ public class UserInfo extends Command {
                 new String[] {"aboutuser"},
                 UserInfoLocale.DESCRIPTION.tag,
                 SubCommand.builder("userInfo")
-                        .addSubcommand(UserInfoLocale.DESCRIPTION.tag,
+                        .addSubcommand(null,
                                 Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true))
                         .build(),
                 UserInfoLocale.C_DEFAULT.tag,

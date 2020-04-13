@@ -12,6 +12,16 @@ public class ParameterInfo {
     private boolean command;
     private String commandName;
 
+    /**
+     * Create a new parameter info.
+     *
+     * @param command true if parameter is a command
+     * @param commandName name of command
+     * @param shortCommand short command
+     * @param inputName name of input
+     * @param inputDescription description of input
+     * @param required true if command is required
+     */
     public ParameterInfo(boolean command, String commandName, String shortCommand, String inputName, String inputDescription, boolean required) {
         this.command = command;
         this.commandName = commandName;

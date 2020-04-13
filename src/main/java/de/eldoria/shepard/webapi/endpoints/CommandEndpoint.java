@@ -1,7 +1,6 @@
 package de.eldoria.shepard.webapi.endpoints;
 
 import com.google.api.client.http.HttpStatusCodes;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.CommandInfos;

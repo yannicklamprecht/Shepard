@@ -30,7 +30,7 @@ public class LargeEmote extends Command {
                 new String[] {"lemote"},
                 DESCRIPTION.tag,
                 SubCommand.builder("largeEmote")
-                        .addSubcommand(DESCRIPTION.tag,
+                        .addSubcommand(null,
                                 Parameter.createInput(A_EMOTE.tag, AD_EMOTE.tag, true))
                         .build(),
                 ContextCategory.FUN);

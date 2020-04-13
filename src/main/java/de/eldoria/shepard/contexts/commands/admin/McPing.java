@@ -5,7 +5,6 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.Parameter;
 import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.localization.enums.commands.admin.McPingLocale;
-import de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -17,6 +16,8 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.awt.Color;
 
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.AD_ADDRESS;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.A_ADDRESS;
 import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_PLAYER_COUNT;
 import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVER_DOWN;
 import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_STATUS_OF;
@@ -36,8 +37,8 @@ public class McPing extends Command {
                 null,
                 McPingLocale.DESCRIPTION.tag,
                 SubCommand.builder("mcping")
-                        .addSubcommand(McPingLocale.DESCRIPTION.tag,
-                                Parameter.createInput(MonitoringLocale.A_ADDRESS.tag, MonitoringLocale.AD_ADDRESS.tag, true))
+                        .addSubcommand(null,
+                                Parameter.createInput(A_ADDRESS.tag, AD_ADDRESS.tag, true))
                         .build(),
                 ContextCategory.ADMIN);
     }

@@ -193,7 +193,8 @@ public final class MessageSender {
         try {
             channel.sendMessage(builder.build()).queue();
         } catch (InsufficientPermissionException e) {
-            if (Arrays.stream(ShepardBot.getConfig().getBotlist().getGuildIds()).noneMatch(id -> id == channel.getGuild().getIdLong())) {
+            if (Arrays.stream(ShepardBot.getConfig().getBotlist().getGuildIds())
+                    .noneMatch(id -> id == channel.getGuild().getIdLong())) {
                 channel.getGuild().getOwner().getUser().openPrivateChannel().queue(a -> {
                     EmbedBuilder privateBuilder = new EmbedBuilder()
                             .setTitle("ERROR!")

@@ -17,7 +17,7 @@ public class Uwu extends Command {
      */
     public Uwu() {
         super("uwu",
-                null,
+                new String[] {"uwud"},
                 DESCRIPTION.tag,
                 ContextCategory.FUN);
     }

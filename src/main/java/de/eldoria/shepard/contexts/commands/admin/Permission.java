@@ -66,33 +66,33 @@ public class Permission extends Command {
                 DESCRIPTION.tag,
                 SubCommand.builder("permission")
                         .addSubcommand(C_ADD_USER.tag,
-                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
                                 Parameter.createCommand("addUser"),
                                 Parameter.createInput(A_USERS.tag, AD_USERS.tag, true))
                         .addSubcommand(C_REMOVE_USER.tag,
-                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
                                 Parameter.createCommand("removeUser"),
                                 Parameter.createInput(A_USERS.tag, AD_USERS.tag, true))
                         .addSubcommand(C_LIST_USER.tag,
-                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
                                 Parameter.createCommand("listUser"))
                         .addSubcommand(C_ADD_ROLE.tag,
-                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
                                 Parameter.createCommand("addRole"),
                                 Parameter.createInput(A_ROLES.tag, AD_ROLES.tag, true))
                         .addSubcommand(C_REMOVE_ROLE.tag,
-                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
                                 Parameter.createCommand("removeRole"),
                                 Parameter.createInput(A_ROLES.tag, AD_ROLES.tag, true))
                         .addSubcommand(C_LIST_ROLE.tag,
-                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
                                 Parameter.createCommand("listRoles"))
                         .addSubcommand(C_SET_PERMISSION_OVERRIDE.tag,
-                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
                                 Parameter.createCommand("setPermissionOverride"),
                                 Parameter.createInput(A_BOOLEAN.tag, null, true))
                         .addSubcommand(C_INFO.tag,
-                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
                                 Parameter.createCommand("info"))
                         .build(),
                 ContextCategory.ADMIN);

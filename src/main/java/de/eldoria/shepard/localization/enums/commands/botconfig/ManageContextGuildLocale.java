@@ -22,11 +22,6 @@ public enum ManageContextGuildLocale {
      */
     C_REMOVE_GUILD("command.manageContextGuild.subcommand.removeGuild"),
     /**
-     * Localization key for argument listType.
-     */
-    A_LIST_TYPE("command.manageContextGuild.argument.listType"),
-    AD_LIST_TYPE("command.manageContextGuild.argumentDescription.listType"),
-    /**
      * Localization key for message added guilds.
      */
     M_ADDED_GUILDS("command.manageContextGuild.message.addedGuilds"),

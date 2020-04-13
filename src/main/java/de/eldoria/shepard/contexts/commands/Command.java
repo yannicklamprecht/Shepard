@@ -75,12 +75,12 @@ public abstract class Command extends ContextSensitive {
     /**
      * Create a new command with a standalone function and register it to the {@link CommandCollection}.
      *
-     * @param commandName
-     * @param commandAliases
-     * @param commandDesc
-     * @param subCommands
-     * @param standaloneDescription
-     * @param category
+     * @param commandName           name of the command
+     * @param commandAliases        command aliases
+     * @param commandDesc           description of the command
+     * @param subCommands           Subcommands of the command
+     * @param standaloneDescription description of the standalone command
+     * @param category              category of the command
      */
     protected Command(String commandName, String[] commandAliases, String commandDesc, SubCommand[] subCommands,
                       String standaloneDescription, ContextCategory category) {
@@ -103,11 +103,11 @@ public abstract class Command extends ContextSensitive {
     /**
      * Create a new command without a standalone function and register it to the {@link CommandCollection}.
      *
-     * @param commandName
-     * @param commandAliases
-     * @param commandDesc
-     * @param subCommands
-     * @param category
+     * @param commandName    name of the command
+     * @param commandAliases command aliases
+     * @param commandDesc    description of the command
+     * @param subCommands    Subcommands of the command
+     * @param category       category of the command
      */
     protected Command(String commandName, String[] commandAliases, String commandDesc, SubCommand[] subCommands,
                       ContextCategory category) {
@@ -130,10 +130,10 @@ public abstract class Command extends ContextSensitive {
     /**
      * Create a new command with only a standalone function and register it to the {@link CommandCollection}.
      *
-     * @param commandName
-     * @param commandAliases
-     * @param commandDesc
-     * @param category
+     * @param commandName    name of the command
+     * @param commandAliases command aliases
+     * @param commandDesc    description of the command
+     * @param category       category of the command
      */
     protected Command(String commandName, String[] commandAliases, String commandDesc,
                       ContextCategory category) {
@@ -359,8 +359,6 @@ public abstract class Command extends ContextSensitive {
         // Check if command is standalone
         if (standalone) return true;
 
-        SubCommand found = null;
-
         // search in subcommands
         for (var command : subCommands) {
             if (command.matchArgs(args)) {
@@ -398,8 +396,10 @@ public abstract class Command extends ContextSensitive {
         }
 
         // Build subcommand field.
-        if (subCommands.length != 1) {
-            List<String> subcommandHelp = getSubcommandHelp();
+        if (subCommands.length != 0) {
+            List<String> subcommandHelp = getSubcommandHelp().stream()
+                    .map(s -> TextLocalizer.localizeAll(s, channel).replace("\n", "\n> "))
+                    .collect(Collectors.toList());
             List<String> chunks = new ArrayList<>();
 
             StringBuilder sBuilder = new StringBuilder();
@@ -409,6 +409,9 @@ public abstract class Command extends ContextSensitive {
                     sBuilder.setLength(0);
                 }
                 sBuilder.append(s).append("\n\n");
+            }
+            if (builder.length() != 0) {
+                chunks.add(sBuilder.toString());
             }
             // TODO: Add locale codes
             for (var c : chunks) {
@@ -449,12 +452,18 @@ public abstract class Command extends ContextSensitive {
                 commandName,
                 commandAliases,
                 commandDesc,
+                standaloneDescription,
                 category,
                 Arrays.stream(subCommands)
                         .map(SubCommand::getSubCommandInfo)
                         .collect(Collectors.toList()).toArray(sc));
     }
 
+    /**
+     * Get the subcommand help.
+     *
+     * @return subcommand help as preformatted string.
+     */
     public List<String> getSubcommandHelp() {
         List<String> subCommandsHelp = new ArrayList<>();
         for (SubCommand subCommand : subCommands) {
@@ -466,7 +475,9 @@ public abstract class Command extends ContextSensitive {
     /**
      * Check if the first sub command matches a string.
      *
-     * @return
+     * @param cmd command to check
+     * @param i   subcommand index to check
+     * @return true if the subcommand matches.
      */
     protected boolean isSubCommand(String cmd, int i) {
         return subCommands[i].isSubCommand(cmd);

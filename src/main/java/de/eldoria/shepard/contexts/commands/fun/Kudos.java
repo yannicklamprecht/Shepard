@@ -18,7 +18,6 @@ import java.util.List;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_AMOUNT;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_USER;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_AMOUNT;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USER;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.A_POINTS;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.C_EMPTY;

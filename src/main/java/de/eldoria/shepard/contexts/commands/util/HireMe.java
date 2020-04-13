@@ -2,14 +2,16 @@ package de.eldoria.shepard.contexts.commands.util;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.localization.enums.commands.util.HireMeLocale;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.util.Collections;
 
-import static de.eldoria.shepard.localization.enums.commands.util.HireMeLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.util.HireMeLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.util.HireMeLocale.M_HIRE_ME;
+import static de.eldoria.shepard.localization.enums.commands.util.HireMeLocale.M_I_WANT_YOU;
+import static de.eldoria.shepard.localization.enums.commands.util.HireMeLocale.M_TAKE_ME;
 
 /**
  * A command for retrieving a invite link for this bot.

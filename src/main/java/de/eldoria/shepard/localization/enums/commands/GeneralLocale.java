@@ -59,6 +59,11 @@ public enum GeneralLocale {
     A_AMOUNT("command.general.argument.amount"),
     A_URL("command.general.argument.url"),
     A_KEYWORD("command.general.argument.keyword"),
+    /**
+     * Localization key for argument listType.
+     */
+    A_LIST_TYPE("command.general.argument.listType"),
+    AD_LIST_TYPE("command.general.argumentDescription.listType"),
     AD_CHANNEL("command.general.argumentDescription.channel"),
     AD_CATEGORY("command.general.argumentDescription.category"),
     AD_USER("command.general.argumentDescription.user"),

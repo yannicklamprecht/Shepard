@@ -30,7 +30,7 @@ public class Feedback extends Command {
                 new String[] {"bugreport"},
                 FeedbackLocale.DESCRIPTION.tag,
                 SubCommand.builder("feedback")
-                        .addSubcommand(FeedbackLocale.DESCRIPTION.tag,
+                        .addSubcommand(null,
                                 Parameter.createInput(A_MESSAGE.tag, null, true))
                         .build(),
                 ContextCategory.UTIL);

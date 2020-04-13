@@ -39,9 +39,9 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
  * Reminder command which reminds user on a specific time and date or at a interval.
  */
 public class Reminder extends Command {
-    private static final Pattern INTERVAL = Pattern.compile("in\\s([0-9])+\\s(((min|hour|day|week)s?)|month)",
+    private static final Pattern INTERVAL = Pattern.compile("([0-9])+\\s(((min|hour|day|week)s?)|month)",
             Pattern.MULTILINE);
-    private static final Pattern DATE = Pattern.compile("on\\s[0-9]{1,2}\\.[0-9]{1,2}\\.\\s[0-9]{1,2}:[0-9]{1,2}",
+    private static final Pattern DATE = Pattern.compile("[0-9]{1,2}\\.[0-9]{1,2}\\.\\s[0-9]{1,2}:[0-9]{1,2}",
             Pattern.MULTILINE);
 
     /**
@@ -54,8 +54,8 @@ public class Reminder extends Command {
                 SubCommand.builder("remind")
                         .addSubcommand(C_ADD.tag,
                                 Parameter.createCommand("create"),
-                                Parameter.createInput(A_MESSAGE.tag, null, true),
-                                Parameter.createInput(A_TIMESTAMP.tag, AD_TIMESTAMP.tag, true))
+                                Parameter.createInput(A_TIMESTAMP.tag, AD_TIMESTAMP.tag, true),
+                                Parameter.createInput(A_MESSAGE.tag, null, true))
                         .addSubcommand(C_REMOVE.tag,
                                 Parameter.createCommand("remove"),
                                 Parameter.createInput(A_ID.tag, AD_ID.tag, true))
@@ -146,16 +146,17 @@ public class Reminder extends Command {
     }
 
     private void add(String[] args, MessageEventDataWrapper messageContext) {
-        String command = ArgumentParser.getMessage(args, 0, 0);
-        if (!DATE.matcher(command).find() && !INTERVAL.matcher(command).find()) {
+        String timeString = ArgumentParser.getMessage(args, 1, 3);
+        if (!DATE.matcher(timeString).find() && !INTERVAL.matcher(timeString).find()) {
             MessageSender.sendSimpleError(ErrorType.INVALID_TIME, messageContext.getTextChannel());
             return;
         }
 
-        if (DATE.matcher(command).find()) {
-            String date = args[args.length - 2];
-            String time = args[args.length - 1];
-            String message = ArgumentParser.getMessage(args, 1, -3);
+        String message = ArgumentParser.getMessage(args, 3, 0);
+        // Date reminder
+        if (DATE.matcher(timeString).find()) {
+            String date = args[1];
+            String time = args[2];
 
             if (ReminderData.addReminderDate(messageContext.getGuild(), messageContext.getAuthor(),
                     messageContext.getTextChannel(), message, date, time, messageContext)) {
@@ -166,13 +167,11 @@ public class Reminder extends Command {
             return;
         }
 
-        String interval = ArgumentParser.getMessage(args, -2);
-        String message = ArgumentParser.getMessage(args, 1, -3);
-
+        // Interval reminder
         if (ReminderData.addReminderInterval(messageContext.getGuild(), messageContext.getAuthor(),
-                messageContext.getTextChannel(), message, interval, messageContext)) {
+                messageContext.getTextChannel(), message, timeString, messageContext)) {
             MessageSender.sendMessage(localizeAllAndReplace(M_REMIND_TIME.tag,
-                    messageContext.getGuild(), interval) + System.lineSeparator() + message,
+                    messageContext.getGuild(), timeString) + System.lineSeparator() + message,
                     messageContext.getTextChannel());
         }
     }

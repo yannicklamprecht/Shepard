@@ -41,7 +41,7 @@ public class Help extends Command {
                 HelpLocale.DESCRIPTION.tag,
                 SubCommand.builder("help")
                         .addSubcommand(HelpLocale.A_COMMAND.tag,
-                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true))
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, false))
                         .build(),
                 ContextCategory.UTIL);
     }

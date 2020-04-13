@@ -2,9 +2,7 @@ package de.eldoria.shepard.contexts.commands.argument;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -12,10 +10,10 @@ import java.util.stream.Collectors;
  * An CommandArg is the highest instance to define the arguments of a command.
  */
 public class SubCommand {
-    private String commandName;
     // Short description of the sub command
     private final String commandDescription;
     private final Parameter[] parameters;
+    private String commandName;
     private String commandPattern;
 
     /**
@@ -32,9 +30,19 @@ public class SubCommand {
     }
 
     /**
+     * Get a new Subcommand builder.
+     *
+     * @param commandName command name for builder
+     * @return new command builder object
+     */
+    public static SubCommandBuilder builder(String commandName) {
+        return new SubCommandBuilder(commandName);
+    }
+
+    /**
      * Argument name with subarguments.
      *
-     * @param commandName
+     * @param commandName command name for pattern generation
      * @return string with more information
      */
     public String generateCommandPatternHelp(String commandName) {
@@ -51,11 +59,10 @@ public class SubCommand {
                 }
             }
         }
-        return "> *__" + commandDescription + "__*\n"
-                + "> {prefix}" + commandName + " " + String.join(" ", params)
-                + (paramsDescription.isEmpty() ? "" : "\n> " + String.join("\n> ", paramsDescription));
+        return (commandDescription != null ? "*__" + (commandDescription) + "__*\n" : "")
+                + "`{prefix}" + commandName + " " + String.join(" ", params) + "`"
+                + (paramsDescription.isEmpty() ? "" : "\n" + String.join("\n", paramsDescription));
     }
-
 
     /**
      * Checks if a string matches the command or alias of a subcommand.
@@ -72,21 +79,6 @@ public class SubCommand {
         return false;
     }
 
-    private Set<Parameter> getNotUniqueSubArgs() {
-        Set<Parameter> result = new HashSet<>();
-        for (Parameter arg : parameters) {
-            if (arg.isCommand()) {
-                for (Parameter otherArg : parameters) {
-                    if (arg != otherArg && arg.getShortCommand().equals(otherArg.getShortCommand())) {
-                        result.add(otherArg);
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-
     /**
      * Get the sub arguments of the argument.
      *
@@ -96,14 +88,11 @@ public class SubCommand {
         return parameters;
     }
 
-    public int getRequiredParamCount() {
-        int i = 0;
-        for (Parameter p : parameters) {
-            if (p.isRequired()) i++;
-        }
-        return i;
-    }
-
+    /**
+     * Get the command pattern of subcommand.
+     *
+     * @return commandpattern as preformatted string
+     */
     public String getCommandPattern() {
         if (commandPattern == null) {
             commandPattern = generateCommandPatternHelp(commandName);
@@ -111,10 +100,12 @@ public class SubCommand {
         return commandPattern;
     }
 
-    public static SubCommandBuilder builder(String commandName) {
-        return new SubCommandBuilder(commandName);
-    }
-
+    /**
+     * Check if the args match this subcommand.
+     *
+     * @param args args to check
+     * @return true if all commands are present in string and enough parameter are present.
+     */
     public boolean matchArgs(String[] args) {
         boolean match = true;
         for (int i = 0; i < parameters.length; i++) {
@@ -128,26 +119,11 @@ public class SubCommand {
         return true;
     }
 
-    public static class SubCommandBuilder {
-        private String commandName;
-
-        List<SubCommand> subCommands = new ArrayList<>();
-
-        private SubCommandBuilder(String commandName) {
-            this.commandName = commandName;
-        }
-
-        public SubCommandBuilder addSubcommand(String description, Parameter... parameters) {
-            subCommands.add(new SubCommand(commandName, description, parameters));
-            return this;
-        }
-
-        public SubCommand[] build() {
-            SubCommand[] sc = new SubCommand[subCommands.size()];
-            return subCommands.toArray(sc);
-        }
-    }
-
+    /**
+     * Get the sub command info object of the subcommand.
+     *
+     * @return new sub command info of the command.
+     */
     public SubCommandInfo getSubCommandInfo() {
         ParameterInfo[] pI = new ParameterInfo[parameters.length];
         return new SubCommandInfo(commandDescription,
@@ -155,6 +131,37 @@ public class SubCommand {
                         .map(Parameter::getParameterInfo)
                         .collect(Collectors.toList())
                         .toArray(pI));
+    }
+
+    public static final class SubCommandBuilder {
+        private List<SubCommand> subCommands = new ArrayList<>();
+        private String commandName;
+
+        private SubCommandBuilder(String commandName) {
+            this.commandName = commandName;
+        }
+
+        /**
+         * Add a subcommand to the sub command builder.
+         *
+         * @param description description of subcommand
+         * @param parameters  parameter of subcommand
+         * @return self instance with added subcommand.
+         */
+        public SubCommandBuilder addSubcommand(String description, Parameter... parameters) {
+            subCommands.add(new SubCommand(commandName, description, parameters));
+            return this;
+        }
+
+        /**
+         * build the sub command array from entered subcommands.
+         *
+         * @return array of subcommand
+         */
+        public SubCommand[] build() {
+            SubCommand[] sc = new SubCommand[subCommands.size()];
+            return subCommands.toArray(sc);
+        }
     }
 }
 

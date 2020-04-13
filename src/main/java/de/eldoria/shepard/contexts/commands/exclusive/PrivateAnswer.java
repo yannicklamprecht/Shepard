@@ -29,7 +29,7 @@ public class PrivateAnswer extends Command {
                 new String[] {"reply", "answer"},
                 ANSWER_DESCRIPTION.tag,
                 SubCommand.builder("privateAnswer")
-                        .addSubcommand(ANSWER_DESCRIPTION.tag,
+                        .addSubcommand(null,
                                 Parameter.createInput(A_USER.tag, GeneralLocale.AD_USER.tag, true),
                                 Parameter.createInput(A_MESSAGE.tag, null, true))
                         .build(),

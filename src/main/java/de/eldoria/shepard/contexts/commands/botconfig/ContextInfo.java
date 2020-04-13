@@ -30,7 +30,7 @@ public class ContextInfo extends Command {
                 new String[] {"cinfo"},
                 DESCRIPTION.tag,
                 SubCommand.builder("contextInfo")
-                        .addSubcommand(DESCRIPTION.tag,
+                        .addSubcommand(null,
                                 Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true))
                         .build(),
                 ContextCategory.BOT_CONFIG);

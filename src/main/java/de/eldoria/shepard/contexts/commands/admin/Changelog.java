@@ -50,7 +50,7 @@ public class Changelog extends Command {
                 DESCRIPTION.tag,
                 SubCommand.builder("changelog")
                         .addSubcommand(C_ADD_ROLE.tag,
-                                Parameter.createCommand("addrole"),
+                                Parameter.createCommand("addRole"),
                                 Parameter.createInput(WordsLocale.ROLE.tag, AD_ROLE.tag, true))
                         .addSubcommand(C_REMOVE_ROLE.tag,
                                 Parameter.createCommand("removeRole"),

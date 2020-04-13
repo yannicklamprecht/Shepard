@@ -4,8 +4,6 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
-import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.DESCRIPTION;
-
 /**
  * A test command without specified behaviour.
  */

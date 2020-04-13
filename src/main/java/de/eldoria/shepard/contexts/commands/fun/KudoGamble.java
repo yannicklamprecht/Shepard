@@ -45,7 +45,7 @@ public class KudoGamble extends Command {
                 new String[] {"gamble"},
                 KudoGambleLocale.DESCRIPTION.tag,
                 SubCommand.builder("kudoGamble")
-                        .addSubcommand(KudoGambleLocale.DESCRIPTION.tag,
+                        .addSubcommand(null,
                                 Parameter.createInput(A_AMOUNT.tag, AD_AMOUNT.tag, true))
                         .build(),
                 ContextCategory.FUN

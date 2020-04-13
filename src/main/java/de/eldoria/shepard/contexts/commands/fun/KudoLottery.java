@@ -7,7 +7,6 @@ import de.eldoria.shepard.contexts.commands.Command;
 import de.eldoria.shepard.contexts.commands.argument.Parameter;
 import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.KudoData;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -20,6 +19,9 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.awt.Color;
 
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_AMOUNT;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_AMOUNT;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.C_MAX_BET;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_LOTTERY_RUNNING;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
@@ -37,8 +39,8 @@ public class KudoLottery extends Command {
                 new String[] {"lottery", "kl"},
                 DESCRIPTION.tag,
                 SubCommand.builder("kudoLottery")
-                        .addSubcommand("",
-                                Parameter.createInput(GeneralLocale.AD_AMOUNT.tag, KudoLotteryLocale.C_MAX_BET.tag, false))
+                        .addSubcommand(C_MAX_BET.tag,
+                                Parameter.createInput(A_AMOUNT.tag, AD_AMOUNT.tag, false))
                         .build(),
                 KudoLotteryLocale.C_DEFAULT.tag,
                 ContextCategory.FUN);

@@ -12,8 +12,8 @@ public class SubCommandInfo {
     /**
      * Creates a new Command arg info object.
      *
-     * @param arg       Command arg for information retrieval.
-     * @param parameter
+     * @param commandDescription description of sub command.
+     * @param parameter parameter info array
      */
     public SubCommandInfo(String commandDescription, ParameterInfo[] parameter) {
         this.commandDescription = TextLocalizer.localizeAllAndReplace(commandDescription, null);

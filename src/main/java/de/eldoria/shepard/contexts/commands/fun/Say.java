@@ -21,8 +21,8 @@ public class Say extends Command {
         super("say",
                 new String[] {"sayd"},
                 DESCRIPTION.tag,
-                SubCommand.builder(DESCRIPTION.tag)
-                        .addSubcommand(DESCRIPTION.tag,
+                SubCommand.builder("say")
+                        .addSubcommand(null,
                                 Parameter.createInput(GeneralLocale.A_MESSAGE.tag, A_SAY.tag, true))
                         .build(),
                 ContextCategory.FUN);

@@ -23,6 +23,8 @@ import java.util.List;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_SCORE;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_SCORE_GLOBAL;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_START;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_TOP;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.C_TOP_GLOBAL;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_GAME_DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_GAME_FOOTER;
 import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_GLOBAL_RANKING;
@@ -55,9 +57,9 @@ public class GuessGame extends Command {
                                 Parameter.createCommand("score"))
                         .addSubcommand(C_SCORE_GLOBAL.tag,
                                 Parameter.createCommand("scoreGlobal"))
-                        .addSubcommand(C_SCORE.tag,
+                        .addSubcommand(C_TOP.tag,
                                 Parameter.createCommand("top"))
-                        .addSubcommand(C_SCORE_GLOBAL.tag,
+                        .addSubcommand(C_TOP_GLOBAL.tag,
                                 Parameter.createCommand("topGlobal"))
                         .build(),
                 C_START.tag,

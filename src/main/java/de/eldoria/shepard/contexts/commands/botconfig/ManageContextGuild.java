@@ -19,11 +19,11 @@ import java.util.List;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CONTEXT_NAME;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_GUILDS;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_LIST_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CONTEXT_NAME;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_GUILDS;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.AD_LIST_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.A_LIST_TYPE;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_LIST_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.C_ADD_GUILD;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.C_REMOVE_GUILD;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.C_SET_ACTIVE;
@@ -71,7 +71,6 @@ public class ManageContextGuild extends Command {
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[1];
-        SubCommand arg = subCommands[1];
 
         ContextSensitive context = ArgumentParser.getContext(args[0], messageContext);
 
