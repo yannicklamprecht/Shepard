@@ -1,12 +1,12 @@
 package de.eldoria.shepard.webapi.endpoints;
 
+import com.google.api.client.http.HttpStatusCodes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.CommandInfos;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.CommandInfo;
 import de.eldoria.shepard.webapi.apiobjects.ApiCache;
 import de.eldoria.shepard.webapi.apiobjects.CommandSearchResponse;
 
@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static spark.Spark.get;
+import static spark.Spark.halt;
 import static spark.Spark.path;
 
 public class CommandEndpoint {
@@ -67,7 +68,10 @@ public class CommandEndpoint {
                 get("/info/:text", (request, response) -> {
                     CommandCollection instance = CommandCollection.getInstance();
                     Command command = instance.getCommand(request.params(":text"));
-                    return new Gson().toJson(new CommandInfo(command));
+                    if (command == null) {
+                        halt(HttpStatusCodes.STATUS_CODE_BAD_REQUEST, "Invalid command.");
+                    }
+                    return new GsonBuilder().serializeNulls().create().toJson(command.getCommandInfo());
                 });
             });
         });
