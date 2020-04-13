@@ -2,10 +2,6 @@ package de.eldoria.shepard.localization.enums.commands;
 
 public enum GeneralLocale {
     /**
-     * Localization key for argument leave empty.
-     */
-    A_EMPTY("command.general.argument.empty"),
-    /**
      * Localization key for argument [channel] (ID, Mention or Name).
      */
     A_CHANNEL("command.general.argument.channel"),
@@ -34,9 +30,9 @@ public enum GeneralLocale {
      */
     A_GUILDS("command.general.argument.guilds"),
     /**
-     * Localization key for argument [message] \n Supported Placeholders: {user_tag} {user_name} {user_mention}.
+     * Localization key for argument [message].
      */
-    A_MESSAGE_MENTION("command.general.argument.messageMention"),
+    A_MESSAGE("command.general.argument.message"),
     /**
      * Localization key for argument [text].
      */
@@ -50,11 +46,7 @@ public enum GeneralLocale {
      */
     A_ID("command.general.argument.id"),
     /**
-     * Localization key for argument [channel] (ID, Mention or name) or leave empty to use current channel.
-     */
-    A_CHANNEL_MENTION_OR_EXECUTE("command.general.argument.channelMentionOrExecution"),
-    /**
-     * Localization key for argument [Use the command name or an alias of the command].
+     * Localization key for argument [command].
      */
     A_CONTEXT_NAME("command.general.argument.contextName"),
     /**
@@ -65,6 +57,25 @@ public enum GeneralLocale {
      * Localization kex for argument [amount] Only full positive numbers.
      */
     A_AMOUNT("command.general.argument.amount"),
+    A_URL("command.general.argument.url"),
+    A_KEYWORD("command.general.argument.keyword"),
+    AD_CHANNEL("command.general.argumentDescription.channel"),
+    AD_CATEGORY("command.general.argumentDescription.category"),
+    AD_USER("command.general.argumentDescription.user"),
+    AD_USERS("command.general.argumentDescription.users"),
+    AD_ROLE("command.general.argumentDescription.role"),
+    AD_ROLES("command.general.argumentDescription.roles"),
+    AD_GUILDS("command.general.argumentDescription.guilds"),
+    AD_MESSAGE_MENTION("command.general.argumentDescription.messageMention"),
+    AD_ID("command.general.argumentDescription.id"),
+    /**
+     * Localization key for argument [channel] (ID, Mention or name) or leave empty to use current channel.
+     */
+    AD_CHANNEL_MENTION_OR_EXECUTE("command.general.argumentDescription.channelMentionOrExecution"),
+    AD_CONTEXT_NAME("command.general.argumentDescription.contextName"),
+    AD_SECONDS("command.general.argumentDescription.seconds"),
+    AD_AMOUNT("command.general.argumentDescription.amount"),
+    AD_KEYWORD("command.general.argumentDescription.keyword"),
     /**
      * Localization key for argument [true|false].
      */

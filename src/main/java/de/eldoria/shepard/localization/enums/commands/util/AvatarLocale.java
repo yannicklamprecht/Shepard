@@ -5,6 +5,8 @@ public enum AvatarLocale {
      * Localization key for description.
      */
     DESCRIPTION("command.avatar.description"),
+    C_DEFAULT("command.avatar.command.default"),
+    C_OTHER("command.avatar.command.other"),
     M_AVATAR("command.avatar.message.avatar");
     /**
      * Get the escaped locale code for auto translation.

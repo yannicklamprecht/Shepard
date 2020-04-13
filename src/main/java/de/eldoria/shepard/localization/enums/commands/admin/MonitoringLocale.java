@@ -29,6 +29,7 @@ public enum MonitoringLocale {
      * Localization key for argument address.
      */
     A_ADDRESS("command.monitoring.argument.address"),
+    AD_ADDRESS("command.monitoring.argumentDescription.address"),
     /**
      * Localization key for argument add text.
      */

@@ -8,7 +8,8 @@ public enum LargeEmoteLocale {
     /**
      * Localization key for argument emotes.
      */
-    A_EMOTE("command.largeEmote.argument.emote");
+    A_EMOTE("command.largeEmote.argument.emote"),
+    AD_EMOTE("command.largeEmote.argumentDescription.emote");
 
     /**
      * Get the escaped locale code for auto translation.

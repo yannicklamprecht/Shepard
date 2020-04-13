@@ -25,6 +25,7 @@ public enum ManageQuoteLocale {
      * Localization key for argument keyword.
      */
     A_KEYWORD("command.manageQuote.argument.keyWord"),
+    AD_KEYWORD("command.manageQuote.argumentDescription.keyWord"),
     /**
      * Localization key for message keyword.
      */

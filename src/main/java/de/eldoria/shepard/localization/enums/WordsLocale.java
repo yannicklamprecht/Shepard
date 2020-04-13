@@ -51,7 +51,8 @@ public enum WordsLocale {
     POINTS("words.points"),
     RANK("words.rank"),
     USER("words.user"),
-    INVALID("words.invalid");
+    INVALID("words.invalid"),
+    ROLE("words.role");
 
     /**
      * Get the escaped locale code for auto translation.
