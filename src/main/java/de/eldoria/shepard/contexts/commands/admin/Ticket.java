@@ -237,23 +237,15 @@ public class Ticket extends Command {
                     //Manage permissions for @everyone and deny read permission
                     Role everyone = messageContext.getGuild().getPublicRole();
                     ChannelManager manager = channel.getManager().getChannel().getManager();
-                    PermissionOverrideAction everyoneOverride;
-                    try {
-                        everyoneOverride = manager.getChannel().createPermissionOverride(everyone);
 
-                    } catch (IllegalStateException e) {
-                        everyoneOverride = manager.getChannel().upsertPermissionOverride(everyone);
-                    }
-                    everyoneOverride.setDeny(Permission.MESSAGE_READ).queue();
+                    manager.getChannel()
+                            .upsertPermissionOverride(everyone)
+                            .setDeny(Permission.MESSAGE_READ).queue();
 
-                    PermissionOverrideAction memberOverride;
-                    try {
-                        //Gives ticket owner read permission in channel
-                        memberOverride = manager.getChannel().createPermissionOverride(member);
-                    } catch (IllegalStateException e) {
-                        memberOverride = manager.getChannel().upsertPermissionOverride(member);
-                    }
-                    memberOverride.setAllow(Permission.MESSAGE_READ).queue();
+                    //Gives ticket owner read permission in channel
+                    manager.getChannel()
+                            .upsertPermissionOverride(member)
+                            .setAllow(Permission.MESSAGE_READ).queue();
 
                     //Saves channel in database
 
@@ -275,13 +267,8 @@ public class Ticket extends Command {
                     }
 
                     for (Role role : supportRoles) {
-                        PermissionOverrideAction override;
-                        try {
-                            override = manager.getChannel().createPermissionOverride(role);
-                        } catch (IllegalStateException e) {
-                            override = manager.getChannel().upsertPermissionOverride(role);
-                        }
-                        override.setAllow(Permission.MESSAGE_READ).queue();
+                        manager.getChannel().upsertPermissionOverride(role)
+                                .setAllow(Permission.MESSAGE_READ).queue();
                     }
 
                     //Greet ticket owner in ticket channel
