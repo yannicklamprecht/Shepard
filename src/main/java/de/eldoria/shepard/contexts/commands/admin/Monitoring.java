@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.MonitoringData;
 import de.eldoria.shepard.database.types.Address;
 import de.eldoria.shepard.localization.enums.WordsLocale;
@@ -21,9 +21,11 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.util.List;
 
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CHANNEL_MENTION_OR_EXECUTE;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CHANNEL;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_NAME;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.AD_ADDRESS;
 import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.A_ADDRESS;
 import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.A_ADD_TEXT;
 import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.C_ADD;
@@ -49,25 +51,27 @@ public class Monitoring extends Command {
      * Creates a new monitoring command object.
      */
     public Monitoring() {
-        commandName = "monitoring";
-        commandAliases = new String[] {"monitor"};
-        commandDesc = DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("action", true,
-                        new SubArgument("add", C_ADD.tag, true),
-                        new SubArgument("remove", C_REMOVE.tag, true),
-                        new SubArgument("list", C_LIST.tag, true),
-                        new SubArgument("enable", C_ENABLE.tag, true),
-                        new SubArgument("disable", C_DISABLE.tag, true)),
-                new CommandArgument("value", false,
-                        new SubArgument("add", A_ADDRESS + " " + A_NAME + " "
-                                + A_BOOLEAN + lineSeparator() + A_ADD_TEXT),
-                        new SubArgument("remove", GeneralLocale.A_ID.tag),
-                        new SubArgument("list", GeneralLocale.A_EMPTY.tag),
-                        new SubArgument("enable", GeneralLocale.A_CHANNEL_MENTION_OR_EXECUTE.tag),
-                        new SubArgument("disable", A_EMPTY.tag))
-        };
-        category = ContextCategory.ADMIN;
+        super("monitoring",
+                new String[] {"monitor"},
+                DESCRIPTION.tag,
+                SubCommand.builder("monitoring")
+                        .addSubcommand(C_ADD.tag,
+                                Parameter.createCommand("add"),
+                                Parameter.createInput(A_ADDRESS.tag, AD_ADDRESS.tag, true),
+                                Parameter.createInput(A_NAME.tag, null, true),
+                                Parameter.createInput(A_BOOLEAN.tag, A_ADD_TEXT.tag, true))
+                        .addSubcommand(C_REMOVE.tag,
+                                Parameter.createCommand("remove"),
+                                Parameter.createInput(GeneralLocale.A_ID.tag, GeneralLocale.AD_ID.tag, true))
+                        .addSubcommand(C_LIST.tag,
+                                Parameter.createCommand("list"))
+                        .addSubcommand(C_ENABLE.tag,
+                                Parameter.createCommand("enable"),
+                                Parameter.createInput(A_CHANNEL.tag, AD_CHANNEL_MENTION_OR_EXECUTE.tag, true))
+                        .addSubcommand(C_DISABLE.tag,
+                                Parameter.createCommand("disable"))
+                        .build(),
+                ContextCategory.ADMIN);
     }
 
     @Override
@@ -78,17 +82,17 @@ public class Monitoring extends Command {
         }
 
         String cmd = args[0];
-        CommandArgument arg = commandArguments[0];
-        if (arg.isSubCommand(cmd, 2)) {
+        SubCommand arg = subCommands[0];
+        if (isSubCommand(cmd, 2)) {
             list(messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 3)) {
+        if (isSubCommand(cmd, 3)) {
             if (easyEnable(messageContext)) return;
         }
 
-        if (arg.isSubCommand(cmd, 4)) {
+        if (isSubCommand(cmd, 4)) {
             disable(messageContext);
             return;
         }
@@ -98,17 +102,17 @@ public class Monitoring extends Command {
             return;
         }
 
-        if (arg.isSubCommand(cmd, 0)) {
+        if (isSubCommand(cmd, 0)) {
             add(args, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 1)) {
             remove(args[1], messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 3)) {
+        if (isSubCommand(cmd, 3)) {
             enable(args[1], messageContext);
             return;
         }

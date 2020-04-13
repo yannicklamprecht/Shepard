@@ -3,6 +3,9 @@ package de.eldoria.shepard.contexts.commands.fun;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
+import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.MassEffectLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -27,10 +30,15 @@ public class MassEffect extends Command {
      * Create a new mass effect quote command.
      */
     public MassEffect() {
-        commandName = "massEffect";
-        commandAliases = new String[] {"shepQuote"};
-        commandDesc = MassEffectLocale.DESCRIPTION.tag;
-        category = ContextCategory.FUN;
+        super("massEffect",
+                new String[] {"shepQuote"},
+                MassEffectLocale.DESCRIPTION.tag,
+                SubCommand.builder("massEffect")
+                        .addSubcommand(MassEffectLocale.DESCRIPTION.tag,
+                                Parameter.createInput(GeneralLocale.A_KEYWORD.tag, GeneralLocale.AD_KEYWORD.tag, false))
+                        .build(),
+                MassEffectLocale.DESCRIPTION.tag,
+                ContextCategory.FUN);
 
         Yaml yaml = new Yaml(new Constructor(QuoteList.class));
 

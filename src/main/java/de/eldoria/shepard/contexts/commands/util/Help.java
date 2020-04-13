@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.util;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.PrefixData;
 import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
 import de.eldoria.shepard.localization.util.LocalizedField;
@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CONTEXT_NAME;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_INSUFFICIENT_PERMISSION;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
@@ -34,14 +36,14 @@ public class Help extends Command {
      * Creates new help command object.
      */
     public Help() {
-        commandName = "help";
-        commandAliases = new String[] {"sendhelp"};
-        commandDesc = HelpLocale.DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("Command", false,
-                        new SubArgument("Command", HelpLocale.A_COMMAND.tag))
-        };
-        category = ContextCategory.UTIL;
+        super("help",
+                new String[] {"sendhelp"},
+                HelpLocale.DESCRIPTION.tag,
+                SubCommand.builder("help")
+                        .addSubcommand(HelpLocale.A_COMMAND.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true))
+                        .build(),
+                ContextCategory.UTIL);
     }
 
     @Override

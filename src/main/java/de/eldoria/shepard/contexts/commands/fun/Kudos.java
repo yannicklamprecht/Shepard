@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.fun;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.KudoData;
 import de.eldoria.shepard.database.types.Rank;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -16,7 +16,9 @@ import net.dv8tion.jda.api.entities.Member;
 
 import java.util.List;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_AMOUNT;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_USER;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_AMOUNT;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USER;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.A_POINTS;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.C_EMPTY;
@@ -40,21 +42,21 @@ public class Kudos extends Command {
      * Create a new kudos command object.
      */
     public Kudos() {
-        commandName = "kudo";
-        commandAliases = new String[] {"kudos"};
-        commandDesc = DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("action", false,
-                        new SubArgument("leave empty", C_EMPTY.tag, false),
-                        new SubArgument("give", C_GIVE.tag, true),
-                        new SubArgument("top", C_TOP.tag, true),
-                        new SubArgument("topGlobal", C_TOP_GLOBAL.tag, true)),
-                new CommandArgument("values", false,
-                        new SubArgument("give", A_USER + " " + A_POINTS),
-                        new SubArgument("top", A_EMPTY.tag),
-                        new SubArgument("topGlobal", A_EMPTY.tag))
-        };
-        category = ContextCategory.FUN;
+        super("kudo",
+                new String[] {"kudos"},
+                DESCRIPTION.tag,
+                SubCommand.builder("kudo")
+                        .addSubcommand(C_GIVE.tag,
+                                Parameter.createCommand("give"),
+                                Parameter.createInput(A_USER.tag, AD_USER.tag, true),
+                                Parameter.createInput(A_POINTS.tag, AD_AMOUNT.tag, true))
+                        .addSubcommand(C_TOP.tag,
+                                Parameter.createCommand("top"))
+                        .addSubcommand(C_TOP_GLOBAL.tag,
+                                Parameter.createCommand("topGlobal"))
+                        .build(),
+                C_EMPTY.tag,
+                ContextCategory.FUN);
     }
 
     @Override
@@ -78,19 +80,19 @@ public class Kudos extends Command {
         }
 
         String cmd = args[0];
-        CommandArgument arg = commandArguments[0];
+        SubCommand arg = subCommands[0];
 
-        if (arg.isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 1)) {
             give(args, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 2)) {
+        if (isSubCommand(cmd, 2)) {
             sendTopScores(false, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 3)) {
+        if (isSubCommand(cmd, 3)) {
             sendTopScores(true, messageContext);
             return;
         }

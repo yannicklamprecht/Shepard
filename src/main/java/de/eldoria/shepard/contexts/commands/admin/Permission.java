@@ -4,8 +4,8 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.contexts.commands.botconfig.enums.ModifyType;
 import de.eldoria.shepard.database.queries.commands.ContextData;
 import de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale;
@@ -25,9 +25,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_ROLES;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_USERS;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CONTEXT_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_ROLES;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USERS;
 import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_ADD_ROLE;
@@ -59,32 +61,41 @@ public class Permission extends Command {
      * Creates a new permission command object.
      */
     public Permission() {
-        commandName = "permission";
-        commandAliases = new String[] {"perm"};
-        commandDesc = DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("context name", true,
-                        new SubArgument("context name", A_CONTEXT_NAME.tag)),
-                new CommandArgument("action", true,
-                        new SubArgument("addUser", C_ADD_USER.tag, true),
-                        new SubArgument("removeUser", C_REMOVE_USER.tag, true),
-                        new SubArgument("listUser", C_LIST_USER.tag, true),
-                        new SubArgument("addRole", C_ADD_ROLE.tag, true),
-                        new SubArgument("removeRole", C_REMOVE_ROLE.tag, true),
-                        new SubArgument("listRoles", C_LIST_ROLE.tag, true),
-                        new SubArgument("setPermissionOverride", C_SET_PERMISSION_OVERRIDE.tag, true),
-                        new SubArgument("info", C_INFO.tag, true)),
-                new CommandArgument("value", false,
-                        new SubArgument("addUser", A_USERS.tag),
-                        new SubArgument("removeUser", A_USERS.tag),
-                        new SubArgument("listUser", A_EMPTY.tag),
-                        new SubArgument("addRole", A_ROLES.tag),
-                        new SubArgument("removeRole", A_ROLES.tag),
-                        new SubArgument("listRoles", A_EMPTY.tag),
-                        new SubArgument("setPermissionOverride", A_BOOLEAN.tag),
-                        new SubArgument("info", A_EMPTY.tag)),
-        };
-        category = ContextCategory.ADMIN;
+        super("permission",
+                new String[] {"perm"},
+                DESCRIPTION.tag,
+                SubCommand.builder("permission")
+                        .addSubcommand(C_ADD_USER.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("addUser"),
+                                Parameter.createInput(A_USERS.tag, AD_USERS.tag, true))
+                        .addSubcommand(C_REMOVE_USER.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("removeUser"),
+                                Parameter.createInput(A_USERS.tag, AD_USERS.tag, true))
+                        .addSubcommand(C_LIST_USER.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("listUser"))
+                        .addSubcommand(C_ADD_ROLE.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("addRole"),
+                                Parameter.createInput(A_ROLES.tag, AD_ROLES.tag, true))
+                        .addSubcommand(C_REMOVE_ROLE.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("removeRole"),
+                                Parameter.createInput(A_ROLES.tag, AD_ROLES.tag, true))
+                        .addSubcommand(C_LIST_ROLE.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("listRoles"))
+                        .addSubcommand(C_SET_PERMISSION_OVERRIDE.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("setPermissionOverride"),
+                                Parameter.createInput(A_BOOLEAN.tag, null, true))
+                        .addSubcommand(C_INFO.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag,AD_CONTEXT_NAME.tag, true),
+                                Parameter.createCommand("info"))
+                        .build(),
+                ContextCategory.ADMIN);
     }
 
     @Override
@@ -99,42 +110,42 @@ public class Permission extends Command {
             return;
         }
 
-        CommandArgument arg = commandArguments[1];
+        SubCommand arg = subCommands[1];
 
-        if (arg.isSubCommand(cmd, 0)) {
+        if (isSubCommand(cmd, 0)) {
             modifyUsers(args, messageContext, context, ModifyType.ADD);
             return;
         }
-        if (arg.isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 1)) {
             modifyUsers(args, messageContext, context, ModifyType.REMOVE);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 2)) {
+        if (isSubCommand(cmd, 2)) {
             showMentions(messageContext, context, M_USER_ACCESS.tag);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 3)) {
+        if (isSubCommand(cmd, 3)) {
             modifyRoles(args, messageContext, context, ModifyType.ADD);
             return;
         }
-        if (arg.isSubCommand(cmd, 4)) {
+        if (isSubCommand(cmd, 4)) {
             modifyRoles(args, messageContext, context, ModifyType.REMOVE);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 5)) {
+        if (isSubCommand(cmd, 5)) {
             showMentions(messageContext, context, M_ROLE_ACCESS.tag);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 6)) {
+        if (isSubCommand(cmd, 6)) {
             overridePermission(args, messageContext, context);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 7)) {
+        if (isSubCommand(cmd, 7)) {
             info(messageContext, context);
             return;
         }

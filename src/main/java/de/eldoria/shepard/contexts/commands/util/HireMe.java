@@ -9,6 +9,8 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import java.util.Collections;
 
+import static de.eldoria.shepard.localization.enums.commands.util.HireMeLocale.*;
+
 /**
  * A command for retrieving a invite link for this bot.
  */
@@ -18,21 +20,21 @@ public class HireMe extends Command {
      * Creates new Hire me object.
      */
     public HireMe() {
-        commandName = "hireMe";
-        commandAliases = new String[] {"Iwantyou"};
-        commandDesc = HireMeLocale.DESCRIPTION.tag;
-        category = ContextCategory.UTIL;
+        super("hireMe",
+                new String[] {"Iwantyou"},
+                DESCRIPTION.tag,
+                ContextCategory.UTIL);
     }
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         if (label.equalsIgnoreCase(commandName)) {
-            MessageSender.sendTextBox(null, Collections.singletonList(new LocalizedField(HireMeLocale.M_HIRE_ME.tag,
-                    "[" + HireMeLocale.M_TAKE_ME + "](http://bit.ly/shepardbot)",
+            MessageSender.sendTextBox(null, Collections.singletonList(new LocalizedField(M_HIRE_ME.tag,
+                    "[" + M_TAKE_ME + "](http://bit.ly/shepardbot)",
                     false, messageContext)), messageContext.getTextChannel());
         } else {
-            MessageSender.sendTextBox(null, Collections.singletonList(new LocalizedField(HireMeLocale.M_I_WANT_YOU.tag,
-                    "[" + HireMeLocale.M_TAKE_ME + "](http://bit.ly/shepardbot)",
+            MessageSender.sendTextBox(null, Collections.singletonList(new LocalizedField(M_I_WANT_YOU.tag,
+                    "[" + M_TAKE_ME + "](http://bit.ly/shepardbot)",
                     false, messageContext)), messageContext.getTextChannel());
         }
     }

@@ -16,10 +16,10 @@ public class Uwu extends Command {
      * Creates new uwu command object.
      */
     public Uwu() {
-        commandName = "uwu";
-        commandDesc = DESCRIPTION.tag;
-        commandAliases = new String[] {"uwud"};
-        category = ContextCategory.FUN;
+        super("uwu",
+                null,
+                DESCRIPTION.tag,
+                ContextCategory.FUN);
     }
 
 

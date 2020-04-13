@@ -17,8 +17,11 @@ public class Restart extends Command {
      * Creates a restart command.
      */
     public Restart() {
-        commandName = "restart";
-        category = ContextCategory.BOT_CONFIG;
+        super("restart",
+                null,
+                "",
+                null,
+                ContextCategory.BOT_CONFIG);
     }
 
     @Override

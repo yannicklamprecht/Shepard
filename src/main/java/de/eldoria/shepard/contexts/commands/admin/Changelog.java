@@ -3,9 +3,10 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.ChangelogData;
+import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
@@ -16,9 +17,9 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CHANNEL_MENTION_OR_EXECUTE;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_ROLE;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_ROLE;
 import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.C_ACTIVATE;
 import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.C_ADD_ROLE;
 import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.C_DEACTIVATE;
@@ -44,46 +45,48 @@ public class Changelog extends Command {
      * Creates a new changelog command object.
      */
     public Changelog() {
-        commandName = "changelog";
-        commandAliases = new String[] {"log"};
-        commandDesc = DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("action", true,
-                        new SubArgument("addRole", C_ADD_ROLE.tag, true),
-                        new SubArgument("removeRole", C_REMOVE_ROLE.tag, true),
-                        new SubArgument("activate", C_ACTIVATE.tag, true),
-                        new SubArgument("deactivate", C_DEACTIVATE.tag, true),
-                        new SubArgument("roles", C_ROLES.tag, true)),
-                new CommandArgument("value", false,
-                        new SubArgument("addRole", A_ROLE.tag),
-                        new SubArgument("removeRole", A_ROLE.tag),
-                        new SubArgument("activate", A_CHANNEL.tag),
-                        new SubArgument("deactivate", A_EMPTY.tag),
-                        new SubArgument("roles", A_EMPTY.tag))
-        };
-        category = ContextCategory.ADMIN;
+        super("changelog",
+                new String[] {"log"},
+                DESCRIPTION.tag,
+                SubCommand.builder("changelog")
+                        .addSubcommand(C_ADD_ROLE.tag,
+                                Parameter.createCommand("addrole"),
+                                Parameter.createInput(WordsLocale.ROLE.tag, AD_ROLE.tag, true))
+                        .addSubcommand(C_REMOVE_ROLE.tag,
+                                Parameter.createCommand("removeRole"),
+                                Parameter.createInput(WordsLocale.ROLE.tag, AD_ROLE.tag, true))
+                        .addSubcommand(C_ACTIVATE.tag,
+                                Parameter.createCommand("activate"),
+                                Parameter.createInput(A_CHANNEL.tag, AD_CHANNEL_MENTION_OR_EXECUTE.tag, true))
+                        .addSubcommand(C_DEACTIVATE.tag,
+                                Parameter.createCommand("deactivate"))
+                        .addSubcommand(C_ROLES.tag,
+                                Parameter.createCommand("roles"))
+                        .build(),
+                ContextCategory.ADMIN
+        );
     }
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArgument arg = commandArguments[0];
-        if (arg.isSubCommand(cmd, 0) || arg.isSubCommand(cmd, 1)) {
+        SubCommand arg = subCommands[0];
+        if (isSubCommand(cmd, 0) || isSubCommand(cmd, 1)) {
             modifyRoles(args, messageContext, cmd);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 2)) {
+        if (isSubCommand(cmd, 2)) {
             activate(args, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 3)) {
+        if (isSubCommand(cmd, 3)) {
             deactivate(messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 4)) {
+        if (isSubCommand(cmd, 4)) {
             showRoles(messageContext);
             return;
         }
@@ -137,9 +140,8 @@ public class Changelog extends Command {
             MessageSender.sendSimpleError(ErrorType.INVALID_ROLE, messageContext.getTextChannel());
             return;
         }
-        CommandArgument arg = commandArguments[0];
 
-        if (arg.isSubCommand(cmd, 0)) {
+        if (isSubCommand(cmd, 0)) {
             if (ChangelogData.addRole(messageContext.getGuild(), role, messageContext)) {
                 MessageSender.sendMessage(localizeAllAndReplace(M_ADDED_ROLE.tag,
                         messageContext.getGuild(),

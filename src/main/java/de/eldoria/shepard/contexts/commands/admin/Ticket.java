@@ -3,8 +3,8 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.TicketData;
 import de.eldoria.shepard.database.types.TicketType;
 import de.eldoria.shepard.localization.enums.WordsLocale;
@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import static de.eldoria.shepard.database.queries.commands.TicketData.getTypeOwnerRoles;
 import static de.eldoria.shepard.database.queries.commands.TicketData.getTypeSupportRoles;
 import static de.eldoria.shepard.database.queries.commands.TicketData.removeChannel;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.AD_TICKET_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.A_CLOSE;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.A_INFO;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.A_TICKET_TYPE;
@@ -61,38 +62,39 @@ public class Ticket extends Command {
      * Create ticket command object.
      */
     public Ticket() {
-        commandName = "ticket";
-        commandAliases = new String[] {"t"};
-        commandDesc = DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("action", true,
-                        new SubArgument("open", C_OPEN.tag, true),
-                        new SubArgument("close", C_CLOSE.tag, true),
-                        new SubArgument("info", C_INFO.tag, true)),
-                new CommandArgument("value", false,
-                        new SubArgument("open", A_TICKET_TYPE + " " + GeneralLocale.A_USER),
-                        new SubArgument("close", A_CLOSE.tag),
-                        new SubArgument("info", A_INFO.tag))
-        };
-        category = ContextCategory.ADMIN;
+        super("ticket",
+                new String[] {"t"},
+                DESCRIPTION.tag,
+                SubCommand.builder("ticket")
+                        .addSubcommand(C_OPEN.tag,
+                                Parameter.createCommand("open"),
+                                Parameter.createInput(A_TICKET_TYPE.tag, AD_TICKET_TYPE.tag, true),
+                                Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true))
+                        .addSubcommand(C_CLOSE.tag,
+                                Parameter.createCommand("close"))
+                        .addSubcommand(C_INFO.tag,
+                                Parameter.createCommand("info"),
+                                Parameter.createInput(A_TICKET_TYPE.tag, A_INFO.tag, false))
+                        .build(),
+                ContextCategory.ADMIN);
     }
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArgument arg = commandArguments[0];
+        SubCommand arg = subCommands[0];
 
-        if (arg.isSubCommand(cmd, 0)) {
+        if (isSubCommand(cmd, 0)) {
             open(args, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 1)) {
             close(args, messageContext);
             return;
         }
 
-        if (arg.isSubCommand(cmd, 2)) {
+        if (isSubCommand(cmd, 2)) {
             info(args, messageContext);
             return;
         }

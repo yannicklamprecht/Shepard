@@ -3,11 +3,14 @@ package de.eldoria.shepard.contexts.commands.fun;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
-import de.eldoria.shepard.localization.enums.commands.fun.SayLocale;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
+import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+
+import static de.eldoria.shepard.localization.enums.commands.fun.SayLocale.A_SAY;
+import static de.eldoria.shepard.localization.enums.commands.fun.SayLocale.DESCRIPTION;
 
 public class Say extends Command {
 
@@ -15,14 +18,14 @@ public class Say extends Command {
      * Creates a new Sayd command object.
      */
     public Say() {
-        commandName = "say";
-        commandDesc = SayLocale.DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("Message", true,
-                        new SubArgument("message", SayLocale.A_SAY.tag))
-        };
-        commandAliases = new String[] {"sayd"};
-        category = ContextCategory.FUN;
+        super("say",
+                new String[] {"sayd"},
+                DESCRIPTION.tag,
+                SubCommand.builder(DESCRIPTION.tag)
+                        .addSubcommand(DESCRIPTION.tag,
+                                Parameter.createInput(GeneralLocale.A_MESSAGE.tag, A_SAY.tag, true))
+                        .build(),
+                ContextCategory.FUN);
     }
 
     @Override

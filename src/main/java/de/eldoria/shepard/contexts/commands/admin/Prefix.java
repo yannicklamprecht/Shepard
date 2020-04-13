@@ -3,15 +3,15 @@ package de.eldoria.shepard.contexts.commands.admin;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import static de.eldoria.shepard.database.queries.commands.PrefixData.setPrefix;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_EMPTY;
-import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.A_PREFIX_FORMAT;
+import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.AD_PREFIX;
+import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.A_PREFIX;
 import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.C_RESET;
 import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.C_SET;
 import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.DESCRIPTION;
@@ -26,28 +26,27 @@ public class Prefix extends Command {
      * Creates a new prefix command object.
      */
     public Prefix() {
-        commandName = "prefix";
-        commandDesc = DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("action", true,
-                        new SubArgument("set", C_SET.tag, true),
-                        new SubArgument("reset", C_RESET.tag, true)),
-                new CommandArgument("value", false,
-                        new SubArgument("set", A_PREFIX_FORMAT.tag),
-                        new SubArgument("reset", A_EMPTY.tag))
-        };
-        category = ContextCategory.ADMIN;
+        super("prefix",
+                null,
+                DESCRIPTION.tag,
+                SubCommand.builder("prefix")
+                        .addSubcommand(C_SET.tag,
+                                Parameter.createCommand("set"),
+                                Parameter.createInput(A_PREFIX.tag, AD_PREFIX.tag, true))
+                        .addSubcommand(C_RESET.tag,
+                                Parameter.createCommand("reset")).build(),
+                ContextCategory.ADMIN);
     }
 
     @Override
     protected void internalExecute(String label, String[] args, MessageEventDataWrapper messageContext) {
         String cmd = args[0];
-        CommandArgument arg = commandArguments[0];
-        if (arg.isSubCommand(cmd, 0)) {
+        SubCommand arg = subCommands[0];
+        if (isSubCommand(cmd, 0)) {
             set(args, messageContext);
             return;
         }
-        if (arg.isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 1)) {
             reset(messageContext);
             return;
         }

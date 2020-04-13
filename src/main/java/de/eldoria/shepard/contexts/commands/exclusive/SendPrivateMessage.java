@@ -4,15 +4,16 @@ import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
+import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
 
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_USER;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USER;
-import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.A_MESSAGE;
 import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.MESSAGE_DESCRIPTION;
 
 /**
@@ -23,16 +24,16 @@ public class SendPrivateMessage extends Command {
      * Creates a new private message command object.
      */
     public SendPrivateMessage() {
-        commandName = "privateMessage";
-        commandAliases = new String[] {"pm", "sendMessage"};
-        commandDesc = MESSAGE_DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("name", true,
-                        new SubArgument("name", A_USER.tag)),
-                new CommandArgument("message", false,
-                        new SubArgument("message", A_MESSAGE.tag))
-        };
-        category = ContextCategory.EXCLUSIVE;
+        super("privateMessage",
+                new String[] {"pm", "sendMessage"},
+                MESSAGE_DESCRIPTION.tag,
+                new SubCommand[] {
+                        new SubCommand("privateMessage", MESSAGE_DESCRIPTION.tag,
+                                Parameter.createInput(A_USER.tag, AD_USER.tag, true),
+                                Parameter.createInput(GeneralLocale.A_MESSAGE.tag, null, true))
+                },
+                ContextCategory.EXCLUSIVE
+        );
     }
 
     @Override

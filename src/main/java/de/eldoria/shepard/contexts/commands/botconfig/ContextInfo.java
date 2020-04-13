@@ -4,15 +4,16 @@ import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.ContextSensitive;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.ContextData;
 import de.eldoria.shepard.database.types.ContextSettings;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CONTEXT_NAME;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ContextInfoLocale.DESCRIPTION;
 import static java.lang.System.lineSeparator;
 
@@ -25,12 +26,14 @@ public class ContextInfo extends Command {
      * Creates new context info command object.
      */
     public ContextInfo() {
-        commandName = "contextInfo";
-        commandDesc = DESCRIPTION.tag;
-        commandAliases = new String[] {"cinfo"};
-        commandArguments = new CommandArgument[] {new CommandArgument("context name", true,
-                new SubArgument("context name", GeneralLocale.A_CONTEXT_NAME.tag))};
-        category = ContextCategory.BOT_CONFIG;
+        super("contectInfo",
+                new String[] {"cinfo"},
+                DESCRIPTION.tag,
+                SubCommand.builder("contextInfo")
+                        .addSubcommand(DESCRIPTION.tag,
+                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true))
+                        .build(),
+                ContextCategory.BOT_CONFIG);
     }
 
     @Override

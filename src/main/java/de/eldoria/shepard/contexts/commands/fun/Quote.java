@@ -2,10 +2,11 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.database.queries.commands.QuoteData;
 import de.eldoria.shepard.database.types.QuoteElement;
+import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
@@ -13,7 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.A_EMPTY_OR_WORD;
 import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.M_NO_QUOTE_DEFINED;
 import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.M_NO_QUOTE_FOUND;
@@ -27,13 +27,15 @@ public class Quote extends Command {
      * Create a new quote command object.
      */
     public Quote() {
-        commandName = "Quote";
-        commandDesc = DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("keyword", false,
-                        new SubArgument("keyword", A_EMPTY_OR_WORD.tag))
-        };
-        category = ContextCategory.FUN;
+        super("quote",
+                null,
+                DESCRIPTION.tag,
+                SubCommand.builder("quote")
+                        .addSubcommand(DESCRIPTION.tag,
+                                Parameter.createInput(GeneralLocale.A_KEYWORD.tag, GeneralLocale.AD_KEYWORD.tag, false))
+                        .build(),
+                DESCRIPTION.tag,
+                ContextCategory.FUN);
     }
 
     @Override

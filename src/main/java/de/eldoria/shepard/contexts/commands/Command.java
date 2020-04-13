@@ -1,17 +1,18 @@
 package de.eldoria.shepard.contexts.commands;
 
 import de.eldoria.shepard.C;
-import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.LatestCommandsCollection;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.ContextSensitive;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
+import de.eldoria.shepard.contexts.commands.argument.SubCommandInfo;
 import de.eldoria.shepard.database.queries.commands.PrefixData;
 import de.eldoria.shepard.localization.LanguageHandler;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
-import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -22,7 +23,11 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -43,27 +48,157 @@ public abstract class Command extends ContextSensitive {
     /**
      * Name of the command.
      */
-    protected String commandName = "";
+    protected final String commandName;
     /**
      * Command aliase as string array.
      */
-    protected String[] commandAliases = new String[0];
+    protected final String[] commandAliases;
     /**
      * Description of command.
      */
-    protected String commandDesc = "";
+    protected final String commandDesc;
     /**
      * Command args as command arg array.
      */
-    protected CommandArgument[] commandArguments = new CommandArgument[0];
+    protected final SubCommand[] subCommands;
+    /**
+     * True if the plugin works without a subcommand.
+     */
+    protected final boolean standalone;
+    /**
+     * Description if the plugin has a standalone function.
+     */
+    protected final String standaloneDescription;
+
     private final JaroWinkler similarity = new JaroWinkler();
 
     /**
-     * Create a new command an register it to the {@link CommandCollection}.
+     * Create a new command with a standalone function and register it to the {@link CommandCollection}.
+     *
+     * @param commandName
+     * @param commandAliases
+     * @param commandDesc
+     * @param subCommands
+     * @param standaloneDescription
+     * @param category
      */
-    protected Command() {
+    protected Command(String commandName, String[] commandAliases, String commandDesc, SubCommand[] subCommands,
+                      String standaloneDescription, ContextCategory category) {
         CommandCollection.getInstance().addCommand(this);
         locale = LanguageHandler.getInstance();
+        this.commandName = commandName;
+        this.commandAliases = commandAliases == null ? new String[0] : commandAliases;
+        this.commandDesc = commandDesc;
+        this.subCommands = subCommands == null ? new SubCommand[0] : subCommands;
+        this.standalone = true;
+        this.standaloneDescription = standaloneDescription;
+        this.category = category;
+
+        if (commandName == null || commandDesc == null || standaloneDescription == null) {
+            throw new NullPointerException();
+        }
+        generateLazySubCommands();
+    }
+
+    /**
+     * Create a new command without a standalone function and register it to the {@link CommandCollection}.
+     *
+     * @param commandName
+     * @param commandAliases
+     * @param commandDesc
+     * @param subCommands
+     * @param category
+     */
+    protected Command(String commandName, String[] commandAliases, String commandDesc, SubCommand[] subCommands,
+                      ContextCategory category) {
+        CommandCollection.getInstance().addCommand(this);
+        locale = LanguageHandler.getInstance();
+        this.commandName = commandName;
+        this.commandAliases = commandAliases == null ? new String[0] : commandAliases;
+        this.commandDesc = commandDesc;
+        this.subCommands = subCommands == null ? new SubCommand[0] : subCommands;
+        this.standalone = false;
+        this.standaloneDescription = null;
+        this.category = category;
+
+        if (commandName == null || commandDesc == null) {
+            throw new NullPointerException();
+        }
+        generateLazySubCommands();
+    }
+
+    /**
+     * Create a new command with only a standalone function and register it to the {@link CommandCollection}.
+     *
+     * @param commandName
+     * @param commandAliases
+     * @param commandDesc
+     * @param category
+     */
+    protected Command(String commandName, String[] commandAliases, String commandDesc,
+                      ContextCategory category) {
+        CommandCollection.getInstance().addCommand(this);
+        locale = LanguageHandler.getInstance();
+        this.commandName = commandName;
+        this.commandAliases = commandAliases == null ? new String[0] : commandAliases;
+        this.commandDesc = commandDesc;
+        this.subCommands = new SubCommand[0];
+        this.standalone = true;
+        this.standaloneDescription = null;
+        this.category = category;
+
+        if (commandName == null || commandDesc == null) {
+            throw new NullPointerException();
+        }
+        generateLazySubCommands();
+    }
+
+    private void generateLazySubCommands() {
+        // Lazy sub commands are unique in their parameter stage. but not in all sub commands
+        // Iterate though each stage
+
+        List<Parameter> parameters = new ArrayList<>();
+
+        int maxParams = 0;
+        for (var subCommand : subCommands) {
+            maxParams = Math.max(maxParams, subCommand.getParameters().length);
+        }
+
+        for (int parameterStage = 0; parameterStage < maxParams; parameterStage++) {
+            // Search commands in this parameter stage
+            for (SubCommand s : subCommands) {
+                Parameter[] p = s.getParameters();
+                if (p.length > parameterStage) {
+                    if (p[parameterStage].isCommand()) {
+                        parameters.add(p[parameterStage]);
+                    }
+                }
+            }
+
+            // generate lazy commands
+            int i = 0;
+            do {
+                for (Parameter p : parameters) {
+                    p.setShortCommand(p.generateShortCommand(i));
+                }
+                i++;
+                parameters = new ArrayList<>(getNotUniqueCommands(parameters));
+            } while (parameters.size() != 0);
+        }
+    }
+
+    private Set<Parameter> getNotUniqueCommands(List<Parameter> parameters) {
+        Set<Parameter> p = new HashSet<>();
+
+        for (Parameter param1 : parameters) {
+            for (Parameter param2 : parameters) {
+                if (param1.getCommandName().equals(param2.getCommandName())) continue;
+                if (param1.getShortCommand().equals(param2.getShortCommand())) {
+                    p.add(param2);
+                }
+            }
+        }
+        return p;
     }
 
     /**
@@ -125,7 +260,7 @@ public abstract class Command extends ContextSensitive {
         try {
             internalExecute(label, args, messageContext);
         } catch (InsufficientPermissionException e) {
-                MessageSender.handlePermissionException(e, messageContext.getTextChannel());
+            MessageSender.handlePermissionException(e, messageContext.getTextChannel());
 
         } catch (RuntimeException e) {
             log.error(C.NOTIFY_ADMIN, "command execution failed", e);
@@ -182,11 +317,8 @@ public abstract class Command extends ContextSensitive {
      *
      * @return an array of command arguments.
      */
-    public CommandArgument[] getCommandArguments() {
-        if (commandArguments == null) {
-            commandArguments = new CommandArgument[0];
-        }
-        return commandArguments;
+    public SubCommand[] getSubCommands() {
+        return subCommands;
     }
 
     /**
@@ -224,13 +356,18 @@ public abstract class Command extends ContextSensitive {
      * @return true if enough arguments are present
      */
     public boolean checkArguments(String[] args) {
-        int requiredArguments = 0;
-        for (CommandArgument a : commandArguments) {
-            if (a.isRequired()) {
-                requiredArguments++;
+        // Check if command is standalone
+        if (standalone) return true;
+
+        SubCommand found = null;
+
+        // search in subcommands
+        for (var command : subCommands) {
+            if (command.matchArgs(args)) {
+                return true;
             }
         }
-        return args.length >= requiredArguments;
+        return false;
     }
 
     /**
@@ -240,37 +377,45 @@ public abstract class Command extends ContextSensitive {
      */
     public void sendCommandUsage(TextChannel channel) {
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild());
+        String prefix = PrefixData.getPrefix(channel.getGuild(), null);
+
+        builder.setTitle("__**" + HelpLocale.M_HELP_FOR_COMMAND + " " + getCommandName() + "**__")
+                .setColor(Color.green);
 
         builder.setDescription(getCommandDesc());
 
-        // Set aliases
+        // Build alias field
         if (getCommandAliases() != null && getCommandAliases().length != 0) {
             builder.appendDescription(lineSeparator() + "__**" + HelpLocale.W_ALIASES + ":**__ "
                     + String.join(", ", getCommandAliases()));
         }
 
-        String args = Arrays.stream(getCommandArguments()).map(CommandArgument::getHelpString)
-                .collect(Collectors.joining(" "));
+        // Build main command field. Only present when command has a standalone function and subcommands.
+        if (standalone && subCommands.length != 0) {
+            // TODO: Add locale codes
+            builder.addField("**__" + "Basic Command" + "__**:",
+                    "**" + prefix + commandName + "**\n" + standaloneDescription, false);
+        }
 
+        // Build subcommand field.
+        if (subCommands.length != 1) {
+            List<String> subcommandHelp = getSubcommandHelp();
+            List<String> chunks = new ArrayList<>();
 
-        builder.addField(new LocalizedField("__**" + HelpLocale.W_USAGE + ":**__",
-                PrefixData.getPrefix(channel.getGuild(), null) + getCommandName() + " " + args,
-                false, channel));
-
-        StringBuilder desc = new StringBuilder();
-        if (commandArguments.length != 0) {
-            String title = "__**" + HelpLocale.W_ARGUMENTS + ":**__";
-            for (CommandArgument arg : commandArguments) {
-                desc.setLength(0);
-                desc.append(">>> ").append(TextLocalizer.localizeAll(arg.getArgHelpString(), channel.getGuild()))
-                        .append(lineSeparator()).append(lineSeparator());
-                builder.addField(new LocalizedField(title, desc.toString(),
-                        false, channel));
-                title = "";
+            StringBuilder sBuilder = new StringBuilder();
+            for (var s : subcommandHelp) {
+                if (sBuilder.length() + s.length() > 1024) {
+                    chunks.add(sBuilder.toString());
+                    sBuilder.setLength(0);
+                }
+                sBuilder.append(s).append("\n\n");
+            }
+            // TODO: Add locale codes
+            for (var c : chunks) {
+                builder.addField("",
+                        c.replace("{prefix}", prefix), false);
             }
         }
-        builder.setTitle("__**" + HelpLocale.M_HELP_FOR_COMMAND + " " + getCommandName() + "**__")
-                .setColor(Color.green);
 
         channel.sendMessage(builder.build()).queue();
     }
@@ -299,8 +444,32 @@ public abstract class Command extends ContextSensitive {
      * @return command info object
      */
     public CommandInfo getCommandInfo() {
-        return new CommandInfo(this);
+        SubCommandInfo[] sc = new SubCommandInfo[subCommands.length];
+        return new CommandInfo(getContextName(),
+                commandName,
+                commandAliases,
+                commandDesc,
+                category,
+                Arrays.stream(subCommands)
+                        .map(SubCommand::getSubCommandInfo)
+                        .collect(Collectors.toList()).toArray(sc));
     }
 
+    public List<String> getSubcommandHelp() {
+        List<String> subCommandsHelp = new ArrayList<>();
+        for (SubCommand subCommand : subCommands) {
+            subCommandsHelp.add(subCommand.getCommandPattern());
+        }
+        return subCommandsHelp;
+    }
+
+    /**
+     * Check if the first sub command matches a string.
+     *
+     * @return
+     */
+    protected boolean isSubCommand(String cmd, int i) {
+        return subCommands[i].isSubCommand(cmd);
+    }
 
 }

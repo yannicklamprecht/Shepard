@@ -22,10 +22,10 @@ public class MockingSpongebob extends Command {
      * Creates a new mocking spongebob command object.
      */
     public MockingSpongebob() {
-        this.commandName = "mockingSpongebob";
-        this.commandDesc = DESCRIPTION.tag;
-        this.commandAliases = new String[] {"msb", "mock"};
-        category = ContextCategory.FUN;
+        super("mockingSpongebob",
+                new String[] {"msb", "mock"},
+                DESCRIPTION.tag,
+                ContextCategory.FUN);
     }
 
     @Override

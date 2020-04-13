@@ -2,8 +2,8 @@ package de.eldoria.shepard.contexts.commands.fun;
 
 import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.FileHelper;
@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.commands.fun.LargeEmoteLocale.AD_EMOTE;
 import static de.eldoria.shepard.localization.enums.commands.fun.LargeEmoteLocale.A_EMOTE;
 import static de.eldoria.shepard.localization.enums.commands.fun.LargeEmoteLocale.DESCRIPTION;
 
@@ -25,13 +26,14 @@ public class LargeEmote extends Command {
      * Create new large emote command object.
      */
     public LargeEmote() {
-        commandName = "largeEmote";
-        commandDesc = DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("emotes", true,
-                        new SubArgument("emotes", A_EMOTE.tag))};
-        commandAliases = new String[] {"lemote"};
-        category = ContextCategory.FUN;
+        super("largeEmote",
+                new String[] {"lemote"},
+                DESCRIPTION.tag,
+                SubCommand.builder("largeEmote")
+                        .addSubcommand(DESCRIPTION.tag,
+                                Parameter.createInput(A_EMOTE.tag, AD_EMOTE.tag, true))
+                        .build(),
+                ContextCategory.FUN);
     }
 
     @Override

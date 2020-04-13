@@ -23,9 +23,10 @@ public class SystemInfo extends Command {
      * Creates a new system info command object.
      */
     public SystemInfo() {
-        commandName = "systemInfo";
-        commandAliases = new String[] {"system"};
-        commandDesc = DESCRIPTION.tag;
+        super("systemInfo",
+                new String[] {"system"},
+                DESCRIPTION.tag,
+                ContextCategory.FUN);
     }
 
     @Override

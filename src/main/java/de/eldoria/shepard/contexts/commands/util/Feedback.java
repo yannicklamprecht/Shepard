@@ -6,15 +6,17 @@ import club.minnced.discord.webhook.send.WebhookEmbed;
 import club.minnced.discord.webhook.send.WebhookEmbedBuilder;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.LatestCommandsCollection;
+import de.eldoria.shepard.contexts.ContextCategory;
 import de.eldoria.shepard.contexts.commands.ArgumentParser;
 import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.contexts.commands.argument.CommandArgument;
-import de.eldoria.shepard.contexts.commands.argument.SubArgument;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
+import de.eldoria.shepard.contexts.commands.argument.Parameter;
+import de.eldoria.shepard.contexts.commands.argument.SubCommand;
 import de.eldoria.shepard.localization.enums.commands.util.FeedbackLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import okhttp3.OkHttpClient;
+
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_MESSAGE;
 
 public class Feedback extends Command {
     private static final OkHttpClient OK_HTTP_CLIENT = new OkHttpClient.Builder().build();
@@ -24,20 +26,20 @@ public class Feedback extends Command {
      * Create a new feedback command.
      */
     public Feedback() {
-        commandName = "feedback";
-        commandAliases = new String[] {"bugreport"};
-        commandDesc = FeedbackLocale.DESCRIPTION.tag;
-        commandArguments = new CommandArgument[] {
-                new CommandArgument("message", true,
-                        new SubArgument("message", GeneralLocale.A_TEXT.tag, false))
-        };
+        super("feedback",
+                new String[] {"bugreport"},
+                FeedbackLocale.DESCRIPTION.tag,
+                SubCommand.builder("feedback")
+                        .addSubcommand(FeedbackLocale.DESCRIPTION.tag,
+                                Parameter.createInput(A_MESSAGE.tag, null, true))
+                        .build(),
+                ContextCategory.UTIL);
 
-        webhookClient =
-                new WebhookClientBuilder(ShepardBot.getConfig().getWebhooks().getFeedback())
-                        .setDaemon(true)
-                        .setHttpClient(OK_HTTP_CLIENT)
-                        .setWait(false)
-                        .build();
+        webhookClient = new WebhookClientBuilder(ShepardBot.getConfig().getWebhooks().getFeedback())
+                .setDaemon(true)
+                .setHttpClient(OK_HTTP_CLIENT)
+                .setWait(false)
+                .build();
     }
 
     @Override
