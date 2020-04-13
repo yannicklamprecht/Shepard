@@ -1,4 +1,4 @@
-package de.eldoria.shepard.webapi.apiobjects;
+package de.eldoria.shepard.webapi.apiobjects.botlists;
 
 public class VoteInformation {
     private long bot;

@@ -3,7 +3,7 @@ package de.eldoria.shepard.webapi.endpoints;
 import com.google.api.client.http.HttpStatusCodes;
 import com.google.gson.Gson;
 import de.eldoria.shepard.webapi.BotListReporter;
-import de.eldoria.shepard.webapi.apiobjects.VoteInformation;
+import de.eldoria.shepard.webapi.apiobjects.botlists.VoteInformation;
 
 import static spark.Spark.path;
 import static spark.Spark.post;
