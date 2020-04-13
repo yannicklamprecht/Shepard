@@ -8,9 +8,9 @@ import lombok.Data;
 @Data
 public class BotList {
     /**
-     * Botlist api token.
+     * Object which holds several botlist token.
      */
-    private String token = null;
+    private BotlistToken token = null;
     /**
      * Array of botlist guild ids.
      */
