@@ -1,6 +1,7 @@
 package de.eldoria.shepard.contexts.commands;
 
 import de.eldoria.shepard.C;
+import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.collections.CommandCollection;
 import de.eldoria.shepard.collections.LatestCommandsCollection;
 import de.eldoria.shepard.contexts.ContextSensitive;
