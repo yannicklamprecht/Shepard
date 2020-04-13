@@ -105,7 +105,7 @@ public final class ArgumentParser {
 
     /**
      * Searches for a user. First on a guild and after this on all users the bot currently know.
-     * Equal to calling {@link ArgumentParser getGuildUser()} and {@link ArgumentParser getUser()}.
+     * Equal to calling {@link #getGuildUser(Guild, String)} and {@link #getUser(String)}.
      *
      * @param userString string for lookup
      * @param guild      guild for lookup
