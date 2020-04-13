@@ -8,6 +8,7 @@ public enum UserInfoLocale {
     /**
      * Localization key for message .
      */
+    C_DEFAULT("command.userInfo.command.default"),
     M_JOINED("command.userInfo.message.joined"),
     /**
      * Localization key for message .

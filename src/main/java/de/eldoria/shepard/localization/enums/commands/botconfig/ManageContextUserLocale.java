@@ -25,6 +25,7 @@ public enum ManageContextUserLocale {
      * Localization key for argument listType.
      */
     A_LIST_TYPE("command.manageContextUser.argument.listType"),
+    AD_LIST_TYPE("command.manageContextUser.argumentDescription.listType"),
     /**
      * Localization key for message added users.
      */

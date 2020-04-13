@@ -20,7 +20,8 @@ public enum LanguageLocale {
     /**
      * Localization key for argument language format.
      */
-    A_LANGUAGE_CODE_FORMAT("command.language.subcommand.languageCodeFormat"),
+    A_LANGUAGE_CODE_FORMAT("command.language.argument.languageCodeFormat"),
+    AD_LANGUAGE_CODE_FORMAT("command.language.argumentDescription.languageCodeFormat"),
     /**
      * Localization key for message changed.
      */

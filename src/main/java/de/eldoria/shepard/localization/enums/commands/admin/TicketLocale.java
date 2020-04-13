@@ -21,6 +21,7 @@ public enum TicketLocale {
      * Localization key for argument ticketType.
      */
     A_TICKET_TYPE("command.ticket.argument.ticketType"),
+    AD_TICKET_TYPE("command.ticket.argumentDescription.ticketType"),
     /**
      * Localization key for argument close.
      */

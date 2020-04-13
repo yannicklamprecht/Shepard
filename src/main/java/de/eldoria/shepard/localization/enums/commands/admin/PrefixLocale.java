@@ -16,7 +16,8 @@ public enum PrefixLocale {
     /**
      * Localization key for argument prefix format.
      */
-    A_PREFIX_FORMAT("command.prefix.subcommand.prefixFormat"),
+    A_PREFIX("command.prefix.argument.prefix"),
+    AD_PREFIX("command.prefix.argumentDescription.prefix"),
     /**
      * Localization key for message changed.
      */

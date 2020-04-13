@@ -25,6 +25,7 @@ public enum ManageContextGuildLocale {
      * Localization key for argument listType.
      */
     A_LIST_TYPE("command.manageContextGuild.argument.listType"),
+    AD_LIST_TYPE("command.manageContextGuild.argumentDescription.listType"),
     /**
      * Localization key for message added guilds.
      */
