@@ -3,7 +3,7 @@ package de.eldoria.shepard.webapi;
 import com.google.api.client.http.HttpStatusCodes;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.webapi.apiobjects.ApiCache;
-import de.eldoria.shepard.webapi.endpoints.BotListEnpoint;
+import de.eldoria.shepard.webapi.endpoints.BotListEndpoint;
 import de.eldoria.shepard.webapi.endpoints.CommandEndpoint;
 import de.eldoria.shepard.webapi.endpoints.KudosEndpoint;
 import de.eldoria.shepard.webapi.endpoints.MinecraftLinkEndpoint;
@@ -48,7 +48,7 @@ public final class ApiHandler {
     }
 
     private void defineRoutes() {
-        new BotListEnpoint(BotListReporter.initialize());
+        new BotListEndpoint(BotListReporter.initialize());
         new CommandEndpoint();
         new MinecraftLinkEndpoint();
         new KudosEndpoint();

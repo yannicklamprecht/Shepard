@@ -9,10 +9,10 @@ import static spark.Spark.path;
 import static spark.Spark.post;
 
 
-public class BotListEnpoint {
+public class BotListEndpoint {
     private BotListReporter botListReporter;
 
-    private BotListEnpoint() {
+    private BotListEndpoint() {
 
     }
 
@@ -21,7 +21,7 @@ public class BotListEnpoint {
      *
      * @param botListReporter the botlist reporter instance used for vote handling.
      */
-    public BotListEnpoint(BotListReporter botListReporter) {
+    public BotListEndpoint(BotListReporter botListReporter) {
         this.botListReporter = botListReporter;
         defineRoutes();
     }
