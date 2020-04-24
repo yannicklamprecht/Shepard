@@ -1,9 +1,7 @@
 package de.eldoria.shepard.util;
 
-import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.database.DbUtil;
-import de.eldoria.shepard.database.queries.commands.PrefixData;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.Role;
@@ -113,12 +111,13 @@ public class Verifier {
     /**
      * Get the valid users by id.
      *
+     * @param jda jda for user lookup
      * @param collect list of long ids
      * @return list of valid users.
      */
-    public static List<User> getValidUserByLong(List<Long> collect) {
+    public static List<User> getValidUserByLong(JDA jda, List<Long> collect) {
         return collect.stream()
-                .map(id -> ShepardBot.getJDA().getUserById(id))
+                .map(jda::getUserById)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
@@ -138,17 +137,6 @@ public class Verifier {
             }
         }
         return false;
-    }
-
-    /**
-     * Check if the message is a command.
-     *
-     * @param message message which should be checked
-     * @param event   event for check
-     * @return true if the prefix is present and valid
-     */
-    public static boolean checkPrefix(String message, MessageEventDataWrapper event) {
-        return message.startsWith(PrefixData.getPrefix(event.getGuild(), event));
     }
 
     /**

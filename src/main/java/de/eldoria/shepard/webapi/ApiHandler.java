@@ -1,17 +1,14 @@
 package de.eldoria.shepard.webapi;
 
 import com.google.api.client.http.HttpStatusCodes;
-import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.webapi.apiobjects.ApiCache;
-import de.eldoria.shepard.webapi.endpoints.BotListEndpoint;
-import de.eldoria.shepard.webapi.endpoints.CommandEndpoint;
-import de.eldoria.shepard.webapi.endpoints.KudosEndpoint;
-import de.eldoria.shepard.webapi.endpoints.MinecraftLinkEndpoint;
+import de.eldoria.shepard.core.configuration.Config;
+import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
+import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import lombok.extern.slf4j.Slf4j;
 import spark.Request;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static spark.Spark.before;
@@ -21,41 +18,19 @@ import static spark.Spark.port;
 
 
 @Slf4j
-public final class ApiHandler {
-    private static ApiHandler instance;
+public final class ApiHandler implements ReqConfig, ReqInit {
 
-    private Map<String, ApiCache> cache = new HashMap<>();
+    private Config config;
 
-
-    private ApiHandler() {
-        log.info("Initializing api");
-        initializeApi();
-        log.info("Defining Routes");
-        defineRoutes();
-        log.info("API setup completed!");
-    }
 
     /**
-     * Get the ApiHandler.
-     *
-     * @return api handler instance
+     * Create a new api handler.
      */
-    public static ApiHandler getInstance() {
-        if (instance == null) {
-            instance = new ApiHandler();
-        }
-        return instance;
-    }
-
-    private void defineRoutes() {
-        new BotListEndpoint(BotListReporter.initialize());
-        new CommandEndpoint();
-        new MinecraftLinkEndpoint();
-        new KudosEndpoint();
+    public ApiHandler() {
     }
 
     private void initializeApi() {
-        port(ShepardBot.getConfig().getApi().getPort());
+        port(config.getApi().getPort());
 
         options("/*", (request, response) -> {
             String accessControlRequestHeaders = request
@@ -102,13 +77,29 @@ public final class ApiHandler {
             log.debug("Allowed access for request");
             return true;
         }
-        String authorization = request.headers("Authorization");
-        if (authorization == null || !authorization.equals(ShepardBot.getConfig().getApi().getAuthorization())) {
+        List<String> authorization = new ArrayList<>();
+        authorization.add(request.headers("Authorization"));
+        String s = request.headers("X-DBL-Signature");
+        if (s != null) {
+            s = s.split("\\s")[0];
+        }
+        authorization.add(s);
+        if (!authorization.contains(config.getApi().getAuthorization())) {
             log.debug("Denied access for request");
             return false;
         }
         log.debug("Allowed access for request");
-
         return true;
+    }
+
+    @Override
+    public void addConfig(Config config) {
+        this.config = config;
+    }
+
+    @Override
+    public void init() {
+        log.info("Initializing api");
+        initializeApi();
     }
 }

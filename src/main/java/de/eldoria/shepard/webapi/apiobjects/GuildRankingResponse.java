@@ -1,13 +1,12 @@
 package de.eldoria.shepard.webapi.apiobjects;
 
-import de.eldoria.shepard.database.types.ApiRank;
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Guild;
 
 import java.util.List;
 
 @Getter
-public class GuildRankingResponse extends GlobalRankingResponse {
+public class GuildRankingResponse extends RankingResponse {
     /**
      * Url of the guild.
      */

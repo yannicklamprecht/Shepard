@@ -115,7 +115,7 @@ public final class TextFormatting {
      * @param columnNames Determines the name and amount of the columns. Empty column names are possible
      * @return new Table builder object.
      */
-    public static TableBuilder getTableBuilder(Collection collection, @NotNull String... columnNames) {
+    public static TableBuilder getTableBuilder(Collection<?> collection, @NotNull String... columnNames) {
         return new TableBuilder(collection, columnNames);
     }
 
@@ -127,7 +127,6 @@ public final class TextFormatting {
      * @return table of ranks
      */
     public static String getRankTable(List<Rank> ranks, MessageEventDataWrapper messageContext) {
-        //TODO: Localisation
         TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(ranks,
                 TextLocalizer.localizeAllAndReplace(WordsLocale.RANK.tag, messageContext.getGuild()),
                 TextLocalizer.localizeAllAndReplace(WordsLocale.USER.tag, messageContext.getGuild()),
@@ -164,7 +163,7 @@ public final class TextFormatting {
          * @param collection  collection for row amount
          * @param columnNames column names for column amount
          */
-        TableBuilder(Collection collection, String... columnNames) {
+        TableBuilder(Collection<?> collection, String... columnNames) {
             table = new String[collection.size() + 1][columnNames.length];
             table[0] = columnNames;
         }

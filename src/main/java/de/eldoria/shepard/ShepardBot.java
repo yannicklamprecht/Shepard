@@ -1,14 +1,30 @@
 package de.eldoria.shepard;
 
-import de.eldoria.shepard.collections.CommandCollection;
-import de.eldoria.shepard.collections.KeyWordCollection;
-import de.eldoria.shepard.configuration.Config;
-import de.eldoria.shepard.configuration.Loader;
-import de.eldoria.shepard.io.ConsoleReader;
-import de.eldoria.shepard.register.ContextRegister;
-import de.eldoria.shepard.register.ListenerRegister;
+import de.eldoria.shepard.basemodules.commanddispatching.CommandDispatchingModule;
+import de.eldoria.shepard.basemodules.reactionactions.ReactionActionModule;
+import de.eldoria.shepard.basemodules.standalone.StandaloneBaseModules;
+import de.eldoria.shepard.commandmodules.SharedResources;
+import de.eldoria.shepard.commandmodules.changelog.ChangelogModule;
+import de.eldoria.shepard.commandmodules.commandsettings.CommandSettingsModule;
+import de.eldoria.shepard.commandmodules.greeting.GreetingModule;
+import de.eldoria.shepard.commandmodules.guessgame.GuessGameModule;
+import de.eldoria.shepard.commandmodules.kudos.KudoModule;
+import de.eldoria.shepard.commandmodules.language.LanguageModule;
+import de.eldoria.shepard.commandmodules.monitoring.MonitoringModule;
+import de.eldoria.shepard.commandmodules.prefix.PrefixModule;
+import de.eldoria.shepard.commandmodules.presence.PresenceModule;
+import de.eldoria.shepard.commandmodules.privatemessages.PrivateMessagesModule;
+import de.eldoria.shepard.commandmodules.quote.QuoteModule;
+import de.eldoria.shepard.commandmodules.reminder.ReminderModule;
+import de.eldoria.shepard.commandmodules.repeatcommand.RepeatCommandModule;
+import de.eldoria.shepard.commandmodules.standalone.StandaloneCommandsModule;
+import de.eldoria.shepard.commandmodules.ticketsystem.TicketSystemModule;
+import de.eldoria.shepard.core.CoreModule;
+import de.eldoria.shepard.core.configuration.Config;
+import de.eldoria.shepard.core.configuration.Loader;
+import de.eldoria.shepard.modulebuilder.ModuleBuilder;
 import de.eldoria.shepard.util.ExitCode;
-import de.eldoria.shepard.webapi.ApiHandler;
+import de.eldoria.shepard.webapi.ApiModule;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -16,27 +32,18 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 public final class ShepardBot {
     private static JDA jda;
-    private static Config config;
     private static ShepardBot instance;
-
+    private SharedResources sharedResources;
+    private Config config;
     private boolean loaded;
 
     private ShepardBot() {
     }
 
-    /**
-     * Returns the Shepard Bot instance.
-     *
-     * @return Instance of Shepard bot.
-     */
-    public static ShepardBot getInstance() {
-        return instance;
-    }
 
     /**
      * Main method.
@@ -49,30 +56,10 @@ public final class ShepardBot {
 
             instance.setup();
 
-            ApiHandler.getInstance();
-
             instance.loaded = true;
         } catch (Exception e) {
             log.error("failed to start bot", e);
         }
-    }
-
-    /**
-     * Gets the jda.
-     *
-     * @return JDA object
-     */
-    public static JDA getJDA() {
-        return jda;
-    }
-
-    /**
-     * Get the config.
-     *
-     * @return Config object
-     */
-    public static Config getConfig() {
-        return config;
     }
 
     /**
@@ -91,20 +78,18 @@ public final class ShepardBot {
 
     private void setup() throws IOException {
         config = Loader.loadConfig();
-
-        ConsoleReader.initialize();
-
         try {
             initiateJda();
         } catch (LoginException | InterruptedException e) {
             log.error(C.NOTIFY_ADMIN, "jda failed to log in", e);
         }
+        sharedResources = SharedResources.build(this, jda, config);
 
-        ContextRegister.registerContexts();
-        ListenerRegister.registerListener();
-        log.info(C.STATUS, "Registered {} Commands,\n Registered {} Keywords,\n Registered on {} Guilds!",
-                CommandCollection.getInstance().getCommands().size(),
-                KeyWordCollection.getInstance().getKeywords().size(),
+        loadModules();
+
+
+        log.info(C.STATUS, "Registered {} Commands,\nRegistered on {} Guilds!",
+                sharedResources.getCommandHub().getCommands().size(),
                 jda.getGuilds().size());
 
         log.info("Setup complete!");
@@ -124,10 +109,8 @@ public final class ShepardBot {
      *
      * @param listener List of listener.
      */
-    public void registerListener(List<ListenerAdapter> listener) {
-        for (ListenerAdapter l : listener) {
-            jda.addEventListener(l);
-        }
+    public void registerListener(ListenerAdapter listener) {
+        jda.addEventListener(listener);
     }
 
     /**
@@ -158,5 +141,29 @@ public final class ShepardBot {
         }
 
         System.exit(exitCode.code);
+    }
+
+    private void loadModules() {
+        // Start base module without dependencies
+        loadModule(new CoreModule(), new ReactionActionModule(), new StandaloneBaseModules());
+
+        // Start command modules
+        loadModule(new ChangelogModule(), new CommandSettingsModule(), new GreetingModule(), new GuessGameModule(),
+                new KudoModule(), new LanguageModule(), new MonitoringModule(), new PrefixModule(),
+                new PresenceModule(), new PrivateMessagesModule(), new QuoteModule(), new ReminderModule(),
+                new RepeatCommandModule(), new TicketSystemModule(), new StandaloneCommandsModule());
+
+        // start api services
+        loadModule(new ApiModule());
+
+        // start command dispatching. enables the bot to receive commands
+        loadModule(new CommandDispatchingModule());
+    }
+
+    private void loadModule(ModuleBuilder... builders) {
+        for (ModuleBuilder builder : builders) {
+            builder.buildModule(sharedResources);
+            log.debug("Loaded {}", builder.getClass().getSimpleName());
+        }
     }
 }
