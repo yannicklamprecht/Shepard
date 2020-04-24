@@ -1,8 +1,8 @@
 package de.eldoria.shepard.messagehandler;
 
 import de.eldoria.shepard.C;
-import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.database.types.GreetingSettings;
+import de.eldoria.shepard.commandmodules.greeting.types.GreetingSettings;
+import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.util.TextLocalizer;
@@ -21,8 +21,6 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.Color;
 import java.io.File;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,12 +29,6 @@ import static java.lang.System.lineSeparator;
 
 @Slf4j
 public final class MessageSender {
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM. HH:mm:ss");
-
-    private static String timestamp() {
-        return "[" + DATE_TIME_FORMATTER.format(LocalDateTime.now()) + "]";
-    }
 
     /**
      * Sends a textbox to a channel.
@@ -180,10 +172,12 @@ public final class MessageSender {
     /**
      * Sends a simple error to a channel.
      *
+     * @param config config of bot
      * @param error   Error message
      * @param channel channel
      */
-    public static void handlePermissionException(InsufficientPermissionException error, TextChannel channel) {
+    public static void handlePermissionException(Config config, InsufficientPermissionException error,
+                                                 TextChannel channel) {
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
                 .setTitle("ERROR!")
                 .setDescription(ErrorType.GENERAL.taggedMessage)
@@ -193,7 +187,7 @@ public final class MessageSender {
         try {
             channel.sendMessage(builder.build()).queue();
         } catch (InsufficientPermissionException e) {
-            if (Arrays.stream(ShepardBot.getConfig().getBotlist().getGuildIds())
+            if (Arrays.stream(config.getBotlist().getGuildIds())
                     .noneMatch(id -> id == channel.getGuild().getIdLong())) {
                 channel.getGuild().getOwner().getUser().openPrivateChannel().queue(a -> {
                     EmbedBuilder privateBuilder = new EmbedBuilder()
@@ -261,19 +255,7 @@ public final class MessageSender {
 
         String localizedMessage = TextLocalizer.localizeAll(message, channel);
 
-        String[] messageParts = localizedMessage.split(lineSeparator());
-        StringBuilder messagePart = new StringBuilder();
-        for (int i = 0; i < messageParts.length; i++) {
-            if (messagePart.length() + messageParts[i].length() < 1024) {
-                messagePart.append(messageParts[i]).append(lineSeparator());
-            } else {
-                channel.sendMessage(messagePart.toString()).queue();
-                messagePart = new StringBuilder();
-                i--;
-            }
-        }
-
-        channel.sendMessage(messagePart.toString()).queue();
+        sendSplitMessage(localizedMessage, channel);
     }
 
     /**
@@ -285,6 +267,10 @@ public final class MessageSender {
     public static void sendMessageToChannel(String message, MessageChannel channel) {
         if (message.isEmpty()) return;
 
+        sendSplitMessage(message, channel);
+    }
+
+    private static void sendSplitMessage(String message, MessageChannel channel) {
         String[] messageParts = message.split(lineSeparator());
         StringBuilder messagePart = new StringBuilder();
         for (int i = 0; i < messageParts.length; i++) {

@@ -1,6 +1,6 @@
 package de.eldoria.shepard.util.reactions;
 
-import de.eldoria.shepard.ShepardBot;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
 
@@ -76,10 +76,11 @@ public enum ShepardEmote {
     /**
      * Get the emote object.
      *
-     * @return emote object or null if emote was not found.
+     * @param jda JDA instance for emoji loading
+     * @return emote object or null if emote was not found
      */
-    public Emote getEmote() {
-        Guild guildById = ShepardBot.getJDA().getGuildById(635460587341479951L);
+    public Emote getEmote(JDA jda) {
+        Guild guildById = jda.getGuildById(635460587341479951L);
 
         return guildById == null ? null : guildById.getEmoteById(this.id);
     }

@@ -1,15 +1,17 @@
 package de.eldoria.shepard.webapi.apiobjects;
 
-import de.eldoria.shepard.contexts.commands.Command;
-import de.eldoria.shepard.localization.util.TextLocalizer;
+import de.eldoria.shepard.commandmodules.Command;
+import de.eldoria.shepard.webapi.apiobjects.commandserialization.SimpleCommandInfo;
+import lombok.Data;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Data
 public class CommandSearchResponse {
-    private CommandSearchInfo directMatch = null;
-    private List<CommandSearchInfo> fuzzyMatches;
+    private SimpleCommandInfo directMatch = null;
+    private List<SimpleCommandInfo> fuzzyMatches;
 
     /**
      * Creates a new command search response.
@@ -19,22 +21,11 @@ public class CommandSearchResponse {
      */
     public CommandSearchResponse(@Nullable Command directMatch, List<Command> fuzzySearched) {
         if (directMatch != null) {
-            this.directMatch = new CommandSearchInfo(directMatch);
+            this.directMatch = new SimpleCommandInfo(directMatch);
             fuzzySearched.remove(directMatch);
         }
         fuzzyMatches = fuzzySearched.subList(0, Math.min(fuzzySearched.size(), 6)).stream()
-                .map(CommandSearchInfo::new).collect(Collectors.toList());
+                .map(SimpleCommandInfo::new).collect(Collectors.toList());
     }
 
-    private class CommandSearchInfo {
-        private String contextName;
-        private String commandName;
-        private String description;
-
-        CommandSearchInfo(Command command) {
-            contextName = command.getContextName();
-            commandName = command.getCommandName();
-            description = TextLocalizer.localizeAllAndReplace(command.getCommandDesc(), null);
-        }
-    }
 }
