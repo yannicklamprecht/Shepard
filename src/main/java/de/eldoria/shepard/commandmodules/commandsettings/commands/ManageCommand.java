@@ -19,10 +19,10 @@ import javax.sql.DataSource;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_COMMAND_NAME;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_SECONDS;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_COMMAND_NAME;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_SECONDS;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_ADMIN;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_GUILD_COOLDOWN;
@@ -54,19 +54,19 @@ public class ManageCommand extends Command implements Executable, ReqParser, Req
                 SubCommand.builder("manageCommand")
                         .addSubcommand(C_NSFW.tag,
                                 Parameter.createCommand("setNsfw"),
-                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
                                 Parameter.createInput(A_BOOLEAN.tag, null, true))
                         .addSubcommand(C_ADMIN.tag,
                                 Parameter.createCommand("setAdminOnly"),
-                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
                                 Parameter.createInput(A_BOOLEAN.tag, null, true))
                         .addSubcommand(C_USER_COOLDOWN.tag,
                                 Parameter.createCommand("setUserCooldown"),
-                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
                                 Parameter.createInput(A_SECONDS.tag, AD_SECONDS.tag, true))
                         .addSubcommand(C_GUILD_COOLDOWN.tag,
                                 Parameter.createCommand("setGuildCooldown"),
-                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
                                 Parameter.createInput(A_SECONDS.tag, AD_SECONDS.tag, true))
                         .build(),
                 CommandCategory.BOT_CONFIG);
@@ -75,11 +75,11 @@ public class ManageCommand extends Command implements Executable, ReqParser, Req
 
     @Override
     public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        Optional<Command> command = parser.getCommand(args[0], messageContext);
-        String cmd = args[1];
+        Optional<Command> command = parser.getCommand(args[1]);
+        String cmd = args[0];
 
         if (command.isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.COMMAND_SEARCH_EMPTY, messageContext.getTextChannel());
             return;
         }
 
@@ -113,11 +113,11 @@ public class ManageCommand extends Command implements Executable, ReqParser, Req
         boolean userCooldown = isSubCommand(cmd, 2);
 
         if (userCooldown) {
-            if (!commandData.setContextUserCooldown(context, seconds.getAsInt(), messageContext)) {
+            if (!commandData.setUserCooldown(context, seconds.getAsInt(), messageContext)) {
                 return;
             }
         } else {
-            if (!commandData.setContextGuildCooldown(context, seconds.getAsInt(), messageContext)) {
+            if (!commandData.setGuildCooldown(context, seconds.getAsInt(), messageContext)) {
                 return;
             }
         }
@@ -138,7 +138,7 @@ public class ManageCommand extends Command implements Executable, ReqParser, Req
 
         boolean state = bState.stateAsBoolean;
 
-        if (!commandData.setContextAdmin(command, state, messageContext)) {
+        if (!commandData.setAdmin(command, state, messageContext)) {
             return;
         }
 
@@ -164,7 +164,7 @@ public class ManageCommand extends Command implements Executable, ReqParser, Req
 
         boolean state = bState.stateAsBoolean;
 
-        if (!commandData.setContextNsfw(command, state, messageContext)) {
+        if (!commandData.setNsfw(command, state, messageContext)) {
             return;
         }
 

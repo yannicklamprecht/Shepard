@@ -13,6 +13,13 @@ import java.util.stream.Collectors;
  * An CommandArg is the highest instance to define the arguments of a command.
  */
 public final class SubCommand {
+    private static final SubCommand WILDCARD = new SubCommand("wildcard", "",
+            Parameter.createCommand("*"));
+    private static final SubCommand BASE = new SubCommand("base", "",
+            Parameter.createCommand("base"));
+    private static final SubCommand STANDALONE = new SubCommand("standalone", "",
+            Parameter.createCommand("standalone"));
+
     // Short description of the sub command
     private final String commandDescription;
     private final Parameter[] parameters;
@@ -32,15 +39,6 @@ public final class SubCommand {
         this.parameters = parameters;
     }
 
-    /**
-     * Get a new Subcommand builder.
-     *
-     * @param commandName command name for builder
-     * @return new command builder object
-     */
-    public static SubCommandBuilder builder(String commandName) {
-        return new SubCommandBuilder(commandName);
-    }
 
     /**
      * Argument name with subarguments.
@@ -73,7 +71,6 @@ public final class SubCommand {
      * @param cmd command to check
      * @return true if the command or alias matches. case ignore
      */
-    @Deprecated
     public boolean isSubCommand(String cmd) {
         for (var p : parameters) {
             if (p.isCommand()) {
@@ -111,6 +108,7 @@ public final class SubCommand {
      * @return true if all commands are present in string and enough parameter are present.
      */
     public boolean matchArgs(String[] args) {
+        if (args.length == 0) return false;
         boolean match = true;
         for (int i = 0; i < parameters.length; i++) {
             Parameter p = parameters[i];
@@ -140,6 +138,58 @@ public final class SubCommand {
                         .map(Parameter::getParameterInfo)
                         .collect(Collectors.toList())
                         .toArray(pI));
+    }
+
+    /**
+     * Get the subcommand identifier.
+     * This will be the first subcommand or "base" if the subcommand does not have a command input
+     *
+     * @return subcommand identifier as string.
+     */
+    public String getSubCommandIdentifier() {
+        for (var p : parameters) {
+            if (p.isCommand()) {
+                return p.getCommandName();
+            }
+        }
+        return BASE.getSubCommandIdentifier();
+    }
+
+    /**
+     * Get a new Subcommand builder.
+     *
+     * @param commandName command name for builder
+     * @return new command builder object
+     */
+    public static SubCommandBuilder builder(String commandName) {
+        return new SubCommandBuilder(commandName);
+    }
+
+    /**
+     * Get the standalone subcommand.
+     *
+     * @return static standalone instance
+     */
+    public static SubCommand standalone() {
+        return STANDALONE;
+    }
+
+    /**
+     * Get the base subcommand.
+     *
+     * @return static base instance
+     */
+    public static SubCommand base() {
+        return BASE;
+    }
+
+    /**
+     * Get the wildcard subcommand.
+     *
+     * @return static wildcard instance
+     */
+    public static SubCommand wildcard() {
+        return WILDCARD;
     }
 
     public static final class SubCommandBuilder {

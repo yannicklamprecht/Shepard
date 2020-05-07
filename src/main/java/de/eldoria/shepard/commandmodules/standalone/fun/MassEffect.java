@@ -45,11 +45,11 @@ public class MassEffect extends Command implements Executable {
 
         quotes = new ArrayList<>();
         try {
-            QuoteList quoteList = yaml.load(getClass().getResourceAsStream("/mass_effect_1.yml"));
+            QuoteList quoteList = yaml.load(getClass().getResourceAsStream("/masseffect/mass_effect_1.yml"));
             quotes.addAll(Arrays.asList(quoteList.quotes));
-            quoteList = yaml.load(getClass().getResourceAsStream("/mass_effect_2.yml"));
+            quoteList = yaml.load(getClass().getResourceAsStream("/masseffect/mass_effect_2.yml"));
             quotes.addAll(Arrays.asList(quoteList.quotes));
-            quoteList = yaml.load(getClass().getResourceAsStream("/mass_effect_3.yml"));
+            quoteList = yaml.load(getClass().getResourceAsStream("/masseffect/mass_effect_3.yml"));
             quotes.addAll(Arrays.asList(quoteList.quotes));
         } catch (Exception e) {
             log.error("Could not load mass effect quotes", e);

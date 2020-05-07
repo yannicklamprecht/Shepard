@@ -5,10 +5,10 @@ import net.dv8tion.jda.api.entities.Guild;
 
 @Getter
 public class GuildInfo {
-    private long id;
-    private String name;
-    private String iconUrl;
-    private int userCount;
+    private final long id;
+    private final String name;
+    private final String iconUrl;
+    private final int userCount;
 
     /**
      * Create a new guild info from a guild object.

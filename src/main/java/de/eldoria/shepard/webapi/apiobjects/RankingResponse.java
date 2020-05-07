@@ -9,15 +9,15 @@ public class RankingResponse {
     /**
      * Ranked list.
      */
-    private List<ApiRank> ranking;
+    private final List<ApiRank> ranking;
     /**
      * Page of the ranked list.
      */
-    private int page;
+    private final int page;
     /**
      * Max amount of pages.
      */
-    private int maxPages;
+    private final int maxPages;
 
     /**
      * A global ranking response object.

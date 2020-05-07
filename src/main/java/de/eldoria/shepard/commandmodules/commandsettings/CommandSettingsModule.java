@@ -2,6 +2,7 @@ package de.eldoria.shepard.commandmodules.commandsettings;
 
 import de.eldoria.shepard.commandmodules.SharedResources;
 import de.eldoria.shepard.commandmodules.commandsettings.commands.CommandInfo;
+import de.eldoria.shepard.commandmodules.commandsettings.commands.CommandSettings;
 import de.eldoria.shepard.commandmodules.commandsettings.commands.ManageCommand;
 import de.eldoria.shepard.commandmodules.commandsettings.commands.ManageCommandGuild;
 import de.eldoria.shepard.commandmodules.commandsettings.commands.ManageCommandUsers;
@@ -16,5 +17,6 @@ public class CommandSettingsModule implements ModuleBuilder {
         addAndInit(new ManageCommandGuild(), resources);
         addAndInit(new ManageCommandUsers(), resources);
         addAndInit(new Permission(), resources);
+        addAndInit(new CommandSettings(), resources);
     }
 }

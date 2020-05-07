@@ -5,37 +5,26 @@ import de.eldoria.shepard.basemodules.reactionactions.ReactionActionCollection;
 import de.eldoria.shepard.basemodules.reactionactions.actions.ExecuteCommand;
 import de.eldoria.shepard.basemodules.reactionactions.actions.SendCommandHelp;
 import de.eldoria.shepard.commandmodules.Command;
-import de.eldoria.shepard.commandmodules.CommandUtil;
-import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.prefix.PrefixData;
-import de.eldoria.shepard.commandmodules.repeatcommand.LatestCommandsCollection;
 import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.database.DbUtil;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
-import de.eldoria.shepard.localization.util.TextLocalizer;
-import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.modulebuilder.requirements.ReqCommands;
 import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
-import de.eldoria.shepard.modulebuilder.requirements.ReqCooldownManager;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqExecutionValidator;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
-import de.eldoria.shepard.modulebuilder.requirements.ReqLatestCommands;
 import de.eldoria.shepard.modulebuilder.requirements.ReqReactionAction;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
-import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,29 +32,24 @@ import javax.annotation.Nonnull;
 import javax.sql.DataSource;
 import java.awt.Color;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_COMMAND_NOT_FOUND;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_HELP_COMMAND;
-import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_INSUFFICIENT_PERMISSION;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_SUGGESTION;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 @Slf4j
 public class CommandListener extends ListenerAdapter
-        implements ReqJDA, ReqCommands, ReqLatestCommands, ReqCooldownManager,
+        implements ReqJDA, ReqCommands,
         ReqExecutionValidator, ReqReactionAction, ReqDataSource, ReqConfig, ReqInit {
     private JDA jda;
     private CommandHub commands;
-    private CooldownManager cooldownManager;
-    private LatestCommandsCollection latest;
     private ExecutionValidator executionValidator;
     private ReactionActionCollection reactionAction;
     private PrefixData prefixData;
-    private DataSource source;
     private Config config;
 
     /**
@@ -115,7 +99,7 @@ public class CommandListener extends ListenerAdapter
         Optional<Command> command = commands.getCommand(label);
 
         if (command.isPresent()) {
-            dispatchCommand(command.get(), label, args, messageContext);
+            commands.dispatchCommand(command.get(), label, args, messageContext);
             return;
         }
         String prefix = prefixData.getPrefix(messageContext.getGuild(), messageContext);
@@ -151,66 +135,6 @@ public class CommandListener extends ListenerAdapter
         return false;
     }
 
-    private void dispatchCommand(Command command, String label, String[] args, MessageEventDataWrapper messageContext) {
-        //Check if the context can be used on guild by user
-        if (!executionValidator.canAccess(command, messageContext)) {
-            MessageSender.sendMessage(localizeAllAndReplace(M_COMMAND_NOT_FOUND.tag, messageContext.getGuild()),
-                    messageContext.getTextChannel());
-            return;
-        }
-
-        //check if the user has the permission on the guild
-        if (!executionValidator.canUse(command, messageContext)) {
-            MessageSender.sendMessage(localizeAllAndReplace(M_INSUFFICIENT_PERMISSION.tag,
-                    messageContext.getGuild(), "**" + command.getCommandName() + "**"),
-                    messageContext.getTextChannel());
-            return;
-        }
-
-        //Check if it is the help command
-        if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
-            sendHelpText(command, messageContext.getTextChannel());
-            return;
-        }
-
-        //Check if the argument count is equal or more than the minimum arguments
-        if (!command.checkArguments(args)) {
-            try {
-                MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
-                return;
-            } catch (InsufficientPermissionException ex) {
-                MessageSender.handlePermissionException(config, ex, messageContext.getTextChannel());
-                return;
-            }
-        }
-
-        if (handleCooldown(command, messageContext)) {
-            return;
-        }
-
-        MessageSender.logCommand(label, args, messageContext);
-
-        commands.runCommand(command, label, args, messageContext);
-
-        cooldownManager.renewCooldown(command, messageContext.getGuild(), messageContext.getAuthor());
-        latest.saveLatestCommand(messageContext.getGuild(), messageContext.getAuthor(), command, label, args);
-    }
-
-
-    private boolean handleCooldown(Command command, MessageEventDataWrapper messageContext) {
-        int currentCooldown = cooldownManager.getCurrentCooldown(
-                command, messageContext.getGuild(), messageContext.getAuthor());
-        if (currentCooldown != 0) {
-            try {
-                MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace(GeneralLocale.M_COOLDOWN.tag,
-                        messageContext.getGuild(), currentCooldown + ""), messageContext.getTextChannel());
-            } catch (InsufficientPermissionException ex) {
-                MessageSender.handlePermissionException(config, ex, messageContext.getTextChannel());
-            }
-            return true;
-        }
-        return false;
-    }
 
     @NotNull
     private String[] buildArgs(String[] args) {
@@ -250,28 +174,6 @@ public class CommandListener extends ListenerAdapter
         return strippedArgs;
     }
 
-    private void sendHelpText(Command command, TextChannel channel) {
-        String prefix = prefixData.getPrefix(channel.getGuild(), null);
-
-        MessageEmbed commandHelpEmbed = CommandUtil.getCommandHelpEmbed(command, channel.getGuild(), prefix);
-
-        channel.sendMessage(commandHelpEmbed).queue();
-    }
-
-    /**
-     * Get the subcommand help.
-     *
-     * @param subCommands subcommand to process.
-     * @return subcommand help as preformatted string.
-     */
-    public List<String> getSubcommandHelp(SubCommand[] subCommands) {
-        List<String> subCommandsHelp = new ArrayList<>();
-        for (SubCommand subCommand : subCommands) {
-            subCommandsHelp.add(subCommand.getCommandPattern());
-        }
-        return subCommandsHelp;
-    }
-
 
     @Override
     public void addCommands(CommandHub commandHub) {
@@ -279,18 +181,8 @@ public class CommandListener extends ListenerAdapter
     }
 
     @Override
-    public void addCooldownManager(CooldownManager cooldownManager) {
-        this.cooldownManager = cooldownManager;
-    }
-
-    @Override
     public void addJDA(JDA jda) {
         this.jda = jda;
-    }
-
-    @Override
-    public void addLatestCommand(LatestCommandsCollection latestCommands) {
-        this.latest = latestCommands;
     }
 
     @Override
@@ -304,18 +196,18 @@ public class CommandListener extends ListenerAdapter
     }
 
     @Override
-    public void addDataSource(DataSource source) {
-        this.source = source;
-    }
-
-    @Override
     public void addConfig(Config config) {
         this.config = config;
     }
 
     @Override
-    public void init() {
+    public void addDataSource(DataSource source) {
         prefixData = new PrefixData(source, config);
+    }
+
+    @Override
+    public void init() {
+
     }
 }
 

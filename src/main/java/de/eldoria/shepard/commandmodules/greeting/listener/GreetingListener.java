@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class GreetingListener extends ListenerAdapter implements ReqJDA, ReqDataSource, ReqInit {
@@ -37,9 +38,10 @@ public class GreetingListener extends ListenerAdapter implements ReqJDA, ReqData
 
         if (greeting == null) return;
 
-        TextChannel textChannel = ArgumentParser.getTextChannel(event.getGuild(), greeting.getChannel().getId());
+        Optional<TextChannel> textChannel = ArgumentParser.getTextChannel(event.getGuild(),
+                greeting.getChannel().getId());
 
-        if (textChannel == null) return;
+        if (textChannel.isEmpty()) return;
 
         List<Invite> serverInvites = event.getGuild().retrieveInvites().complete();
 
@@ -51,14 +53,14 @@ public class GreetingListener extends ListenerAdapter implements ReqJDA, ReqData
                     for (int i = dInvite.getUsedCount(); i < sInvite.getUses(); i++) {
                         inviteData.upCountInvite(event.getGuild(), sInvite.getCode(), null);
                     }
-                    MessageSender.sendGreeting(event, greeting, dInvite.getSource(), textChannel);
+                    MessageSender.sendGreeting(event, greeting, dInvite.getSource(), textChannel.get());
                     return;
                 }
             }
         }
 
         //If no invite was found.
-        MessageSender.sendGreeting(event, greeting, null, textChannel);
+        MessageSender.sendGreeting(event, greeting, null, textChannel.get());
     }
 
     @Override

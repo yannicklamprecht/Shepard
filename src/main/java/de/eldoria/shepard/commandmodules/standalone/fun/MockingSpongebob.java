@@ -1,8 +1,11 @@
 package de.eldoria.shepard.commandmodules.standalone.fun;
 
 import de.eldoria.shepard.commandmodules.Command;
+import de.eldoria.shepard.commandmodules.argument.Parameter;
+import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
+import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.FileHelper;
@@ -26,6 +29,9 @@ public class MockingSpongebob extends Command implements ExecutableAsync {
         super("mockingSpongebob",
                 new String[] {"msb", "mock"},
                 DESCRIPTION.tag,
+                SubCommand.builder("mockingSpongebob")
+                        .addSubcommand(DESCRIPTION.tag, Parameter.createInput(GeneralLocale.A_TEXT.tag, null, true))
+                        .build(),
                 CommandCategory.FUN);
     }
 

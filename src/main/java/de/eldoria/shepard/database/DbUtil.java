@@ -6,14 +6,18 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.User;
 
+import java.sql.Array;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Slf4j
 public final class DbUtil {
@@ -25,7 +29,7 @@ public final class DbUtil {
     /**
      * Get a sorted ranked list from a result set.
      *
-     * @param jda jda instance
+     * @param jda    jda instance
      * @param result Result set to retrieve ranks.
      * @return List of ranks.
      * @throws SQLException SQL exception
@@ -73,5 +77,19 @@ public final class DbUtil {
         if (event != null) {
             MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, event.getTextChannel());
         }
+    }
+
+    /**
+     * Get a array of snowflakes from a list.
+     *
+     * @param snowflakes list of snowflake objects
+     * @param conn       connection
+     * @return array of snowflakes as bigint array
+     * @throws SQLException when the creation failed
+     */
+    public static Array getSnowflakeArray(List<?> snowflakes, Connection conn) throws SQLException {
+        Long[] userIds = new Long[snowflakes.size()];
+        snowflakes.stream().map(c -> ((ISnowflake) c).getIdLong()).collect(Collectors.toList()).toArray(userIds);
+        return conn.createArrayOf("bigint", userIds);
     }
 }

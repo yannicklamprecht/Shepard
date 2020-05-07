@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.A_EMPTY_OR_WORD;
 import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.M_NO_QUOTE_DEFINED;
 import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.M_NO_QUOTE_FOUND;
@@ -37,7 +38,7 @@ public class Quote extends Command implements Executable, ReqDataSource {
                 DESCRIPTION.tag,
                 SubCommand.builder("quote")
                         .addSubcommand(null,
-                                Parameter.createInput(GeneralLocale.A_KEYWORD.tag, GeneralLocale.AD_KEYWORD.tag, false))
+                                Parameter.createInput(GeneralLocale.A_KEYWORD.tag, A_EMPTY_OR_WORD.tag, false))
                         .build(),
                 DESCRIPTION.tag,
                 CommandCategory.FUN);

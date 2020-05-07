@@ -2,6 +2,8 @@ package de.eldoria.shepard.commandmodules.argument;
 
 import de.eldoria.shepard.webapi.apiobjects.commandserialization.ParameterInfo;
 
+import javax.annotation.Nullable;
+
 /**
  * Defines a sub argument.
  * A sub argument is a command arg, but is depending on the {@link SubCommand} command.
@@ -68,7 +70,7 @@ public final class Parameter {
      * @param required         true if parameter ist required
      * @return new Parameter object
      */
-    public static Parameter createInput(String inputName, String inputDescription, boolean required) {
+    public static Parameter createInput(String inputName, @Nullable String inputDescription, boolean required) {
         return new Parameter(inputName, inputDescription, required);
     }
 

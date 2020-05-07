@@ -154,7 +154,7 @@ public final class BotListReporter implements Runnable, ReqInit, ReqJDA, ReqConf
 
     @Override
     public void init() {
-        if (config.isBeta()) return;
+        if (config.getGeneralSettings().isBeta()) return;
         api = new DiscordBotListAPI.Builder()
                 .token(config.getBotlist().getToken().getTopgg())
                 .botId(jda.getSelfUser().getId())

@@ -85,9 +85,10 @@ public class SQLUpdater implements ReqConfig, ReqDataSource, ReqInit {
         for (var name : config.getDatabase().getDatabaseVersion().getRequiredSchemas()) {
             boolean schemaExists = schemaExists(name);
             if (!schemaExists) {
-                log.info("Database is not persistent. Do you want to perform a automatic creation of the required schemas?\n" +
-                        "WARNING: This can result in data loss if a database is already setup.\n" +
-                        "[y/n]");
+                log.info("Database is not persistent."
+                        + " Do you want to perform a automatic creation of the required schemas?\n"
+                        + "WARNING: This can result in data loss if a database is already setup.\n"
+                        + "[y/n]");
                 String line = new Scanner(System.in).nextLine();
                 if (line.equalsIgnoreCase("y")) {
                     createDatabase();
@@ -148,14 +149,15 @@ public class SQLUpdater implements ReqConfig, ReqDataSource, ReqInit {
     }
 
     /**
-     * Checks if a schema exists in the database
+     * Checks if a schema exists in the database.
      *
      * @param name name of schema
      * @return true if the schema exists
      */
     private boolean schemaExists(String name) {
         try (var conn = source.getConnection(); var statement = conn
-                .prepareStatement("SELECT EXISTS(SELECT schema_name FROM information_schema.schemata WHERE schema_name = ?)")) {
+                .prepareStatement("SELECT EXISTS(SELECT schema_name FROM"
+                        + " information_schema.schemata WHERE schema_name = ?)")) {
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
             resultSet.next();
@@ -237,17 +239,6 @@ public class SQLUpdater implements ReqConfig, ReqDataSource, ReqInit {
         this.source = source;
     }
 
-    @Data
-    private static class VersionInfo {
-        private String version;
-        private String patch;
-
-        public VersionInfo(String version, String patch) {
-            this.version = version;
-            this.patch = patch;
-        }
-    }
-
 
     private String getPatchQuery(String version, int patch) {
         StringBuilder contentBuilder = new StringBuilder();
@@ -259,7 +250,8 @@ public class SQLUpdater implements ReqConfig, ReqDataSource, ReqInit {
         try (Stream<String> stream = Files.lines(patchfile, StandardCharsets.UTF_8)) {
             stream.forEach(s -> contentBuilder.append(s).append("\n"));
         } catch (IOException e) {
-            throw new Error("Can't load patch " + patch + " of version " + version + "! (" + patchfile.toString() + ")");
+            throw new Error("Can't load patch " + patch + " of version " + version
+                    + "! (" + patchfile.toString() + ")");
         }
         return contentBuilder.toString();
     }
@@ -278,4 +270,16 @@ public class SQLUpdater implements ReqConfig, ReqDataSource, ReqInit {
         }
         return contentBuilder.toString();
     }
+
+    @Data
+    private static class VersionInfo {
+        private String version;
+        private String patch;
+
+        public VersionInfo(String version, String patch) {
+            this.version = version;
+            this.patch = patch;
+        }
+    }
+
 }

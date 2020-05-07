@@ -8,11 +8,11 @@ import net.dv8tion.jda.api.entities.User;
 @Getter
 @Slf4j
 public class ApiRank {
-    private int rank;
-    private long id;
-    private String tag;
-    private String avatarUrl;
-    private long score;
+    private final int rank;
+    private final long id;
+    private final String tag;
+    private final String avatarUrl;
+    private final long score;
 
     /**
      * Create a new API Rank object.

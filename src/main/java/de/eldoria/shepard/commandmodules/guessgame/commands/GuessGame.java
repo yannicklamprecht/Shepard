@@ -96,23 +96,23 @@ public class GuessGame extends Command implements Executable, ReqJDA, ReqDataSou
 
         String cmd = args[0];
 
-        if (isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 0)) {
             int userScore = guessGameData.getUserScore(messageContext.getGuild(),
                     messageContext.getAuthor(), messageContext);
             MessageSender.sendMessage(M_SCORE + " **" + userScore + "**", messageContext.getTextChannel());
             return;
         }
 
-        if (isSubCommand(cmd, 2)) {
+        if (isSubCommand(cmd, 1)) {
             int userScore = guessGameData.getGlobalUserScore(messageContext.getAuthor(), messageContext);
             MessageSender.sendMessage(M_SCORE_GLOBAL + " **" + userScore, messageContext.getTextChannel());
             return;
         }
 
-        if (isSubCommand(cmd, 3)) {
+        if (isSubCommand(cmd, 2)) {
             sendTopScores(false, messageContext);
         }
-        if (isSubCommand(cmd, 4)) {
+        if (isSubCommand(cmd, 3)) {
             sendTopScores(true, messageContext);
         }
     }
@@ -135,7 +135,7 @@ public class GuessGame extends Command implements Executable, ReqJDA, ReqDataSou
             return;
         }
 
-        GuessGameImage hentaiImage = guessGameData.getHentaiImage(messageContext);
+        GuessGameImage hentaiImage = guessGameData.getImage(messageContext);
         if (hentaiImage == null) {
             return;
         }

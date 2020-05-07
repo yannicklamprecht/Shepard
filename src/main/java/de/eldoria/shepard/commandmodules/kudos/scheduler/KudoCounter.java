@@ -30,7 +30,7 @@ public class KudoCounter implements Runnable, ReqDataSource, ReqConfig, ReqInit 
 
     @Override
     public void init() {
-        if (config.isBeta()) return;
+        if (config.getGeneralSettings().isBeta()) return;
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(this, 30, 60, TimeUnit.MINUTES);
     }

@@ -2,8 +2,6 @@ package de.eldoria.shepard.basemodules.reactionactions.actions;
 
 import de.eldoria.shepard.basemodules.commanddispatching.CommandHub;
 import de.eldoria.shepard.commandmodules.Command;
-import de.eldoria.shepard.messagehandler.ErrorType;
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.reactions.Emoji;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.User;
@@ -36,15 +34,11 @@ public class ExecuteCommand extends Action {
 
     @Override
     protected void internalExecute(GuildMessageReactionAddEvent event) {
-        if (command.checkArguments(args)) {
-            commands.runCommand(command, command.getCommandName(), args, messageContext);
-            event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(message -> {
-                if (message != null) {
-                    message.delete().queue();
-                }
-            });
-        } else {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
-        }
+        commands.dispatchCommand(command, command.getCommandName(), args, messageContext);
+        event.getChannel().retrieveMessageById(event.getMessageIdLong()).queue(message -> {
+            if (message != null) {
+                message.delete().queue();
+            }
+        });
     }
 }

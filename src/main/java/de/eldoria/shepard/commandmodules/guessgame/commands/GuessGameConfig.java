@@ -114,18 +114,18 @@ public class GuessGameConfig extends Command implements ExecutableAsync, ReqData
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
-        GuessGameImage hentaiImage = guessGameData.getHentaiImage(args[1], messageContext);
-        if (hentaiImage == null) {
+        GuessGameImage image = guessGameData.getImage(args[1], messageContext);
+        if (image == null) {
             MessageSender.sendSimpleError(ErrorType.INVALID_IMAGE_URL, messageContext.getTextChannel());
             return;
         }
 
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle(localizeAllAndReplace(M_DISPLAY_IMAGE.tag,
-                        messageContext.getGuild(), hentaiImage.isNsfw() ? "NSFW" : "SFW"))
-                .setThumbnail(hentaiImage.getCroppedImage())
-                .setImage(hentaiImage.getFullImage())
-                .setColor(hentaiImage.isNsfw() ? Color.red : Color.green);
+                        messageContext.getGuild(), image.isNsfw() ? "NSFW" : "SFW"))
+                .setThumbnail(image.getCroppedImage())
+                .setImage(image.getFullImage())
+                .setColor(image.isNsfw() ? Color.red : Color.green);
 
         messageContext.getChannel().sendMessage(builder.build()).queue();
     }
@@ -161,7 +161,7 @@ public class GuessGameConfig extends Command implements ExecutableAsync, ReqData
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
             return;
         }
-        if (guessGameData.removeHentaiImage(args[1], messageContext)) {
+        if (guessGameData.removeImage(args[1], messageContext)) {
             MessageSender.sendMessage(M_REMOVED_IMAGE.tag, messageContext.getTextChannel());
         }
     }

@@ -43,7 +43,6 @@ public class CommandUtil {
 
         // Build main command field. Only present when command has a standalone function and subcommands.
         if (command.isStandalone() && command.getSubCommands().length != 0) {
-            // TODO: Add locale codes
             builder.addField("**__" + BASE_COMMAND.tag + "__**:",
                     "**" + prefix + command.getCommandName() + "**\n" + command.getStandaloneDescription(), false);
         }

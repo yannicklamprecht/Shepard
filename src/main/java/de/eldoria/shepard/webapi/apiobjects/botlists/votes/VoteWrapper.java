@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class VoteWrapper {
-    private long id;
-    private boolean weekend;
+    private final long id;
+    private final boolean weekend;
 
     /**
      * Wrap a top.gg vote.

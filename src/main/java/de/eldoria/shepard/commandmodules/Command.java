@@ -159,22 +159,28 @@ public abstract class Command {
      */
     public boolean checkArguments(String[] args) {
         // Check if command is standalone
-        if (standalone) return true;
-
+        if (standalone && args.length == 0) return true;
         return getMatchingSubcommand(args).isPresent();
     }
 
     /**
      * Search for the matching subcommand.
+     *
      * @param args args for subcommand matching
      * @return optional subcommand.
      */
     public Optional<SubCommand> getMatchingSubcommand(String[] args) {
         // search in subcommands
-        for (SubCommand command : subCommands) {
-            if (command.matchArgs(args)) {
-                return Optional.of(command);
+        for (SubCommand subCommand : subCommands) {
+            if (subCommand.matchArgs(args)) {
+                return Optional.of(subCommand);
             }
+        }
+        if (args.length != 0) {
+            return getBaseCommand();
+        }
+        if (standalone) {
+            return Optional.of(SubCommand.standalone());
         }
         return Optional.empty();
     }
@@ -215,5 +221,19 @@ public abstract class Command {
      */
     public String getCommandIdentifier() {
         return getClass().getSimpleName();
+    }
+
+    /**
+     * Get the base command of the subcommand if it extists.
+     *
+     * @return optional subcommand of base
+     */
+    private Optional<SubCommand> getBaseCommand() {
+        for (var cmd : subCommands) {
+            if (cmd.getSubCommandIdentifier().equalsIgnoreCase("base")) {
+                return Optional.of(cmd);
+            }
+        }
+        return Optional.empty();
     }
 }

@@ -22,10 +22,6 @@ public enum WordsLocale {
      */
     CONTEXT_NAME("words.contextName"),
     /**
-     * Localization key for word "Keywords".
-     */
-    KEYWORDS("words.keywords"),
-    /**
      * Localization key for word "Keyword".
      */
     KEYWORD("words.keyword"),
@@ -52,7 +48,10 @@ public enum WordsLocale {
     RANK("words.rank"),
     USER("words.user"),
     INVALID("words.invalid"),
-    ROLE("words.role");
+    ROLE("words.role"),
+    STATE("words.state"),
+    ENABLED("words.enabled"),
+    DISABLED("words.disabled");
 
     /**
      * Get the escaped locale code for auto translation.

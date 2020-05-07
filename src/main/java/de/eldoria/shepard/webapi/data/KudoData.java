@@ -3,7 +3,6 @@ package de.eldoria.shepard.webapi.data;
 import de.eldoria.shepard.database.QueryObject;
 import de.eldoria.shepard.webapi.apiobjects.ApiRank;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.User;
 
 import javax.sql.DataSource;
@@ -14,8 +13,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.database.DbUtil.getSnowflakeArray;
 import static de.eldoria.shepard.database.DbUtil.handleException;
 
 public class KudoData extends QueryObject {
@@ -84,9 +83,7 @@ public class KudoData extends QueryObject {
         List<ApiRank> result = new ArrayList<>();
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * FROM shepard_api.kudos_globaluser_filter(?,?,?)")) {
-            Long[] userIds = new Long[users.size()];
-            users.stream().map(ISnowflake::getIdLong).collect(Collectors.toList()).toArray(userIds);
-            Array ids = conn.createArrayOf("bigint", userIds);
+            Array ids = getSnowflakeArray(users, conn);
             statement.setArray(1, ids);
             statement.setInt(2, page);
             statement.setInt(3, pagesize);
@@ -120,9 +117,7 @@ public class KudoData extends QueryObject {
     public int getGlobalRankingFilterPagecount(List<User> users, int pagesize) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_api.kudos_globaluser_filter_pagecount(?,?)")) {
-            Long[] userIds = new Long[users.size()];
-            users.stream().map(ISnowflake::getIdLong).collect(Collectors.toList()).toArray(userIds);
-            Array ids = conn.createArrayOf("bigint", userIds);
+            Array ids = getSnowflakeArray(users, conn);
             statement.setArray(1, ids);
             statement.setInt(2, pagesize);
             ResultSet resultSet = statement.executeQuery();
@@ -194,9 +189,7 @@ public class KudoData extends QueryObject {
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * FROM shepard_api.kudos_guild_filter(?,?,?,?)")) {
-            Long[] userIds = new Long[users.size()];
-            users.stream().map(ISnowflake::getIdLong).collect(Collectors.toList()).toArray(userIds);
-            Array ids = source.getConnection().createArrayOf("bigint", userIds);
+            Array ids = getSnowflakeArray(users, source.getConnection());
             statement.setArray(1, ids);
             statement.setLong(2, guild);
             statement.setInt(3, page);
@@ -232,9 +225,7 @@ public class KudoData extends QueryObject {
     public int getGuildRankingFilterPagecount(List<User> users, long guild, int pagesize) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_api.kudos_guild_filter_pagecount(?,?,?)")) {
-            Long[] userIds = new Long[users.size()];
-            users.stream().map(ISnowflake::getIdLong).collect(Collectors.toList()).toArray(userIds);
-            Array ids = conn.createArrayOf("bigint", userIds);
+            Array ids = getSnowflakeArray(users, conn);
             statement.setArray(1, ids);
             statement.setLong(2, guild);
             statement.setInt(3, pagesize);

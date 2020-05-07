@@ -65,11 +65,11 @@ public final class PrefixData extends QueryObject {
             ResultSet result = statement.executeQuery();
             if (result.next()) {
                 String prefix = result.getString(1);
-                return prefix != null ? prefix : config.getPrefix();
+                return prefix != null ? prefix : config.getGeneralSettings().getPrefix();
             }
         } catch (SQLException e) {
             handleException(e, null);
         }
-        return config.getPrefix();
+        return config.getGeneralSettings().getPrefix();
     }
 }

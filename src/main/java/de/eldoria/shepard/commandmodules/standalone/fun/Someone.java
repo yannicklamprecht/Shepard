@@ -3,7 +3,9 @@ package de.eldoria.shepard.commandmodules.standalone.fun;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.util.Colors;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.GuildChannel;
@@ -52,8 +54,10 @@ public class Someone extends Command implements Executable {
 
             Member member = members.get(rand.nextInt(members.size()));
 
-            MessageSender.sendMessage(localizeAllAndReplace(M_SOMEONE.tag, messageContext.getGuild(),
-                    member.getAsMention()), messageContext.getTextChannel());
+            LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
+                    .setDescription(localizeAllAndReplace("**" + M_SOMEONE + "**", messageContext.getGuild(),
+                            member.getAsMention())).setColor(Colors.Pastel.ORANGE);
+            messageContext.getTextChannel().sendMessage(builder.build()).queue();
         }
     }
 }

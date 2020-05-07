@@ -17,8 +17,6 @@ public class ApiModule implements ModuleBuilder {
         BotListReporter botListReporter = new BotListReporter();
         addAndInit(botListReporter, resources);
 
-        // TODO: Endpoint for avatar and tag based on user id.
-
         addAndInit(resources, new CommandEndpoint(), new BotListEndpoint(botListReporter),
                 new MinecraftLinkEndpoint(), new KudosEndpoint(), new InfoEndpoint());
     }

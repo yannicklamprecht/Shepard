@@ -7,8 +7,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 
 import javax.sql.DataSource;
-import java.io.Closeable;
-import java.io.IOException;
 import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +17,7 @@ import java.util.List;
 
 import static de.eldoria.shepard.database.DbUtil.handleException;
 
-public class InviteData extends QueryObject implements Closeable {
+public class InviteData extends QueryObject {
 
     /**
      * Create a new invite data object.
@@ -148,11 +146,6 @@ public class InviteData extends QueryObject implements Closeable {
             return false;
         }
         return true;
-    }
-
-    @Override
-    public void close() throws IOException {
-
     }
 }
 

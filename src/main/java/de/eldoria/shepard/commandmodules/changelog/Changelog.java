@@ -18,6 +18,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CHANNEL_MENTION_OR_EXECUTE;
@@ -116,21 +117,22 @@ public class Changelog extends Command implements Executable, ReqParser, ReqData
     }
 
     private void activate(String[] args, MessageEventDataWrapper messageContext) {
-        TextChannel textChannel;
+        Optional<TextChannel> textChannel;
         if (args.length == 1) {
-            textChannel = messageContext.getTextChannel();
+            textChannel = Optional.of(messageContext.getTextChannel());
         } else {
             textChannel = ArgumentParser.getTextChannel(messageContext.getGuild(), args[1]);
         }
 
 
-        if (textChannel == null) {
+        if (textChannel.isEmpty()) {
             MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, messageContext.getTextChannel());
             return;
         }
 
-        if (changelogData.setChannel(messageContext.getGuild(), textChannel, messageContext)) {
-            MessageSender.sendMessage(M_ACTIVATED + " " + textChannel.getAsMention(), messageContext.getTextChannel());
+        if (changelogData.setChannel(messageContext.getGuild(), textChannel.get(), messageContext)) {
+            MessageSender.sendMessage(M_ACTIVATED + " " + textChannel.get().getAsMention(),
+                    messageContext.getTextChannel());
         }
     }
 
@@ -140,23 +142,23 @@ public class Changelog extends Command implements Executable, ReqParser, ReqData
             return;
         }
 
-        Role role = parser.getRole(messageContext.getGuild(), args[1]);
+        Optional<Role> role = parser.getRole(messageContext.getGuild(), args[1]);
 
-        if (role == null) {
+        if (role.isEmpty()) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ROLE, messageContext.getTextChannel());
             return;
         }
 
         if (isSubCommand(cmd, 0)) {
-            if (changelogData.addRole(messageContext.getGuild(), role, messageContext)) {
+            if (changelogData.addRole(messageContext.getGuild(), role.get(), messageContext)) {
                 MessageSender.sendMessage(localizeAllAndReplace(M_ADDED_ROLE.tag,
                         messageContext.getGuild(),
-                        "**" + role.getName() + "**"), messageContext.getTextChannel());
+                        "**" + role.get().getName() + "**"), messageContext.getTextChannel());
             }
         } else {
-            if (changelogData.removeRole(messageContext.getGuild(), role, messageContext)) {
+            if (changelogData.removeRole(messageContext.getGuild(), role.get(), messageContext)) {
                 MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED_ROLE.tag, messageContext.getGuild(),
-                        "**" + role.getName() + "**"), messageContext.getTextChannel());
+                        "**" + role.get().getName() + "**"), messageContext.getTextChannel());
             }
         }
     }

@@ -39,7 +39,6 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
 public class KudoLottery extends Command implements Executable, ReqJDA, ReqDataSource, ReqInit {
     private JDA jda;
     private ChannelEvaluator<KudoLotteryEvaluator> evaluator;
-    private KudoLotteryListener listener;
     private KudoData kudoData;
 
     /**
@@ -117,7 +116,7 @@ public class KudoLottery extends Command implements Executable, ReqJDA, ReqDataS
     @Override
     public void init() {
         evaluator = new ChannelEvaluator<>(5);
-        listener = new KudoLotteryListener(jda, evaluator);
+        KudoLotteryListener listener = new KudoLotteryListener(jda, evaluator);
         jda.addEventListener(listener);
     }
 

@@ -5,12 +5,12 @@ import lombok.Getter;
 
 @Getter
 public class ParameterInfo {
-    private boolean command;
-    private String inputName;
-    private String inputDescription;
-    private boolean required;
-    private String commandName;
-    private String shortCommand;
+    private final boolean command;
+    private final String inputName;
+    private final String inputDescription;
+    private final boolean required;
+    private final String commandName;
+    private final String shortCommand;
 
     /**
      * Create a new parameter info.

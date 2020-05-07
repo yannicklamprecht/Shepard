@@ -5,6 +5,7 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.core.configuration.Config;
+import de.eldoria.shepard.core.configuration.configdata.GeneralSettings;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqShepard;
@@ -12,7 +13,7 @@ import de.eldoria.shepard.util.ExitCode;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 /**
- * Command to restart the bot. Only usable on a bot, where {@link Config#isBeta()} is not true.
+ * Command to restart the bot. Only usable on a bot, where {@link GeneralSettings#isBeta()} is not true.
  */
 public class Restart extends Command implements Executable, ReqConfig, ReqShepard {
 
@@ -33,7 +34,7 @@ public class Restart extends Command implements Executable, ReqConfig, ReqShepar
 
     @Override
     public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        if (config.isBeta()) {
+        if (config.getGeneralSettings().isBeta()) {
             MessageSender.sendMessage("Only on main bot!", messageContext.getTextChannel());
             return;
         }
