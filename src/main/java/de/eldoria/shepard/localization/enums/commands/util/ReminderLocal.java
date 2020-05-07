@@ -12,7 +12,7 @@ public enum ReminderLocal {
     /**
      * Localization key for subcommand remove.
      */
-    C_REMOVE("command.reminder.subcommand.remove"),
+    C_DELETE("command.reminder.subcommand.remove"),
     /**
      * Localization key for subcommand list.
      */
@@ -24,7 +24,8 @@ public enum ReminderLocal {
     /**
      * Localization key for message format.
      */
-    M_FORMAT("command.reminder.message.addFormat"),
+    A_TIMESTAMP("command.reminder.argument.timestamp"),
+    AD_TIMESTAMP("command.reminder.argumentDescription.timestamp"),
     /**
      * Localization key for message current reminders.
      */

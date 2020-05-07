@@ -9,6 +9,8 @@ public enum CommandListenerLocale {
      * Localization key for message insufficient permission.
      */
     M_INSUFFICIENT_PERMISSION("listener.commandListener.message.insufficientPermission"),
+    M_COMMAND_DISABLED("listener.commandListener.message.commandDisabled"),
+    M_COMMAND_DISABLED_IN_CHANNEL("listener.commandListener.message.commandDisabledInChannel"),
     /**
      * Localization key for message command not found.
      */

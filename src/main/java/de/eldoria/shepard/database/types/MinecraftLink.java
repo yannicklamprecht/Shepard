@@ -1,6 +1,6 @@
 package de.eldoria.shepard.database.types;
 
-import de.eldoria.shepard.ShepardBot;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
 
 import javax.annotation.Nullable;
@@ -12,13 +12,14 @@ public class MinecraftLink {
     /**
      * Creates a new Minecraft link object.
      *
+     * @param jda jda for user retrieval
      * @param userId id of user
      * @param uuid   minecraft id
      */
-    public MinecraftLink(String userId, String uuid) {
+    public MinecraftLink(JDA jda, String userId, String uuid) {
         this.uuid = uuid;
 
-        user = ShepardBot.getJDA().getUserById(userId);
+        user = jda.getUserById(userId);
     }
 
     /**

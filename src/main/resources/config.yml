@@ -1,12 +1,33 @@
-debug: false
-prefix: "&"
-token: ""
+generalSettings:
+  beta: false
+  prefix: "!"
+  token: ""
+  commandExecutionThreads: 20
 botlist:
   token:
-  authorization:
+    topgg: ""
+    discordBotListCom: ""
+    discordBotsgg: ""
+  guildIds:
+    - 0
+api:
+  port: 00000
+  authorization: ""
+presence:
+  playing:
+    - "I'm playing"
+  listening:
+    - "I'm listening"
 database:
-  username: ""
-  password: ""
-  db: ""
-  address: ""
-  port: ""
+  username: "user"
+  password: "password"
+  db: "database"
+  address: "0.0.0.0"
+  port: 00000
+  databaseVersion:
+    requiredSchemas:
+      - "shepard"
+    version: 1.0.0
+    patch: 1
+webhooks:
+  feedback: ""

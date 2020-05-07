@@ -45,6 +45,9 @@ public enum HelpLocale {
      * Localization key for message invite me.
      */
     M_INVITE_ME("command.help.message.inviteMe"),
+    M_FULL_COMMAND_LIST("command.help.message.fullCommandList"),
+    M_PERMISSION_HELP("command.help.message.permissionHelp"),
+    M_CUSTOM_HELP_MESSAGE("command.help.message.customHelpMessage"),
     /**
      * Localization key for message support server.
      */

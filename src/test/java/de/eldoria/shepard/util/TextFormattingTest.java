@@ -2,7 +2,7 @@ package de.eldoria.shepard.util;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TextFormattingTest {
 
@@ -11,6 +11,7 @@ class TextFormattingTest {
         String test = TextFormatting.fillString("test", 5);
         assertEquals(5, test.length());
     }
+
     @Test
     void fillString1() {
         String input = "test";

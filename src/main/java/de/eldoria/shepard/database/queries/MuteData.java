@@ -1,10 +1,11 @@
 package de.eldoria.shepard.database.queries;
 
-import de.eldoria.shepard.database.DatabaseConnector;
+import de.eldoria.shepard.database.QueryObject;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 
+import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,15 +16,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static de.eldoria.shepard.database.DbUtil.handleExceptionAndIgnore;
+import static de.eldoria.shepard.database.DbUtil.handleException;
 
-public final class MuteData {
+public final class MuteData extends QueryObject {
 
-    private static Map<String, List<String>> mutedUsers = new HashMap<>();
     private static final Map<String, Boolean> mutedUsersDirty = new HashMap<>();
+    private static Map<String, List<String>> mutedUsers = new HashMap<>();
     private static LocalDateTime lastRefresh;
 
-    private MuteData() {
+    /**
+     * Create a new mute data object.
+     *
+     * @param source data source for information retrieval
+     */
+    public MuteData(DataSource source) {
+        super(source);
     }
 
     /**
@@ -35,15 +42,15 @@ public final class MuteData {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean setMuted(Guild guild, User user, String duration, MessageEventDataWrapper messageContext) {
-        try (PreparedStatement statement = DatabaseConnector.getConn()
+    public boolean setMuted(Guild guild, User user, String duration, MessageEventDataWrapper messageContext) {
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.set_muted(?,?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, user.getId());
             statement.setString(3, duration);
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, messageContext);
+            handleException(e, messageContext);
             return false;
         }
 
@@ -51,8 +58,8 @@ public final class MuteData {
         return true;
     }
 
-    private static void refreshGuildData(Guild guild, MessageEventDataWrapper messageContext) {
-        try (PreparedStatement statement = DatabaseConnector.getConn()
+    private void refreshGuildData(Guild guild, MessageEventDataWrapper messageContext) {
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.get_muted_users(?)")) {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
@@ -61,7 +68,7 @@ public final class MuteData {
                 mutedUsers.put(guild.getId(), Arrays.asList((String[]) result.getArray(1).getArray()));
             }
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, messageContext);
+            handleException(e, messageContext);
         }
     }
 
@@ -73,14 +80,14 @@ public final class MuteData {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public static boolean removeMute(Guild guild, User user, MessageEventDataWrapper messageContext) {
-        try (PreparedStatement statement = DatabaseConnector.getConn()
+    public boolean removeMute(Guild guild, User user, MessageEventDataWrapper messageContext) {
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_mute(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, user.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleExceptionAndIgnore(e, messageContext);
+            handleException(e, messageContext);
             return false;
         }
         mutedUsersDirty.put(guild.getId(), true);
@@ -94,11 +101,11 @@ public final class MuteData {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of muted users on a server.
      */
-    public static List<String> getMutedUsers(Guild guild, MessageEventDataWrapper messageContext) {
+    public List<String> getMutedUsers(Guild guild, MessageEventDataWrapper messageContext) {
         if (lastRefresh.isBefore(LocalDateTime.now().minusMinutes(1))) {
 
 
-            try (PreparedStatement statement = DatabaseConnector.getConn()
+            try (var conn = source.getConnection(); PreparedStatement statement = conn
                     .prepareStatement("SELECT * from shepard_func.get_muted_users()")) {
                 ResultSet result = statement.executeQuery();
 
@@ -117,7 +124,7 @@ public final class MuteData {
                 mutedUsers = data;
 
             } catch (SQLException e) {
-                handleExceptionAndIgnore(e, messageContext);
+                handleException(e, messageContext);
             }
             lastRefresh = LocalDateTime.now();
 

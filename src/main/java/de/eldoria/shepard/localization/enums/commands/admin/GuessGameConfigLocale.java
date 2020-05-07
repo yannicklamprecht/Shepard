@@ -29,10 +29,12 @@ public enum GuessGameConfigLocale {
      * Localization key for argument flag.
      */
     A_FLAG("command.guessGameConfig.argument.flag"),
+    AD_FLAG("command.guessGameConfig.argumentDescription.flag"),
     /**
      * Localization key for argument url.
      */
     A_URL("command.guessGameConfig.argument.url"),
+    AD_URL("command.guessGameConfig.argumentDescription.url"),
     /**
      * Localization key for message.
      */

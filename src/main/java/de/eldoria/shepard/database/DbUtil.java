@@ -1,22 +1,25 @@
 package de.eldoria.shepard.database;
 
-import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.collections.Normandy;
 import de.eldoria.shepard.database.types.Rank;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.User;
 
+import java.sql.Array;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-import static java.lang.System.lineSeparator;
-
+@Slf4j
 public final class DbUtil {
     private static final Pattern ID_PATTERN = Pattern.compile("(?:<[@#!&]{1,2})?(?<id>[0-9]{18})(?:>)?");
 
@@ -26,15 +29,16 @@ public final class DbUtil {
     /**
      * Get a sorted ranked list from a result set.
      *
+     * @param jda    jda instance
      * @param result Result set to retrieve ranks.
      * @return List of ranks.
      * @throws SQLException SQL exception
      */
-    public static List<Rank> getScoreListFromResult(ResultSet result) throws SQLException {
+    public static List<Rank> getScoreListFromResult(JDA jda, ResultSet result) throws SQLException {
         List<Rank> ranks = new ArrayList<>();
 
         while (result.next()) {
-            User user = ShepardBot.getJDA().getUserById(result.getString("user_id"));
+            User user = jda.getUserById(result.getString("user_id"));
             if (user != null) {
                 ranks.add(new Rank(user, result.getInt("score")));
             }
@@ -62,35 +66,30 @@ public final class DbUtil {
      *
      * @param ex    SQL Exception
      * @param event Event for error sending to channel to inform user.
-     * @throws SQLException when the query was not executed successful
      */
-    private static void handleException(SQLException ex, MessageEventDataWrapper event) throws SQLException {
-        StringBuilder builder = new StringBuilder();
+    public static void handleException(SQLException ex, MessageEventDataWrapper event) {
 
-        builder.append("SQLException: ").append(ex.getMessage()).append(lineSeparator())
-                .append("SQLState: ").append(ex.getSQLState()).append(lineSeparator())
-                .append("VendorError: ").append(ex.getErrorCode());
-        ShepardBot.getLogger().error(builder.toString());
+        String builder = "SQLException: " + ex.getMessage() + "\n"
+                + "SQLState: " + ex.getSQLState() + "\n"
+                + "VendorError: " + ex.getErrorCode();
+        log.error(builder, ex);
 
         if (event != null) {
             MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, event.getTextChannel());
         }
-        MessageSender.sendSimpleErrorEmbed(builder.toString(), Normandy.getErrorChannel());
-        throw ex;
     }
 
     /**
-     * Handles SQL Exceptions.
+     * Get a array of snowflakes from a list.
      *
-     * @param ex    SQL Exception
-     * @param event Event for error sending to channel to inform user.
+     * @param snowflakes list of snowflake objects
+     * @param conn       connection
+     * @return array of snowflakes as bigint array
+     * @throws SQLException when the creation failed
      */
-    public static void handleExceptionAndIgnore(SQLException ex, MessageEventDataWrapper event) {
-        try {
-            handleException(ex, event);
-        } catch (SQLException e) {
-            //DO NOTHING
-        }
+    public static Array getSnowflakeArray(List<?> snowflakes, Connection conn) throws SQLException {
+        Long[] userIds = new Long[snowflakes.size()];
+        snowflakes.stream().map(c -> ((ISnowflake) c).getIdLong()).collect(Collectors.toList()).toArray(userIds);
+        return conn.createArrayOf("bigint", userIds);
     }
-
 }

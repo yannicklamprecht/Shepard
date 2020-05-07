@@ -1,91 +1,49 @@
 package de.eldoria.shepard;
 
-import de.eldoria.shepard.botlist.BotListReporter;
-import de.eldoria.shepard.collections.CommandCollection;
-import de.eldoria.shepard.collections.KeyWordCollection;
-import de.eldoria.shepard.collections.Normandy;
-import de.eldoria.shepard.configuration.Config;
-import de.eldoria.shepard.configuration.Loader;
-import de.eldoria.shepard.io.ConsoleReader;
-import de.eldoria.shepard.io.Logger;
-import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.messagehandler.ShepardReactions;
-import de.eldoria.shepard.register.ContextRegister;
-import de.eldoria.shepard.register.ListenerRegister;
+import de.eldoria.shepard.basemodules.commanddispatching.CommandDispatchingModule;
+import de.eldoria.shepard.basemodules.reactionactions.ReactionActionModule;
+import de.eldoria.shepard.basemodules.standalone.StandaloneBaseModules;
+import de.eldoria.shepard.commandmodules.SharedResources;
+import de.eldoria.shepard.commandmodules.changelog.ChangelogModule;
+import de.eldoria.shepard.commandmodules.commandsettings.CommandSettingsModule;
+import de.eldoria.shepard.commandmodules.greeting.GreetingModule;
+import de.eldoria.shepard.commandmodules.guessgame.GuessGameModule;
+import de.eldoria.shepard.commandmodules.kudos.KudoModule;
+import de.eldoria.shepard.commandmodules.language.LanguageModule;
+import de.eldoria.shepard.commandmodules.monitoring.MonitoringModule;
+import de.eldoria.shepard.commandmodules.prefix.PrefixModule;
+import de.eldoria.shepard.commandmodules.presence.PresenceModule;
+import de.eldoria.shepard.commandmodules.privatemessages.PrivateMessagesModule;
+import de.eldoria.shepard.commandmodules.quote.QuoteModule;
+import de.eldoria.shepard.commandmodules.reminder.ReminderModule;
+import de.eldoria.shepard.commandmodules.repeatcommand.RepeatCommandModule;
+import de.eldoria.shepard.commandmodules.standalone.StandaloneCommandsModule;
+import de.eldoria.shepard.commandmodules.ticketsystem.TicketSystemModule;
+import de.eldoria.shepard.core.CoreModule;
+import de.eldoria.shepard.core.configuration.Config;
+import de.eldoria.shepard.core.configuration.Loader;
+import de.eldoria.shepard.modulebuilder.ModuleBuilder;
+import de.eldoria.shepard.util.ExitCode;
+import de.eldoria.shepard.webapi.ApiModule;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.security.auth.login.LoginException;
-import java.awt.Color;
-import java.util.List;
+import java.io.IOException;
 
+@Slf4j
 public final class ShepardBot {
     private static JDA jda;
-    private static Config config;
     private static ShepardBot instance;
-    private static Logger logger;
+    private SharedResources sharedResources;
+    private Config config;
+    private boolean loaded;
 
     private ShepardBot() {
-        try {
-            System.out.println("Startup in progress. Bot is heating up");
-            System.out.println("Initialising Logger");
-            logger = new Logger();
-            config = Loader.getConfigLoader().getConfig();
-            Thread.sleep(100);
-            ConsoleReader.initialize();
-            logger.info("Console initialized");
-
-            logger.info("Initialising JDA");
-
-            // Note: It is important to register your ReadyListener before building
-            if (config.debugActive()) {
-                org.apache.log4j.BasicConfigurator.configure();
-            }
-
-        } catch (InterruptedException e) {
-            System.out.println("Startup interrupted");
-        }
     }
 
-    private void setup() {
-        try {
-            initiateJda();
-        } catch (LoginException | InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ContextRegister.registerContexts();
-        ListenerRegister.registerListener();
-        logger.info("Registered " + CommandCollection.getInstance().getCommands().size() + " Commands");
-        logger.info("Registered " + KeyWordCollection.getInstance().getKeywords().size() + " Keywords");
-        logger.info("Registered on " + jda.getGuilds().size() + " Guilds!");
-
-        if (config.debugActive()) {
-            CommandCollection.getInstance().debug();
-            KeyWordCollection.getInstance().debug();
-        }
-
-        MessageSender.sendSimpleTextBox("Shepard meldet sich zum Dienst! Erwarte ihre Befehle!",
-                "Registered " + CommandCollection.getInstance().getCommands().size() + " Commands!"
-                        + System.lineSeparator()
-                        + "Registered " + KeyWordCollection.getInstance().getKeywords().size() + " Keywords!"
-                        + System.lineSeparator()
-                        + "Serving " + jda.getGuilds().size() + " Guilds!",
-                Color.GREEN, ShepardReactions.EXCITED, Normandy.getGeneralLogChannel());
-
-
-        logger.info("Setup complete!");
-    }
-
-    /**
-     * Returns the Shepard Bot instance.
-     *
-     * @return Instance of Shepard bot.
-     */
-    public static ShepardBot getInstance() {
-        return instance;
-    }
 
     /**
      * Main method.
@@ -93,45 +51,57 @@ public final class ShepardBot {
      * @param args Arguments.
      */
     public static void main(String[] args) {
-        instance = new ShepardBot();
+        try {
+            instance = new ShepardBot();
+
+            instance.setup();
+
+            instance.loaded = true;
+        } catch (Exception e) {
+            log.error("failed to start bot", e);
+        }
+    }
+
+    /**
+     * Checks if the bot is fully loaded.
+     *
+     * @return true if the bot instance is not null and {@link ShepardBot#loaded} is true.
+     *      False if the bot is starting or going to shut down.
+     */
+    public static boolean isLoaded() {
+        if (instance == null) {
+            return false;
+        }
+
+        return instance.loaded;
+    }
+
+    private void setup() throws IOException {
+        config = Loader.loadConfig();
+        try {
+            initiateJda();
+        } catch (LoginException | InterruptedException e) {
+            log.error(C.NOTIFY_ADMIN, "jda failed to log in", e);
+        }
+        sharedResources = SharedResources.build(this, jda, config);
+
+        loadModules();
 
 
-        instance.setup();
+        log.info(C.STATUS, "Registered {} Commands,\nRegistered on {} Guilds!",
+                sharedResources.getCommandHub().getCommands().size(),
+                jda.getGuilds().size());
 
-        BotListReporter.initialize();
+        log.info("Setup complete!");
     }
 
     private void initiateJda() throws LoginException, InterruptedException {
-        jda = new JDABuilder(config.getToken()).setMaxReconnectDelay(60).build();
+        jda = new JDABuilder(config.getGeneralSettings().getToken()).setMaxReconnectDelay(60).build();
 
         // optionally block until JDA is ready
         jda.awaitReady();
 
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver").getConstructor().newInstance();
-        } catch (Exception e) {
-            ShepardBot.getLogger().error(e.getMessage());
-        }
-
-        logger.info("JDA initialized");
-    }
-
-    /**
-     * Gets the jda.
-     *
-     * @return JDA object
-     */
-    public static JDA getJDA() {
-        return jda;
-    }
-
-    /**
-     * Get the config.
-     *
-     * @return Config object
-     */
-    public static Config getConfig() {
-        return config;
+        log.info(C.STATUS, "JDA initialized");
     }
 
     /**
@@ -139,40 +109,61 @@ public final class ShepardBot {
      *
      * @param listener List of listener.
      */
-    public void registerListener(List<ListenerAdapter> listener) {
-        for (ListenerAdapter l : listener) {
-            jda.addEventListener(l);
-        }
+    public void registerListener(ListenerAdapter listener) {
+        jda.addEventListener(listener);
     }
 
     /**
      * Close the shepard application.
+     *
+     * @param exitCode exit code do determine what should happen after shutdown
+     *                 0 = shutdown
+     *                 10 = restart
      */
-    public void shutdown() {
-        MessageSender.sendSimpleTextBox("Shepard verlässt die Brücke!!",
-                "",
-                Color.RED, ShepardReactions.ASLEEP, Normandy.getGeneralLogChannel());
+    public void shutdown(ExitCode exitCode) {
+        loaded = false;
+        if (exitCode == ExitCode.SHUTDOWN) {
+            log.info(C.STATUS, "shutting down");
+        }
+        if (exitCode == ExitCode.RESTART) {
+            log.info(C.STATUS, "restarting");
+        }
 
         if (jda != null) {
             jda.shutdown();
-            ShepardBot.getLogger().info("JDA shut down. Closing Application in 5 Seconds!");
+            log.info(C.STATUS, "JDA shut down. Closing Application in 2 Seconds!");
         }
         jda = null;
         try {
-            Thread.sleep(5000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
-            ShepardBot.getLogger().info("Shutdown interrupted!");
+            log.error("Shutdown interrupted!");
         }
 
-        System.exit(0);
+        System.exit(exitCode.code);
     }
 
-    /**
-     * Get the logger instance.
-     *
-     * @return logger
-     */
-    public static Logger getLogger() {
-        return logger;
+    private void loadModules() {
+        // Start base module without dependencies
+        loadModule(new CoreModule(), new ReactionActionModule(), new StandaloneBaseModules());
+
+        // Start command modules
+        loadModule(new ChangelogModule(), new CommandSettingsModule(), new GreetingModule(), new GuessGameModule(),
+                new KudoModule(), new LanguageModule(), new MonitoringModule(), new PrefixModule(),
+                new PresenceModule(), new PrivateMessagesModule(), new QuoteModule(), new ReminderModule(),
+                new RepeatCommandModule(), new TicketSystemModule(), new StandaloneCommandsModule());
+
+        // start api services
+        loadModule(new ApiModule());
+
+        // start command dispatching. enables the bot to receive commands
+        loadModule(new CommandDispatchingModule());
+    }
+
+    private void loadModule(ModuleBuilder... builders) {
+        for (ModuleBuilder builder : builders) {
+            builder.buildModule(sharedResources);
+            log.debug("Loaded {}", builder.getClass().getSimpleName());
+        }
     }
 }

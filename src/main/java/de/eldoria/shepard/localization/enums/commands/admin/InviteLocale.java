@@ -26,6 +26,10 @@ public enum InviteLocale {
      */
     A_CODE("command.invite.argument.codeOfInvite"),
     /**
+     * Localization key for argument invite code or url.
+     */
+    AD_CODE("command.invite.argumentDescription.codeOfInvite"),
+    /**
      * Localization key for argument invite name.
      */
     A_INVITE_NAME("command.invite.argument.inviteName"),

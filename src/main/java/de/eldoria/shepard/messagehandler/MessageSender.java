@@ -1,14 +1,15 @@
 package de.eldoria.shepard.messagehandler;
 
-import de.eldoria.shepard.ShepardBot;
-import de.eldoria.shepard.collections.Normandy;
-import de.eldoria.shepard.database.types.GreetingSettings;
+import de.eldoria.shepard.C;
+import de.eldoria.shepard.commandmodules.greeting.types.GreetingSettings;
+import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.util.FileHelper;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import de.eldoria.shepard.util.Replacer;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -20,12 +21,14 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
 import java.awt.Color;
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
+import static java.lang.System.lineSeparator;
 
+@Slf4j
 public final class MessageSender {
-
 
     /**
      * Sends a textbox to a channel.
@@ -162,17 +165,19 @@ public final class MessageSender {
         try {
             channel.sendMessage(builder.build()).queue();
         } catch (ErrorResponseException e) {
-            ShepardBot.getLogger().error(e.getMessage());
+            log.error("failed to send error embed", e);
         }
     }
 
     /**
      * Sends a simple error to a channel.
      *
+     * @param config config of bot
      * @param error   Error message
      * @param channel channel
      */
-    public static void handlePermissionException(InsufficientPermissionException error, TextChannel channel) {
+    public static void handlePermissionException(Config config, InsufficientPermissionException error,
+                                                 TextChannel channel) {
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
                 .setTitle("ERROR!")
                 .setDescription(ErrorType.GENERAL.taggedMessage)
@@ -182,16 +187,19 @@ public final class MessageSender {
         try {
             channel.sendMessage(builder.build()).queue();
         } catch (InsufficientPermissionException e) {
-            channel.getGuild().getOwner().getUser().openPrivateChannel().queue(a -> {
-                EmbedBuilder privateBuilder = new EmbedBuilder()
-                        .setTitle("ERROR!")
-                        .setDescription("There was an Error on your server **" + channel.getGuild().getName()
-                                + "** in Channel **" + channel.getName() + "**, while doing my job.")
-                        .addField("Error", error.getMessage(), false)
-                        .setColor(Color.red)
-                        .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
-                a.sendMessage(privateBuilder.build()).queue();
-            });
+            if (Arrays.stream(config.getBotlist().getGuildIds())
+                    .noneMatch(id -> id == channel.getGuild().getIdLong())) {
+                channel.getGuild().getOwner().getUser().openPrivateChannel().queue(a -> {
+                    EmbedBuilder privateBuilder = new EmbedBuilder()
+                            .setTitle("ERROR!")
+                            .setDescription("There was an Error on your server **" + channel.getGuild().getName()
+                                    + "** in Channel **" + channel.getName() + "**, while doing my job.")
+                            .addField("Error", error.getMessage(), false)
+                            .setColor(Color.red)
+                            .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
+                    a.sendMessage(privateBuilder.build()).queue();
+                });
+            }
         }
     }
 
@@ -228,12 +236,12 @@ public final class MessageSender {
      * @param messageContext context of command
      */
     public static void logCommand(String label, String[] args, MessageEventDataWrapper messageContext) {
-        String command = messageContext.getAuthor().getAsTag()
-                + " executed command \"" + label + " " + String.join(" ", args)
-                + "\" on  guild " + messageContext.getGuild().getName() + " ("
-                + messageContext.getGuild().getId() + ")";
-        ShepardBot.getLogger().command(command);
-        Normandy.getCommandLogChannel().sendMessage(command).queue();
+        var mention = messageContext.getAuthor().getAsTag();
+        var cmd = messageContext.getMessage().getContentStripped();
+        var guild = messageContext.getGuild().getName();
+        var guildId = messageContext.getGuild().getId();
+
+        log.debug(C.COMMAND, "command execution by {} in guild {}({}): {}", mention, guild, guildId, cmd);
     }
 
     /**
@@ -243,23 +251,11 @@ public final class MessageSender {
      * @param channel channel
      */
     public static void sendMessage(String message, TextChannel channel) {
-        if (message.isEmpty()) return;
+        if (message.isEmpty() || channel == null) return;
 
         String localizedMessage = TextLocalizer.localizeAll(message, channel);
 
-        String[] messageParts = localizedMessage.split(System.lineSeparator());
-        StringBuilder messagePart = new StringBuilder();
-        for (int i = 0; i < messageParts.length; i++) {
-            if (messagePart.length() + messageParts[i].length() < 1024) {
-                messagePart.append(messageParts[i]).append(System.lineSeparator());
-            } else {
-                channel.sendMessage(messagePart.toString()).queue();
-                messagePart = new StringBuilder();
-                i--;
-            }
-        }
-
-        channel.sendMessage(messagePart.toString()).queue();
+        sendSplitMessage(localizedMessage, channel);
     }
 
     /**
@@ -271,11 +267,15 @@ public final class MessageSender {
     public static void sendMessageToChannel(String message, MessageChannel channel) {
         if (message.isEmpty()) return;
 
-        String[] messageParts = message.split(System.lineSeparator());
+        sendSplitMessage(message, channel);
+    }
+
+    private static void sendSplitMessage(String message, MessageChannel channel) {
+        String[] messageParts = message.split(lineSeparator());
         StringBuilder messagePart = new StringBuilder();
         for (int i = 0; i < messageParts.length; i++) {
             if (messagePart.length() + messageParts[i].length() < 1024) {
-                messagePart.append(messageParts[i]).append(System.lineSeparator());
+                messagePart.append(messageParts[i]).append(lineSeparator());
             } else {
                 channel.sendMessage(messagePart.toString()).queue();
                 messagePart = new StringBuilder();
