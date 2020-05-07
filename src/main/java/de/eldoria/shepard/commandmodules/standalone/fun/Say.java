@@ -31,11 +31,10 @@ public class Say extends Command implements Executable {
 
     @Override
     public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        MessageSender.sendMessage(ArgumentParser.getMessage(args, 0), messageContext.getTextChannel());
+        messageContext.getTextChannel().sendMessage(ArgumentParser.getMessage(args, 0)).queue();
 
         if (label.equalsIgnoreCase("sayd")) {
             messageContext.getMessage().delete().queue();
         }
-
     }
 }
