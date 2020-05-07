@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.awt.Color;
 import java.time.temporal.TemporalAccessor;
 

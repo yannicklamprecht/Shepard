@@ -14,6 +14,14 @@ public enum ManageContextLocale {
      */
     C_ADMIN("command.manageContext.subcommand.setAdminOnly"),
     /**
+     * Localization key for subcommand setUserCooldown.
+     */
+    C_USER_COOLDOWN("command.manageContext.subcommand.setUserCooldown"),
+    /**
+     * Localization key for subcommand setGuildCooldown.
+     */
+    C_GUILD_COOLDOWN("command.manageContext.subcommand.setGuildCooldown"),
+    /**
      * Localization key for message activate admin.
      */
     M_ACTIVATED_ADMIN("command.manageContext.message.activatedAdmin"),
@@ -28,7 +36,15 @@ public enum ManageContextLocale {
     /**
      * Localization key for message deactivated nsfw.
      */
-    M_DEACTIVATED_NSFW("command.manageContext.message.deactivatedNsfw");
+    M_DEACTIVATED_NSFW("command.manageContext.message.deactivatedNsfw"),
+    /**
+     * Localization key for message set user cooldown.
+     */
+    M_SET_USER_COOLDOWN("command.manageContext.message.setUserCooldown"),
+    /**
+     * Localization key for message set guild cooldown.
+     */
+    M_SET_GUILD_COOLDOWN("command.manageContext.message.setGuildCooldown");
 
 
     /**

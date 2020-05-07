@@ -12,7 +12,8 @@ public enum QuoteLocale {
     /**
      * Localization key for message no quote found.
      */
-    M_NO_QUOTE_FOUND("command.quote.message.noQuoteFound");
+    M_NO_QUOTE_FOUND("command.quote.message.noQuoteFound"),
+    M_NO_QUOTE_DEFINED("command.quote.message.noQuoteDefined");
 
     /**
      * Get the escaped locale code for auto translation.

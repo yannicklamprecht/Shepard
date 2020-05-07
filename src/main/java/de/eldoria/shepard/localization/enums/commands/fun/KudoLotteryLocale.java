@@ -5,6 +5,8 @@ public enum KudoLotteryLocale {
      * Localization key for description.
      */
     DESCRIPTION("command.kudoLottery.description"),
+    C_MAX_BET("command.kudoLottery.command.maxBet"),
+    C_DEFAULT("command.kudoLottery.command.default"),
     /**
      * Localization key for message lottery running.
      */

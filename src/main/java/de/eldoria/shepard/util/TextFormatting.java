@@ -1,6 +1,9 @@
 package de.eldoria.shepard.util;
 
 import de.eldoria.shepard.database.types.Rank;
+import de.eldoria.shepard.localization.enums.WordsLocale;
+import de.eldoria.shepard.localization.util.TextLocalizer;
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -112,18 +115,22 @@ public final class TextFormatting {
      * @param columnNames Determines the name and amount of the columns. Empty column names are possible
      * @return new Table builder object.
      */
-    public static TableBuilder getTableBuilder(Collection collection, @NotNull String... columnNames) {
+    public static TableBuilder getTableBuilder(Collection<?> collection, @NotNull String... columnNames) {
         return new TableBuilder(collection, columnNames);
     }
 
     /**
      * Get a rank table.
      *
-     * @param ranks list of ranks for table
+     * @param ranks          list of ranks for table
+     * @param messageContext message context for localisation
      * @return table of ranks
      */
-    public static String getRankTable(List<Rank> ranks) {
-        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(ranks, "Rank", "User", "Score");
+    public static String getRankTable(List<Rank> ranks, MessageEventDataWrapper messageContext) {
+        TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(ranks,
+                TextLocalizer.localizeAllAndReplace(WordsLocale.RANK.tag, messageContext.getGuild()),
+                TextLocalizer.localizeAllAndReplace(WordsLocale.USER.tag, messageContext.getGuild()),
+                TextLocalizer.localizeAllAndReplace(WordsLocale.POINTS.tag, messageContext.getGuild()));
 
         int ranking = 1;
         for (Rank rank : ranks) {
@@ -156,11 +163,20 @@ public final class TextFormatting {
          * @param collection  collection for row amount
          * @param columnNames column names for column amount
          */
-        TableBuilder(Collection collection, String... columnNames) {
+        TableBuilder(Collection<?> collection, String... columnNames) {
             table = new String[collection.size() + 1][columnNames.length];
             table[0] = columnNames;
         }
 
+        /**
+         * Moves the row pointer one step forward an set the row content.
+         *
+         * @param columnEntries Entries for the columns in the current row
+         */
+        public void setNextRow(String... columnEntries) {
+            next();
+            setRow(columnEntries);
+        }
 
         /**
          * Set the current row. To go a row forward user next().
@@ -184,30 +200,31 @@ public final class TextFormatting {
         /**
          * The pointer starts at 0. Row zero can only be set on object creation.
          * use next() before you set the first row.
-         *
-         * @return true when there is one more row and the pointer moved forward.
          */
-        public boolean next() {
+        public void next() {
             rowPointer++;
-            return table.length > rowPointer;
         }
 
         /**
          * Set the markdown for the table code block.
          *
          * @param markdown Markdown code (i.e. java, md, csharp)
+         * @return self instance with highlighting set
          */
-        public void setHighlighting(@NotNull String markdown) {
+        public TableBuilder setHighlighting(@NotNull String markdown) {
             this.markdown = markdown;
+            return this;
         }
 
         /**
          * Set the space between the columns.
          *
          * @param padding number between 1 and 10
+         * @return self instance with padding set
          */
-        public void setPadding(int padding) {
+        public TableBuilder setPadding(int padding) {
             this.padding = Math.min(10, Math.max(1, padding));
+            return this;
         }
 
         /**

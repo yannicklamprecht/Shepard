@@ -1,10 +1,13 @@
 package de.eldoria.shepard.util;
 
+import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.util.Objects;
 
-public class UniqueMessageIdentifier {
+public final class UniqueMessageIdentifier {
     private final long guildId;
     private final long channelId;
     private final long messageId;
@@ -15,10 +18,38 @@ public class UniqueMessageIdentifier {
      * @param channel channel where the message is in.
      * @param message message id
      */
-    public UniqueMessageIdentifier(TextChannel channel, long message) {
+    private UniqueMessageIdentifier(TextChannel channel, long message) {
         guildId = channel.getGuild().getIdLong();
         channelId = channel.getIdLong();
         messageId = message;
+    }
+
+    /**
+     * Get a unique message identifier.
+     * @param messageContext event data
+     * @return a new unique message identifier for the message
+     */
+    public static UniqueMessageIdentifier get(MessageEventDataWrapper messageContext) {
+        return new UniqueMessageIdentifier(messageContext.getTextChannel(), messageContext.getMessageIdLong());
+    }
+
+    /**
+     * Creates a new unique message identifier.
+     * @param messageContext event data
+     * @return a new unique message identifier for the message
+     */
+    public static UniqueMessageIdentifier get(GuildMessageReactionAddEvent messageContext) {
+        return new UniqueMessageIdentifier(messageContext.getChannel(), messageContext.getMessageIdLong());
+    }
+
+    /**
+     * Creates a new unique message identifier.
+     *
+     * @param message message to create the identifier
+     * @return a new unique message identifier for the message
+     */
+    public static UniqueMessageIdentifier get(Message message) {
+        return new UniqueMessageIdentifier(message.getTextChannel(), message.getIdLong());
     }
 
     /**

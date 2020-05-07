@@ -21,6 +21,7 @@ public enum TicketLocale {
      * Localization key for argument ticketType.
      */
     A_TICKET_TYPE("command.ticket.argument.ticketType"),
+    AD_TICKET_TYPE("command.ticket.argumentDescription.ticketType"),
     /**
      * Localization key for argument close.
      */
@@ -56,7 +57,8 @@ public enum TicketLocale {
     /**
      * Localization key for message ticket support roles.
      */
-    M_TICKET_SUPPORT_ROLES("command.ticket.message.ticketSupporterRoles");
+    M_TICKET_SUPPORT_ROLES("command.ticket.message.ticketSupporterRoles"),
+    M_CATEGORY_NOT_FOUND("command.ticket.message.categoryNotFound");
 
     /**
      * Get the escaped locale code for auto translation.

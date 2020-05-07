@@ -2,7 +2,9 @@ package de.eldoria.shepard.util;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class VerifierTest {
 
@@ -29,10 +31,12 @@ class VerifierTest {
     void checkAndGetBoolean0() {
         assertFalse(Verifier.checkAndGetBoolean("false").stateAsBoolean);
     }
+
     @Test
     void checkAndGetBoolean1() {
         assertFalse(Verifier.checkAndGetBoolean("tru").stateAsBoolean);
     }
+
     @Test
     void checkAndGetBoolean2() {
         assertTrue(Verifier.checkAndGetBoolean("true").stateAsBoolean);
