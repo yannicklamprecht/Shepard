@@ -8,7 +8,8 @@ public enum SayLocale {
     /**
      * Localization key for argument say message.
      */
-    A_SAY("command.say.argument.say");
+    A_SAY("command.say.argument.say"),
+    A_MENTION("command.say.message.mention");
 
     /**
      * Get the escaped locale code for auto translation.
