@@ -7,7 +7,6 @@ import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
 import static de.eldoria.shepard.localization.enums.commands.fun.SayLocale.A_SAY;
@@ -31,7 +30,9 @@ public class Say extends Command implements Executable {
 
     @Override
     public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        messageContext.getTextChannel().sendMessage(ArgumentParser.getMessage(args, 0)).queue();
+        String message = ArgumentParser.getMessage(args, 0).replace("@", "");
+
+        messageContext.getTextChannel().sendMessage(message).queue();
 
         if (label.equalsIgnoreCase("sayd")) {
             messageContext.getMessage().delete().queue();
