@@ -61,7 +61,7 @@ public final class GuessGameData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return hentai image object
      */
-    public GuessGameImage getHentaiImage(MessageEventDataWrapper messageContext) {
+    public GuessGameImage getImage(MessageEventDataWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_hentai_image_data()")) {
             ResultSet result = statement.executeQuery();
@@ -84,7 +84,7 @@ public final class GuessGameData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return hentai image object
      */
-    public GuessGameImage getHentaiImage(String link, MessageEventDataWrapper messageContext) {
+    public GuessGameImage getImage(String link, MessageEventDataWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_image_set(?)")) {
             statement.setString(1, link);
@@ -108,7 +108,7 @@ public final class GuessGameData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeHentaiImage(String imageUrl, MessageEventDataWrapper messageContext) {
+    public boolean removeImage(String imageUrl, MessageEventDataWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_hentai_image(?)")) {
             statement.setString(1, imageUrl);

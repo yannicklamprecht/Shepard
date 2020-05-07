@@ -42,10 +42,7 @@ public class RepeatCommand extends Command implements Executable, ReqLatestComma
             return;
         }
 
-        if (latestCommand.getCommand().getCommandName().equals(this.getCommandName())) {
-            return;
-        }
-        commands.runCommand(
+        commands.dispatchCommand(
                 latestCommand.getCommand(), latestCommand.getLabel(), latestCommand.getArgs(), messageContext);
     }
 

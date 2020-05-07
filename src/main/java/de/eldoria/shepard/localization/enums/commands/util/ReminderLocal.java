@@ -12,7 +12,7 @@ public enum ReminderLocal {
     /**
      * Localization key for subcommand remove.
      */
-    C_REMOVE("command.reminder.subcommand.remove"),
+    C_DELETE("command.reminder.subcommand.remove"),
     /**
      * Localization key for subcommand list.
      */

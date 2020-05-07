@@ -39,7 +39,7 @@ public class Upgrade extends Command implements ExecutableAsync, ReqConfig, ReqS
 
     @Override
     public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        if (config.isBeta()) {
+        if (config.getGeneralSettings().isBeta()) {
             MessageSender.sendMessage("Only on main bot!", messageContext.getTextChannel());
             return;
         }

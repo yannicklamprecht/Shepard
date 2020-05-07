@@ -1,14 +1,17 @@
 package de.eldoria.shepard.commandmodules.commandsettings.data;
 
 import de.eldoria.shepard.commandmodules.Command;
+import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.commandsettings.types.CommandSettings;
 import de.eldoria.shepard.commandmodules.commandsettings.types.ListType;
 import de.eldoria.shepard.database.QueryObject;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
 import javax.sql.DataSource;
@@ -21,9 +24,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.database.DbUtil.getSnowflakeArray;
 import static de.eldoria.shepard.database.DbUtil.handleException;
 
 public final class CommandData extends QueryObject {
@@ -44,7 +47,7 @@ public final class CommandData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean addCommandUser(Command context, User user, MessageEventDataWrapper messageContext) {
+    public boolean addUser(Command context, User user, MessageEventDataWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -67,8 +70,8 @@ public final class CommandData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeContextUser(Command context, User user,
-                                     MessageEventDataWrapper messageContext) {
+    public boolean removeUser(Command context, User user,
+                              MessageEventDataWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -91,8 +94,8 @@ public final class CommandData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean addContextGuild(Command context, Guild guild,
-                                   MessageEventDataWrapper messageContext) {
+    public boolean addGuild(Command context, Guild guild,
+                            MessageEventDataWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -108,16 +111,16 @@ public final class CommandData extends QueryObject {
     }
 
     /**
-     * Removes a guild from the context list.
+     * Removes a guild from the command list.
      *
-     * @param context        context to change
+     * @param command        command to change
      * @param guild          guild id to remove
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeContextGuild(Command context, Guild guild,
-                                      MessageEventDataWrapper messageContext) {
-        String commandIdentifier = context.getCommandIdentifier();
+    public boolean removeGuild(Command command, Guild guild,
+                               MessageEventDataWrapper messageContext) {
+        String commandIdentifier = command.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.remove_command_guild(?,?)")) {
@@ -132,21 +135,21 @@ public final class CommandData extends QueryObject {
     }
 
     /**
-     * Adds a context user permission on a guild.
+     * Adds a command user permission on a guild.
      *
-     * @param context        context to change
+     * @param command        command identifier. A command identifier can be the root
+     *                       command {@link Command#getCommandIdentifier()} or a string containing the command
+     *                       and the {@link SubCommand#getSubCommandIdentifier()} separated by a ".".
      * @param guild          guild id where the permission should be added
      * @param user           user which should be added
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean addContextUserPermission(Command context, Guild guild,
-                                            User user, MessageEventDataWrapper messageContext) {
-        String commandIdentifier = context.getCommandIdentifier();
-
+    public boolean addUserPermission(String command, Guild guild,
+                                     User user, MessageEventDataWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.add_command_user_permission(?,?,?)")) {
-            statement.setString(1, commandIdentifier);
+            statement.setString(1, command);
             statement.setString(2, guild.getId());
             statement.setString(3, user.getId());
             statement.execute();
@@ -158,21 +161,21 @@ public final class CommandData extends QueryObject {
     }
 
     /**
-     * Removes a context user permission on a guild.
+     * Removes a command user permission on a guild.
      *
-     * @param context        context to change
+     * @param command        command identifier. A command identifier can be the root
+     *                       command {@link Command#getCommandIdentifier()} or a string containing the command
+     *                       and the {@link SubCommand#getSubCommandIdentifier()} separated by a ".".
      * @param guild          guild id where the permission should be removed
      * @param user           user which should be removed
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeContextUserPermission(Command context, Guild guild,
-                                               User user, MessageEventDataWrapper messageContext) {
-        String commandIdentifier = context.getCommandIdentifier();
-
+    public boolean removeUserPermission(String command, Guild guild,
+                                        User user, MessageEventDataWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.remove_command_user_permission(?,?,?)")) {
-            statement.setString(1, commandIdentifier);
+            statement.setString(1, command);
             statement.setString(2, guild.getId());
             statement.setString(3, user.getId());
             statement.execute();
@@ -184,21 +187,21 @@ public final class CommandData extends QueryObject {
     }
 
     /**
-     * Adds a context role permission on a guild.
+     * Adds a command role permission on a guild.
      *
-     * @param context        context to change
+     * @param command        command identifier. A command identifier can be the root
+     *                       command {@link Command#getCommandIdentifier()} or a string containing the command
+     *                       and the {@link SubCommand#getSubCommandIdentifier()} separated by a ".".
      * @param guild          guild id where the permission should be added
      * @param role           role which should be added
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean addContextRolePermission(Command context, Guild guild,
-                                            Role role, MessageEventDataWrapper messageContext) {
-        String commandIdentifier = context.getCommandIdentifier();
-
+    public boolean addRolePermission(String command, Guild guild,
+                                     Role role, MessageEventDataWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.add_command_role_permission(?,?,?)")) {
-            statement.setString(1, commandIdentifier);
+            statement.setString(1, command);
             statement.setString(2, guild.getId());
             statement.setString(3, role.getId());
             statement.execute();
@@ -210,21 +213,19 @@ public final class CommandData extends QueryObject {
     }
 
     /**
-     * Removes a context role permission on a guild.
+     * Removes a command role permission on a guild.
      *
-     * @param context        context to change
+     * @param command        command to change
      * @param guild          guild id where the permission should be removed
      * @param role           role which should be removed
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeContextRolePermission(Command context, Guild guild,
-                                               Role role, MessageEventDataWrapper messageContext) {
-        String commandIdentifier = context.getCommandIdentifier();
-
+    public boolean removeRolePermission(String command, Guild guild,
+                                        Role role, MessageEventDataWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.remove_command_role_permission(?,?,?)")) {
-            statement.setString(1, commandIdentifier);
+            statement.setString(1, command);
             statement.setString(2, guild.getId());
             statement.setString(3, role.getId());
             statement.execute();
@@ -243,8 +244,8 @@ public final class CommandData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean setContextAdmin(Command context, boolean state,
-                                   MessageEventDataWrapper messageContext) {
+    public boolean setAdmin(Command context, boolean state,
+                            MessageEventDataWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -267,8 +268,8 @@ public final class CommandData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean setContextNsfw(Command context, boolean state,
-                                  MessageEventDataWrapper messageContext) {
+    public boolean setNsfw(Command context, boolean state,
+                           MessageEventDataWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -291,8 +292,8 @@ public final class CommandData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean setContextUserCheckActive(Command context, boolean state,
-                                             MessageEventDataWrapper messageContext) {
+    public boolean setUserCheckActive(Command context, boolean state,
+                                      MessageEventDataWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -315,8 +316,8 @@ public final class CommandData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean setContextGuildCheckActive(Command context, boolean state,
-                                              MessageEventDataWrapper messageContext) {
+    public boolean setGuildCheckActive(Command context, boolean state,
+                                       MessageEventDataWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -339,8 +340,8 @@ public final class CommandData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean setContextUserListType(Command context, ListType listType,
-                                          MessageEventDataWrapper messageContext) {
+    public boolean setUserListType(Command context, ListType listType,
+                                   MessageEventDataWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -363,8 +364,8 @@ public final class CommandData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean setContextGuildListType(Command context, ListType listType,
-                                           MessageEventDataWrapper messageContext) {
+    public boolean setGuildListType(Command context, ListType listType,
+                                    MessageEventDataWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -387,8 +388,8 @@ public final class CommandData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean setContextGuildCooldown(Command context, int seconds,
-                                           MessageEventDataWrapper messageContext) {
+    public boolean setGuildCooldown(Command context, int seconds,
+                                    MessageEventDataWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -411,8 +412,8 @@ public final class CommandData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean setContextUserCooldown(Command context, int seconds,
-                                          MessageEventDataWrapper messageContext) {
+    public boolean setUserCooldown(Command context, int seconds,
+                                   MessageEventDataWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -429,21 +430,21 @@ public final class CommandData extends QueryObject {
 
     /**
      * Sets a permission override on the {@link Guild} for the
-     * specific {@link Command} Context name.
+     * specific command or subcommand.
      *
-     * @param context        context to change.
+     * @param command        command identifier. A command identifier can be the root
+     *                       command {@link Command#getCommandIdentifier()} or a string containing the command
+     *                       and the {@link SubCommand#getSubCommandIdentifier()} separated by a ".".
      * @param state          state
      * @param guild          guild to add
-     * @param messageContext message context for error handling
+     * @param messageContext message command for error handling
      * @return true if the database access was successful
      */
-    public boolean setPermissionOverride(Command context, boolean state,
+    public boolean setPermissionOverride(String command, boolean state,
                                          Guild guild, MessageEventDataWrapper messageContext) {
-        String commandIdentifier = context.getCommandIdentifier();
-
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.set_permission_override(?,?,?)")) {
-            statement.setString(1, commandIdentifier);
+            statement.setString(1, command);
             statement.setString(2, guild.getId());
             statement.setBoolean(3, state);
             statement.execute();
@@ -517,184 +518,13 @@ public final class CommandData extends QueryObject {
     }
 
     // Access Validation
-    public boolean isNsfw(Command command) {
-        String commandIdentifier = command.getCommandIdentifier();
 
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.is_nsfw(?)")) {
-            statement.setString(1, commandIdentifier);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getBoolean(1);
-            }
-        } catch (SQLException e) {
-            handleException(e, null);
-        }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
-    }
-
-    public boolean isAdminCommand(Command command) {
-        String commandIdentifier = command.getCommandIdentifier();
-
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.is_admin_command(?)")) {
-            statement.setString(1, commandIdentifier);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getBoolean(1);
-            }
-        } catch (SQLException e) {
-            handleException(e, null);
-        }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
-    }
-
-    public boolean isUserCheckActive(Command command) {
-        String commandIdentifier = command.getCommandIdentifier();
-
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.is_user_check_active(?)")) {
-            statement.setString(1, commandIdentifier);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getBoolean(1);
-            }
-        } catch (SQLException e) {
-            handleException(e, null);
-        }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
-    }
-
-    public boolean isUserOnList(Command command, User user) {
-        String commandIdentifier = command.getCommandIdentifier();
-
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.is_user_on_list(?,?)")) {
-            statement.setString(1, commandIdentifier);
-            statement.setLong(2, user.getIdLong());
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getBoolean(1);
-            }
-        } catch (SQLException e) {
-            handleException(e, null);
-        }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
-    }
-
-    public ListType getUserListType(Command command) {
-        String commandIdentifier = command.getCommandIdentifier();
-
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.get_user_list_type(?)")) {
-            statement.setString(1, commandIdentifier);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return ListType.getType(resultSet.getString(1));
-            }
-        } catch (SQLException e) {
-            handleException(e, null);
-        }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
-    }
-
-    public boolean isGuildCheckActive(Command command) {
-        String commandIdentifier = command.getCommandIdentifier();
-
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.is_guild_check_active(?)")) {
-            statement.setString(1, commandIdentifier);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getBoolean(1);
-            }
-        } catch (SQLException e) {
-            handleException(e, null);
-        }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
-    }
-
-    public boolean isGuildOnList(Command command, Guild guild) {
-        String commandIdentifier = command.getCommandIdentifier();
-
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.is_guild_on_list(?,?)")) {
-            statement.setString(1, commandIdentifier);
-            statement.setLong(2, guild.getIdLong());
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getBoolean(1);
-            }
-        } catch (SQLException e) {
-            handleException(e, null);
-        }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
-    }
-
-    public ListType getGuildListType(Command command) {
-        String commandIdentifier = command.getCommandIdentifier();
-
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.get_guild_list_type(?)")) {
-            statement.setString(1, commandIdentifier);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return ListType.getType(resultSet.getString(1));
-            }
-        } catch (SQLException e) {
-            handleException(e, null);
-        }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
-    }
-
-    public boolean hasCooldown(Command command) {
-        String commandIdentifier = command.getCommandIdentifier();
-
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.has_cooldown(?)")) {
-            statement.setString(1, commandIdentifier);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getBoolean(1);
-            }
-        } catch (SQLException e) {
-            handleException(e, null);
-        }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
-    }
-
-    public boolean hasGuildCooldown(Command command) {
-        String commandIdentifier = command.getCommandIdentifier();
-
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.has_guild_cooldown(?)")) {
-            statement.setString(1, commandIdentifier);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getBoolean(1);
-            }
-        } catch (SQLException e) {
-            handleException(e, null);
-        }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
-    }
-
-    public boolean hasUserCooldown(Command command) {
-        String commandIdentifier = command.getCommandIdentifier();
-
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.has_user_cooldown(?)")) {
-            statement.setString(1, commandIdentifier);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getBoolean(1);
-            }
-        } catch (SQLException e) {
-            handleException(e, null);
-        }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
-    }
-
+    /**
+     * Get the user cooldown of a command.
+     *
+     * @param command command to get the cooldown
+     * @return cooldown as integer. May be 0, but not negative;
+     */
     public int getUserCooldown(Command command) {
         String commandIdentifier = command.getCommandIdentifier();
 
@@ -703,7 +533,11 @@ public final class CommandData extends QueryObject {
             statement.setString(1, commandIdentifier);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return resultSet.getInt(1);
+                int cooldown = resultSet.getInt(1);
+                if (cooldown < 0) {
+                    throw new IllegalStateException("User cooldown of command " + commandIdentifier + " is negative");
+                }
+                return cooldown;
             }
         } catch (SQLException e) {
             handleException(e, null);
@@ -711,6 +545,12 @@ public final class CommandData extends QueryObject {
         throw new RuntimeException(commandIdentifier + " has no complete setup");
     }
 
+    /**
+     * Get the guild cooldown of a command.
+     *
+     * @param command command to get the cooldown
+     * @return cooldown as integer. May be 0, but not negative;
+     */
     public int getGuildCooldown(Command command) {
         String commandIdentifier = command.getCommandIdentifier();
 
@@ -719,7 +559,11 @@ public final class CommandData extends QueryObject {
             statement.setString(1, commandIdentifier);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return resultSet.getInt(1);
+                int cooldown = resultSet.getInt(1);
+                if (cooldown < 0) {
+                    throw new IllegalStateException("Guild cooldown of command " + commandIdentifier + " is negative");
+                }
+                return cooldown;
             }
         } catch (SQLException e) {
             handleException(e, null);
@@ -728,94 +572,20 @@ public final class CommandData extends QueryObject {
     }
 
     // Server settings
-    public Optional<Boolean> getPermissionOverride(Command command, Guild guild) {
-        if (!hasPermissionOverride(command, guild)) {
-            return Optional.empty();
-        }
 
-        String commandIdentifier = command.getCommandIdentifier();
-
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.get_permission_override(?)")) {
-            statement.setString(1, commandIdentifier);
-            statement.setLong(2, guild.getIdLong());
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return Optional.of(resultSet.getBoolean(1));
-            }
-        } catch (SQLException e) {
-            handleException(e, null);
-        }
-        return Optional.of(true);
-    }
-
-    public boolean hasPermissionOverride(Command command, Guild guild) {
-        String commandIdentifier = command.getCommandIdentifier();
-
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.has_permission_override(?,?)")) {
-            statement.setString(1, commandIdentifier);
-            statement.setLong(2, guild.getIdLong());
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getBoolean(1);
-            }
-        } catch (SQLException e) {
-            handleException(e, null);
-        }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
-    }
-
-    public boolean hasUserPermission(Command command, Guild guild, User user) {
-        String commandIdentifier = command.getCommandIdentifier();
-
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.has_user_permission(?,?,?)")) {
-            statement.setString(1, commandIdentifier);
-            statement.setLong(2, guild.getIdLong());
-            statement.setLong(3, user.getIdLong());
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getBoolean(1);
-            }
-        } catch (SQLException e) {
-            handleException(e, null);
-        }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
-    }
-
-    public boolean hasUserPermissionRole(Command command, Member member) {
-        String commandIdentifier = command.getCommandIdentifier();
-
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.has_user_permission_role(?,?,?)")) {
-            statement.setString(1, commandIdentifier);
-            statement.setLong(2, member.getGuild().getIdLong());
-            Long[] roles = new Long[member.getRoles().size()];
-            Array roleIds = conn.createArrayOf("bigint", member.getRoles()
-                    .stream().map(ISnowflake::getIdLong).collect(Collectors.toList()).toArray(roles));
-            statement.setArray(3, roleIds);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getBoolean(1);
-            }
-        } catch (SQLException e) {
-            handleException(e, null);
-        }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
-    }
-
-    public boolean requirePermission(Command command, Guild guild) {
-        Optional<Boolean> permissionOverride = getPermissionOverride(command, guild);
-        return permissionOverride.orElseGet(() -> isAdminCommand(command));
-    }
-
-    public List<String> getUserPermissionList(Command command, Guild guild) {
-        String commandIdentifier = command.getCommandIdentifier();
-
+    /**
+     * Retrieve a list of all users which have the permission to access this command or subcommand.
+     *
+     * @param command command identifier. A command identifier can be the root
+     *                command {@link Command#getCommandIdentifier()} or a string containing the command
+     *                and the {@link SubCommand#getSubCommandIdentifier()} separated by a ".".
+     * @param guild   guild to check in
+     * @return List of user ids. Can be empty.
+     */
+    public List<String> getUserPermissionList(String command, Guild guild) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.get_user_permission_list(?,?)")) {
-            statement.setString(1, commandIdentifier);
+            statement.setString(1, command);
             statement.setLong(2, guild.getIdLong());
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -829,32 +599,53 @@ public final class CommandData extends QueryObject {
         } catch (SQLException e) {
             handleException(e, null);
         }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
+        throw new RuntimeException(command + " has no complete setup");
     }
 
-    public List<String> getRolePermissionList(Command command, Guild guild) {
-        String commandIdentifier = command.getCommandIdentifier();
-
+    /**
+     * Retrieve a list of all roles which have the permission to access this command or subcommand.
+     *
+     * @param command command identifier. A command identifier can be the root
+     *                command {@link Command#getCommandIdentifier()} or a string containing the command
+     *                and the {@link SubCommand#getSubCommandIdentifier()} separated by a ".".
+     * @param guild   guild to check in
+     * @return List of role ids. Can be empty.
+     */
+    public List<String> getRolePermissionList(String command, Guild guild) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.get_role_permission_list(?,?)")) {
-            statement.setString(1, commandIdentifier);
+            statement.setString(1, command);
             statement.setLong(2, guild.getIdLong());
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return Arrays.stream((Long[]) resultSet.getArray(1).getArray()).map(String::valueOf).collect(Collectors.toList());
+                if (resultSet.getArray(1) == null) {
+                    return Collections.emptyList();
+                }
+                return Arrays.stream((Long[]) resultSet.getArray(1).getArray())
+                        .map(String::valueOf).collect(Collectors.toList());
             }
         } catch (SQLException e) {
             handleException(e, null);
         }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
+        throw new RuntimeException(command + " has no complete setup");
     }
 
-    public boolean canUse(Command command, Member member) {
-        String commandIdentifier = command.getCommandIdentifier();
-
+    /**
+     * Checks if a user can generally use a command or subcommand.
+     * This will be true if a user has the permission or a role with the permission to use this command.
+     * The result is only determined by guild settings.
+     * See {@link #canAccess(Command, Member)} for a check of the bot settings.
+     *
+     * @param command command identifier. A command identifier can be the root
+     *                command {@link Command#getCommandIdentifier()} or a string containing the command
+     *                and the {@link SubCommand#getSubCommandIdentifier()} separated by a ".".
+     * @param member  member to check
+     * @return true if the user can use the command.
+     */
+    public boolean canUse(String command, Member member) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.can_use(?,?,?,?)")) {
-            statement.setString(1, commandIdentifier);
+            statement.setString(1, command);
             statement.setLong(2, member.getGuild().getIdLong());
             statement.setLong(3, member.getIdLong());
             Long[] roles = new Long[member.getRoles().size()];
@@ -868,17 +659,187 @@ public final class CommandData extends QueryObject {
         } catch (SQLException e) {
             handleException(e, null);
         }
-        throw new RuntimeException(commandIdentifier + " has no complete setup");
+        throw new RuntimeException(command + " has no complete setup");
     }
 
+    /**
+     * Checks if a user or guild can access a command.
+     * The result is determined by bot settings and is not influences by any guild specific settings.
+     * See {@link #canUse(String, Member)} and {@link #canUseInChannel(String, Member, Guild, TextChannel)}
+     * for guild specific checks.
+     *
+     * @param command command to check for
+     * @param member  member to check
+     * @return true if a user can access a command on his guild.
+     */
     public boolean canAccess(Command command, Member member) {
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_settings.can_access(?,?,?)")) {
+            statement.setString(1, command.getCommandIdentifier());
+            statement.setLong(2, member.getGuild().getIdLong());
+            statement.setLong(3, member.getIdLong());
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getBoolean(1);
+            }
+        } catch (SQLException e) {
+            handleException(e, null);
+        }
+        throw new RuntimeException(command + " has no complete setup");
+    }
+
+    /**
+     * Checks if a user can use a command or subcommand on his guild.
+     * These check includes the {@link #canUse(String, Member)} method.
+     *
+     * @param command command identifier. A command identifier can be the root
+     *                command {@link Command#getCommandIdentifier()} or a string containing the command
+     *                and the {@link SubCommand#getSubCommandIdentifier()} separated by a ".".
+     * @param member  member to check
+     * @param guild   guild to check
+     * @param channel channel to check
+     * @return true if the command or subcommand can be used in the channel
+     */
+    public boolean canUseInChannel(String command, Member member, Guild guild, TextChannel channel) {
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_settings.can_use_in_channel(?,?,?,?,?)")) {
+            statement.setString(1, command);
+            statement.setLong(2, guild.getIdLong());
+            statement.setLong(3, member.getIdLong());
+            statement.setLong(4, channel.getIdLong());
+            Long[] roles = new Long[member.getRoles().size()];
+            Array roleIds = conn.createArrayOf("bigint", member.getRoles()
+                    .stream().map(ISnowflake::getIdLong).collect(Collectors.toList()).toArray(roles));
+            statement.setArray(5, roleIds);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getBoolean(1);
+            }
+        } catch (SQLException e) {
+            handleException(e, null);
+        }
+        throw new RuntimeException(command + " has no complete setup");
+    }
+
+    /**
+     * Checks if a command should be displayed in help.
+     * A command is displayed if the {@link #canUseInChannel(String, Member, Guild, TextChannel)} and
+     * {@link #getState(Command, Guild)} return true.
+     *
+     * @param command command identifier. A command identifier can be the root
+     *                command {@link Command#getCommandIdentifier()} or a string containing the command
+     *                and the {@link SubCommand#getSubCommandIdentifier()} separated by a ".".
+     * @param member  member to check for
+     * @param guild   guild to check for
+     * @param channel channel to check for
+     * @return true if a command should be displayed.
+     */
+    public boolean isDisplayedInHelp(String command, Member member, Guild guild, TextChannel channel) {
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_settings.help_display_check(?,?,?,?,?,?)")) {
+            statement.setString(1, command);
+            statement.setLong(2, guild.getIdLong());
+            statement.setLong(3, member.getIdLong());
+            statement.setLong(4, channel.getIdLong());
+            Array roleIds = getSnowflakeArray(member.getRoles(), conn);
+            statement.setArray(5, roleIds);
+            statement.setBoolean(6, member.hasPermission(Permission.ADMINISTRATOR));
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getBoolean(1);
+            }
+        } catch (SQLException e) {
+            handleException(e, null);
+        }
+        throw new RuntimeException(command + " has no complete setup");
+    }
+
+    /**
+     * Add a channel to channel list for channel specific command restriction.
+     *
+     * @param command command to set
+     * @param guild   guild to set
+     * @param channel channel to add
+     * @return true if the database access was successful
+     */
+    public boolean addChannel(Command command, Guild guild, TextChannel channel) {
         String commandIdentifier = command.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_settings.can_access(?,?,?)")) {
+                .prepareStatement("SELECT shepard_settings.add_command_channel(?,?,?)")) {
             statement.setString(1, commandIdentifier);
-            statement.setLong(2, member.getGuild().getIdLong());
-            statement.setLong(3, member.getIdLong());
+            statement.setLong(2, guild.getIdLong());
+            statement.setLong(3, channel.getIdLong());
+            statement.execute();
+        } catch (SQLException e) {
+            handleException(e, null);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Removes a channel from channel list for channel specific command restriction.
+     *
+     * @param command command for lookup
+     * @param guild   guild for lookup
+     * @param channel channel to remove
+     * @return true if the database access was successful
+     */
+    public boolean removeChannel(Command command, Guild guild, TextChannel channel) {
+        String commandIdentifier = command.getCommandIdentifier();
+
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_settings.remove_command_channel(?,?,?)")) {
+            statement.setString(1, commandIdentifier);
+            statement.setLong(2, guild.getIdLong());
+            statement.setLong(3, channel.getIdLong());
+            statement.execute();
+        } catch (SQLException e) {
+            handleException(e, null);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Get the channel list type.
+     *
+     * @param command command to check for
+     * @param guild   guild to check for
+     * @return list type of the channel list for this command
+     */
+    public ListType getChannelListType(Command command, Guild guild) {
+        String commandIdentifier = command.getCommandIdentifier();
+
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_settings.get_channel_list_type(?,?)")) {
+            statement.setString(1, commandIdentifier);
+            statement.setLong(2, guild.getIdLong());
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return ListType.getType(resultSet.getString(1));
+            }
+        } catch (SQLException e) {
+            handleException(e, null);
+        }
+        throw new RuntimeException(commandIdentifier + " has no complete setup");
+    }
+
+    /**
+     * Check if the channel check is active for this command.
+     *
+     * @param command command to check for
+     * @param guild   guild to check for
+     * @return true if the channel check is active
+     */
+    public boolean isChannelCheckActive(Command command, Guild guild) {
+        String commandIdentifier = command.getCommandIdentifier();
+
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_settings.is_channel_check_active(?,?)")) {
+            statement.setString(1, commandIdentifier);
+            statement.setLong(2, guild.getIdLong());
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getBoolean(1);
@@ -889,4 +850,159 @@ public final class CommandData extends QueryObject {
         throw new RuntimeException(commandIdentifier + " has no complete setup");
     }
 
+    /**
+     * Set the state of a command on a guild.
+     * The state defines if a command can be used on this guild or not.
+     *
+     * @param command command to set the state for
+     * @param guild   guild where the state should be set
+     * @param state   state of the command
+     * @return true if the query execution was successful.
+     */
+    public boolean setState(Command command, Guild guild, boolean state) {
+        String commandIdentifier = command.getCommandIdentifier();
+
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_settings.set_command_state(?,?,?)")) {
+            statement.setString(1, commandIdentifier);
+            statement.setLong(2, guild.getIdLong());
+            statement.setBoolean(3, state);
+            statement.execute();
+        } catch (SQLException e) {
+            handleException(e, null);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Activates or deactivates the channel check for this command.
+     *
+     * @param command command to change
+     * @param guild   guild to activate the check
+     * @param state   true when guild should be checked
+     * @return true if the query execution was successful
+     */
+    public boolean setChannelCheckActive(Command command, Guild guild, boolean state) {
+        String commandIdentifier = command.getCommandIdentifier();
+
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_settings.set_command_channel_check_active(?,?,?)")) {
+            statement.setString(1, commandIdentifier);
+            statement.setLong(2, guild.getIdLong());
+            statement.setBoolean(3, state);
+            statement.execute();
+        } catch (SQLException e) {
+            handleException(e, null);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Changes the channel list type.
+     *
+     * @param context  context to change
+     * @param guild    guild to set the list type
+     * @param listType ListType enum.
+     * @return true if the query execution was successful
+     */
+    public boolean setChannelListType(Command context, Guild guild, ListType listType) {
+        String commandIdentifier = context.getCommandIdentifier();
+
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_settings.set_command_channel_list_type(?,?,?)")) {
+            statement.setString(1, commandIdentifier);
+            statement.setLong(2, guild.getIdLong());
+            statement.setString(3, listType.toString());
+            statement.execute();
+        } catch (SQLException e) {
+            handleException(e, null);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Get the state of the command.
+     * The state defines if a command is enabled or disabled on a guild.
+     * Only Commands can be disabled. Subcommands can not be disabled.
+     *
+     * @param command command object to check.
+     * @param guild   guild to check
+     * @return true if a command is enabled
+     */
+    public boolean getState(Command command, Guild guild) {
+        String commandIdentifier = command.getCommandIdentifier();
+
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_settings.get_command_state(?,?)")) {
+            statement.setString(1, commandIdentifier);
+            statement.setLong(2, guild.getIdLong());
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getBoolean(1);
+            }
+        } catch (SQLException e) {
+            handleException(e, null);
+        }
+        return false;
+    }
+
+    /**
+     * Get a list of all channels where the command is enabled or disabled.
+     * Wether a command is enabled or disabled is defined by the {@link ListType} retrived
+     * by {@link #getChannelListType(Command, Guild)}.
+     *
+     * @param command command to get the list for
+     * @param guild   guild to get the list for
+     * @return list of channel ids. can be empty
+     */
+    public List<String> getChannelList(Command command, Guild guild) {
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_settings.get_command_channel_list(?,?)")) {
+            statement.setString(1, command.getCommandIdentifier());
+            statement.setLong(2, guild.getIdLong());
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                Array array = resultSet.getArray(1);
+                if (array == null) {
+                    return Collections.emptyList();
+                }
+                Long[] idArray = (Long[]) array.getArray();
+                return Arrays.stream(idArray).map(String::valueOf).collect(Collectors.toList());
+            }
+        } catch (SQLException e) {
+            handleException(e, null);
+        }
+        throw new RuntimeException(command + " has no complete setup");
+    }
+
+    /**
+     * Definies if a command or a subcommand requires a permission.
+     * If the command requires a permission all subcommand require a permission too.
+     * If a command does not require a permission, a subcommand can require a permission.
+     * Wether a command or subcommand require a permission is changed by
+     * the {@link #setPermissionOverride(String, boolean, Guild, MessageEventDataWrapper)} Method.
+     *
+     * @param command command identifier. A command identifier can be the root
+     *                command {@link Command#getCommandIdentifier()} or a string containing the command
+     *                and the {@link SubCommand#getSubCommandIdentifier()} separated by a ".".
+     * @param guild   the guild to check.
+     * @return true if a command requires a permission.
+     */
+    public boolean requiresPermission(String command, Guild guild) {
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("select shepard_settings.requires_permission(?,?)")) {
+            statement.setString(1, command);
+            statement.setLong(2, guild.getIdLong());
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getBoolean(1);
+            }
+        } catch (SQLException e) {
+            handleException(e, null);
+        }
+        return false;
+    }
 }

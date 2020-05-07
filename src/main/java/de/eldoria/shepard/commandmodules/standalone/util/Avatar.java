@@ -65,7 +65,6 @@ public class Avatar extends Command implements ExecutableAsync, ReqParser {
                 messageContext.getGuild(), "**" + user.getAsTag() + "**"),
                 messageContext.getTextChannel());
         messageContext.getTextChannel().sendFile(fileFromURL).queue();
-
     }
 
     @Override

@@ -19,16 +19,16 @@ import java.util.List;
 
 @Getter
 public final class SharedResources implements ReqAssigner {
-    private ShepardBot shepardBot;
-    private JDA jda;
-    private Config config;
+    private final ShepardBot shepardBot;
+    private final JDA jda;
+    private final Config config;
     private DataSource dataSource;
     private ConnectionPool connectionPool;
     private ShepardCollections collections;
     private CooldownManager cooldownManager;
     private ArgumentParser parser;
     private ExecutionValidator validator;
-    private List<ListenerAdapter> listeners = new ArrayList<>();
+    private final List<ListenerAdapter> listeners = new ArrayList<>();
     private CommandHub commandHub;
 
     private SharedResources(ShepardBot shepardBot, JDA jda, Config config) {
@@ -53,28 +53,32 @@ public final class SharedResources implements ReqAssigner {
     }
 
     private void init() {
-
-        commandHub = new CommandHub();
-        addAndInit(commandHub, this);
-
+        // Req JDA
         collections = new ShepardCollections();
         addAndInit(collections, this);
-        collections.init();
 
-        addAndInit(this, collections.getPrivateMessages(), collections.getNormandy());
-
+        // Req Config
         connectionPool = new ConnectionPool();
         addAndInit(connectionPool, this);
         dataSource = connectionPool.getSource();
 
+        // Req DataSource
+        validator = new ExecutionValidator();
+        addAndInit(validator, this);
+
+        // ReqDataSource
         cooldownManager = new CooldownManager();
         addAndInit(cooldownManager, this);
+
+        // Req Config, Execution Valid, Cooldown Manager, DataSource
+        commandHub = new CommandHub();
+        addAndInit(commandHub, this);
+
+        addAndInit(this, collections.getPrivateMessages(), collections.getNormandy());
 
         parser = new ArgumentParser();
         addAndInit(parser, this);
 
-        validator = new ExecutionValidator();
-        addAndInit(validator, this);
     }
 
     /**

@@ -4,8 +4,12 @@ import lombok.Getter;
 
 @Getter
 public class DiscordBotListVote {
-    private long id;
+    private final long id;
 
+    /**
+     * Create a vote object.
+     * @param id user snowflake
+     */
     public DiscordBotListVote(long id) {
         this.id = id;
     }

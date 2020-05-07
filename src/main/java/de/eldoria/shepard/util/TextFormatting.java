@@ -168,6 +168,15 @@ public final class TextFormatting {
             table[0] = columnNames;
         }
 
+        /**
+         * Moves the row pointer one step forward an set the row content.
+         *
+         * @param columnEntries Entries for the columns in the current row
+         */
+        public void setNextRow(String... columnEntries) {
+            next();
+            setRow(columnEntries);
+        }
 
         /**
          * Set the current row. To go a row forward user next().
@@ -191,30 +200,31 @@ public final class TextFormatting {
         /**
          * The pointer starts at 0. Row zero can only be set on object creation.
          * use next() before you set the first row.
-         *
-         * @return true when there is one more row and the pointer moved forward.
          */
-        public boolean next() {
+        public void next() {
             rowPointer++;
-            return table.length > rowPointer;
         }
 
         /**
          * Set the markdown for the table code block.
          *
          * @param markdown Markdown code (i.e. java, md, csharp)
+         * @return self instance with highlighting set
          */
-        public void setHighlighting(@NotNull String markdown) {
+        public TableBuilder setHighlighting(@NotNull String markdown) {
             this.markdown = markdown;
+            return this;
         }
 
         /**
          * Set the space between the columns.
          *
          * @param padding number between 1 and 10
+         * @return self instance with padding set
          */
-        public void setPadding(int padding) {
+        public TableBuilder setPadding(int padding) {
             this.padding = Math.min(10, Math.max(1, padding));
+            return this;
         }
 
         /**

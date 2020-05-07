@@ -96,7 +96,7 @@ public final class ShepardBot {
     }
 
     private void initiateJda() throws LoginException, InterruptedException {
-        jda = new JDABuilder(config.getToken()).setMaxReconnectDelay(60).build();
+        jda = new JDABuilder(config.getGeneralSettings().getToken()).setMaxReconnectDelay(60).build();
 
         // optionally block until JDA is ready
         jda.awaitReady();

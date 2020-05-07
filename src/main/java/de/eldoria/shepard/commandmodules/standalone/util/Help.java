@@ -11,6 +11,7 @@ import de.eldoria.shepard.commandmodules.prefix.PrefixData;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -19,11 +20,11 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqExecutionValidator;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
+import de.eldoria.shepard.util.Colors;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import javax.sql.DataSource;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,8 +34,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CONTEXT_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_COMMAND_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_COMMAND_NAME;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_INSUFFICIENT_PERMISSION;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
@@ -60,8 +61,9 @@ public class Help extends Command implements Executable, ReqCommands, ReqExecuti
                 HelpLocale.DESCRIPTION.tag,
                 SubCommand.builder("help")
                         .addSubcommand(HelpLocale.A_COMMAND.tag,
-                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, false))
+                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, false))
                         .build(),
+                HelpLocale.DESCRIPTION.tag,
                 CommandCategory.UTIL);
     }
 
@@ -92,7 +94,8 @@ public class Help extends Command implements Executable, ReqCommands, ReqExecuti
 
     /* Sends help for a specific command with description, alias and usage.*/
     private void commandHelp(MessageEventDataWrapper messageContext, Command command, String prefix) {
-        if (validator.canAccess(command, messageContext) && validator.canUse(command, messageContext)) {
+        if (validator.canAccess(command, messageContext)
+                && validator.canUse(command, messageContext.getMember())) {
             MessageEmbed embed = CommandUtil.getCommandHelpEmbed(command, messageContext.getGuild(), prefix);
             messageContext.getTextChannel().sendMessage(embed).queue();
         } else {
@@ -109,7 +112,8 @@ public class Help extends Command implements Executable, ReqCommands, ReqExecuti
         List<LocalizedField> fields = new ArrayList<>();
 
         for (Command command : this.commands.getCommands()) {
-            if (!validator.canAccess(command, messageContext) || !validator.canUse(command, messageContext)) {
+            if (!validator.displayInHelp(command, messageContext.getMember(), messageContext.getGuild(),
+                    messageContext.getTextChannel())) {
                 continue;
             }
             commands.putIfAbsent(command.getCategory(), new ArrayList<>());
@@ -128,12 +132,26 @@ public class Help extends Command implements Executable, ReqCommands, ReqExecuti
         fields.add(new LocalizedField(HelpLocale.M_MAYBE_USEFUL.tag,
                 "**[" + HelpLocale.M_INVITE_ME + "]"
                         + "(https://discordapp.com/oauth2/authorize?client_id=512413049894731780&scope=bot&permissions=1544027254), "
-                        + "[" + HelpLocale.M_SUPPORT_SERVER + "](https://discord.gg/AJyFGAj)**", false, messageContext));
+                        + "[" + HelpLocale.M_SUPPORT_SERVER + "](https://discord.gg/AJyFGAj), "
+                        + "[" + HelpLocale.M_FULL_COMMAND_LIST + "](https://www.shepardbot.de/commands), "
+                        + "[" + HelpLocale.M_PERMISSION_HELP + "]"
+                        + "(https://gitlab.com/shepardbot/ShepardBot/-/wikis/Commands/Permission-and-Command-Settings)**",
+                false, messageContext));
 
         fields.removeIf(Objects::isNull);
 
-        MessageSender.sendTextBox("__**" + HelpLocale.M_COMMANDS + "**__", fields, messageContext.getTextChannel(),
-                Color.green);
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
+                .setTitle("__**" + HelpLocale.M_COMMANDS + "**__");
+
+        for (var field : fields) {
+            builder.addField(field);
+        }
+
+        builder.setFooter(HelpLocale.M_CUSTOM_HELP_MESSAGE.tag);
+
+        builder.setColor(Colors.Pastel.GREEN);
+
+        messageContext.getTextChannel().sendMessage(builder.build()).queue();
     }
 
     private String getCommandNames(List<Command> commands) {

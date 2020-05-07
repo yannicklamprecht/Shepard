@@ -327,7 +327,7 @@ BEGIN
                  WHERE guild_id = _guild_id
                    and command_id = _command_id
              )
-    SELECT _role_ids && COALESCE(role_ids.roles, ARRAY []::bigint[])
+    SELECT _role_ids && COALESCE(role_ids.roles, '{}'::bigint[])
     INTO result
     FROM role_ids;
 
@@ -909,7 +909,7 @@ BEGIN
     _command_id = shepard_settings.get_or_create_command_id(_command_name);
 
     delete
-    from shepard_settings.context_guild
+    from shepard_settings.command_guild_list
     where command_id = _command_id
       and guild_id = _guild_id::BIGINT;
 

@@ -2,12 +2,12 @@ package de.eldoria.shepard.basemodules.commanddispatching.util;
 
 import de.eldoria.shepard.basemodules.commanddispatching.CommandHub;
 import de.eldoria.shepard.commandmodules.Command;
+import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.modulebuilder.requirements.ReqCommands;
 import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.Verifier;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -65,9 +65,9 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
      * @param channelString id or name
      * @return text channel or null
      */
-    public static TextChannel getTextChannel(Guild guild, String channelString) {
+    public static Optional<TextChannel> getTextChannel(Guild guild, String channelString) {
         if (channelString == null) {
-            return null;
+            return Optional.empty();
         }
 
         TextChannel textChannel = byId(channelString, guild::getTextChannelById);
@@ -75,7 +75,7 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
         if (textChannel == null) {
             textChannel = byName(channelString, s -> guild.getTextChannelsByName(s, true));
         }
-        return textChannel;
+        return Optional.ofNullable(textChannel);
     }
 
     /**
@@ -365,7 +365,7 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
      */
     public List<TextChannel> getTextChannels(Guild guild, Collection<String> channelStrings) {
         return channelStrings.stream().map(s -> getTextChannel(guild, s))
-                .filter(Objects::nonNull).collect(Collectors.toList());
+                .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
     }
 
     /**
@@ -377,7 +377,7 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
      */
     public List<Role> getRoles(Guild guild, Collection<String> roleStrings) {
         return roleStrings.stream().map(roleString -> getRole(guild, roleString))
-                .filter(Objects::nonNull).collect(Collectors.toList());
+                .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
     }
 
     /**
@@ -387,9 +387,9 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
      * @param roleString id or name of role
      * @return role object or null
      */
-    public Role getRole(Guild guild, String roleString) {
+    public Optional<Role> getRole(Guild guild, String roleString) {
         if (roleString == null) {
-            return null;
+            return Optional.empty();
         }
 
         Role role = byId(roleString, guild::getRoleById);
@@ -400,7 +400,7 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
                 role = roles.get(0);
             }
         }
-        return role;
+        return Optional.ofNullable(role);
     }
 
     /**
@@ -440,25 +440,60 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
     /**
      * Get the name of the messageContext from a string.
      *
-     * @param indicator      for lookup
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param indicator for lookup
      * @return Name of the context or null if no messageContext was found
      */
-    public String getCommandName(String indicator, MessageEventDataWrapper messageContext) {
-        Optional<Command> context = getCommand(indicator, messageContext);
-        return context.isEmpty() ? null : context.get().getClass().getSimpleName();
+    public Optional<String> getCommandName(String indicator) {
+        Optional<Command> context = getCommand(indicator);
+        context.map(c -> c.getClass().getSimpleName());
+        return context.map(c -> c.getClass().getSimpleName());
     }
 
     /**
      * Get the name of the context from a string.
      *
      * @param indicator for lookup
-     * @param context   context from command sending for error handling. Can be null.
      * @return optional command
      */
-    public Optional<Command> getCommand(String indicator, MessageEventDataWrapper context) {
+    public Optional<Command> getCommand(String indicator) {
+        if (indicator.contains(".") && !indicator.startsWith(".")) {
+            String[] split = indicator.split("\\.");
+            if (split.length > 2) {
+                return Optional.empty();
+            }
+            return commandHub.getCommand(split[0]);
+        }
         return commandHub.getCommand(indicator);
     }
+
+
+    /**
+     * Search for a command or a subcommand of the command.
+     *
+     * @param identifier identifier of the command
+     * @return a {@link CommandSearchResult} which contains a optional command
+     *   and a optional subcommand if a command was found.
+     */
+    public CommandSearchResult searchCommand(String identifier) {
+        Optional<Command> command = getCommand(identifier);
+        if (command.isEmpty()) return CommandSearchResult.empty();
+
+        String[] split = identifier.split("\\.");
+        if (split.length == 1) return new CommandSearchResult(command.get());
+        if (split.length != 2) return CommandSearchResult.empty();
+
+        if (split[1].equalsIgnoreCase("*")) {
+            return new CommandSearchResult(command.get(), SubCommand.wildcard());
+        }
+
+        for (var cmd : command.get().getSubCommands()) {
+            if (cmd.getSubCommandIdentifier().equalsIgnoreCase(split[1])) {
+                return new CommandSearchResult(command.get(), cmd);
+            }
+        }
+        return CommandSearchResult.empty();
+    }
+
 
     /**
      * Get guilds by ids or names.
@@ -469,7 +504,7 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
     public List<Guild> getGuilds(List<String> guildStrings) {
         return guildStrings.stream()
                 .map(this::getGuild)
-                .filter(Objects::nonNull).collect(Collectors.toList());
+                .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
     }
 
     /**
@@ -478,7 +513,7 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
      * @param guildString guild id or name
      * @return guild object or null
      */
-    public Guild getGuild(String guildString) {
+    public Optional<Guild> getGuild(String guildString) {
         Guild guild = byId(guildString, s -> jda.getGuildById(guildString));
 
         if (guild == null) {
@@ -489,13 +524,10 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
         }
 
         if (guild == null) {
-            Optional<Guild> first = jda.getGuildCache().stream()
+            return jda.getGuildCache().stream()
                     .filter(g -> g.getName().toLowerCase().startsWith(guildString.toLowerCase())).findFirst();
-            if (first.isPresent()) {
-                return first.get();
-            }
         }
-        return guild;
+        return Optional.of(guild);
     }
 
     /**
@@ -540,7 +572,7 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
      * @param userString user string to search
      * @param guildId    guild if to search
      * @return a list of users. if a direct match was found only 1 user.
-     *      if guild id is invalid a empty list is returned.
+     *   if guild id is invalid a empty list is returned.
      */
 
     public List<User> fuzzyGuildUserSearch(long guildId, String userString) {

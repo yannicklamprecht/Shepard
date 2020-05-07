@@ -21,11 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_COMMAND_NAME;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_LIST_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_USERS;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_COMMAND_NAME;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_LIST_TYPE;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USERS;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.C_ADD_USER;
@@ -57,19 +57,19 @@ public class ManageCommandUsers extends Command implements Executable, ReqParser
                 SubCommand.builder("manageCommandUser")
                         .addSubcommand(C_SET_ACTIVE.tag,
                                 Parameter.createCommand("setActive"),
-                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
                                 Parameter.createInput(A_BOOLEAN.tag, null, true))
                         .addSubcommand(C_SET_LIST_TYPE.tag,
                                 Parameter.createCommand("setListType"),
-                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
                                 Parameter.createInput(A_LIST_TYPE.tag, AD_LIST_TYPE.tag, true))
                         .addSubcommand(C_ADD_USER.tag,
                                 Parameter.createCommand("addUser"),
-                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
                                 Parameter.createInput(A_USERS.tag, AD_USERS.tag, true))
                         .addSubcommand(C_REMOVE_USER.tag,
                                 Parameter.createCommand("removeUser"),
-                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true),
+                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
                                 Parameter.createInput(A_USERS.tag, AD_USERS.tag, true))
                         .build(),
                 CommandCategory.BOT_CONFIG);
@@ -77,11 +77,11 @@ public class ManageCommandUsers extends Command implements Executable, ReqParser
 
     @Override
     public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        Optional<Command> command = parser.getCommand(args[0], messageContext);
-        String cmd = args[1];
+        Optional<Command> command = parser.getCommand(args[1]);
+        String cmd = args[0];
 
         if (command.isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.CONTEXT_NOT_FOUND, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.COMMAND_SEARCH_EMPTY, messageContext.getTextChannel());
             return;
         }
 
@@ -117,10 +117,10 @@ public class ManageCommandUsers extends Command implements Executable, ReqParser
                 ArgumentParser.getRangeAsList(args, 2))
                 .forEach(user -> {
                     if (modifyType == ModifyType.ADD) {
-                        if (!commandData.addCommandUser(context, user, messageContext)) {
+                        if (!commandData.addUser(context, user, messageContext)) {
                             return;
                         }
-                    } else if (!commandData.removeContextUser(context, user, messageContext)) {
+                    } else if (!commandData.removeUser(context, user, messageContext)) {
                         return;
                     }
                     mentions.add(user.getAsMention());
@@ -154,7 +154,7 @@ public class ManageCommandUsers extends Command implements Executable, ReqParser
             return;
         }
 
-        if (commandData.setContextUserListType(context, type, messageContext)) {
+        if (commandData.setUserListType(context, type, messageContext)) {
             MessageSender.sendMessage(localizeAllAndReplace(M_CHANGED_LIST_TYPE.tag,
                     messageContext.getGuild(), "**" + context.getCommandName().toUpperCase() + "**",
                     "**" + type.toString() + "**"), messageContext.getTextChannel());
@@ -171,7 +171,7 @@ public class ManageCommandUsers extends Command implements Executable, ReqParser
 
         boolean state = bState.stateAsBoolean;
 
-        if (!commandData.setContextUserCheckActive(context, state, messageContext)) {
+        if (!commandData.setUserCheckActive(context, state, messageContext)) {
             return;
         }
 

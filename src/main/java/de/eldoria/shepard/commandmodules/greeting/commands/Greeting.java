@@ -18,6 +18,8 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import javax.sql.DataSource;
 
+import java.util.Optional;
+
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CHANNEL_MENTION_OR_EXECUTE;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_MESSAGE_MENTION;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CHANNEL;
@@ -108,13 +110,13 @@ public class Greeting extends Command implements Executable, ReqJDA, ReqInit, Re
             }
             return;
         } else if (args.length == 2) {
-            TextChannel channel = ArgumentParser.getTextChannel(messageContext.getGuild(), args[1]);
+            Optional<TextChannel> channel = ArgumentParser.getTextChannel(messageContext.getGuild(), args[1]);
 
-            if (channel != null) {
-                if (data.setGreetingChannel(messageContext.getGuild(), channel, messageContext)) {
+            if (channel.isPresent()) {
+                if (data.setGreetingChannel(messageContext.getGuild(), channel.get(), messageContext)) {
                     MessageSender.sendMessage(
                             M_SET_CHANNEL + " "
-                                    + channel.getAsMention(), messageContext.getTextChannel());
+                                    + channel.get().getAsMention(), messageContext.getTextChannel());
                 }
                 return;
             }

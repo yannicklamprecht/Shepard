@@ -8,7 +8,8 @@ public enum ErrorType {
     /**
      * Used when a context is not found.
      */
-    CONTEXT_NOT_FOUND("error.contextNotFound"),
+    COMMAND_SEARCH_EMPTY("error.commandSearchEmpty"),
+    SUB_COMMAND_SEARCH_EMPTY("error.subCommandSearchEmpty"),
     /**
      * Used when a database error occurs.
      */

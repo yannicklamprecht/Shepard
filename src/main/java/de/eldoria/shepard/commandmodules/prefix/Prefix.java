@@ -63,8 +63,8 @@ public class Prefix extends Command implements Executable, ReqConfig, ReqDataSou
     }
 
     private void reset(MessageEventDataWrapper messageContext) {
-        if (prefixData.setPrefix(messageContext.getGuild(), config.getPrefix(), messageContext)) {
-            MessageSender.sendMessage(M_CHANGED + " '" + config.getPrefix() + "'",
+        if (prefixData.setPrefix(messageContext.getGuild(), config.getGeneralSettings().getPrefix(), messageContext)) {
+            MessageSender.sendMessage(M_CHANGED + " '" + config.getGeneralSettings().getPrefix() + "'",
                     messageContext.getTextChannel());
         }
     }

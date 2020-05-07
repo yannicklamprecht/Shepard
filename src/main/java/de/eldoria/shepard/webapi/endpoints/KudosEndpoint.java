@@ -35,9 +35,9 @@ public class KudosEndpoint implements ReqParser, ReqJDA, ReqDataSource, ReqInit 
     private JDA jda;
     private KudoData kudoData;
     private DataSource source;
-    private Cache<RankingKey, String> cache
+    private final Cache<RankingKey, String> cache
             = CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).maximumSize(250).build();
-    private Gson gson = new GsonBuilder().create();
+    private final Gson gson = new GsonBuilder().create();
 
     /**
      * Create a new Kudos endpoint.
@@ -78,7 +78,8 @@ public class KudosEndpoint implements ReqParser, ReqJDA, ReqDataSource, ReqInit 
 
                 return cache.get(new RankingKey(page.getAsInt(), pagesize.getAsInt(), users),
                         () -> {
-                            List<ApiRank> ranking = kudoData.getGlobalRankingFilter(users, page.getAsInt(), pagesize.getAsInt());
+                            List<ApiRank> ranking =
+                                    kudoData.getGlobalRankingFilter(users, page.getAsInt(), pagesize.getAsInt());
                             int pageCount = kudoData.getGlobalRankingFilterPagecount(users, pagesize.getAsInt());
                             return gson.toJson(new RankingResponse(ranking, page.getAsInt(), pageCount));
                         });

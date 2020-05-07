@@ -689,7 +689,8 @@ BEGIN
                 DO UPDATE
                 set score = greatest(_score + (select sc.score
                                                from shepard_data.hentai_or_not_scores sc
-                                               where sc.guild_id = _guild_id::bigint and user_id = u::bigint), 0);
+                                               where sc.guild_id = _guild_id::bigint
+                                                 and user_id = u::bigint), 0);
         end loop;
 
 END
@@ -877,7 +878,8 @@ BEGIN
         DO UPDATE
         set score = greatest(_score + (select sc.score
                                        from shepard_data.rubber_points sc
-                                       where user_id = _user_id::bigint and sc.guild_id = 0::bigint), 0);
+                                       where user_id = _user_id::bigint
+                                         and sc.guild_id = 0::bigint), 0);
 
 END
 $$;
@@ -901,7 +903,8 @@ BEGIN
         DO UPDATE
         set score = greatest(_score + (select sc.score
                                        from shepard_data.rubber_points sc
-                                       where user_id = _user_id::bigint and sc.guild_id = _guild_id::bigint), 0);
+                                       where user_id = _user_id::bigint
+                                         and sc.guild_id = _guild_id::bigint), 0);
 
 END
 $$;
@@ -3251,7 +3254,8 @@ BEGIN
     if free_points + guild_points > _points then
         update shepard_data.free_rubber_points
         set score = 0
-        where guild_id = _guild_id::bigint and user_id = _user_id::bigint;
+        where guild_id = _guild_id::bigint
+          and user_id = _user_id::bigint;
         update shepard_data.rubber_points
         set score = guild_points - (_points - free_points)
         where guild_id = _guild_id::bigint

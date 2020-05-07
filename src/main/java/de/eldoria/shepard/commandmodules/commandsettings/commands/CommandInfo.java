@@ -19,8 +19,8 @@ import net.dv8tion.jda.api.JDA;
 import javax.sql.DataSource;
 import java.util.Optional;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CONTEXT_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CONTEXT_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_COMMAND_NAME;
+import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_COMMAND_NAME;
 import static de.eldoria.shepard.localization.enums.commands.botconfig.ContextInfoLocale.DESCRIPTION;
 import static java.lang.System.lineSeparator;
 
@@ -42,7 +42,7 @@ public class CommandInfo extends Command implements Executable, ReqJDA, ReqParse
                 DESCRIPTION.tag,
                 SubCommand.builder("commandInfo")
                         .addSubcommand(null,
-                                Parameter.createInput(A_CONTEXT_NAME.tag, AD_CONTEXT_NAME.tag, true))
+                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true))
                         .build(),
                 CommandCategory.BOT_CONFIG);
     }
@@ -54,7 +54,7 @@ public class CommandInfo extends Command implements Executable, ReqJDA, ReqParse
 
     @Override
     public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        Optional<Command> command = parser.getCommand(args[0], messageContext);
+        Optional<Command> command = parser.getCommand(args[0]);
         if (command.isPresent()) {
             CommandSettings data = commandData.getCommandData(command.get(), messageContext);
 

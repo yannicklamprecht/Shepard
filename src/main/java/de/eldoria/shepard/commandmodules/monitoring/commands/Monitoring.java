@@ -23,6 +23,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 import java.util.OptionalInt;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CHANNEL_MENTION_OR_EXECUTE;
@@ -151,11 +152,11 @@ public class Monitoring extends Command implements Executable, ReqDataSource {
     }
 
     private void enable(String channelString, MessageEventDataWrapper messageContext) {
-        TextChannel channel = ArgumentParser.getTextChannel(messageContext.getGuild(), channelString);
-        if (channel != null) {
-            if (monitoringData.setMonitoringChannel(messageContext.getGuild(), channel, messageContext)) {
+        Optional<TextChannel> channel = ArgumentParser.getTextChannel(messageContext.getGuild(), channelString);
+        if (channel.isPresent()) {
+            if (monitoringData.setMonitoringChannel(messageContext.getGuild(), channel.get(), messageContext)) {
                 MessageSender.sendMessage(localizeAllAndReplace(M_REGISTERED_CHANNEL.tag,
-                        messageContext.getGuild(), channel.getAsMention()), messageContext.getTextChannel());
+                        messageContext.getGuild(), channel.get().getAsMention()), messageContext.getTextChannel());
             }
         } else {
             MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, messageContext.getTextChannel());

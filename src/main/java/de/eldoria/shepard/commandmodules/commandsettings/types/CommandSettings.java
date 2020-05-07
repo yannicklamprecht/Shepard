@@ -275,6 +275,11 @@ public class CommandSettings {
         return hasGuildPermissionOverride(guild);
     }
 
+    /**
+     * Build the string for the command settings.
+     * @param jda ja object
+     * @return String which represents the information about the command.
+     */
     public String buildString(JDA jda) {
         StringBuilder builder = new StringBuilder();
         builder.append("  admin_only: ").append(isAdminOnly()).append(lineSeparator())

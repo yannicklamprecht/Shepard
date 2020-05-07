@@ -44,10 +44,6 @@ public final class CooldownManager implements Runnable, ReqDataSource {
      * @return the cooldown in seconds or 0 if there is no cooldown.
      */
     public int getCurrentCooldown(Command command, Guild guild, User user) {
-        if (!commandData.hasCooldown(command)) {
-            return 0;
-        }
-
         long cooldown = Math.max(getGuildCooldown(command, guild), getUserCooldown(command, user));
         if (cooldown == 0) {
             return 0;
@@ -63,20 +59,16 @@ public final class CooldownManager implements Runnable, ReqDataSource {
      * @param user    user for cooldown
      */
     public void renewCooldown(Command command, Guild guild, User user) {
-        if (!commandData.hasCooldown(command)) {
-            return;
-        }
+
         LocalDateTime now = LocalDateTime.now();
-        if (commandData.hasUserCooldown(command)) {
-            LocalDateTime userCooldownTime = now.plusSeconds(commandData.getUserCooldown(command));
-            userCooldown.putIfAbsent(command, new HashMap<>());
-            userCooldown.get(command).put(user.getIdLong(), userCooldownTime);
-        }
-        if (commandData.hasGuildCooldown(command)) {
-            LocalDateTime guildCooldownTime = now.plusSeconds(commandData.getGuildCooldown(command));
-            guildCooldown.putIfAbsent(command, new HashMap<>());
-            guildCooldown.get(command).put(guild.getIdLong(), guildCooldownTime);
-        }
+        LocalDateTime userCooldownTime = now.plusSeconds(commandData.getUserCooldown(command));
+        userCooldown.putIfAbsent(command, new HashMap<>());
+        userCooldown.get(command).put(user.getIdLong(), userCooldownTime);
+
+        LocalDateTime guildCooldownTime = now.plusSeconds(commandData.getGuildCooldown(command));
+        guildCooldown.putIfAbsent(command, new HashMap<>());
+        guildCooldown.get(command).put(guild.getIdLong(), guildCooldownTime);
+
     }
 
     @Override
@@ -89,8 +81,7 @@ public final class CooldownManager implements Runnable, ReqDataSource {
     }
 
     private long getUserCooldown(Command command, User user) {
-        if (!commandData.hasUserCooldown(command)
-                || !userCooldown.containsKey(command)) {
+        if (!userCooldown.containsKey(command)) {
             return 0;
         }
         Map<Long, LocalDateTime> map = userCooldown.get(command);
@@ -98,8 +89,7 @@ public final class CooldownManager implements Runnable, ReqDataSource {
     }
 
     private long getGuildCooldown(Command command, Guild guild) {
-        if (!commandData.hasGuildCooldown(command)
-                || !guildCooldown.containsKey(command)) {
+        if (!guildCooldown.containsKey(command)) {
             return 0;
         }
         Map<Long, LocalDateTime> map = guildCooldown.get(command);

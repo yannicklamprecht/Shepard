@@ -35,7 +35,7 @@ public class StandaloneCommandsModule implements ModuleBuilder {
 
         addAndInit(resources, new Avatar(), new Feedback(), new GetRaw(), new Help(), new HireMe(),
                 new Home(), new SystemInfo(), new UserInfo(), new Vote());
-        if (resources.getConfig().isBeta()) {
+        if (resources.getConfig().getGeneralSettings().isBeta()) {
             addAndInit(new Test(), resources);
         }
     }

@@ -7,5 +7,3 @@ DROP FUNCTION IF EXISTS public.get_and_delete_expired_reminder();
 DROP FUNCTION IF EXISTS public.get_language();
 
 DROP FUNCTION IF EXISTS public.get_prefixes();
-
-

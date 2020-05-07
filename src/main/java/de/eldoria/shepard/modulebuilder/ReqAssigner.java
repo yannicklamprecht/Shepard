@@ -23,7 +23,8 @@ public interface ReqAssigner {
      * Uses the {@link SharedResources} object to retrieve dependency objects of the provided object.
      * Adds the dependencies based on the requirement interfaces:
      * {@link ReqJDA},{@link ReqCommands},{@link ReqConfig},{@link ReqCooldownManager},{@link ReqExecutionValidator},
-     * {@link ReqLatestCommands}, {@link ReqNormandy},{@link ReqParser},{@link ReqPrivateMessages},{@link ReqReactionAction},
+     * {@link ReqLatestCommands}, {@link ReqNormandy},{@link ReqParser},{@link ReqPrivateMessages},
+     * {@link ReqReactionAction}.
      * After adding the dependencies the {@link ReqInit#init()} is called if the objects implement {@link ReqInit}.
      * If the object is a {@link Command}, the {@link CommandHub} in the
      * resources object is used to register it.
@@ -41,7 +42,8 @@ public interface ReqAssigner {
      * Uses the {@link SharedResources} object to retrieve dependency objects of the provided object.
      * Adds the dependencies based on the requirement interfaces:
      * {@link ReqJDA},{@link ReqCommands},{@link ReqConfig},{@link ReqCooldownManager},{@link ReqExecutionValidator},
-     * {@link ReqLatestCommands}, {@link ReqNormandy},{@link ReqParser},{@link ReqPrivateMessages},{@link ReqReactionAction},
+     * {@link ReqLatestCommands}, {@link ReqNormandy},{@link ReqParser},{@link ReqPrivateMessages},
+     * {@link ReqReactionAction}.
      * After adding the dependencies the {@link ReqInit#init()} is called if the objects implement {@link ReqInit}.
      * If the object is a {@link Command}, the {@link CommandHub} in the
      * resources object is used to register it.

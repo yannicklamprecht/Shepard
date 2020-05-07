@@ -31,7 +31,7 @@ import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.A_TIMESTAMP;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_ADD;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_LIST;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_REMOVE;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_DELETE;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_CURRENT_REMINDERS;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_REMIND_DATE;
@@ -59,11 +59,10 @@ public class Reminder extends Command implements Executable, ReqDataSource {
                 DESCRIPTION.tag,
                 SubCommand.builder("remind")
                         .addSubcommand(C_ADD.tag,
-                                Parameter.createCommand("create"),
                                 Parameter.createInput(A_TIMESTAMP.tag, AD_TIMESTAMP.tag, true),
                                 Parameter.createInput(A_MESSAGE.tag, null, true))
-                        .addSubcommand(C_REMOVE.tag,
-                                Parameter.createCommand("remove"),
+                        .addSubcommand(C_DELETE.tag,
+                                Parameter.createCommand("delete"),
                                 Parameter.createInput(A_ID.tag, AD_ID.tag, true))
                         .addSubcommand(C_LIST.tag,
                                 Parameter.createCommand("list"))
@@ -96,16 +95,11 @@ public class Reminder extends Command implements Executable, ReqDataSource {
             return;
         }
 
-        if (isSubCommand(cmd, 0)) {
-            add(args, messageContext);
-            return;
-        }
-
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
+        add(args, messageContext);
     }
 
     private void remove(String[] args, MessageEventDataWrapper messageContext) {
-        OptionalInt number = ArgumentParser.parseInt(args[2]);
+        OptionalInt number = ArgumentParser.parseInt(args[1]);
         if (number.isEmpty()) {
             MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
             return;
@@ -151,13 +145,13 @@ public class Reminder extends Command implements Executable, ReqDataSource {
     }
 
     private void add(String[] args, MessageEventDataWrapper messageContext) {
-        String timeString = ArgumentParser.getMessage(args, 1, 3);
+        String timeString = ArgumentParser.getMessage(args, 0, 2);
         if (!DATE.matcher(timeString).find() && !INTERVAL.matcher(timeString).find()) {
             MessageSender.sendSimpleError(ErrorType.INVALID_TIME, messageContext.getTextChannel());
             return;
         }
 
-        String message = ArgumentParser.getMessage(args, 3, 0);
+        String message = ArgumentParser.getMessage(args, 2, 0);
         // Date reminder
         if (DATE.matcher(timeString).find()) {
             String date = args[1];

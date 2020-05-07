@@ -5,6 +5,7 @@ public enum GeneralLocale {
      * Localization key for argument [channel] (ID, Mention or Name).
      */
     A_CHANNEL("command.general.argument.channel"),
+    A_CHANNELS("command.general.argument.channels"),
     /**
      * Localization key for argument [category ID].
      */
@@ -48,7 +49,7 @@ public enum GeneralLocale {
     /**
      * Localization key for argument [command].
      */
-    A_CONTEXT_NAME("command.general.argument.contextName"),
+    A_COMMAND_NAME("command.general.argument.contextName"),
     /**
      * Localization key for argument [Seconds] Only full Seconds.
      */
@@ -59,12 +60,14 @@ public enum GeneralLocale {
     A_AMOUNT("command.general.argument.amount"),
     A_URL("command.general.argument.url"),
     A_KEYWORD("command.general.argument.keyword"),
+    A_PERMISSION("command.general.argument.permission"),
     /**
      * Localization key for argument listType.
      */
     A_LIST_TYPE("command.general.argument.listType"),
     AD_LIST_TYPE("command.general.argumentDescription.listType"),
     AD_CHANNEL("command.general.argumentDescription.channel"),
+    AD_CHANNELS("command.general.argumentDescription.channels"),
     AD_CATEGORY("command.general.argumentDescription.category"),
     AD_USER("command.general.argumentDescription.user"),
     AD_USERS("command.general.argumentDescription.users"),
@@ -77,10 +80,11 @@ public enum GeneralLocale {
      * Localization key for argument [channel] (ID, Mention or name) or leave empty to use current channel.
      */
     AD_CHANNEL_MENTION_OR_EXECUTE("command.general.argumentDescription.channelMentionOrExecution"),
-    AD_CONTEXT_NAME("command.general.argumentDescription.contextName"),
+    AD_COMMAND_NAME("command.general.argumentDescription.contextName"),
     AD_SECONDS("command.general.argumentDescription.seconds"),
     AD_AMOUNT("command.general.argumentDescription.amount"),
     AD_KEYWORD("command.general.argumentDescription.keyword"),
+    AD_PERMISSION("command.general.argumentDescription.permission"),
     /**
      * Localization key for argument [true|false].
      */
