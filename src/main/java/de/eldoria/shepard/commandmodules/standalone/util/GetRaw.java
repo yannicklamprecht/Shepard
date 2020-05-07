@@ -2,8 +2,11 @@ package de.eldoria.shepard.commandmodules.standalone.util;
 
 import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
+import de.eldoria.shepard.commandmodules.argument.Parameter;
+import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
+import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 
@@ -19,8 +22,11 @@ public class GetRaw extends Command implements Executable {
      */
     public GetRaw() {
         super("getRaw",
-                null,
+                new String[] {"raw"},
                 DESCRIPTION.tag,
+                SubCommand.builder("getRaw").addSubcommand(DESCRIPTION.tag,
+                        Parameter.createInput(GeneralLocale.A_TEXT.tag, null, true))
+                        .build(),
                 CommandCategory.UTIL);
     }
 
