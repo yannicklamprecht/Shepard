@@ -129,7 +129,7 @@
         <dependency> <!-- note that we exclude the audio codec since we are not going to use it right now -->
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.1.0_100</version>
+            <version>4.1.1_145</version>
             <exclusions>
                 <exclusion>
                     <groupId>club.minnced</groupId>
