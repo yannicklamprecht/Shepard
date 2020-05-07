@@ -10,23 +10,27 @@ public enum CommandCategory {
     /**
      * Context is a command of category bot administration.
      */
-    ADMIN("\u2699", HelpLocale.M_ADMIN.tag),
+    ADMIN("⚙", HelpLocale.M_ADMIN.tag),
+    /**
+     * Context is a command of category bot administration.
+     */
+    MODERATION("🔨", HelpLocale.M_ADMIN.tag),
     /**
      * Context is a command of category bot configuration.
      */
-    BOT_CONFIG("\uD83D\uDD27", HelpLocale.M_BOT_CONFIG.tag),
+    BOT_CONFIG("🔧", HelpLocale.M_BOT_CONFIG.tag),
     /**
      * Context is a command of category server exclusive.
      */
-    EXCLUSIVE("\uD83C\uDF89", HelpLocale.M_EXCLUSIVE.tag),
+    EXCLUSIVE("🎉", HelpLocale.M_EXCLUSIVE.tag),
     /**
      * Context is a command of category entertainment.
      */
-    FUN("\uD83D\uDD79", HelpLocale.M_FUN.tag),
+    FUN("🕹", HelpLocale.M_FUN.tag),
     /**
      * Context is a command of category utility.
      */
-    UTIL("\u2049", HelpLocale.M_UTIL.tag),
+    UTIL("⁉", HelpLocale.M_UTIL.tag),
     /**
      * Context is keyword.
      */

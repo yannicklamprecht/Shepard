@@ -25,6 +25,7 @@ public enum HelpLocale {
      * Localization key for message admin.
      */
     M_ADMIN("command.help.message.admin"),
+    M_MODERATOR("command.help.message.moderation"),
     /**
      * Localization key for message exclusive.
      */

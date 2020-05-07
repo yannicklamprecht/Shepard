@@ -122,6 +122,7 @@ public class Help extends Command implements Executable, ReqCommands, ReqExecuti
 
         fields.add(getCommandField(commands, CommandCategory.BOT_CONFIG, messageContext));
         fields.add(getCommandField(commands, CommandCategory.ADMIN, messageContext));
+        fields.add(getCommandField(commands, CommandCategory.MODERATION, messageContext));
         fields.add(getCommandField(commands, CommandCategory.EXCLUSIVE, messageContext));
         fields.add(getCommandField(commands, CommandCategory.FUN, messageContext));
         fields.add(getCommandField(commands, CommandCategory.UTIL, messageContext));
