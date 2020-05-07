@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS shepard_settings.command_channel_list_type
     )
     TABLESPACE pg_default;
 
-CREATE TABLE shepard_settings.command_channel_check_state
+CREATE TABLE IF NOT EXISTS shepard_settings.command_channel_check_state
 (
     guild_id bigint NOT NULL,
     command_id integer NOT NULL,
