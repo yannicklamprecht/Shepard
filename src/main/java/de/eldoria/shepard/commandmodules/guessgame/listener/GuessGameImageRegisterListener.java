@@ -3,8 +3,10 @@ package de.eldoria.shepard.commandmodules.guessgame.listener;
 import de.eldoria.shepard.commandmodules.guessgame.util.ConfigurationState;
 import de.eldoria.shepard.commandmodules.guessgame.util.ImageConfiguration;
 import de.eldoria.shepard.commandmodules.guessgame.util.ImageRegister;
+import de.eldoria.shepard.core.Statistics;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.modulebuilder.requirements.ReqStatistics;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -17,9 +19,10 @@ import static de.eldoria.shepard.localization.enums.listener.GuessGameImageRegis
 import static de.eldoria.shepard.localization.enums.listener.GuessGameImageRegisterListenerLocale.M_COPPED_REGISTERED;
 import static de.eldoria.shepard.localization.enums.listener.GuessGameImageRegisterListenerLocale.M_SET_REGISTERED;
 
-public class GuessGameImageRegisterListener extends ListenerAdapter {
+public class GuessGameImageRegisterListener extends ListenerAdapter implements ReqStatistics {
 
     private final ImageRegister register;
+    private Statistics statistics;
 
     /**
      * Create a new guess game image register listener.
@@ -32,6 +35,8 @@ public class GuessGameImageRegisterListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
+        statistics.eventDispatched(event.getJDA());
+
         MessageEventDataWrapper wrapper = new MessageEventDataWrapper(event);
         ConfigurationState configurationState = register.getConfigurationState(wrapper);
         if (configurationState != ConfigurationState.NONE) {
@@ -60,5 +65,10 @@ public class GuessGameImageRegisterListener extends ListenerAdapter {
 
             }
         }
+    }
+
+    @Override
+    public void addStatistics(Statistics statistics) {
+        this.statistics = statistics;
     }
 }

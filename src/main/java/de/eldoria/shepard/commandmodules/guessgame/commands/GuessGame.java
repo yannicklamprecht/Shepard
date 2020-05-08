@@ -55,7 +55,6 @@ public class GuessGame extends Command implements Executable, ReqShardManager, R
     private ShardManager shardManager;
     private DataSource source;
     private GuessGameData guessGameData;
-    private GuessGameListener listener;
 
     /**
      * Create a new guess game command.
@@ -170,8 +169,6 @@ public class GuessGame extends Command implements Executable, ReqShardManager, R
 
     @Override
     public void init() {
-        evaluator = new ChannelEvaluator<>(5);
         guessGameData = new GuessGameData(source);
-        shardManager.addEventListener(new GuessGameListener(shardManager, evaluator));
     }
 }

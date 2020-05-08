@@ -32,7 +32,7 @@ public class DatabaseInvite {
      *
      * @return count as integer
      */
-    public int getUsedCount() {
+    public int getUses() {
         return usedCount;
     }
 

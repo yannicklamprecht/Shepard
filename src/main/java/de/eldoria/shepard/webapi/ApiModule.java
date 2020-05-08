@@ -8,6 +8,7 @@ import de.eldoria.shepard.webapi.endpoints.CommandEndpoint;
 import de.eldoria.shepard.webapi.endpoints.InfoEndpoint;
 import de.eldoria.shepard.webapi.endpoints.KudosEndpoint;
 import de.eldoria.shepard.webapi.endpoints.MinecraftLinkEndpoint;
+import de.eldoria.shepard.webapi.endpoints.SystemEndpoint;
 
 public class ApiModule implements ModuleBuilder {
     @Override
@@ -18,6 +19,6 @@ public class ApiModule implements ModuleBuilder {
         addAndInit(botListReporter, resources);
 
         addAndInit(resources, new CommandEndpoint(), new BotListEndpoint(botListReporter),
-                new MinecraftLinkEndpoint(), new KudosEndpoint(), new InfoEndpoint());
+                new MinecraftLinkEndpoint(), new KudosEndpoint(), new InfoEndpoint(), new SystemEndpoint());
     }
 }

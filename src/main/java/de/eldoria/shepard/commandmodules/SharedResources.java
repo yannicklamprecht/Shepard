@@ -6,6 +6,7 @@ import de.eldoria.shepard.basemodules.commanddispatching.CooldownManager;
 import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.basemodules.commanddispatching.util.ExecutionValidator;
 import de.eldoria.shepard.core.ShepardCollections;
+import de.eldoria.shepard.core.Statistics;
 import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.database.ConnectionPool;
 import de.eldoria.shepard.modulebuilder.ReqAssigner;
@@ -28,6 +29,7 @@ public final class SharedResources implements ReqAssigner {
     private CooldownManager cooldownManager;
     private ArgumentParser parser;
     private ExecutionValidator validator;
+    private Statistics statistics;
     private final List<ListenerAdapter> listeners = new ArrayList<>();
     private CommandHub commandHub;
 
@@ -53,6 +55,10 @@ public final class SharedResources implements ReqAssigner {
     }
 
     private void init() {
+        // Req JDA
+        statistics = new Statistics();
+        addAndInit(statistics, this);
+
         // Req JDA
         collections = new ShepardCollections();
         addAndInit(collections, this);

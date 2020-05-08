@@ -6,6 +6,7 @@ import de.eldoria.shepard.basemodules.reactionactions.actions.ExecuteCommand;
 import de.eldoria.shepard.basemodules.reactionactions.actions.SendCommandHelp;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.prefix.PrefixData;
+import de.eldoria.shepard.core.Statistics;
 import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
@@ -16,15 +17,14 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqCommands;
 import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqExecutionValidator;
-import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.modulebuilder.requirements.ReqReactionAction;
+import de.eldoria.shepard.modulebuilder.requirements.ReqStatistics;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.sharding.ShardManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -42,12 +42,13 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
 
 @Slf4j
 public class CommandListener extends ListenerAdapter
-        implements ReqCommands, ReqExecutionValidator, ReqReactionAction, ReqDataSource, ReqConfig, ReqInit {
+        implements ReqCommands, ReqExecutionValidator, ReqReactionAction, ReqDataSource, ReqConfig, ReqStatistics {
     private CommandHub commands;
     private ExecutionValidator executionValidator;
     private ReactionActionCollection reactionAction;
     private PrefixData prefixData;
     private Config config;
+    private Statistics statistics;
 
     /**
      * Create a new command listener.
@@ -75,12 +76,16 @@ public class CommandListener extends ListenerAdapter
      * @param messageContext context to check
      */
     private void onCommand(MessageEventDataWrapper messageContext) {
+        statistics.eventDispatched(messageContext.getJDA());
+
         String receivedMessage = messageContext.getMessage().getContentRaw();
         receivedMessage = receivedMessage.replaceAll("\\s\\s+", " ");
         String[] args = receivedMessage.split(" ");
 
         // Check if message is command
         if (!isCommand(receivedMessage, args, messageContext)) return;
+
+        statistics.commandDispatched(messageContext.getJDA());
 
         // Ignore if the command is send by shepard
         if (Verifier.equalSnowflake(messageContext.getAuthor(), messageContext.getJDA().getSelfUser())
@@ -198,8 +203,8 @@ public class CommandListener extends ListenerAdapter
     }
 
     @Override
-    public void init() {
-
+    public void addStatistics(Statistics statistics) {
+        this.statistics = statistics;
     }
 }
 

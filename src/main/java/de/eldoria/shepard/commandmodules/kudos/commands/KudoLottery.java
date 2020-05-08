@@ -45,7 +45,7 @@ public class KudoLottery extends Command implements Executable, ReqShardManager,
     /**
      * Creates a new kudo lottery command object.
      */
-    public KudoLottery() {
+    public KudoLottery(ChannelEvaluator<KudoLotteryEvaluator> evaluator) {
         super("kudoLottery",
                 new String[] {"lottery", "kl"},
                 DESCRIPTION.tag,
@@ -55,6 +55,7 @@ public class KudoLottery extends Command implements Executable, ReqShardManager,
                         .build(),
                 KudoLotteryLocale.C_DEFAULT.tag,
                 CommandCategory.FUN);
+        this.evaluator = evaluator;
     }
 
     @Override
@@ -116,9 +117,6 @@ public class KudoLottery extends Command implements Executable, ReqShardManager,
 
     @Override
     public void init() {
-        evaluator = new ChannelEvaluator<>(5);
-        KudoLotteryListener listener = new KudoLotteryListener(jda, evaluator);
-        jda.addEventListener(listener);
     }
 
     @Override

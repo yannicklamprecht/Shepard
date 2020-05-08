@@ -21,15 +21,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public class GreetingListener extends ListenerAdapter implements ReqShardManager, ReqDataSource, ReqInit {
+public class GreetingListener extends ListenerAdapter implements ReqShardManager, ReqDataSource, ReqStatistics, ReqInit {
 
     private GreetingData greetingData;
     private InviteData inviteData;
     private DataSource source;
     private ShardManager shardManager;
+    private Statistics statistics;
 
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+        statistics.eventDispatched(event.getJDA());
         CompletableFuture.runAsync(() -> handleGreeting(event));
     }
 
@@ -77,6 +79,10 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
     public void init() {
         greetingData = new GreetingData(shardManager, source);
         inviteData = new InviteData(source);
+    }
 
+    @Override
+    public void addStatistics(Statistics statistics) {
+        this.statistics = statistics;
     }
 }

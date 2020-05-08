@@ -16,6 +16,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.modulebuilder.requirements.ReqPrivateMessages;
 import de.eldoria.shepard.modulebuilder.requirements.ReqReactionAction;
 import de.eldoria.shepard.modulebuilder.requirements.ReqShepard;
+import de.eldoria.shepard.modulebuilder.requirements.ReqStatistics;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public interface ReqAssigner {
@@ -89,6 +90,9 @@ public interface ReqAssigner {
         }
         if (object instanceof ReqShepard) {
             ((ReqShepard) object).addShepard(resources.getShepardBot());
+        }
+        if (object instanceof ReqStatistics) {
+            ((ReqStatistics) object).addStatistics(resources.getStatistics());
         }
         if (object instanceof ReqInit) {
             ((ReqInit) object).init();
