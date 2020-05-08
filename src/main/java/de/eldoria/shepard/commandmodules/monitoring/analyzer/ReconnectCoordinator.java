@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -21,17 +22,16 @@ class ReconnectCoordinator implements Runnable {
     private final ScheduledExecutorService executor = new ScheduledThreadPoolExecutor(10);
     private final MonitoringScheduler scheduler;
     private final MonitoringData monitoringData;
-    private final JDA jda;
+    private final ShardManager jda;
 
 
     /**
      * Create a new reconnect coordinator.
-     *
-     * @param scheduler scheduler for managing connection tests
+     *  @param scheduler scheduler for managing connection tests
      * @param source    data source for information retrieval
      * @param jda       jda instance
      */
-    ReconnectCoordinator(MonitoringScheduler scheduler, DataSource source, JDA jda) {
+    ReconnectCoordinator(MonitoringScheduler scheduler, DataSource source, ShardManager jda) {
         this.scheduler = scheduler;
         this.jda = jda;
         monitoringData = new MonitoringData(source);

@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.sql.Array;
@@ -173,7 +174,7 @@ public final class GuessGameData extends QueryObject {
      * @param jda            jda instance
      * @return sorted list of ranks in descending order.
      */
-    public List<Rank> getTopScore(Guild guild, int scoreAmount, MessageEventDataWrapper messageContext, JDA jda) {
+    public List<Rank> getTopScore(Guild guild, int scoreAmount, MessageEventDataWrapper messageContext, ShardManager jda) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_guess_game_top_score(?,?)")) {
             statement.setString(1, guild.getId());
@@ -190,14 +191,14 @@ public final class GuessGameData extends QueryObject {
      *
      * @param scoreAmount    Amount of entries. For the top 10 enter a 10.
      * @param messageContext messageContext from command sending for error handling. Can be null.
-     * @param jda            jda instance
+     * @param shardManager            shardManager instance
      * @return sorted list of ranks in descending order.
      */
-    public List<Rank> getGlobalTopScore(int scoreAmount, MessageEventDataWrapper messageContext, JDA jda) {
+    public List<Rank> getGlobalTopScore(int scoreAmount, MessageEventDataWrapper messageContext, ShardManager shardManager) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_guess_game_global_top_score(?)")) {
             statement.setInt(1, scoreAmount);
-            return getScoreListFromResult(jda, statement.executeQuery());
+            return getScoreListFromResult(shardManager, statement.executeQuery());
         } catch (SQLException e) {
             handleException(e, messageContext);
         }

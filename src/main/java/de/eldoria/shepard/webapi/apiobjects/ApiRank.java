@@ -2,8 +2,8 @@ package de.eldoria.shepard.webapi.apiobjects;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 @Getter
 @Slf4j
@@ -32,16 +32,15 @@ public class ApiRank {
     /**
      * Creates a new API Rank object without assigning a user.
      * This rank has a default {@link ApiRank#avatarUrl} and the id as {@link ApiRank#tag}
-     *
-     * @param jda jda object
+     *  @param shardManager jda object
      * @param rank  rank rank as number
      * @param id    id of the user will used as name
      * @param score score of the user
      */
-    public ApiRank(JDA jda, int rank, long id, long score) {
+    public ApiRank(ShardManager shardManager, int rank, long id, long score) {
         this.rank = rank;
         this.tag = id + "";
-        avatarUrl = jda.getSelfUser().getAvatarUrl();
+        avatarUrl = shardManager.getShardById(0).getSelfUser().getAvatarUrl();
         this.id = id;
         this.score = score;
     }

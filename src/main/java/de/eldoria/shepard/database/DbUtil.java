@@ -5,9 +5,9 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import java.sql.Array;
 import java.sql.Connection;
@@ -29,16 +29,16 @@ public final class DbUtil {
     /**
      * Get a sorted ranked list from a result set.
      *
-     * @param jda    jda instance
+     * @param shardManager    jda instance
      * @param result Result set to retrieve ranks.
      * @return List of ranks.
      * @throws SQLException SQL exception
      */
-    public static List<Rank> getScoreListFromResult(JDA jda, ResultSet result) throws SQLException {
+    public static List<Rank> getScoreListFromResult(ShardManager shardManager, ResultSet result) throws SQLException {
         List<Rank> ranks = new ArrayList<>();
 
         while (result.next()) {
-            User user = jda.getUserById(result.getString("user_id"));
+            User user = shardManager.getUserById(result.getString("user_id"));
             if (user != null) {
                 ranks.add(new Rank(user, result.getInt("score")));
             }

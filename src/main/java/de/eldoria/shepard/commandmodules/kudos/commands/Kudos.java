@@ -15,13 +15,13 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -47,9 +47,9 @@ import static java.lang.System.lineSeparator;
 /**
  * Command to give Kudos and see the top Kudos owner.
  */
-public class Kudos extends Command implements Executable, ReqJDA, ReqParser, ReqConfig, ReqDataSource, ReqInit {
+public class Kudos extends Command implements Executable, ReqShardManager, ReqParser, ReqConfig, ReqDataSource, ReqInit {
     private ArgumentParser parser;
-    private JDA jda;
+    private ShardManager shardManager;
     private KudoData kudoData;
     private DataSource source;
 
@@ -161,8 +161,8 @@ public class Kudos extends Command implements Executable, ReqJDA, ReqParser, Req
 
     private void sendTopScores(boolean global, MessageEventDataWrapper messageContext) {
         List<Rank> ranks = global
-                ? kudoData.getGlobalTopScore(25, messageContext, jda)
-                : kudoData.getTopScore(messageContext.getGuild(), 25, messageContext, jda);
+                ? kudoData.getGlobalTopScore(25, messageContext, shardManager)
+                : kudoData.getTopScore(messageContext.getGuild(), 25, messageContext, shardManager);
 
         String rankTable = TextFormatting.getRankTable(ranks, messageContext);
 
@@ -192,8 +192,8 @@ public class Kudos extends Command implements Executable, ReqJDA, ReqParser, Req
     }
 
     @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
+    public void addShardManager(ShardManager shardManager) {
+        this.shardManager = shardManager;
     }
 
     @Override

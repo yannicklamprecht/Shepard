@@ -11,10 +11,10 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 
@@ -35,8 +35,8 @@ import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLoca
 /**
  * Command to configure the greeting message and channel.
  */
-public class Greeting extends Command implements Executable, ReqJDA, ReqInit, ReqDataSource {
-    private JDA jda;
+public class Greeting extends Command implements Executable, ReqShardManager, ReqInit, ReqDataSource {
+    private ShardManager shardManager;
     private GreetingData data;
     private DataSource source;
 
@@ -126,12 +126,12 @@ public class Greeting extends Command implements Executable, ReqJDA, ReqInit, Re
 
     @Override
     public void init() {
-        data = new GreetingData(jda, source);
+        data = new GreetingData(shardManager, source);
     }
 
     @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
+    public void addShardManager(ShardManager shardManager) {
+        this.shardManager = shardManager;
     }
 
     @Override

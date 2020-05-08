@@ -10,8 +10,8 @@ import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.database.ConnectionPool;
 import de.eldoria.shepard.modulebuilder.ReqAssigner;
 import lombok.Getter;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.List;
 @Getter
 public final class SharedResources implements ReqAssigner {
     private final ShepardBot shepardBot;
-    private final JDA jda;
+    private final ShardManager shardManager;
     private final Config config;
     private DataSource dataSource;
     private ConnectionPool connectionPool;
@@ -31,9 +31,9 @@ public final class SharedResources implements ReqAssigner {
     private final List<ListenerAdapter> listeners = new ArrayList<>();
     private CommandHub commandHub;
 
-    private SharedResources(ShepardBot shepardBot, JDA jda, Config config) {
+    private SharedResources(ShepardBot shepardBot, ShardManager shardManager, Config config) {
         this.shepardBot = shepardBot;
-        this.jda = jda;
+        this.shardManager = shardManager;
         this.config = config;
     }
 
@@ -46,7 +46,7 @@ public final class SharedResources implements ReqAssigner {
      * @param config     config.
      * @return a new initialized shared resources object.
      */
-    public static SharedResources build(ShepardBot shepardBot, JDA jda, Config config) {
+    public static SharedResources build(ShepardBot shepardBot, ShardManager jda, Config config) {
         SharedResources sharedResources = new SharedResources(shepardBot, jda, config);
         sharedResources.init();
         return sharedResources;

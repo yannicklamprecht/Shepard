@@ -1,8 +1,9 @@
 package de.eldoria.shepard.commandmodules.privatemessages;
 
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +12,10 @@ import java.util.stream.Collectors;
 /**
  * Collection so save the last users, which send a private message to the bot instance.
  */
-public final class PrivateMessageCollection implements ReqJDA {
+public final class PrivateMessageCollection implements ReqShardManager {
 
     private final List<MessageUser> lastMessageUsers = new ArrayList<>();
-    private JDA jda;
+    private ShardManager jda;
 
     /**
      * Create a new private message collection.
@@ -54,8 +55,8 @@ public final class PrivateMessageCollection implements ReqJDA {
     }
 
     @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
+    public void addShardManager(ShardManager shardManager) {
+        this.jda = shardManager;
     }
 
 

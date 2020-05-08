@@ -8,12 +8,12 @@ import de.eldoria.shepard.commandmodules.greeting.types.GreetingSettings;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
-import net.dv8tion.jda.api.JDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.sharding.ShardManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.sql.DataSource;
@@ -21,12 +21,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
-public class GreetingListener extends ListenerAdapter implements ReqJDA, ReqDataSource, ReqInit {
+public class GreetingListener extends ListenerAdapter implements ReqShardManager, ReqDataSource, ReqInit {
 
     private GreetingData greetingData;
     private InviteData inviteData;
     private DataSource source;
-    private JDA jda;
+    private ShardManager shardManager;
 
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
@@ -69,13 +69,13 @@ public class GreetingListener extends ListenerAdapter implements ReqJDA, ReqData
     }
 
     @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
+    public void addShardManager(ShardManager shardManager) {
+        this.shardManager = shardManager;
     }
 
     @Override
     public void init() {
-        greetingData = new GreetingData(jda, source);
+        greetingData = new GreetingData(shardManager, source);
         inviteData = new InviteData(source);
 
     }

@@ -1,8 +1,8 @@
 package de.eldoria.shepard.util.reactions;
 
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 public enum ShepardEmote {
     /**
@@ -76,11 +76,11 @@ public enum ShepardEmote {
     /**
      * Get the emote object.
      *
-     * @param jda JDA instance for emoji loading
+     * @param shardManager JDA instance for emoji loading
      * @return emote object or null if emote was not found
      */
-    public Emote getEmote(JDA jda) {
-        Guild guildById = jda.getGuildById(635460587341479951L);
+    public Emote getEmote(ShardManager shardManager) {
+        Guild guildById = shardManager.getGuildById(635460587341479951L);
 
         return guildById == null ? null : guildById.getEmoteById(this.id);
     }

@@ -6,13 +6,13 @@ import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.webapi.apiobjects.botlists.requests.BotsOnDiscordxyzRequest;
 import de.eldoria.shepard.webapi.apiobjects.botlists.requests.DiscordBotlistComRequests;
 import de.eldoria.shepard.webapi.apiobjects.botlists.requests.DiscordBotsggRequest;
 import de.eldoria.shepard.webapi.apiobjects.botlists.votes.VoteWrapper;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.sharding.ShardManager;
 import org.discordbots.api.client.DiscordBotListAPI;
 
 import javax.sql.DataSource;
@@ -29,10 +29,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 @Slf4j
-public final class BotListReporter implements Runnable, ReqInit, ReqJDA, ReqConfig, ReqDataSource {
+public final class BotListReporter implements Runnable, ReqInit, ReqShardManager, ReqConfig, ReqDataSource {
     private final List<Consumer<VoteWrapper>> eventHandlers = new ArrayList<>();
     private DiscordBotListAPI api;
-    private JDA jda;
+    private ShardManager shardManager;
     private Config config;
     private DataSource source;
 
@@ -51,8 +51,8 @@ public final class BotListReporter implements Runnable, ReqInit, ReqJDA, ReqConf
      * Refresh the server count.
      */
     private void refreshInformation() {
-        int guildCount = jda.getGuilds().size();
-        long userCount = jda.getUserCache().size();
+        int guildCount = shardManager.getGuilds().size();
+        long userCount = shardManager.getUserCache().size();
 
         log.debug("Current Server count is: " + guildCount);
         sendTopgg(guildCount);
@@ -157,17 +157,17 @@ public final class BotListReporter implements Runnable, ReqInit, ReqJDA, ReqConf
         if (config.getGeneralSettings().isBeta()) return;
         api = new DiscordBotListAPI.Builder()
                 .token(config.getBotlist().getToken().getTopgg())
-                .botId(jda.getSelfUser().getId())
+                .botId(shardManager.getShardById(0).getSelfUser().getId())
                 .build();
-        addEventHandler(new VoteHandler(jda, source));
+        addEventHandler(new VoteHandler(shardManager, source));
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(this, 120, 3600, TimeUnit.SECONDS);
     }
 
     @Override
-    public void addJDA(JDA jda) {
+    public void addShardManager(ShardManager shardManager) {
 
-        this.jda = jda;
+        this.shardManager = shardManager;
     }
 
     @Override

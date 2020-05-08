@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -150,7 +151,7 @@ public final class ReminderData extends QueryObject {
      * @param messageContext message context for error handling. can be null
      * @return list of expired reminder
      */
-    public List<ReminderComplex> getAndDeleteExpiredReminder(JDA jda, MessageEventDataWrapper messageContext) {
+    public List<ReminderComplex> getAndDeleteExpiredReminder(ShardManager jda, MessageEventDataWrapper messageContext) {
         List<ReminderComplex> result;
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_expired_reminder()")) {

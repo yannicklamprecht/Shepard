@@ -3,8 +3,9 @@ package de.eldoria.shepard.commandmodules.monitoring.analyzer;
 import de.eldoria.shepard.commandmodules.monitoring.util.Address;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -16,10 +17,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public final class MonitoringScheduler implements ReqJDA, ReqInit, ReqDataSource {
+public final class MonitoringScheduler implements ReqShardManager, ReqInit, ReqDataSource {
     private static MonitoringScheduler instance;
     private final Map<Long, List<Address>> unreachable = new HashMap<>();
-    private JDA jda;
+    private ShardManager jda;
     private DataSource source;
 
 
@@ -79,8 +80,8 @@ public final class MonitoringScheduler implements ReqJDA, ReqInit, ReqDataSource
     }
 
     @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
+    public void addShardManager(ShardManager shardManager) {
+        this.jda = shardManager;
     }
 
     @Override

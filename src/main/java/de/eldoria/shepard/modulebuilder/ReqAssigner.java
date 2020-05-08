@@ -9,7 +9,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqCooldownManager;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqExecutionValidator;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.modulebuilder.requirements.ReqLatestCommands;
 import de.eldoria.shepard.modulebuilder.requirements.ReqNormandy;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
@@ -22,7 +22,7 @@ public interface ReqAssigner {
     /**
      * Uses the {@link SharedResources} object to retrieve dependency objects of the provided object.
      * Adds the dependencies based on the requirement interfaces:
-     * {@link ReqJDA},{@link ReqCommands},{@link ReqConfig},{@link ReqCooldownManager},{@link ReqExecutionValidator},
+     * {@link ReqShardManager},{@link ReqCommands},{@link ReqConfig},{@link ReqCooldownManager},{@link ReqExecutionValidator},
      * {@link ReqLatestCommands}, {@link ReqNormandy},{@link ReqParser},{@link ReqPrivateMessages},
      * {@link ReqReactionAction}.
      * After adding the dependencies the {@link ReqInit#init()} is called if the objects implement {@link ReqInit}.
@@ -41,7 +41,7 @@ public interface ReqAssigner {
     /**
      * Uses the {@link SharedResources} object to retrieve dependency objects of the provided object.
      * Adds the dependencies based on the requirement interfaces:
-     * {@link ReqJDA},{@link ReqCommands},{@link ReqConfig},{@link ReqCooldownManager},{@link ReqExecutionValidator},
+     * {@link ReqShardManager},{@link ReqCommands},{@link ReqConfig},{@link ReqCooldownManager},{@link ReqExecutionValidator},
      * {@link ReqLatestCommands}, {@link ReqNormandy},{@link ReqParser},{@link ReqPrivateMessages},
      * {@link ReqReactionAction}.
      * After adding the dependencies the {@link ReqInit#init()} is called if the objects implement {@link ReqInit}.
@@ -54,8 +54,8 @@ public interface ReqAssigner {
      * @param resources resources object which holds all required dependencies
      */
     default void addAndInit(Object object, SharedResources resources) {
-        if (object instanceof ReqJDA) {
-            ((ReqJDA) object).addJDA(resources.getJda());
+        if (object instanceof ReqShardManager) {
+            ((ReqShardManager) object).addShardManager(resources.getShardManager());
         }
         if (object instanceof ReqConfig) {
             ((ReqConfig) object).addConfig(resources.getConfig());
@@ -99,7 +99,7 @@ public interface ReqAssigner {
         if (object instanceof ListenerAdapter) {
             ListenerAdapter listener = (ListenerAdapter) object;
             resources.addListener(listener);
-            resources.getJda().addEventListener(listener);
+            resources.getShardManager().addEventListener(listener);
         }
     }
 }

@@ -4,9 +4,9 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.util.SystemInfoLocale.M_AVAILABLE_CORES;
@@ -20,8 +20,8 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
 /**
  * Command which provides information about the system the bot is running on.
  */
-public class SystemInfo extends Command implements ExecutableAsync, ReqJDA {
-    private JDA jda;
+public class SystemInfo extends Command implements ExecutableAsync, ReqShardManager {
+    private ShardManager shardManager;
 
     /**
      * Creates a new system info command object.
@@ -45,8 +45,8 @@ public class SystemInfo extends Command implements ExecutableAsync, ReqJDA {
                 .addField(M_MEMORY.tag, M_USED_MEMORY.tag
                         + runtime.totalMemory() / 1000000 + "MB/"
                         + runtime.maxMemory() / 1000000 + "MB", false);
-        long guildSize = jda.getGuildCache().size();
-        long userSize = jda.getUserCache().size();
+        long guildSize = shardManager.getGuildCache().size();
+        long userSize = shardManager.getUserCache().size();
         builder.addField(M_SERVICE_INFO.tag,
                 localizeAllAndReplace(M_SERVICE_INFO_MESSAGE.tag, messageContext.getGuild(),
                         guildSize + "", userSize + ""), false);
@@ -55,7 +55,7 @@ public class SystemInfo extends Command implements ExecutableAsync, ReqJDA {
     }
 
     @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
+    public void addShardManager(ShardManager shardManager) {
+        this.shardManager = shardManager;
     }
 }

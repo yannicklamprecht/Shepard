@@ -3,8 +3,8 @@ package de.eldoria.shepard.webapi.botlistreporter;
 import de.eldoria.shepard.commandmodules.kudos.data.KudoData;
 import de.eldoria.shepard.webapi.apiobjects.botlists.votes.VoteWrapper;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.util.concurrent.ThreadLocalRandom;
@@ -30,24 +30,23 @@ public class VoteHandler implements Consumer<VoteWrapper> {
             "Thank you for the vote." + lineSeparator()
                     + "I have only %0% Kudos left to give you, but i hope you are as happy as I am."
     };
-    private final JDA jda;
+    private final ShardManager shardManager;
     private final KudoData kudoData;
 
     /**
      * Create a new Vote handler.
-     *
-     * @param jda jda for user lookup
+     *  @param shardManager shardManager for user lookup
      * @param source source for database connection
      */
-    public VoteHandler(JDA jda, DataSource source) {
-        this.jda = jda;
+    public VoteHandler(ShardManager shardManager, DataSource source) {
+        this.shardManager = shardManager;
         kudoData = new KudoData(source);
     }
 
     @Override
     public void accept(VoteWrapper vote) {
         log.debug("Processing vote for user {}", vote.getId());
-        User userById = jda.getUserById(vote.getId());
+        User userById = shardManager.getUserById(vote.getId());
         if (userById == null) {
             log.debug("No user found for vote");
             return;

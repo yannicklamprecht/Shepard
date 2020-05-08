@@ -11,10 +11,10 @@ import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.util.Optional;
@@ -27,11 +27,10 @@ import static java.lang.System.lineSeparator;
 /**
  * Gives information about the settings of a registered and active {@link Command}.
  */
-public class CommandInfo extends Command implements Executable, ReqJDA, ReqParser, ReqDataSource {
+public class CommandInfo extends Command implements Executable, ReqParser, ReqDataSource {
 
     private ArgumentParser parser;
     private CommandData commandData;
-    private JDA jda;
 
     /**
      * Creates new context info command object.
@@ -61,7 +60,7 @@ public class CommandInfo extends Command implements Executable, ReqJDA, ReqParse
             MessageSender.sendMessage("Information about command " + command.get().getCommandName().toUpperCase()
                     + lineSeparator()
                     + "```yaml" + lineSeparator()
-                    + data.buildString(jda) + lineSeparator() + "```", messageContext.getTextChannel());
+                    + data.buildString(messageContext.getJDA()) + lineSeparator() + "```", messageContext.getTextChannel());
         } else {
             MessageSender.sendSimpleError(ErrorType.INVALID_CONTEXT, messageContext.getTextChannel());
         }
@@ -70,10 +69,5 @@ public class CommandInfo extends Command implements Executable, ReqJDA, ReqParse
     @Override
     public void addDataSource(DataSource source) {
         commandData = new CommandData(source);
-    }
-
-    @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
     }
 }

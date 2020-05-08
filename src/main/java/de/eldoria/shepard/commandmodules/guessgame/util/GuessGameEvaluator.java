@@ -7,11 +7,11 @@ import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.minigameutil.BaseEvaluator;
 import de.eldoria.shepard.minigameutil.ChannelEvaluator;
 import de.eldoria.shepard.util.Verifier;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,36 +32,35 @@ public class GuessGameEvaluator extends BaseEvaluator {
     private final Map<Long, Boolean> votes = new HashMap<>();
     private final GuessGameData guessGameData;
     private final ChannelEvaluator<GuessGameEvaluator> evaluator;
-    private final JDA jda;
+    private final ShardManager shardManager;
 
     /**
      * Creates a new guess game evaluator.
-     *
-     * @param guessGameData guess game data
+     *  @param guessGameData guess game data
      * @param evaluator     evaluator for guess games
-     * @param jda           jda instance
+     * @param shardManager           shardManager instance
      * @param message       message for evaluation
      * @param image         image for evaluation.
      */
-    public GuessGameEvaluator(GuessGameData guessGameData, ChannelEvaluator<GuessGameEvaluator> evaluator, JDA jda,
+    public GuessGameEvaluator(GuessGameData guessGameData, ChannelEvaluator<GuessGameEvaluator> evaluator, ShardManager shardManager,
                               Message message, GuessGameImage image) {
         super(message.getIdLong(), message.getChannel().getIdLong());
         this.guessGameData = guessGameData;
         this.evaluator = evaluator;
-        this.jda = jda;
+        this.shardManager = shardManager;
         this.image = image;
     }
 
     @Override
     public void run() {
-        TextChannel guildChannel = jda.getTextChannelById(channelId);
+        TextChannel guildChannel = shardManager.getTextChannelById(channelId);
         if (guildChannel == null) {
             return;
         }
 
-        List<User> trueVotes = Verifier.getValidUserByLong(jda, votes.entrySet()
+        List<User> trueVotes = Verifier.getValidUserByLong(shardManager, votes.entrySet()
                 .stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).collect(Collectors.toList()));
-        List<User> falseVotes = Verifier.getValidUserByLong(jda, votes.entrySet()
+        List<User> falseVotes = Verifier.getValidUserByLong(shardManager, votes.entrySet()
                 .stream().filter(set -> !set.getValue()).map(Map.Entry::getKey).collect(Collectors.toList()));
 
         List<User> winners = image.isNsfw() ? trueVotes : falseVotes;

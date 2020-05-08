@@ -2,17 +2,17 @@ package de.eldoria.shepard.commandmodules.greeting.routines;
 
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
-import net.dv8tion.jda.api.JDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public final class InviteScheduler implements ReqJDA, ReqInit, ReqDataSource {
+public final class InviteScheduler implements ReqShardManager, ReqInit, ReqDataSource {
 
-    private JDA jda;
+    private ShardManager shardManager;
     private DataSource source;
 
     /**
@@ -22,17 +22,17 @@ public final class InviteScheduler implements ReqJDA, ReqInit, ReqDataSource {
     }
 
     @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
+    public void addShardManager(ShardManager shardManager) {
+        this.shardManager = shardManager;
     }
 
     @Override
     public void init() {
         ScheduledExecutorService autoRegister = Executors.newSingleThreadScheduledExecutor();
-        autoRegister.schedule(new RegisterInvites(jda, source), 0, TimeUnit.SECONDS);
+        autoRegister.schedule(new RegisterInvites(shardManager, source), 0, TimeUnit.SECONDS);
 
         ScheduledExecutorService refreshInvites = Executors.newSingleThreadScheduledExecutor();
-        refreshInvites.scheduleAtFixedRate(new RefreshInvites(jda, source), 0, 60, TimeUnit.MINUTES);
+        refreshInvites.scheduleAtFixedRate(new RefreshInvites(shardManager, source), 0, 60, TimeUnit.MINUTES);
     }
 
     @Override

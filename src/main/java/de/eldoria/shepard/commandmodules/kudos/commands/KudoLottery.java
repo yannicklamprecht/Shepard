@@ -16,10 +16,11 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigameutil.ChannelEvaluator;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.util.reactions.ShepardEmote;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.awt.Color;
@@ -36,8 +37,8 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
  * Command to start a new KudoLottery.
  * A started lottery will be handled by {@link KudoLotteryEvaluator}
  */
-public class KudoLottery extends Command implements Executable, ReqJDA, ReqDataSource, ReqInit {
-    private JDA jda;
+public class KudoLottery extends Command implements Executable, ReqShardManager, ReqDataSource, ReqInit {
+    private ShardManager jda;
     private ChannelEvaluator<KudoLotteryEvaluator> evaluator;
     private KudoData kudoData;
 
@@ -109,8 +110,8 @@ public class KudoLottery extends Command implements Executable, ReqJDA, ReqDataS
     }
 
     @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
+    public void addShardManager(ShardManager shardManager) {
+        this.jda = shardManager;
     }
 
     @Override

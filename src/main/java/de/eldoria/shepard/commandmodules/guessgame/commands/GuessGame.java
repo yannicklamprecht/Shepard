@@ -17,11 +17,11 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigameutil.ChannelEvaluator;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.reactions.ShepardEmote;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -49,10 +49,10 @@ import static java.lang.System.lineSeparator;
  * A started guess game will be manages by a {@link GuessGameEvaluator}.
  * Provides information about user scores.
  */
-public class GuessGame extends Command implements Executable, ReqJDA, ReqDataSource, ReqInit {
+public class GuessGame extends Command implements Executable, ReqShardManager, ReqDataSource, ReqInit {
 
     private ChannelEvaluator<GuessGameEvaluator> evaluator;
-    private JDA jda;
+    private ShardManager shardManager;
     private DataSource source;
     private GuessGameData guessGameData;
     private GuessGameListener listener;
@@ -119,8 +119,8 @@ public class GuessGame extends Command implements Executable, ReqJDA, ReqDataSou
 
     private void sendTopScores(boolean global, MessageEventDataWrapper messageContext) {
         List<Rank> ranks = global
-                ? guessGameData.getGlobalTopScore(10, messageContext, jda)
-                : guessGameData.getTopScore(messageContext.getGuild(), 10, messageContext, jda);
+                ? guessGameData.getGlobalTopScore(10, messageContext, shardManager)
+                : guessGameData.getTopScore(messageContext.getGuild(), 10, messageContext, shardManager);
 
         String rankTable = TextFormatting.getRankTable(ranks, messageContext);
 
@@ -143,24 +143,24 @@ public class GuessGame extends Command implements Executable, ReqJDA, ReqDataSou
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
                 .setTitle(M_TITLE.tag)
                 .setDescription(localizeAllAndReplace(M_GAME_DESCRIPTION.tag, messageContext.getGuild(),
-                        ShepardEmote.ANIM_CHECKMARK.getEmote(jda).getAsMention(),
-                        ShepardEmote.ANIM_CROSS.getEmote(jda).getAsMention(),
+                        ShepardEmote.ANIM_CHECKMARK.getEmote(shardManager).getAsMention(),
+                        ShepardEmote.ANIM_CROSS.getEmote(shardManager).getAsMention(),
                         "30"))
                 .setImage(hentaiImage.getCroppedImage())
                 .setFooter(M_GAME_FOOTER.tag);
 
         messageContext.getChannel().sendMessage(builder.build())
                 .queue(message -> {
-                    message.addReaction(ShepardEmote.ANIM_CHECKMARK.getEmote(jda)).queue();
-                    message.addReaction(ShepardEmote.ANIM_CROSS.getEmote(jda)).queue();
+                    message.addReaction(ShepardEmote.ANIM_CHECKMARK.getEmote(shardManager)).queue();
+                    message.addReaction(ShepardEmote.ANIM_CROSS.getEmote(shardManager)).queue();
                     evaluator.scheduleEvaluation(message, 30,
-                            new GuessGameEvaluator(guessGameData, evaluator, jda, message, hentaiImage));
+                            new GuessGameEvaluator(guessGameData, evaluator, shardManager, message, hentaiImage));
                 });
     }
 
     @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
+    public void addShardManager(ShardManager shardManager) {
+        this.shardManager = shardManager;
     }
 
     @Override
@@ -172,6 +172,6 @@ public class GuessGame extends Command implements Executable, ReqJDA, ReqDataSou
     public void init() {
         evaluator = new ChannelEvaluator<>(5);
         guessGameData = new GuessGameData(source);
-        jda.addEventListener(new GuessGameListener(jda, evaluator));
+        shardManager.addEventListener(new GuessGameListener(shardManager, evaluator));
     }
 }

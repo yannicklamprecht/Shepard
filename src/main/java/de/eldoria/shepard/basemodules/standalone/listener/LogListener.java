@@ -3,6 +3,7 @@ package de.eldoria.shepard.basemodules.standalone.listener;
 import de.eldoria.shepard.C;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.DisconnectEvent;
+import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.ReconnectedEvent;
 import net.dv8tion.jda.api.events.ResumedEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -48,5 +49,13 @@ public class LogListener extends ListenerAdapter {
                     "Shepard was disconnected for {} seconds. All connections reconnected. Everything is fine.",
                     seconds);
         }
+    }
+
+    @Override
+    public void onReady(@Nonnull ReadyEvent event) {
+        log.info("Shard {}/{} started. Shard is connected to {} guilds.",
+                event.getJDA().getShardInfo().getShardId(),
+                event.getJDA().getShardManager().getShardsTotal() - 1,
+                event.getGuildTotalCount());
     }
 }

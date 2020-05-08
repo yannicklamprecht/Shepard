@@ -1,12 +1,12 @@
 package de.eldoria.shepard.util;
 
 import de.eldoria.shepard.database.DbUtil;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import java.util.Arrays;
 import java.util.List;
@@ -111,13 +111,13 @@ public class Verifier {
     /**
      * Get the valid users by id.
      *
-     * @param jda jda for user lookup
+     * @param shardManager jda for user lookup
      * @param collect list of long ids
      * @return list of valid users.
      */
-    public static List<User> getValidUserByLong(JDA jda, List<Long> collect) {
+    public static List<User> getValidUserByLong(ShardManager shardManager, List<Long> collect) {
         return collect.stream()
-                .map(jda::getUserById)
+                .map(shardManager::getUserById)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }

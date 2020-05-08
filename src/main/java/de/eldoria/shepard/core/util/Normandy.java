@@ -1,15 +1,16 @@
 package de.eldoria.shepard.core.util;
 
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 /**
  * The normandy provides several static channel for logging.
  * Should be removed in future update and replaced by webhooks.
  */
-public class Normandy implements ReqJDA {
-    private JDA jda;
+public class Normandy implements ReqShardManager {
+    private ShardManager jda;
 
     /**
      * Get the private answer channel.
@@ -23,7 +24,7 @@ public class Normandy implements ReqJDA {
     }
 
     @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
+    public void addShardManager(ShardManager shardManager) {
+        this.jda = shardManager;
     }
 }

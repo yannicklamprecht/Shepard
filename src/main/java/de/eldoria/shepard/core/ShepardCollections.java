@@ -5,22 +5,22 @@ import de.eldoria.shepard.commandmodules.privatemessages.PrivateMessageCollectio
 import de.eldoria.shepard.commandmodules.repeatcommand.LatestCommandsCollection;
 import de.eldoria.shepard.core.util.Normandy;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import lombok.Getter;
-import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 /**
  * Collection if essential core collections.
  * Contains readonly collections.
  */
 @Getter
-public class ShepardCollections implements ReqJDA, ReqInit {
+public class ShepardCollections implements ReqShardManager, ReqInit {
 
     private LatestCommandsCollection latestCommands;
     private PrivateMessageCollection privateMessages;
     private ReactionActionCollection reactionActions;
     private Normandy normandy;
-    private JDA jda;
+    private ShardManager shardManager;
 
     /**
      * Create a new shepard collection.
@@ -35,11 +35,11 @@ public class ShepardCollections implements ReqJDA, ReqInit {
         privateMessages = new PrivateMessageCollection();
         reactionActions = new ReactionActionCollection();
         normandy = new Normandy();
-        normandy.addJDA(jda);
+        normandy.addShardManager(shardManager);
     }
 
     @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
+    public void addShardManager(ShardManager shardManager) {
+        this.shardManager = shardManager;
     }
 }

@@ -6,6 +6,7 @@ import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -200,7 +201,7 @@ public final class KudoData extends QueryObject {
      * @param jda            jda instance
      * @return sorted list of ranks in descending order.
      */
-    public List<Rank> getTopScore(Guild guild, int scoreAmount, MessageEventDataWrapper messageContext, JDA jda) {
+    public List<Rank> getTopScore(Guild guild, int scoreAmount, MessageEventDataWrapper messageContext, ShardManager jda) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_rubber_points_top_score(?,?)")) {
             statement.setString(1, guild.getId());
@@ -220,7 +221,7 @@ public final class KudoData extends QueryObject {
      * @param jda            jda instance
      * @return sorted list of ranks in descending order.
      */
-    public List<Rank> getGlobalTopScore(int scoreAmount, MessageEventDataWrapper messageContext, JDA jda) {
+    public List<Rank> getGlobalTopScore(int scoreAmount, MessageEventDataWrapper messageContext, ShardManager jda) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_rubber_points_global_top_score(?)")) {
             statement.setInt(1, scoreAmount);

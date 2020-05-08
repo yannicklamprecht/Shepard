@@ -8,11 +8,11 @@ import de.eldoria.shepard.minigameutil.BaseEvaluator;
 import de.eldoria.shepard.minigameutil.ChannelEvaluator;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.util.reactions.ShepardEmote;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -36,32 +36,31 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
 
     private final int maxBet;
     private final ChannelEvaluator<KudoLotteryEvaluator> evaluator;
-    private final JDA jda;
+    private final ShardManager shardManager;
     private final KudoData kudoData;
 
     /**
      * Creates a new Kudo lottery evaluator.
-     *
-     * @param jda       jda instance
-     * @param kudoData  data object
+     *  @param kudoData  data object
      * @param evaluator evaluator for lottery
+     * @param shardManager       shardManager instance
      * @param message   message for evaluation
      * @param user      user for first bet.
      * @param maxBet    the max amount a single user can bet
      */
-    public KudoLotteryEvaluator(KudoData kudoData, ChannelEvaluator<KudoLotteryEvaluator> evaluator, JDA jda,
+    public KudoLotteryEvaluator(KudoData kudoData, ChannelEvaluator<KudoLotteryEvaluator> evaluator, ShardManager shardManager,
                                 Message message, User user, int maxBet) {
         super(message.getIdLong(), message.getChannel().getIdLong());
         this.kudoData = kudoData;
         this.evaluator = evaluator;
-        this.jda = jda;
+        this.shardManager = shardManager;
         bet.put(user.getIdLong(), 1);
         this.maxBet = maxBet;
     }
 
     @Override
     public void run() {
-        TextChannel guildChannel = jda.getTextChannelById(channelId);
+        TextChannel guildChannel = shardManager.getTextChannelById(channelId);
         if (guildChannel == null) {
             return;
         }
@@ -82,7 +81,7 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
         int i = random.nextInt(pool.size());
 
         long userId = pool.get(i);
-        User userById = jda.getUserById(userId);
+        User userById = shardManager.getUserById(userId);
 
         if (userById == null) {
             return;
@@ -123,8 +122,8 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
      * @param amount amount of kudos. -1 to take all kudos.
      */
     public void addBet(Guild guild, User user, int amount) {
-        if (Verifier.equalSnowflake(user, jda.getSelfUser())) return;
-        TextChannel textChannel = jda.getTextChannelById(channelId);
+        if (Verifier.equalSnowflake(user, shardManager.getShardById(0).getSelfUser())) return;
+        TextChannel textChannel = shardManager.getTextChannelById(channelId);
         if (textChannel == null) {
             return;
         }
@@ -194,9 +193,9 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
                         textChannel.getGuild(), "**" + sum + "**", "**" + maxBet + "**"),
                         localizeAllAndReplace(KudoLotteryLocale.M_EMBED_EXPLANATION.tag,
                                 textChannel.getGuild(),
-                                ShepardEmote.INFINITY.getEmote(jda).getAsMention(),
-                                ShepardEmote.PLUS_X.getEmote(jda).getAsMention(),
-                                ShepardEmote.PLUS_I.getEmote(jda).getAsMention()),
+                                ShepardEmote.INFINITY.getEmote(shardManager).getAsMention(),
+                                ShepardEmote.PLUS_X.getEmote(shardManager).getAsMention(),
+                                ShepardEmote.PLUS_I.getEmote(shardManager).getAsMention()),
                         true)
                 .setColor(Color.orange);
 

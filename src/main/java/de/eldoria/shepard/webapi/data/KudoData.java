@@ -2,8 +2,8 @@ package de.eldoria.shepard.webapi.data;
 
 import de.eldoria.shepard.database.QueryObject;
 import de.eldoria.shepard.webapi.apiobjects.ApiRank;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.sql.Array;
@@ -18,17 +18,16 @@ import static de.eldoria.shepard.database.DbUtil.getSnowflakeArray;
 import static de.eldoria.shepard.database.DbUtil.handleException;
 
 public class KudoData extends QueryObject {
-    private final JDA jda;
+    private final ShardManager shardManager;
 
     /**
      * Create a new Kudo data object.
-     *
-     * @param jda    jda instance
+     *  @param shardManager    shardManager instance
      * @param source data source for information retrieval
      */
-    public KudoData(JDA jda, DataSource source) {
+    public KudoData(ShardManager shardManager, DataSource source) {
         super(source);
-        this.jda = jda;
+        this.shardManager = shardManager;
     }
 
     /**
@@ -89,10 +88,10 @@ public class KudoData extends QueryObject {
             statement.setInt(3, pagesize);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                User user = jda.getUserById(resultSet.getLong("user_id"));
+                User user = shardManager.getUserById(resultSet.getLong("user_id"));
                 if (user == null) {
                     result.add(
-                            new ApiRank(jda,
+                            new ApiRank(shardManager,
                                     resultSet.getInt("rank"),
                                     resultSet.getLong("user_id"),
                                     resultSet.getLong("score")));
@@ -196,10 +195,10 @@ public class KudoData extends QueryObject {
             statement.setInt(4, pagesize);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                User user = jda.getUserById(resultSet.getLong("user_id"));
+                User user = shardManager.getUserById(resultSet.getLong("user_id"));
                 if (user == null) {
                     result.add(
-                            new ApiRank(jda,
+                            new ApiRank(shardManager,
                                     resultSet.getInt("rank"),
                                     resultSet.getLong("user_id"),
                                     resultSet.getLong("score")));
@@ -256,9 +255,9 @@ public class KudoData extends QueryObject {
         while (resultSet.next()) {
             long score = resultSet.getLong("score");
             rank++;
-            User user = jda.getUserById(resultSet.getLong("user_id"));
+            User user = shardManager.getUserById(resultSet.getLong("user_id"));
             if (user == null) {
-                result.add(new ApiRank(jda, rank, resultSet.getLong("user_id"), score));
+                result.add(new ApiRank(shardManager, rank, resultSet.getLong("user_id"), score));
                 continue;
             }
             result.add(new ApiRank(rank, user, score));

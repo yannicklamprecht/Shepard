@@ -17,15 +17,14 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqExecutionValidator;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
 import de.eldoria.shepard.modulebuilder.requirements.ReqReactionAction;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.sharding.ShardManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -43,9 +42,7 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
 
 @Slf4j
 public class CommandListener extends ListenerAdapter
-        implements ReqJDA, ReqCommands,
-        ReqExecutionValidator, ReqReactionAction, ReqDataSource, ReqConfig, ReqInit {
-    private JDA jda;
+        implements ReqCommands, ReqExecutionValidator, ReqReactionAction, ReqDataSource, ReqConfig, ReqInit {
     private CommandHub commands;
     private ExecutionValidator executionValidator;
     private ReactionActionCollection reactionAction;
@@ -86,7 +83,7 @@ public class CommandListener extends ListenerAdapter
         if (!isCommand(receivedMessage, args, messageContext)) return;
 
         // Ignore if the command is send by shepard
-        if (Verifier.equalSnowflake(messageContext.getAuthor(), jda.getSelfUser())
+        if (Verifier.equalSnowflake(messageContext.getAuthor(), messageContext.getJDA().getSelfUser())
                 || messageContext.getAuthor().isBot()) {
             return;
         }
@@ -153,7 +150,7 @@ public class CommandListener extends ListenerAdapter
         if (receivedMessage.startsWith(prefix)) {
             isCommand = true;
             //Check if the message is a command executed by a mention of the bot.
-        } else if (DbUtil.getIdRaw(args[0]).contentEquals(jda.getSelfUser().getId())) {
+        } else if (DbUtil.getIdRaw(args[0]).contentEquals(messageContext.getJDA().getSelfUser().getId())) {
             isCommand = true;
         }
         return isCommand;
@@ -166,7 +163,7 @@ public class CommandListener extends ListenerAdapter
             args[0] = args[0].substring(prefix.length());
             strippedArgs = args;
             //Check if the message is a command executed by a mention of the bot.
-        } else if (DbUtil.getIdRaw(args[0]).contentEquals(jda.getSelfUser().getId())) {
+        } else if (DbUtil.getIdRaw(args[0]).contentEquals(messageContext.getJDA().getSelfUser().getId())) {
             strippedArgs = Arrays.copyOfRange(args, 1, args.length);
         } else {
             strippedArgs = args;
@@ -178,11 +175,6 @@ public class CommandListener extends ListenerAdapter
     @Override
     public void addCommands(CommandHub commandHub) {
         this.commands = commandHub;
-    }
-
-    @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
     }
 
     @Override

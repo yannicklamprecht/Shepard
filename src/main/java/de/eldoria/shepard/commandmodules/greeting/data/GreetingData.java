@@ -3,9 +3,9 @@ package de.eldoria.shepard.commandmodules.greeting.data;
 import de.eldoria.shepard.commandmodules.greeting.types.GreetingSettings;
 import de.eldoria.shepard.database.QueryObject;
 import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -16,17 +16,16 @@ import static de.eldoria.shepard.database.DbUtil.handleException;
 
 public class GreetingData extends QueryObject {
 
-    private final JDA jda;
+    private final ShardManager shardManager;
 
     /**
      * Create a new greeting data object.
-     *
-     * @param jda    jda for user parsing
+     *  @param shardManager    shardManager for user parsing
      * @param source data source for connection retrieving
      */
-    public GreetingData(JDA jda, DataSource source) {
+    public GreetingData(ShardManager shardManager, DataSource source) {
         super(source);
-        this.jda = jda;
+        this.shardManager = shardManager;
     }
 
     /**
@@ -103,7 +102,7 @@ public class GreetingData extends QueryObject {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
             if (result.next()) {
-                return new GreetingSettings(jda, guild.getId(),
+                return new GreetingSettings(shardManager, guild.getId(),
                         result.getString("channel_id"),
                         result.getString("message"));
             }

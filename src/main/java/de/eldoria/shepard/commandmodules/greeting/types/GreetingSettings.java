@@ -3,6 +3,7 @@ package de.eldoria.shepard.commandmodules.greeting.types;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 public class GreetingSettings {
     private final String text;
@@ -10,13 +11,12 @@ public class GreetingSettings {
 
     /**
      * Creates a new Greeting Object.
-     *
-     * @param jda       jda for parsing
+     *  @param jda       jda for parsing
      * @param guildId   guild id
      * @param channelId channel id
      * @param text      greeting text
      */
-    public GreetingSettings(JDA jda, String guildId, String channelId, String text) {
+    public GreetingSettings(ShardManager jda, String guildId, String channelId, String text) {
         this.text = text;
 
         Guild guild = jda.getGuildById(guildId);

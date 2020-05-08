@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.annotation.Nullable;
 
@@ -14,14 +15,13 @@ public class ReminderComplex extends ReminderSimple {
 
     /**
      * Creates a new reminder object.
-     *
-     * @param jda       jda instance
+     *  @param jda       jda instance
      * @param guildId   guild where the reminder was assigned
      * @param channelId channel where the reminder was assigned
      * @param userId    user which created the reminder
      * @param text      text for reminder
      */
-    public ReminderComplex(JDA jda, String guildId, String channelId, String userId, String text) {
+    public ReminderComplex(ShardManager jda, String guildId, String channelId, String userId, String text) {
         super(0, text);
         channel = jda.getTextChannelById(channelId);
         if (channel != null) {

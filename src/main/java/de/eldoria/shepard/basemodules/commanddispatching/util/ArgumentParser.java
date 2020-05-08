@@ -4,16 +4,16 @@ import de.eldoria.shepard.basemodules.commanddispatching.CommandHub;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.modulebuilder.requirements.ReqCommands;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.Verifier;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,10 +35,10 @@ import static de.eldoria.shepard.util.Verifier.isValidId;
 /**
  * Class which has multiple methods to parse a command input.
  */
-public class ArgumentParser implements ReqCommands, ReqJDA {
+public class ArgumentParser implements ReqCommands, ReqShardManager {
     private static final Pattern DISCORD_TAG = Pattern.compile(".+?#[0-9]{4}");
     private CommandHub commandHub;
-    private JDA jda;
+    private ShardManager shardManager;
 
     /**
      * Create a new argument parser.
@@ -332,22 +332,18 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
             return null;
         }
 
-        User user = byId(userString, jda::getUserById);
+        User user = byId(userString, shardManager::getUserById);
         String idRaw = getIdRaw(userString);
         if (isValidId(idRaw)) {
-            user = jda.getUserById(idRaw);
+            user = shardManager.getUserById(idRaw);
         }
 
         if (user == null && DISCORD_TAG.matcher(userString).matches()) {
-            user = jda.getUserByTag(userString);
+            user = shardManager.getUserByTag(userString);
         }
 
         if (user == null) {
-            user = byName(userString, s -> jda.getUsersByName(s, true));
-        }
-
-        if (user == null) {
-            Optional<User> first = jda.getUserCache().stream()
+            Optional<User> first = shardManager.getUserCache().stream()
                     .filter(cu -> cu.getName().toLowerCase().startsWith(userString.toLowerCase())).findFirst();
             if (first.isPresent()) {
                 user = first.get();
@@ -514,17 +510,17 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
      * @return guild object or null
      */
     public Optional<Guild> getGuild(String guildString) {
-        Guild guild = byId(guildString, s -> jda.getGuildById(guildString));
+        Guild guild = byId(guildString, s -> shardManager.getGuildById(guildString));
 
         if (guild == null) {
-            List<Guild> guilds = jda.getGuildsByName(guildString, false);
+            List<Guild> guilds = shardManager.getGuildsByName(guildString, false);
             if (!guilds.isEmpty()) {
                 guild = guilds.get(0);
             }
         }
 
         if (guild == null) {
-            return jda.getGuildCache().stream()
+            return shardManager.getGuildCache().stream()
                     .filter(g -> g.getName().toLowerCase().startsWith(guildString.toLowerCase())).findFirst();
         }
         return Optional.of(guild);
@@ -541,27 +537,27 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
             return null;
         }
 
-        User user = byId(userString, jda::getUserById);
+        User user = byId(userString, shardManager::getUserById);
         if (user != null) {
             return Collections.singletonList(user);
         }
 
         String idRaw = getIdRaw(userString);
         if (isValidId(idRaw)) {
-            user = jda.getUserById(idRaw);
+            user = shardManager.getUserById(idRaw);
             if (user != null) {
                 return Collections.singletonList(user);
             }
         }
 
         if (DISCORD_TAG.matcher(userString).matches()) {
-            user = jda.getUserByTag(userString);
+            user = shardManager.getUserByTag(userString);
             if (user != null) {
                 return Collections.singletonList(user);
             }
         }
 
-        return jda.getUserCache().stream()
+        return shardManager.getUserCache().stream()
                 .filter(cu -> cu.getName().toLowerCase().contains(userString.toLowerCase()))
                 .collect(Collectors.toList());
     }
@@ -576,7 +572,7 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
      */
 
     public List<User> fuzzyGuildUserSearch(long guildId, String userString) {
-        Guild guild = jda.getGuildById(guildId);
+        Guild guild = shardManager.getGuildById(guildId);
         if (guild == null) {
             return Collections.emptyList();
         }
@@ -628,7 +624,7 @@ public class ArgumentParser implements ReqCommands, ReqJDA {
     }
 
     @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
+    public void addShardManager(ShardManager shardManager) {
+        this.shardManager = shardManager;
     }
 }

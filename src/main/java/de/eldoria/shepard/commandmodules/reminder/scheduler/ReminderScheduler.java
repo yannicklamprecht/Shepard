@@ -6,8 +6,8 @@ import de.eldoria.shepard.localization.enums.scheduler.ReminderLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
-import net.dv8tion.jda.api.JDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -17,13 +17,13 @@ import java.util.concurrent.TimeUnit;
 
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
-public class ReminderScheduler implements Runnable, ReqJDA, ReqInit, ReqDataSource {
-    private JDA jda;
+public class ReminderScheduler implements Runnable, ReqShardManager, ReqInit, ReqDataSource {
+    private ShardManager shardManager;
     private ReminderData reminderData;
 
     @Override
     public void run() {
-        List<ReminderComplex> expiredReminder = reminderData.getAndDeleteExpiredReminder(jda, null);
+        List<ReminderComplex> expiredReminder = reminderData.getAndDeleteExpiredReminder(shardManager, null);
         for (ReminderComplex reminder : expiredReminder) {
             if (reminder.getUser() == null) {
                 return;
@@ -45,8 +45,8 @@ public class ReminderScheduler implements Runnable, ReqJDA, ReqInit, ReqDataSour
     }
 
     @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
+    public void addShardManager(ShardManager shardManager) {
+        this.shardManager = shardManager;
     }
 
     @Override

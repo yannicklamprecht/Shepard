@@ -3,11 +3,11 @@ package de.eldoria.shepard.commandmodules.greeting.routines;
 import de.eldoria.shepard.commandmodules.greeting.data.InviteData;
 import de.eldoria.shepard.commandmodules.greeting.types.DatabaseInvite;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -21,17 +21,16 @@ import java.util.stream.Collectors;
 @Slf4j
 class RegisterInvites implements Runnable {
     private final Map<Long, Set<String>> invites = new HashMap<>();
-    private final JDA jda;
+    private final ShardManager shardManager;
     private final InviteData inviteData;
 
     /**
      * Creates a new register invite runnable.
-     *
-     * @param jda    jda instance for invite retrieval
+     *  @param shardManager    shardManager instance for invite retrieval
      * @param source data source for connection retrieval
      */
-    public RegisterInvites(JDA jda, DataSource source) {
-        this.jda = jda;
+    public RegisterInvites(ShardManager shardManager, DataSource source) {
+        this.shardManager = shardManager;
         inviteData = new InviteData(source);
     }
 
@@ -41,14 +40,14 @@ class RegisterInvites implements Runnable {
             List<Guild> guilds;
 
             try {
-                guilds = jda.getGuilds();
+                guilds = shardManager.getGuilds();
             } catch (IllegalArgumentException e) {
                 return;
             }
             int sleepDuration = Math.max(10000 / guilds.size(), 250);
 
             for (Guild guild : guilds) {
-                if (!Objects.requireNonNull(guild.getMember(jda
+                if (!Objects.requireNonNull(guild.getMember(shardManager.getShardById(0)
                         .getSelfUser())).hasPermission(Permission.MANAGE_SERVER)) {
                     continue;
                 }

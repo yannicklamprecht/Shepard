@@ -5,27 +5,26 @@ import de.eldoria.shepard.minigameutil.ChannelEvaluator;
 import de.eldoria.shepard.util.UniqueMessageIdentifier;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.util.reactions.ShepardEmote;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.annotation.Nonnull;
 
 import static de.eldoria.shepard.util.Verifier.equalSnowflake;
 
 public class KudoLotteryListener extends ListenerAdapter {
-    private final JDA jda;
+    private final ShardManager shardManager;
     private final ChannelEvaluator<KudoLotteryEvaluator> evaluator;
 
     /**
      * Create a new kudo lottery listener.
-     *
-     * @param jda       jda instance
+     *  @param shardManager       shardManager instance
      * @param evaluator evaluator for lottery
      */
-    public KudoLotteryListener(JDA jda, ChannelEvaluator<KudoLotteryEvaluator> evaluator) {
-        this.jda = jda;
+    public KudoLotteryListener(ShardManager shardManager, ChannelEvaluator<KudoLotteryEvaluator> evaluator) {
+        this.shardManager = shardManager;
         this.evaluator = evaluator;
     }
 
@@ -43,13 +42,13 @@ public class KudoLotteryListener extends ListenerAdapter {
 
             Emote emote = event.getReaction().getReactionEmote().getEmote();
 
-            if (equalSnowflake(emote, ShepardEmote.PLUS_X.getEmote(jda))) {
+            if (equalSnowflake(emote, ShepardEmote.PLUS_X.getEmote(shardManager))) {
                 channelEvaluator.addBet(event.getGuild(), event.getUser(), 10);
             }
-            if (equalSnowflake(emote, ShepardEmote.PLUS_I.getEmote(jda))) {
+            if (equalSnowflake(emote, ShepardEmote.PLUS_I.getEmote(shardManager))) {
                 channelEvaluator.addBet(event.getGuild(), event.getUser(), 1);
             }
-            if (equalSnowflake(emote, ShepardEmote.INFINITY.getEmote(jda))) {
+            if (equalSnowflake(emote, ShepardEmote.INFINITY.getEmote(shardManager))) {
                 channelEvaluator.addBet(event.getGuild(), event.getUser(), -1);
             }
 

@@ -3,9 +3,10 @@ package de.eldoria.shepard.commandmodules.presence;
 import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +14,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class PresenceChanger implements Runnable, ReqJDA, ReqConfig, ReqInit {
+public class PresenceChanger implements Runnable, ReqShardManager, ReqConfig, ReqInit {
     private boolean customStatus;
     private ScheduledExecutorService executor;
     private List<Presence> presence;
-    private JDA jda;
+    private ShardManager shardManager;
     private Config config;
 
     /**
@@ -39,10 +40,10 @@ public class PresenceChanger implements Runnable, ReqJDA, ReqConfig, ReqInit {
         Presence presence = this.presence.get(Math.round((float) Math.random() * this.presence.size() - 1));
         switch (presence.state) {
             case PLAYING:
-                jda.getPresence().setActivity(Activity.playing(presence.message));
+                shardManager.setActivity(Activity.playing(presence.message));
                 break;
             case LISTENING:
-                jda.getPresence().setActivity(Activity.listening(presence.message));
+                shardManager.setActivity(Activity.listening(presence.message));
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + presence.state);
@@ -55,7 +56,7 @@ public class PresenceChanger implements Runnable, ReqJDA, ReqConfig, ReqInit {
      * @param message playing message
      */
     public void setPlaying(String message) {
-        jda.getPresence().setActivity(Activity.playing(message));
+        shardManager.setActivity(Activity.playing(message));
         clearScheduler();
     }
 
@@ -65,7 +66,7 @@ public class PresenceChanger implements Runnable, ReqJDA, ReqConfig, ReqInit {
      * @param message listening message
      */
     public void setListening(String message) {
-        jda.getPresence().setActivity(Activity.listening(message));
+        shardManager.setActivity(Activity.listening(message));
         clearScheduler();
     }
 
@@ -76,7 +77,7 @@ public class PresenceChanger implements Runnable, ReqJDA, ReqConfig, ReqInit {
      * @param url     twitch url
      */
     public void setStreaming(String message, String url) {
-        jda.getPresence().setActivity(Activity.streaming(message, url));
+        shardManager.setActivity(Activity.streaming(message, url));
         clearScheduler();
     }
 
@@ -84,7 +85,7 @@ public class PresenceChanger implements Runnable, ReqJDA, ReqConfig, ReqInit {
      * Clear the custom status and use default presence.
      */
     public void clearPresence() {
-        jda.getPresence().setActivity(null);
+        shardManager.setActivity(null);
         startScheduler();
     }
 
@@ -102,8 +103,8 @@ public class PresenceChanger implements Runnable, ReqJDA, ReqConfig, ReqInit {
     }
 
     @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
+    public void addShardManager(ShardManager shardManager) {
+        this.shardManager = shardManager;
     }
 
     @Override

@@ -26,16 +26,18 @@ import de.eldoria.shepard.modulebuilder.ModuleBuilder;
 import de.eldoria.shepard.util.ExitCode;
 import de.eldoria.shepard.webapi.ApiModule;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
+import net.dv8tion.jda.api.sharding.ShardManager;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
 
 @Slf4j
 public final class ShepardBot {
-    private static JDA jda;
+    private static ShardManager shardManager;
     private static ShepardBot instance;
     private SharedResources sharedResources;
     private Config config;
@@ -66,7 +68,7 @@ public final class ShepardBot {
      * Checks if the bot is fully loaded.
      *
      * @return true if the bot instance is not null and {@link ShepardBot#loaded} is true.
-     *      False if the bot is starting or going to shut down.
+     * False if the bot is starting or going to shut down.
      */
     public static boolean isLoaded() {
         if (instance == null) {
@@ -80,28 +82,41 @@ public final class ShepardBot {
         config = Loader.loadConfig();
         try {
             initiateJda();
-        } catch (LoginException | InterruptedException e) {
+        } catch (LoginException e) {
             log.error(C.NOTIFY_ADMIN, "jda failed to log in", e);
         }
-        sharedResources = SharedResources.build(this, jda, config);
+        sharedResources = SharedResources.build(this, shardManager, config);
 
         loadModules();
 
-
-        log.info(C.STATUS, "Registered {} Commands,\nRegistered on {} Guilds!",
-                sharedResources.getCommandHub().getCommands().size(),
-                jda.getGuilds().size());
+        log.info(C.STATUS, "Registered {} Commands!",
+                sharedResources.getCommandHub().getCommands().size());
 
         log.info("Setup complete!");
     }
 
-    private void initiateJda() throws LoginException, InterruptedException {
-        jda = new JDABuilder(config.getGeneralSettings().getToken()).setMaxReconnectDelay(60).build();
+    private void initiateJda() throws LoginException {
+        shardManager = DefaultShardManagerBuilder
+                .create(
+                        config.getGeneralSettings().getToken(),
+                        GatewayIntent.DIRECT_MESSAGE_REACTIONS,
+                        GatewayIntent.DIRECT_MESSAGE_TYPING,
+                        GatewayIntent.DIRECT_MESSAGES,
+                        GatewayIntent.GUILD_BANS,
+                        GatewayIntent.GUILD_EMOJIS,
+                        GatewayIntent.GUILD_INVITES,
+                        GatewayIntent.GUILD_MEMBERS,
+                        GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                        GatewayIntent.GUILD_MESSAGE_TYPING,
+                        GatewayIntent.GUILD_MESSAGES,
+                        GatewayIntent.GUILD_VOICE_STATES)
+                .setMaxReconnectDelay(60)
+                .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS)
+                .enableCache(CacheFlag.VOICE_STATE, CacheFlag.MEMBER_OVERRIDES)
+                .setBulkDeleteSplittingEnabled(false)
+                .build();
 
-        // optionally block until JDA is ready
-        jda.awaitReady();
-
-        log.info(C.STATUS, "JDA initialized");
+        log.info(C.STATUS, "{} shards initialized", shardManager.getShardsTotal());
     }
 
     /**
@@ -110,7 +125,7 @@ public final class ShepardBot {
      * @param listener List of listener.
      */
     public void registerListener(ListenerAdapter listener) {
-        jda.addEventListener(listener);
+        shardManager.addEventListener(listener);
     }
 
     /**
@@ -129,11 +144,11 @@ public final class ShepardBot {
             log.info(C.STATUS, "restarting");
         }
 
-        if (jda != null) {
-            jda.shutdown();
+        if (shardManager != null) {
+            shardManager.shutdown();
             log.info(C.STATUS, "JDA shut down. Closing Application in 2 Seconds!");
         }
-        jda = null;
+        shardManager = null;
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {

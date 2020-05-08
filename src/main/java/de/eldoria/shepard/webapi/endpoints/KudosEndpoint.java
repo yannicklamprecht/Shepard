@@ -8,15 +8,15 @@ import com.google.gson.GsonBuilder;
 import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqJDA;
+import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.webapi.apiobjects.ApiRank;
 import de.eldoria.shepard.webapi.apiobjects.RankingResponse;
 import de.eldoria.shepard.webapi.data.KudoData;
 import de.eldoria.shepard.webapi.util.RankingKey;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -29,10 +29,10 @@ import static spark.Spark.halt;
 import static spark.Spark.path;
 
 @Slf4j
-public class KudosEndpoint implements ReqParser, ReqJDA, ReqDataSource, ReqInit {
+public class KudosEndpoint implements ReqParser, ReqShardManager, ReqDataSource, ReqInit {
 
     private ArgumentParser parser;
-    private JDA jda;
+    private ShardManager shardManager;
     private KudoData kudoData;
     private DataSource source;
     private final Cache<RankingKey, String> cache
@@ -146,13 +146,13 @@ public class KudosEndpoint implements ReqParser, ReqJDA, ReqDataSource, ReqInit 
     }
 
     @Override
-    public void addJDA(JDA jda) {
-        this.jda = jda;
+    public void addShardManager(ShardManager shardManager) {
+        this.shardManager = shardManager;
     }
 
     @Override
     public void init() {
-        kudoData = new KudoData(jda, source);
+        kudoData = new KudoData(shardManager, source);
         defineRoutes();
     }
 
