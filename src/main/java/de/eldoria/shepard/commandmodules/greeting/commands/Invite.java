@@ -103,7 +103,7 @@ public class Invite extends Command implements Executable, ReqDataSource {
                 TextLocalizer.localizeAll(M_INVITE_NAME.tag, messageContext.getGuild()));
         for (DatabaseInvite invite : invites) {
             tableBuilder.next();
-            tableBuilder.setRow(invite.getCode(), invite.getUsedCount() + "", invite.getSource());
+            tableBuilder.setRow(invite.getCode(), invite.getUses() + "", invite.getSource());
         }
         message.append(tableBuilder);
         MessageSender.sendMessage(message.toString(), messageContext.getTextChannel());
