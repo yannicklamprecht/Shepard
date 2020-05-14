@@ -144,10 +144,14 @@ public class CommandListener extends ListenerAdapter
                         .setDescription(M_SUGGESTION + System.lineSeparator() + "**" + cmd.getCommandName() + "**")
                         .setThumbnail(ShepardReactions.WINK.thumbnail);
 
-                eventWrapper.getMessageChannel().sendMessage(builder.build()).queue(m ->
+                eventWrapper.getMessageChannel().sendMessage(builder.build()).queue(m -> {
+                    if (eventWrapper.isGuildEvent()) {
                         reactionAction.addReactionAction(
                                 m, new ExecuteCommand(commands, eventWrapper.getAuthor(), cmd, args, eventWrapper),
-                                new SendCommandHelp(cmd, prefix)));
+                                new SendCommandHelp(cmd, prefix));
+                    }
+                });
+
                 return true;
             }
         }

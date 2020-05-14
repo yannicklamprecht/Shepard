@@ -1,12 +1,16 @@
 package de.eldoria.shepard.commandmodules.reminder.types;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 
 public class ReminderSimple {
     private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private final long reminderId;
     private final String text;
+    private final Instant time;
     private final String timeString;
 
     /**
@@ -18,21 +22,11 @@ public class ReminderSimple {
      */
     public ReminderSimple(Long reminderId, String text, Timestamp timestamp) {
         this.reminderId = reminderId;
+        this.time = timestamp.toInstant();
         this.text = text;
         this.timeString = dtf.format(timestamp.toLocalDateTime());
     }
 
-    /**
-     * Creates a new reminder without timestamp.
-     *
-     * @param reminderId id of reminder
-     * @param text       text of reminder.
-     */
-    public ReminderSimple(long reminderId, String text) {
-        this.reminderId = reminderId;
-        this.text = text;
-        this.timeString = "";
-    }
 
     /**
      * Get the reminder id as a hex string. This takes precedence.

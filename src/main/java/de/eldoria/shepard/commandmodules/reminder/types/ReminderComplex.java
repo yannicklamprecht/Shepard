@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 
 @Getter
@@ -13,7 +14,6 @@ public class ReminderComplex extends ReminderSimple {
     private final Guild guild;
     private final TextChannel channel;
     private final User user;
-    private final Instant time;
     private final int snoozeCount;
 
     /**
@@ -28,7 +28,7 @@ public class ReminderComplex extends ReminderSimple {
      * @param snoozeCount times the reminder was snoozed
      */
     public ReminderComplex(ShardManager jda, long id, long guildId, long channelId, long userId, String text, int snoozeCount) {
-        this(jda, id, guildId, channelId, userId, text, Instant.now(), snoozeCount);
+        this(jda, id, guildId, channelId, userId, text, Timestamp.from(Instant.now()), snoozeCount);
     }
 
     /**
@@ -41,9 +41,9 @@ public class ReminderComplex extends ReminderSimple {
      * @param text         text for reminder
      * @param snoozeCount
      */
-    public ReminderComplex(ShardManager jda, long id, long guildId, long channelId, long userId, String text, Instant time, int snoozeCount) {
-        super(id, text);
-        this.time = time;
+    public ReminderComplex(ShardManager jda, long id, long guildId, long channelId, long userId, String text,
+                           Timestamp time, int snoozeCount) {
+        super(id, text, time);
         this.snoozeCount = snoozeCount;
         channel = jda.getTextChannelById(channelId);
         if (channel != null) {

@@ -6,6 +6,7 @@ import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.reminder.data.ReminderData;
+import de.eldoria.shepard.commandmodules.reminder.types.ReminderComplex;
 import de.eldoria.shepard.commandmodules.reminder.types.ReminderSimple;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
@@ -13,6 +14,7 @@ import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
+import de.eldoria.shepard.util.Colors;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.PrivateChannel;
@@ -45,6 +47,8 @@ import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_REMIND_TIME;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_REMOVED;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_TITLE_CREATED;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_TITLE_REMOVED;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_TITLE_RESTORED;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_TITLE_SNOOZED;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
@@ -131,19 +135,20 @@ public class Reminder extends Command implements Executable, ReqDataSource {
             return;
         }
 
-        Optional<ReminderSimple> optionalReminder = reminderData.getReminder(number.getAsLong(), wrapper);
+        Optional<ReminderComplex> optionalReminder = reminderData.getReminder(number.getAsLong(), wrapper);
         if (optionalReminder.isEmpty()) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ID, wrapper);
             return;
         }
 
-        ReminderSimple reminder = optionalReminder.get();
+        ReminderComplex reminder = optionalReminder.get();
 
         if (reminderData.restoreReminder(number.getAsLong(), wrapper)) {
             LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
-                    .setTitle(localizeAllAndReplace(M_TITLE_CREATED.tag, wrapper, reminder.getReminderId()))
+                    .setTitle(localizeAllAndReplace(M_TITLE_RESTORED.tag, wrapper,reminder.getReminderId()))
                     .setDescription(localizeAllAndReplace("**" + M_REMIND_DISPLAY.tag + "**",
-                            wrapper, reminder.getTimeString()) + System.lineSeparator() + reminder.getText());
+                            wrapper, reminder.getTimeString()) + System.lineSeparator() + reminder.getText())
+                    .setColor(Colors.Pastel.ORANGE);
             wrapper.getMessageChannel().sendMessage(builder.build()).queue();
         }
     }
@@ -155,7 +160,7 @@ public class Reminder extends Command implements Executable, ReqDataSource {
             return;
         }
 
-        Optional<ReminderSimple> optionalReminder = reminderData.getReminder(number.getAsLong(), wrapper);
+        Optional<ReminderComplex> optionalReminder = reminderData.getReminder(number.getAsLong(), wrapper);
         if (optionalReminder.isEmpty()) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ID, wrapper);
             return;
@@ -169,12 +174,13 @@ public class Reminder extends Command implements Executable, ReqDataSource {
 
         reminderData.snoozeReminder(number.getAsLong(), timeString, wrapper);
 
-        ReminderSimple reminder = reminderData.getReminder(number.getAsLong(), wrapper).get();
+        ReminderComplex reminder = reminderData.getReminder(number.getAsLong(), wrapper).get();
 
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
                 .setTitle(localizeAllAndReplace(M_TITLE_SNOOZED.tag, wrapper, reminder.getReminderId()))
                 .setDescription(localizeAllAndReplace("**" + M_REMIND_TIME.tag + "**",
-                        wrapper, timeString) + System.lineSeparator() + reminder.getText());
+                        wrapper, timeString) + System.lineSeparator() + reminder.getText())
+                .setColor(Colors.Pastel.BLUE);
         wrapper.getMessageChannel().sendMessage(builder.build()).queue();
     }
 
@@ -185,7 +191,7 @@ public class Reminder extends Command implements Executable, ReqDataSource {
             return;
         }
 
-        Optional<ReminderSimple> optionalReminder = reminderData.getReminder(number.getAsLong(), wrapper);
+        Optional<ReminderComplex> optionalReminder = reminderData.getReminder(number.getAsLong(), wrapper);
         if (optionalReminder.isEmpty()) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ID, wrapper);
             return;
@@ -194,10 +200,12 @@ public class Reminder extends Command implements Executable, ReqDataSource {
         ReminderSimple reminder = optionalReminder.get();
 
         if (reminderData.removeUserReminder(number.getAsLong(), wrapper)) {
-            MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED.tag,
-                    wrapper, reminder.getReminderId() + "",
-                    TextFormatting.cropText(reminder.getText(), "...", 20, true),
-                    reminder.getTimeString()), wrapper.getMessageChannel());
+            LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
+                    .setTitle(localizeAllAndReplace(M_TITLE_REMOVED.tag, wrapper, reminder.getReminderId()))
+                    .setDescription(TextFormatting.cropText(reminder.getText(), "...", 240, true))
+                    .setFooter(localizeAllAndReplace(M_REMOVED.tag, wrapper, reminder.getTimeString()))
+                    .setColor(Colors.Pastel.RED);
+            wrapper.getMessageChannel().sendMessage(builder.build()).queue();
         } else {
             MessageSender.sendSimpleError(ErrorType.INVALID_ID, wrapper);
         }

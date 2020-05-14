@@ -23,6 +23,7 @@ public enum ReminderLocal {
      * Localization key for message removed.
      */
     M_REMOVED("command.reminder.message.removed"),
+    M_TITLE_REMOVED("command.reminder.message.titleRemoved"),
     /**
      * Localization key for message format.
      */

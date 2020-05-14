@@ -195,7 +195,7 @@ $$;
 
 DROP FUNCTION IF EXISTS shepard_func.remove_reminder(_guild_id varchar, _user_id varchar, _reminder_id integer);
 
-CREATE OR REPLACE FUNCTION shepard_func.remove_reminder(_guild_id varchar, _user_id varchar, _reminder_id bigint)
+CREATE OR REPLACE FUNCTION shepard_func.remove_reminder(_guild_id bigint, _user_id bigint, _reminder_id bigint)
     RETURNS boolean
     LANGUAGE plpgsql
 AS
@@ -217,7 +217,10 @@ BEGIN
 END
 $$;
 
-CREATE OR REPLACE FUNCTION shepard_func.restore_reminder(_guild_id varchar, _user_id varchar, _reminder_id integer) RETURNS void
+DROP FUNCTION IF EXISTS shepard_func.restore_reminder(_guild_id varchar, _user_id varchar, _reminder_id integer);
+
+CREATE OR REPLACE FUNCTION shepard_func.restore_reminder(_guild_id bigint, _user_id bigint, _reminder_id bigint)
+RETURNS boolean
     LANGUAGE plpgsql
 AS
 $$
@@ -228,6 +231,12 @@ BEGIN
     where index = _reminder_id
       and guild_id = _guild_id
       and user_id = _user_id;
+
+    return (select EXISTS(select 1
+                          from shepard_data.reminder
+                          where index = _reminder_id
+                            and guild_id = _guild_id
+                            and user_id = _user_id));
 
 END
 $$;

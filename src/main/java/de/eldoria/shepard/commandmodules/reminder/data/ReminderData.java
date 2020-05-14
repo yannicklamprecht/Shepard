@@ -119,7 +119,7 @@ public final class ReminderData extends QueryObject {
             while (resultSet.next()) {
                 result.add(
                         new ReminderSimple(
-                                resultSet.getLong("reminder_id"),
+                                resultSet.getLong("id"),
                                 resultSet.getString("message"),
                                 resultSet.getTimestamp("reminder_time")
                         ));
@@ -137,7 +137,7 @@ public final class ReminderData extends QueryObject {
      * @param wrapper message context for error handling. can be null
      * @return list of reminder of the user on the guild
      */
-    public Optional<ReminderSimple> getReminder(long id, EventWrapper wrapper) {
+    public Optional<ReminderComplex> getReminder(long id, EventWrapper wrapper) {
         var guildId = 0L;
 
         if (wrapper.isGuildEvent()) {
@@ -158,7 +158,7 @@ public final class ReminderData extends QueryObject {
                                 resultSet.getLong("channel_id"),
                                 resultSet.getLong("user_id"),
                                 resultSet.getString("message"),
-                                resultSet.getTimestamp("reminder_time").toInstant(),
+                                resultSet.getTimestamp("reminder_time"),
                                 resultSet.getInt("snooze_count")
                         ));
             }
@@ -250,13 +250,16 @@ public final class ReminderData extends QueryObject {
             statement.setLong(1, guildId);
             statement.setLong(2, messageContext.getAuthor().getIdLong());
             statement.setLong(3, id);
-            statement.execute();
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getBoolean(1);
+            }
         } catch (SQLException e) {
             handleException(e, messageContext);
             return false;
         }
 
-        return true;
+        return false;
     }
 
     /**
