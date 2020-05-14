@@ -5,11 +5,12 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_TEXT;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_URL;
@@ -27,7 +28,7 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
 /**
  * Command to set the presence for the bot.
  */
-public class BotPresence extends Command implements Executable {
+public class BotPresence extends Command implements GuildChannelOnly, Executable {
 
     private final PresenceChanger presenceChanger;
 
@@ -59,42 +60,38 @@ public class BotPresence extends Command implements Executable {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        if (args.length < 1) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
-            return;
-        }
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         String activity = args[0];
-
 
         if (isSubCommand(activity, 3)) {
             presenceChanger.clearPresence();
-            MessageSender.sendMessage(M_CLEAR.tag, messageContext.getTextChannel());
+            MessageSender.sendMessage(M_CLEAR.tag, wrapper.getMessageChannel());
             return;
         }
 
         if (args.length < 2) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, wrapper);
             return;
         }
 
         if (isSubCommand(activity, 0)) {
             String message = ArgumentParser.getMessage(args, 1);
             presenceChanger.setPlaying(message);
-            MessageSender.sendMessage(localizeAllAndReplace(M_PLAYING.tag, messageContext.getGuild(),
-                    "**" + message + "**"), messageContext.getTextChannel());
+            MessageSender.sendMessage(localizeAllAndReplace(M_PLAYING.tag, wrapper,
+                    "**" + message + "**"), wrapper.getMessageChannel());
             return;
         }
+
         if (isSubCommand(activity, 1)) {
             if (args.length > 2) {
                 String message = ArgumentParser.getMessage(args, 1, -1);
                 String url = ArgumentParser.getMessage(args, -1);
                 presenceChanger.setStreaming(message, url);
-                MessageSender.sendMessage(localizeAllAndReplace(M_STREAMING.tag, messageContext.getGuild(),
-                        "**" + message + "**", url), messageContext.getTextChannel());
+                MessageSender.sendMessage(localizeAllAndReplace(M_STREAMING.tag, wrapper,
+                        "**" + message + "**", url), wrapper.getMessageChannel());
                 return;
             } else {
-                MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
+                MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, wrapper);
             }
         }
 
@@ -109,12 +106,9 @@ public class BotPresence extends Command implements Executable {
         if (isSubCommand(activity, 2)) {
             String message = ArgumentParser.getMessage(args, 1);
             presenceChanger.setListening(message);
-            MessageSender.sendMessage(localizeAllAndReplace(M_LISTENING.tag, messageContext.getGuild(),
-                    "**" + message + "**"), messageContext.getTextChannel());
+            MessageSender.sendMessage(localizeAllAndReplace(M_LISTENING.tag, wrapper,
+                    "**" + message + "**"), wrapper.getMessageChannel());
             return;
         }
-
-
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 }

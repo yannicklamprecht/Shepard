@@ -4,7 +4,6 @@ import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
@@ -16,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 
 public class PresenceChanger implements Runnable, ReqShardManager, ReqConfig, ReqInit {
     private boolean customStatus;
-    private ScheduledExecutorService executor;
     private List<Presence> presence;
     private ShardManager shardManager;
     private Config config;
@@ -27,16 +25,15 @@ public class PresenceChanger implements Runnable, ReqShardManager, ReqConfig, Re
     public PresenceChanger() {
     }
 
-    private void startScheduler() {
-        if (executor.isShutdown() || executor.isTerminated()) {
-            executor = Executors.newSingleThreadScheduledExecutor();
-            executor.scheduleAtFixedRate(this, 0, 5, TimeUnit.MINUTES);
-            customStatus = false;
-        }
-    }
-
     @Override
     public void run() {
+        if (customStatus) {
+            return;
+        }
+        randomPresence();
+    }
+
+    private void randomPresence() {
         Presence presence = this.presence.get(Math.round((float) Math.random() * this.presence.size() - 1));
         switch (presence.state) {
             case PLAYING:
@@ -57,7 +54,7 @@ public class PresenceChanger implements Runnable, ReqShardManager, ReqConfig, Re
      */
     public void setPlaying(String message) {
         shardManager.setActivity(Activity.playing(message));
-        clearScheduler();
+        customStatus = true;
     }
 
     /**
@@ -67,7 +64,7 @@ public class PresenceChanger implements Runnable, ReqShardManager, ReqConfig, Re
      */
     public void setListening(String message) {
         shardManager.setActivity(Activity.listening(message));
-        clearScheduler();
+        customStatus = true;
     }
 
     /**
@@ -78,7 +75,7 @@ public class PresenceChanger implements Runnable, ReqShardManager, ReqConfig, Re
      */
     public void setStreaming(String message, String url) {
         shardManager.setActivity(Activity.streaming(message, url));
-        clearScheduler();
+        customStatus = true;
     }
 
     /**
@@ -86,15 +83,8 @@ public class PresenceChanger implements Runnable, ReqShardManager, ReqConfig, Re
      */
     public void clearPresence() {
         shardManager.setActivity(null);
-        startScheduler();
-    }
-
-    private void clearScheduler() {
-        if (!customStatus) {
-            executor.shutdown();
-            System.out.println("Tasks canceled");
-            customStatus = true;
-        }
+        customStatus = false;
+        randomPresence();
     }
 
     @Override
@@ -117,8 +107,8 @@ public class PresenceChanger implements Runnable, ReqShardManager, ReqConfig, Re
             presence.add(new Presence(PresenceState.LISTENING, message));
         }
 
-        executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(this, 0, 5, TimeUnit.MINUTES);
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        executor.scheduleAtFixedRate(this, 0, 1, TimeUnit.MINUTES);
     }
 
     private enum PresenceState {
