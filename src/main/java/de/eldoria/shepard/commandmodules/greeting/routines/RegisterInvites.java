@@ -1,7 +1,9 @@
 package de.eldoria.shepard.commandmodules.greeting.routines;
 
+import de.eldoria.shepard.commandmodules.greeting.data.GreetingData;
 import de.eldoria.shepard.commandmodules.greeting.data.InviteData;
 import de.eldoria.shepard.commandmodules.greeting.types.DatabaseInvite;
+import de.eldoria.shepard.commandmodules.greeting.types.GreetingSettings;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -23,50 +25,47 @@ class RegisterInvites implements Runnable {
     private final Map<Long, Set<String>> invites = new HashMap<>();
     private final ShardManager shardManager;
     private final InviteData inviteData;
+    private final GreetingData greetingData;
+    private boolean checkActive;
 
     /**
      * Creates a new register invite runnable.
-     *  @param shardManager    shardManager instance for invite retrieval
-     * @param source data source for connection retrieval
+     *
+     * @param shardManager shardManager instance for invite retrieval
+     * @param source       data source for connection retrieval
      */
     public RegisterInvites(ShardManager shardManager, DataSource source) {
         this.shardManager = shardManager;
         inviteData = new InviteData(source);
+        greetingData = new GreetingData(shardManager, source);
     }
 
     @Override
     public void run() {
-        while (true) {
-            List<Guild> guilds;
+        if (checkActive) return;
+        checkActive = true;
+        List<Guild> guilds;
 
-            try {
-                guilds = shardManager.getGuilds();
-            } catch (IllegalArgumentException e) {
-                return;
+        guilds = shardManager.getGuildCache().asList();
+
+        for (Guild guild : guilds) {
+            GreetingSettings greeting = greetingData.getGreeting(guild);
+            if (greeting.getChannel() == null) continue;
+
+            if (!Objects.requireNonNull(guild.getMember(shardManager.getShardById(0)
+                    .getSelfUser())).hasPermission(Permission.MANAGE_SERVER)) {
+                continue;
             }
-            int sleepDuration = Math.max(10000 / guilds.size(), 250);
-
-            for (Guild guild : guilds) {
-                if (!Objects.requireNonNull(guild.getMember(shardManager.getShardById(0)
-                        .getSelfUser())).hasPermission(Permission.MANAGE_SERVER)) {
-                    continue;
-                }
-                if (invites.containsKey(guild.getIdLong())) {
-                    evaluateInvites(guild);
-                } else {
-                    List<DatabaseInvite> invites = inviteData.getInvites(guild, null);
-                    this.invites.put(guild.getIdLong(), invites.stream()
-                            .map(DatabaseInvite::getCode)
-                            .collect(Collectors.toSet()));
-                }
-                try {
-                    Thread.sleep(sleepDuration);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    return;
-                }
+            if (invites.containsKey(guild.getIdLong())) {
+                evaluateInvites(guild);
+            } else {
+                List<DatabaseInvite> invites = inviteData.getInvites(guild, null);
+                this.invites.put(guild.getIdLong(), invites.stream()
+                        .map(DatabaseInvite::getCode)
+                        .collect(Collectors.toSet()));
             }
         }
+        checkActive = false;
     }
 
     private void evaluateInvites(Guild guild) {

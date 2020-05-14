@@ -43,7 +43,7 @@ class RefreshInvites implements Runnable {
             }
             guild.retrieveInvites().queue(invites -> {
                 if (inviteData.updateInvite(guild, invites, null)) {
-                    log.debug("Update Invites for guild {}({})", guild.getName(), guild.getId());
+                    log.debug("Refreshed Invites for guild {}({})", guild.getName(), guild.getId());
                 }
                 // will run when the last guild was updated successfully
                 if (counter.incrementAndGet() == guildCount) {
