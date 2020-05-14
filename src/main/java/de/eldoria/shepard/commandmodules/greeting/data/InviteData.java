@@ -2,7 +2,7 @@ package de.eldoria.shepard.commandmodules.greeting.data;
 
 import de.eldoria.shepard.commandmodules.greeting.types.DatabaseInvite;
 import de.eldoria.shepard.database.QueryObject;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 
@@ -39,7 +39,7 @@ public class InviteData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean addInvite(Guild guild, String code, String name, int count,
-                             MessageEventDataWrapper messageContext) {
+                             EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.add_invite(?,?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -61,7 +61,7 @@ public class InviteData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return list of invite objects
      */
-    public List<DatabaseInvite> getInvites(Guild guild, MessageEventDataWrapper messageContext) {
+    public List<DatabaseInvite> getInvites(Guild guild, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_invites(?)")) {
             List<DatabaseInvite> invites = new ArrayList<>();
@@ -90,7 +90,7 @@ public class InviteData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeInvite(Guild guild, String code, MessageEventDataWrapper messageContext) {
+    public boolean removeInvite(Guild guild, String code, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_invite(?,?)")) {
             statement.setString(1, guild.getId());
@@ -110,7 +110,7 @@ public class InviteData extends QueryObject {
      * @param code           Code of the invite for upcount
      * @param messageContext messageContext from command sending for error handling. Can be null.
      */
-    public void upCountInvite(Guild guild, String code, MessageEventDataWrapper messageContext) {
+    public void upCountInvite(Guild guild, String code, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.upcount_invite(?,?)")) {
             statement.setString(1, guild.getId());
@@ -129,7 +129,7 @@ public class InviteData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean updateInvite(Guild guild, List<Invite> invites, MessageEventDataWrapper messageContext) {
+    public boolean updateInvite(Guild guild, List<Invite> invites, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.update_invites(?,?)")) {
             statement.setString(1, guild.getId());

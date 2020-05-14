@@ -5,6 +5,7 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.monitoring.data.MonitoringData;
 import de.eldoria.shepard.commandmodules.monitoring.util.Address;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
@@ -18,7 +19,7 @@ import de.eldoria.shepard.util.AddressType;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.Verifier;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import javax.sql.DataSource;
@@ -51,7 +52,7 @@ import static java.lang.System.lineSeparator;
  * Command to modify the logging channel.
  * The monitoring is done in {@link de.eldoria.shepard.commandmodules.monitoring.analyzer.MonitoringCoordinator}
  */
-public class Monitoring extends Command implements Executable, ReqDataSource {
+public class Monitoring extends Command implements GuildChannelOnly, Executable, ReqDataSource {
     private MonitoringData monitoringData;
 
     /**
@@ -82,127 +83,125 @@ public class Monitoring extends Command implements Executable, ReqDataSource {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         if (args.length == 0) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, wrapper);
             return;
         }
 
         String cmd = args[0];
         if (isSubCommand(cmd, 2)) {
-            list(messageContext);
+            list(wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 3)) {
-            if (easyEnable(messageContext)) return;
+            if (easyEnable(wrapper)) return;
         }
 
         if (isSubCommand(cmd, 4)) {
-            disable(messageContext);
+            disable(wrapper);
             return;
         }
 
         if (args.length < 2) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 0)) {
-            add(args, messageContext);
+            add(args, wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 1)) {
-            remove(args[1], messageContext);
+            remove(args[1], wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 3)) {
-            enable(args[1], messageContext);
+            enable(args[1], wrapper);
             return;
         }
-
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
-    private void add(String[] args, MessageEventDataWrapper messageContext) {
+    private void add(String[] args, EventWrapper wrapper) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, wrapper);
             return;
         }
         if (Verifier.getAddressType(args[1]) == AddressType.NONE) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ADDRESS, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ADDRESS, wrapper);
             return;
         }
 
         BooleanState booleanState = Verifier.checkAndGetBoolean(args[args.length - 1]);
         if (booleanState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, wrapper);
             return;
         }
 
         String name = ArgumentParser.getMessage(args, 2, -1);
         if (monitoringData.addMonitoringAddress(
-                messageContext.getGuild(), args[1], name, booleanState.stateAsBoolean, messageContext)) {
+                wrapper.getGuild().get(), args[1], name, booleanState.stateAsBoolean, wrapper)) {
             MessageSender.sendMessage(localizeAllAndReplace(M_REGISTERED_ADDRESS.tag,
-                    messageContext.getGuild(), "**" + args[1] + "**", "**" + name + "**"),
-                    messageContext.getTextChannel());
+                    wrapper, "**" + args[1] + "**", "**" + name + "**"),
+                    wrapper.getMessageChannel());
         }
     }
 
-    private void enable(String channelString, MessageEventDataWrapper messageContext) {
-        Optional<TextChannel> channel = ArgumentParser.getTextChannel(messageContext.getGuild(), channelString);
+    private void enable(String channelString, EventWrapper wrapper) {
+        Optional<TextChannel> channel = ArgumentParser.getTextChannel(wrapper.getGuild().get(), channelString);
         if (channel.isPresent()) {
-            if (monitoringData.setMonitoringChannel(messageContext.getGuild(), channel.get(), messageContext)) {
+            if (monitoringData.setMonitoringChannel(wrapper.getGuild().get(), channel.get(), wrapper)) {
                 MessageSender.sendMessage(localizeAllAndReplace(M_REGISTERED_CHANNEL.tag,
-                        messageContext.getGuild(), channel.get().getAsMention()), messageContext.getTextChannel());
+                        wrapper, channel.get().getAsMention()), wrapper.getMessageChannel());
             }
         } else {
-            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, wrapper);
         }
     }
 
-    private void remove(String arg, MessageEventDataWrapper messageContext) {
+    private void remove(String arg, EventWrapper wrapper) {
         OptionalInt integer = ArgumentParser.parseInt(arg);
         if (integer.isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, wrapper);
             return;
         }
-        if (monitoringData.removeMonitoringAddressByIndex(messageContext.getGuild(), integer.getAsInt(),
-                messageContext)) {
-            MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED_ADDRESS.tag, messageContext.getGuild(),
-                    "**" + integer.getAsInt() + "**"), messageContext.getTextChannel());
+        if (monitoringData.removeMonitoringAddressByIndex(wrapper.getGuild().get(), integer.getAsInt(),
+                wrapper)) {
+            MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED_ADDRESS.tag, wrapper,
+                    "**" + integer.getAsInt() + "**"), wrapper.getMessageChannel());
         }
     }
 
-    private boolean easyEnable(MessageEventDataWrapper messageContext) {
-        if (monitoringData.setMonitoringChannel(messageContext.getGuild(),
-                messageContext.getTextChannel(), messageContext)) {
+    private boolean easyEnable(EventWrapper wrapper) {
+        if (monitoringData.setMonitoringChannel(wrapper.getGuild().get(),
+                wrapper.getTextChannel().get(), wrapper)) {
             MessageSender.sendMessage(localizeAllAndReplace(M_REGISTERED_CHANNEL.tag,
-                    messageContext.getGuild(), messageContext.getTextChannel().getAsMention()),
-                    messageContext.getTextChannel());
+                    wrapper, wrapper.getTextChannel().get().getAsMention()),
+                    wrapper.getMessageChannel());
             return true;
         }
         return false;
     }
 
-    private void disable(MessageEventDataWrapper messageContext) {
-        if (monitoringData.removeMonitoringChannel(messageContext.getGuild(), messageContext)) {
-            MessageSender.sendMessage(M_REMOVED_CHANNEL.tag, messageContext.getTextChannel());
+    private void disable(EventWrapper wrapper) {
+        if (monitoringData.removeMonitoringChannel(wrapper.getGuild().get(), wrapper)) {
+            MessageSender.sendMessage(M_REMOVED_CHANNEL.tag, wrapper.getMessageChannel());
         }
     }
 
-    private void list(MessageEventDataWrapper messageContext) {
+    private void list(EventWrapper wrapper) {
         List<Address> monitoringAddresses = monitoringData.getMonitoringAddressesForGuild(
-                messageContext.getGuild(), messageContext);
+                wrapper.getGuild().get(), wrapper);
 
         TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
                 monitoringAddresses,
-                TextLocalizer.localizeAllAndReplace(WordsLocale.ID.tag, messageContext.getGuild()),
-                TextLocalizer.localizeAllAndReplace(WordsLocale.NAME.tag, messageContext.getGuild()),
-                TextLocalizer.localizeAllAndReplace(WordsLocale.ADDRESS.tag, messageContext.getGuild()),
-                TextLocalizer.localizeAllAndReplace(WordsLocale.MINECRAFT.tag, messageContext.getGuild()));
+                TextLocalizer.localizeAllAndReplace(WordsLocale.ID.tag, wrapper),
+                TextLocalizer.localizeAllAndReplace(WordsLocale.NAME.tag, wrapper),
+                TextLocalizer.localizeAllAndReplace(WordsLocale.ADDRESS.tag, wrapper),
+                TextLocalizer.localizeAllAndReplace(WordsLocale.MINECRAFT.tag, wrapper));
 
         for (Address address : monitoringAddresses) {
             tableBuilder.next();
@@ -213,7 +212,7 @@ public class Monitoring extends Command implements Executable, ReqDataSource {
         }
 
         MessageSender.sendMessage(M_REGISTERED_ADDRESSES + lineSeparator() + tableBuilder,
-                messageContext.getTextChannel());
+                wrapper.getMessageChannel());
     }
 
     @Override

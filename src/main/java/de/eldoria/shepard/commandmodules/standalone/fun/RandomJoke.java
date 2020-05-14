@@ -5,7 +5,7 @@ import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -34,11 +34,11 @@ public class RandomJoke extends Command implements ExecutableAsync {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         try {
-            MessageSender.sendSimpleTextBox(M_JOKE.tag, getRandomJoke(), messageContext.getTextChannel());
+            MessageSender.sendSimpleTextBox(M_JOKE.tag, getRandomJoke(), wrapper);
         } catch (IOException e) {
-            MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, wrapper);
         }
     }
 

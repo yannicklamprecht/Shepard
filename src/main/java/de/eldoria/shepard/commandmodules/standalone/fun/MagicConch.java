@@ -6,7 +6,7 @@ import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import java.util.Collections;
 import java.util.Random;
@@ -33,7 +33,7 @@ public class MagicConch extends Command implements Executable {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         String word;
         Random rand = new Random();
         int type = rand.nextInt(3);
@@ -53,12 +53,17 @@ public class MagicConch extends Command implements Executable {
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
         }
-        String[] decisions = locale.getLanguageString(messageContext.getGuild(), answer.localeCode).split("\\|");
+        String[] decisions;
+        if (wrapper.isGuildEvent()) {
+            decisions = locale.getLanguageString(wrapper.getGuild().get(), answer.localeCode).split("\\|");
+
+        } else {
+            decisions = locale.getLanguageString(null, answer.localeCode).split("\\|");
+        }
         word = decisions[rand.nextInt(decisions.length)];
 
         MessageSender.sendTextBox(null,
-                Collections.singletonList(new LocalizedField(M_ANSWER.tag, word, false, messageContext)),
-                messageContext.getTextChannel());
+                Collections.singletonList(new LocalizedField(M_ANSWER.tag, word, false, wrapper)), wrapper);
 
     }
 }

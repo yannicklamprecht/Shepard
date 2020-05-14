@@ -3,13 +3,14 @@ package de.eldoria.shepard.commandmodules.standalone.botconfig;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqShepard;
 import de.eldoria.shepard.util.ExitCode;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.io.File;
@@ -38,9 +39,9 @@ public class Upgrade extends Command implements ExecutableAsync, ReqConfig, ReqS
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         if (config.getGeneralSettings().isBeta()) {
-            MessageSender.sendMessage("Only on main bot!", messageContext.getTextChannel());
+            MessageSender.sendMessage("Only on main bot!", wrapper.getMessageChannel());
             return;
         }
 
@@ -51,28 +52,28 @@ public class Upgrade extends Command implements ExecutableAsync, ReqConfig, ReqS
 
         if (!jar.exists()) {
             MessageSender.sendMessage("Couldn't find a old Version of myself. Thats weird.",
-                    messageContext.getTextChannel());
+                    wrapper.getMessageChannel());
         }
 
-        if (messageContext.getMessage().getAttachments().isEmpty()) {
-            MessageSender.sendMessage("Please provide a upgrade jar!", messageContext.getTextChannel());
+        if (wrapper.getMessage().getAttachments().isEmpty()) {
+            MessageSender.sendMessage("Please provide a upgrade jar!", wrapper.getMessageChannel());
             return;
         }
 
-        Message.Attachment attachment = messageContext.getMessage().getAttachments().get(0);
+        Message.Attachment attachment = wrapper.getMessage().getAttachments().get(0);
 
-        MessageSender.sendMessage("Checking file!", messageContext.getTextChannel());
+        MessageSender.sendMessage("Checking file!", wrapper.getMessageChannel());
         if (!attachment.getFileExtension().equalsIgnoreCase("jar")) {
-            MessageSender.sendMessage("Please provide a upgrade jar!", messageContext.getTextChannel());
+            MessageSender.sendMessage("Please provide a upgrade jar!", wrapper.getMessageChannel());
             return;
         }
-        MessageSender.sendMessage("File is jar. Deleting old jar.", messageContext.getTextChannel());
+        MessageSender.sendMessage("File is jar. Deleting old jar.", wrapper.getMessageChannel());
         boolean delete = jar.delete();
         if (!delete) {
-            MessageSender.sendMessage("Couldn't delete File.", messageContext.getTextChannel());
+            MessageSender.sendMessage("Couldn't delete File.", wrapper.getMessageChannel());
         }
 
-        MessageSender.sendMessage("Old Version deleted. Downloading new Version.", messageContext.getTextChannel());
+        MessageSender.sendMessage("Old Version deleted. Downloading new Version.", wrapper.getMessageChannel());
 
         try {
             attachment.downloadToFile(home + "/Shepard.jar").get();
@@ -81,7 +82,7 @@ public class Upgrade extends Command implements ExecutableAsync, ReqConfig, ReqS
         }
 
         MessageSender.sendMessage("Download completed!" + System.lineSeparator() + "**RESTARTING**",
-                messageContext.getTextChannel());
+                wrapper.getMessageChannel());
 
         bot.shutdown(ExitCode.RESTART);
     }

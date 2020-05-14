@@ -4,7 +4,7 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import java.util.Random;
 
@@ -26,15 +26,15 @@ public class Oha extends Command implements Executable {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         String oha = "oha";
         Random rand = new Random();
         int loops = rand.nextInt(30) + 10;
         oha = oha + "a".repeat(loops);
-        MessageSender.sendMessage(oha, messageContext.getTextChannel());
+        MessageSender.sendMessage(oha, wrapper.getMessageChannel());
 
         if (label.equalsIgnoreCase("ohad")) {
-            messageContext.getMessage().delete().queue();
+            wrapper.getMessage().delete().queue();
         }
     }
 }

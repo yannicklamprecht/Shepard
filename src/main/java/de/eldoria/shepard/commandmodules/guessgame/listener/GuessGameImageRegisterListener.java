@@ -7,7 +7,7 @@ import de.eldoria.shepard.core.Statistics;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqStatistics;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -37,7 +37,8 @@ public class GuessGameImageRegisterListener extends ListenerAdapter implements R
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
         statistics.eventDispatched(event.getJDA());
 
-        MessageEventDataWrapper wrapper = new MessageEventDataWrapper(event);
+
+        EventWrapper wrapper = EventWrapper.wrap(event);
         ConfigurationState configurationState = register.getConfigurationState(wrapper);
         if (configurationState != ConfigurationState.NONE) {
             if (event.getMessage().getAttachments().size() == 1) {

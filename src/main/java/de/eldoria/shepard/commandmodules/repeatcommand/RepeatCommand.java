@@ -8,7 +8,7 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqCommands;
 import de.eldoria.shepard.modulebuilder.requirements.ReqLatestCommands;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import static de.eldoria.shepard.localization.enums.commands.admin.RepeatCommandLocale.DESCRIPTION;
 
@@ -29,21 +29,21 @@ public class RepeatCommand extends Command implements Executable, ReqLatestComma
                 DESCRIPTION.tag,
                 null,
                 "",
-                CommandCategory.ADMIN);
+                CommandCategory.UTIL);
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         LatestCommandsCollection.SavedCommand latestCommand = latestCommands
-                .getLatestCommand(messageContext.getGuild(), messageContext.getAuthor());
+                .getLatestCommand(wrapper);
 
         if (latestCommand == null) {
-            MessageSender.sendSimpleError(ErrorType.NO_LAST_COMMAND_FOUND, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.NO_LAST_COMMAND_FOUND, wrapper);
             return;
         }
 
         commands.dispatchCommand(
-                latestCommand.getCommand(), latestCommand.getLabel(), latestCommand.getArgs(), messageContext);
+                latestCommand.getCommand(), latestCommand.getLabel(), latestCommand.getArgs(), wrapper);
     }
 
     @Override

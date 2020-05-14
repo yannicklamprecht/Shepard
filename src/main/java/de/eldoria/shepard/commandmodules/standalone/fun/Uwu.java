@@ -4,7 +4,7 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import static de.eldoria.shepard.localization.enums.commands.fun.UwuLocale.DESCRIPTION;
 
@@ -25,12 +25,12 @@ public class Uwu extends Command implements Executable {
 
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         MessageSender.sendMessage(":regional_indicator_u::regional_indicator_w::regional_indicator_u:",
-                messageContext.getTextChannel());
+                wrapper.getMessageChannel());
 
-        if (label.equalsIgnoreCase("uwud")) {
-            messageContext.getMessage().delete().queue();
+        if (label.equalsIgnoreCase("uwud") && wrapper.isGuildEvent()) {
+            wrapper.getMessage().delete().queue();
         }
     }
 }

@@ -5,6 +5,7 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.commandsettings.data.CommandData;
 import de.eldoria.shepard.commandmodules.commandsettings.types.ListType;
 import de.eldoria.shepard.commandmodules.commandsettings.types.ModifyType;
@@ -14,7 +15,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.util.BooleanState;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
 /**
  * Manage the user settings of a registered and active {@link Command}.
  */
-public class ManageCommandUsers extends Command implements Executable, ReqParser, ReqDataSource {
+public class ManageCommandUsers extends Command implements GuildChannelOnly, Executable, ReqParser, ReqDataSource {
     private ArgumentParser parser;
     private CommandData commandData;
 
@@ -76,51 +77,48 @@ public class ManageCommandUsers extends Command implements Executable, ReqParser
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         Optional<Command> command = parser.getCommand(args[1]);
         String cmd = args[0];
 
         if (command.isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.COMMAND_SEARCH_EMPTY, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.COMMAND_SEARCH_EMPTY, wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 0)) {
-            setActive(args, command.get(), messageContext);
+            setActive(args, command.get(), wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 1)) {
-            setListType(args, command.get(), messageContext);
+            setListType(args, command.get(), wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 2)) {
-            addUser(args, command.get(), messageContext);
+            addUser(args, command.get(), wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 3)) {
-            removeUser(args, command.get(), messageContext);
+            removeUser(args, command.get(), wrapper);
             return;
         }
-
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
-
     }
 
     private void manageUser(String[] args, Command context,
-                            ModifyType modifyType, MessageEventDataWrapper messageContext) {
+                            ModifyType modifyType, EventWrapper wrapper) {
         List<String> mentions = new ArrayList<>();
 
-        parser.getGuildUsers(messageContext.getGuild(),
+        parser.getGuildUsers(wrapper.getGuild().get(),
                 ArgumentParser.getRangeAsList(args, 2))
                 .forEach(user -> {
                     if (modifyType == ModifyType.ADD) {
-                        if (!commandData.addUser(context, user, messageContext)) {
+                        if (!commandData.addUser(context, user, wrapper)) {
                             return;
                         }
-                    } else if (!commandData.removeUser(context, user, messageContext)) {
+                    } else if (!commandData.removeUser(context, user, wrapper)) {
                         return;
                     }
                     mentions.add(user.getAsMention());
@@ -129,58 +127,58 @@ public class ManageCommandUsers extends Command implements Executable, ReqParser
         String names = String.join(System.lineSeparator(), mentions);
 
         if (modifyType == ModifyType.ADD) {
-            MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_ADDED_USERS.tag, messageContext.getGuild(),
-                    " **" + context.getCommandName().toUpperCase() + "**"), names, messageContext.getTextChannel());
+            MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_ADDED_USERS.tag, wrapper,
+                    " **" + context.getCommandName().toUpperCase() + "**"), names, wrapper);
 
         } else {
-            MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_REMOVED_USERS.tag, messageContext.getGuild(),
-                    " **" + context.getCommandName().toUpperCase() + "**"), names, messageContext.getTextChannel());
+            MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_REMOVED_USERS.tag, wrapper,
+                    " **" + context.getCommandName().toUpperCase() + "**"), names, wrapper);
         }
     }
 
-    private void addUser(String[] args, Command context, MessageEventDataWrapper messageContext) {
-        manageUser(args, context, ModifyType.ADD, messageContext);
+    private void addUser(String[] args, Command context, EventWrapper wrapper) {
+        manageUser(args, context, ModifyType.ADD, wrapper);
     }
 
-    private void removeUser(String[] args, Command context, MessageEventDataWrapper messageContext) {
-        manageUser(args, context, ModifyType.REMOVE, messageContext);
+    private void removeUser(String[] args, Command context, EventWrapper wrapper) {
+        manageUser(args, context, ModifyType.REMOVE, wrapper);
     }
 
-    private void setListType(String[] args, Command context, MessageEventDataWrapper messageContext) {
+    private void setListType(String[] args, Command context, EventWrapper wrapper) {
         ListType type = ListType.getType(args[2]);
 
         if (type == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_LIST_TYPE, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_LIST_TYPE, wrapper);
             return;
         }
 
-        if (commandData.setUserListType(context, type, messageContext)) {
+        if (commandData.setUserListType(context, type, wrapper)) {
             MessageSender.sendMessage(localizeAllAndReplace(M_CHANGED_LIST_TYPE.tag,
-                    messageContext.getGuild(), "**" + context.getCommandName().toUpperCase() + "**",
-                    "**" + type.toString() + "**"), messageContext.getTextChannel());
+                    wrapper, "**" + context.getCommandName().toUpperCase() + "**",
+                    "**" + type.toString() + "**"), wrapper.getMessageChannel());
         }
     }
 
-    private void setActive(String[] args, Command context, MessageEventDataWrapper messageContext) {
+    private void setActive(String[] args, Command context, EventWrapper wrapper) {
         BooleanState bState = ArgumentParser.getBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, wrapper);
             return;
         }
 
         boolean state = bState.stateAsBoolean;
 
-        if (!commandData.setUserCheckActive(context, state, messageContext)) {
+        if (!commandData.setUserCheckActive(context, state, wrapper)) {
             return;
         }
 
         if (state) {
-            MessageSender.sendMessage(localizeAllAndReplace(M_ACTIVATED_CHECK.tag, messageContext.getGuild(),
-                    "**" + context.getCommandName().toUpperCase() + "**"), messageContext.getTextChannel());
+            MessageSender.sendMessage(localizeAllAndReplace(M_ACTIVATED_CHECK.tag, wrapper,
+                    "**" + context.getCommandName().toUpperCase() + "**"), wrapper.getMessageChannel());
         } else {
-            MessageSender.sendMessage(localizeAllAndReplace(M_DEACTIVATED_CHECK.tag, messageContext.getGuild(),
-                    "**" + context.getCommandName().toUpperCase() + "**"), messageContext.getTextChannel());
+            MessageSender.sendMessage(localizeAllAndReplace(M_DEACTIVATED_CHECK.tag, wrapper,
+                    "**" + context.getCommandName().toUpperCase() + "**"), wrapper.getMessageChannel());
         }
     }
 

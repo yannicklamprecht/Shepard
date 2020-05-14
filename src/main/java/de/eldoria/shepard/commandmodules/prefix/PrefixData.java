@@ -2,7 +2,7 @@ package de.eldoria.shepard.commandmodules.prefix;
 
 import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.database.QueryObject;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
 
@@ -36,7 +36,7 @@ public final class PrefixData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean setPrefix(Guild guild, String prefix, MessageEventDataWrapper messageContext) {
+    public boolean setPrefix(Guild guild, String prefix, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.set_prefix(?,?)")) {
             statement.setString(1, guild.getId());
@@ -51,14 +51,21 @@ public final class PrefixData extends QueryObject {
         return true;
     }
 
+    public String getPrefix(EventWrapper wrapper) {
+        if (!wrapper.isGuildEvent()) {
+            return config.getGeneralSettings().getPrefix();
+        }
+        return getPrefix(wrapper.getGuild().get());
+    }
+
+
     /**
      * Get the prefix for a guild.
      *
-     * @param guild          Guild object for lookup
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param guild Guild object for lookup
      * @return Prefix as string
      */
-    public String getPrefix(Guild guild, MessageEventDataWrapper messageContext) {
+    public String getPrefix(Guild guild) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_prefix(?)")) {
             statement.setString(1, guild.getId());

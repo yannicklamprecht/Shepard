@@ -2,6 +2,7 @@ package de.eldoria.shepard.webapi.apiobjects.commandserialization;
 
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.localization.util.TextLocalizer;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.Data;
 
 /**
@@ -19,7 +20,7 @@ public class SubCommandInfo {
      * @param parameter          parameter info array
      */
     public SubCommandInfo(String commandDescription, ParameterInfo[] parameter) {
-        this.commandDescription = TextLocalizer.localizeAllAndReplace(commandDescription, null);
+        this.commandDescription = TextLocalizer.localizeAllAndReplace(commandDescription, EventWrapper.fakeEmpty());
         this.parameter = parameter;
     }
 }

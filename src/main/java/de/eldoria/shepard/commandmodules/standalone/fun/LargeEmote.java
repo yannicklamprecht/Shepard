@@ -8,7 +8,7 @@ import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.FileHelper;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Emote;
 
 import java.io.File;
@@ -38,19 +38,19 @@ public class LargeEmote extends Command implements ExecutableAsync {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        List<Emote> emotes = messageContext.getMessage().getEmotes()
+    public void execute(String label, String[] args, EventWrapper wrapper) {
+        List<Emote> emotes = wrapper.getMessage().getEmotes()
                 .stream().distinct().collect(Collectors.toList());
 
         if (emotes.size() == 0) {
-            MessageSender.sendSimpleError(ErrorType.NO_EMOTE_FOUND, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.NO_EMOTE_FOUND, wrapper);
             return;
         }
 
         for (Emote emote : emotes.subList(0, Math.min(emotes.size(), 5))) {
             File fileFromURL = FileHelper.getFileFromURL(emote.getImageUrl());
             if (fileFromURL != null) {
-                messageContext.getChannel().sendFile(fileFromURL).queue();
+                wrapper.getMessageChannel().sendFile(fileFromURL).queue();
             }
         }
     }

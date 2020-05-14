@@ -8,7 +8,7 @@ import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import static de.eldoria.shepard.localization.enums.commands.util.GetRawLocale.DESCRIPTION;
 
@@ -31,8 +31,8 @@ public class GetRaw extends Command implements Executable {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         MessageSender.sendMessage("`" + ArgumentParser.getMessage(args, 0) + "`",
-                messageContext.getTextChannel());
+                wrapper.getMessageChannel());
     }
 }

@@ -2,8 +2,7 @@ package de.eldoria.shepard.commandmodules.kudos.data;
 
 import de.eldoria.shepard.database.QueryObject;
 import de.eldoria.shepard.database.types.Rank;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.JDA;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.sharding.ShardManager;
@@ -34,10 +33,10 @@ public final class KudoData extends QueryObject {
      * @param guild          guild where the points should be taken.
      * @param user           user from who the points should be taken.
      * @param points         points to take
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper wrapper from command sending for error handling. Can be null.
      * @return true if the points where taken.
      */
-    public boolean tryTakePoints(Guild guild, User user, int points, MessageEventDataWrapper messageContext) {
+    public boolean tryTakePoints(Guild guild, User user, int points, EventWrapper wrapper) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.try_take_rubber_points(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -48,7 +47,7 @@ public final class KudoData extends QueryObject {
                 return result.getBoolean(1);
             }
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
         }
         return false;
     }
@@ -59,11 +58,11 @@ public final class KudoData extends QueryObject {
      * @param guild          guild where the points should be taken.
      * @param user           user from who the points should be taken.
      * @param points         points to take
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper wrapper from command sending for error handling. Can be null.
      * @return true if the points where taken.
      */
     public boolean tryTakeCompletePoints(Guild guild, User user, int points,
-                                         MessageEventDataWrapper messageContext) {
+                                         EventWrapper wrapper) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.try_take_complete_rubber_points(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -74,7 +73,7 @@ public final class KudoData extends QueryObject {
                 return result.getBoolean(1);
             }
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
         }
         return false;
     }
@@ -85,11 +84,11 @@ public final class KudoData extends QueryObject {
      * @param guild          Guild where the score should be applied
      * @param user           user where the score should be applied
      * @param score          The score which should be applied
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper wrapper from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public boolean addRubberPoints(Guild guild, User user, int score,
-                                   MessageEventDataWrapper messageContext) {
+                                   EventWrapper wrapper) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.add_rubber_points(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -97,7 +96,7 @@ public final class KudoData extends QueryObject {
             statement.setInt(3, score);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
             return false;
         }
         return true;
@@ -108,18 +107,18 @@ public final class KudoData extends QueryObject {
      *
      * @param user           user where the score should be applied
      * @param score          The score which should be applied
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper wrapper from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public boolean addRubberPoints(User user, int score,
-                                   MessageEventDataWrapper messageContext) {
+                                   EventWrapper wrapper) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.add_rubber_points(?,?)")) {
             statement.setString(1, user.getId());
             statement.setInt(2, score);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
             return false;
         }
         return true;
@@ -130,11 +129,11 @@ public final class KudoData extends QueryObject {
      *
      * @param guild          guild where the score should be applied
      * @param score          The score which should be applied
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper wrapper from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
     public int addAndGetJackpot(Guild guild, int score,
-                                MessageEventDataWrapper messageContext) {
+                                EventWrapper wrapper) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.add_and_get_jackpot(?,?)")) {
             statement.setString(1, guild.getId());
@@ -145,7 +144,7 @@ public final class KudoData extends QueryObject {
             }
 
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
             return 0;
         }
         return 0;
@@ -158,10 +157,10 @@ public final class KudoData extends QueryObject {
      * @param guild          Guild where the amount should be applied
      * @param user           user where the amount should be applied
      * @param amount         The amount which should be applied
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper wrapper from command sending for error handling. Can be null.
      */
     public void addFreeRubberPoints(Guild guild, User user, int amount,
-                                    MessageEventDataWrapper messageContext) {
+                                    EventWrapper wrapper) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.add_free_rubber_points(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -169,7 +168,7 @@ public final class KudoData extends QueryObject {
             statement.setInt(3, amount);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
         }
     }
 
@@ -178,17 +177,17 @@ public final class KudoData extends QueryObject {
      *
      * @param user           user where the amount should be applied
      * @param amount         The amount which should be applied
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper wrapper from command sending for error handling. Can be null.
      */
     public void addFreeRubberPoints(User user, int amount,
-                                    MessageEventDataWrapper messageContext) {
+                                    EventWrapper wrapper) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.add_free_rubber_points(?,?)")) {
             statement.setString(1, user.getId());
             statement.setInt(2, amount);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
         }
     }
 
@@ -197,18 +196,18 @@ public final class KudoData extends QueryObject {
      *
      * @param guild          Guild where you want to have the top x
      * @param scoreAmount    Amount of entries. For the top 10 enter a 10.
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper wrapper from command sending for error handling. Can be null.
      * @param jda            jda instance
      * @return sorted list of ranks in descending order.
      */
-    public List<Rank> getTopScore(Guild guild, int scoreAmount, MessageEventDataWrapper messageContext, ShardManager jda) {
+    public List<Rank> getTopScore(Guild guild, int scoreAmount, EventWrapper wrapper, ShardManager jda) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_rubber_points_top_score(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setInt(2, scoreAmount);
             return getScoreListFromResult(jda, statement.executeQuery());
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
         }
         return Collections.emptyList();
     }
@@ -217,17 +216,17 @@ public final class KudoData extends QueryObject {
      * Get the global top x. The score of all guilds is accumulated for each user.
      *
      * @param scoreAmount    Amount of entries. For the top 10 enter a 10.
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper wrapper from command sending for error handling. Can be null.
      * @param jda            jda instance
      * @return sorted list of ranks in descending order.
      */
-    public List<Rank> getGlobalTopScore(int scoreAmount, MessageEventDataWrapper messageContext, ShardManager jda) {
+    public List<Rank> getGlobalTopScore(int scoreAmount, EventWrapper wrapper, ShardManager jda) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_rubber_points_global_top_score(?)")) {
             statement.setInt(1, scoreAmount);
             return getScoreListFromResult(jda, statement.executeQuery());
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
         }
         return Collections.emptyList();
     }
@@ -237,10 +236,10 @@ public final class KudoData extends QueryObject {
      *
      * @param guild          Guild for lookup
      * @param user           User for lookup
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper wrapper from command sending for error handling. Can be null.
      * @return score of user.
      */
-    public int getUserScore(Guild guild, User user, MessageEventDataWrapper messageContext) {
+    public int getUserScore(Guild guild, User user, EventWrapper wrapper) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_rubber_points_user_score(?,?)")) {
             statement.setString(1, guild.getId());
@@ -250,7 +249,7 @@ public final class KudoData extends QueryObject {
                 return result.getInt(1);
             }
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
         }
         return -1;
     }
@@ -259,10 +258,10 @@ public final class KudoData extends QueryObject {
      * Get the score of a user on a guild.
      *
      * @param guild          Guild for lookup
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper wrapper from command sending for error handling. Can be null.
      * @return score of user.
      */
-    public int getAndClearJackpot(Guild guild, MessageEventDataWrapper messageContext) {
+    public int getAndClearJackpot(Guild guild, EventWrapper wrapper) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_and_clear_jackpot(?)")) {
             statement.setString(1, guild.getId());
@@ -271,7 +270,7 @@ public final class KudoData extends QueryObject {
                 return result.getInt(1);
             }
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
         }
         return -1;
     }
@@ -280,10 +279,10 @@ public final class KudoData extends QueryObject {
      * Get the sum of all scores of a user.
      *
      * @param user           User for lookup.
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper wrapper from command sending for error handling. Can be null.
      * @return global score of user
      */
-    public int getGlobalUserScore(User user, MessageEventDataWrapper messageContext) {
+    public int getGlobalUserScore(User user, EventWrapper wrapper) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_rubber_points_global_user_score(?)")) {
             statement.setString(1, user.getId());
@@ -293,7 +292,7 @@ public final class KudoData extends QueryObject {
             }
 
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
         }
         return -1;
     }
@@ -303,10 +302,10 @@ public final class KudoData extends QueryObject {
      *
      * @param guild          Guild for lookup
      * @param user           User for lookup.
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper wrapper from command sending for error handling. Can be null.
      * @return global score of user
      */
-    public int getFreePoints(Guild guild, User user, MessageEventDataWrapper messageContext) {
+    public int getFreePoints(Guild guild, User user, EventWrapper wrapper) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_free_rubber_points(?,?)")) {
             statement.setString(1, guild.getId());
@@ -317,7 +316,7 @@ public final class KudoData extends QueryObject {
             }
 
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
         }
         return -1;
     }

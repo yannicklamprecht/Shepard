@@ -8,11 +8,13 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.commandsettings.data.CommandData;
 import de.eldoria.shepard.commandmodules.commandsettings.types.ListType;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqCommands;
@@ -21,7 +23,8 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqExecutionValidator;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.util.TextFormatting;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import javax.sql.DataSource;
@@ -63,10 +66,9 @@ import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettin
 import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_REMOVED_CHANNEL;
 import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_WHITELIST;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_INSUFFICIENT_PERMISSION;
-import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
-public class CommandSettings extends Command implements ExecutableAsync, ReqParser, ReqExecutionValidator,
+public class CommandSettings extends Command implements GuildChannelOnly, ExecutableAsync, ReqParser, ReqExecutionValidator,
         ReqDataSource, ReqCommands, ReqInit {
 
     private CommandData commandData;
@@ -117,12 +119,12 @@ public class CommandSettings extends Command implements ExecutableAsync, ReqPars
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
 
         // list command states
         if (isSubCommand(cmd, 2)) {
-            listcommandStates(messageContext);
+            listcommandStates(wrapper);
             return;
         }
 
@@ -132,167 +134,168 @@ public class CommandSettings extends Command implements ExecutableAsync, ReqPars
 
 
         if (searchResult.isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.COMMAND_SEARCH_EMPTY, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.COMMAND_SEARCH_EMPTY, wrapper);
             return;
         }
 
-        if (!validator.canAccess(searchResult.command().get(), messageContext)) {
-            MessageSender.sendSimpleError(ErrorType.COMMAND_SEARCH_EMPTY, messageContext.getTextChannel());
+        if (!validator.canAccess(searchResult.command().get(), wrapper)) {
+            MessageSender.sendSimpleError(ErrorType.COMMAND_SEARCH_EMPTY, wrapper);
             return;
         }
 
-        if (!validator.canUse(searchResult.getIdentifier(), messageContext.getMember())) {
+        if (!validator.canUse(searchResult.getIdentifier(), wrapper)) {
             MessageSender.sendMessage(localizeAllAndReplace(M_INSUFFICIENT_PERMISSION.tag,
-                    messageContext.getGuild(), "**" + searchResult.getIdentifier() + "**"),
-                    messageContext.getTextChannel());
+                    wrapper, "**" + searchResult.getIdentifier() + "**"),
+                    wrapper.getMessageChannel());
             return;
         }
 
         if (commandName.contains(".") && searchResult.subCommand().isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.SUB_COMMAND_SEARCH_EMPTY, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.SUB_COMMAND_SEARCH_EMPTY, wrapper);
             return;
         }
 
         // enable command
         if (isSubCommand(cmd, 0)) {
-            enableCommand(messageContext, searchResult);
+            enableCommand(wrapper, searchResult);
             return;
         }
 
         // disable command
         if (isSubCommand(cmd, 1)) {
-            disableCommand(messageContext, searchResult);
+            disableCommand(wrapper, searchResult);
             return;
         }
 
 
         // enable channel check
         if (isSubCommand(cmd, 3)) {
-            enableChannelCheck(messageContext, searchResult);
+            enableChannelCheck(wrapper, searchResult);
             return;
         }
 
         // disable channel check
         if (isSubCommand(cmd, 4)) {
-            disableChannelCheck(messageContext, searchResult);
+            disableChannelCheck(wrapper, searchResult);
             return;
         }
 
         // set channel check list type
         if (isSubCommand(cmd, 5)) {
-            setChannelCheckListType(args, messageContext, searchResult);
+            setChannelCheckListType(args, wrapper, searchResult);
             return;
         }
 
         if (isSubCommand(cmd, 6)) {
-            addChannel(args, messageContext, searchResult);
+            addChannel(args, wrapper, searchResult);
             return;
         }
 
         if (isSubCommand(cmd, 7)) {
-            removeChannel(args, messageContext, searchResult);
+            removeChannel(args, wrapper, searchResult);
             return;
         }
 
         // channel list
         if (isSubCommand(cmd, 8)) {
-            channelList(messageContext, searchResult);
+            channelList(wrapper, searchResult);
         }
     }
 
-    private void listcommandStates(MessageEventDataWrapper messageContext) {
-        messageContext.getTextChannel().sendTyping().queue();
+    private void listcommandStates(EventWrapper wrapper) {
+        wrapper.getMessageChannel().sendTyping().queue();
         List<Command> collect = commandHub.getCommands().stream()
-                .filter(c -> validator.canAccess(c, messageContext))
-                .filter(c -> validator.canUse(c, messageContext.getMember()))
+                .filter(c -> validator.canAccess(c, wrapper))
+                .filter(c -> validator.canUse(c, wrapper))
                 .collect(Collectors.toList());
 
-        String name = localizeAll(WordsLocale.NAME.tag, messageContext.getTextChannel());
-        String stateLocale = localizeAll(WordsLocale.STATE.tag, messageContext.getTextChannel());
+        String name = TextLocalizer.localizeAll(WordsLocale.NAME.tag, wrapper);
+        String stateLocale = TextLocalizer.localizeAll(WordsLocale.STATE.tag, wrapper);
         TextFormatting.TableBuilder tableBuilder =
                 TextFormatting.getTableBuilder(collect, " ", name, stateLocale)
                         .setHighlighting("diff");
 
         for (var c : collect) {
-            boolean state = commandData.getState(c, messageContext.getGuild());
+            boolean state = commandData.getState(c, wrapper.getGuild().get());
             tableBuilder.setNextRow(
                     TextFormatting.mapBooleanTo(state, "+", "-"),
                     c.getCommandName(),
                     TextFormatting.mapBooleanTo(state,
-                            localizeAll(WordsLocale.ENABLED.tag, messageContext.getTextChannel()),
-                            localizeAll(WordsLocale.DISABLED.tag, messageContext.getTextChannel())));
+                            TextLocalizer.localizeAll(WordsLocale.ENABLED.tag, wrapper),
+                            TextLocalizer.localizeAll(WordsLocale.DISABLED.tag, wrapper)));
         }
 
-        messageContext.getTextChannel().sendMessage(tableBuilder.toString()).queue();
+        wrapper.getMessageChannel().sendMessage(tableBuilder.toString()).queue();
     }
 
-    private void removeChannel(String[] args, MessageEventDataWrapper messageContext,
+    private void removeChannel(String[] args, EventWrapper wrapper,
                                CommandSearchResult searchResult) {
         boolean channelCheckActive = commandData.isChannelCheckActive(
-                searchResult.command().get(), messageContext.getGuild());
+                searchResult.command().get(), wrapper.getGuild().get());
         if (!channelCheckActive) {
-            MessageSender.sendMessage(M_CHECK_NOT_ACTIVE.tag, messageContext.getTextChannel());
+            MessageSender.sendMessage(M_CHECK_NOT_ACTIVE.tag, wrapper.getMessageChannel());
             return;
         }
 
-        Optional<TextChannel> textChannel = ArgumentParser.getTextChannel(messageContext.getGuild(), args[2]);
+        Optional<TextChannel> textChannel = ArgumentParser.getTextChannel(wrapper.getGuild().get(), args[2]);
         if (textChannel.isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, wrapper);
             return;
         }
         // remove channel
-        if (!commandData.removeChannel(searchResult.command().get(), messageContext.getGuild(), textChannel.get())) {
-            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, messageContext.getTextChannel());
+        if (!commandData.removeChannel(searchResult.command().get(), wrapper.getGuild().get(), textChannel.get())) {
+            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, wrapper);
             return;
         }
-        ListType listType = commandData.getChannelListType(searchResult.command().get(), messageContext.getGuild());
+        ListType listType = commandData.getChannelListType(searchResult.command().get(), wrapper.getGuild().get());
         StringBuilder builder = new StringBuilder(
-                localizeAllAndReplace(M_REMOVED_CHANNEL.tag, messageContext.getGuild(),
+                localizeAllAndReplace(M_REMOVED_CHANNEL.tag, wrapper,
                         textChannel.get().getAsMention())).append("\n");
         if (listType == ListType.WHITELIST) {
-            builder.append(localizeAllAndReplace(M_CAN_NOT_BE_USED_NOW.tag, messageContext.getGuild(),
+            builder.append(localizeAllAndReplace(M_CAN_NOT_BE_USED_NOW.tag, wrapper,
                     searchResult.command().get().getCommandIdentifier()));
         } else {
-            builder.append(localizeAllAndReplace(M_CAN_BE_USED_NOW.tag, messageContext.getGuild(),
+            builder.append(localizeAllAndReplace(M_CAN_BE_USED_NOW.tag, wrapper,
                     searchResult.command().get().getCommandIdentifier()));
         }
 
-        messageContext.getChannel().sendMessage(builder.toString()).queue();
+        wrapper.getMessageChannel().sendMessage(builder.toString()).queue();
     }
 
-    private void addChannel(String[] args, MessageEventDataWrapper messageContext, CommandSearchResult searchResult) {
+    private void addChannel(String[] args, EventWrapper wrapper, CommandSearchResult searchResult) {
+        Guild guild = wrapper.getGuild().get();
         boolean channelCheckActive = commandData.isChannelCheckActive(
-                searchResult.command().get(), messageContext.getGuild());
+                searchResult.command().get(), guild);
         if (!channelCheckActive) {
-            MessageSender.sendMessage(M_CHECK_NOT_ACTIVE.tag, messageContext.getTextChannel());
+            MessageSender.sendMessage(M_CHECK_NOT_ACTIVE.tag, wrapper.getMessageChannel());
             return;
         }
 
         List<String> channelIds = ArgumentParser.getRangeAsList(args, 2);
         List<TextChannel> collect = channelIds.stream()
-                .map(c -> ArgumentParser.getTextChannel(messageContext.getGuild(), c))
+                .map(c -> ArgumentParser.getTextChannel(guild, c))
                 .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 
         if (collect.isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, wrapper);
             return;
         }
         // add channel
         for (var a : collect) {
-            if (!commandData.addChannel(searchResult.command().get(), messageContext.getGuild(), a)) {
-                MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, messageContext.getTextChannel());
+            if (!commandData.addChannel(searchResult.command().get(), guild, a)) {
+                MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, wrapper);
                 return;
             }
         }
 
-        ListType listType = commandData.getChannelListType(searchResult.command().get(), messageContext.getGuild());
+        ListType listType = commandData.getChannelListType(searchResult.command().get(), guild);
         StringBuilder builder = new StringBuilder(M_ADD_CHANNEL.tag).append("\n");
 
         if (listType == ListType.WHITELIST) {
-            builder.append(localizeAllAndReplace(M_CAN_BE_USED_NOW.tag, messageContext.getGuild(),
+            builder.append(localizeAllAndReplace(M_CAN_BE_USED_NOW.tag, guild,
                     searchResult.command().get().getCommandIdentifier()));
         } else {
-            builder.append(localizeAllAndReplace(M_CAN_NOT_BE_USED_NOW.tag, messageContext.getGuild(),
+            builder.append(localizeAllAndReplace(M_CAN_NOT_BE_USED_NOW.tag, guild,
                     searchResult.command().get().getCommandIdentifier()));
         }
 
@@ -301,41 +304,42 @@ public class CommandSettings extends Command implements ExecutableAsync, ReqPars
         String mentions = collect.stream().map(c -> "> " + c.getAsMention()).collect(Collectors.joining("\n"));
         builder.append(mentions);
 
-        messageContext.getChannel().sendMessage(builder.toString()).queue();
+        wrapper.getMessageChannel().sendMessage(builder.toString()).queue();
     }
 
-    private void enableCommand(MessageEventDataWrapper messageContext, CommandSearchResult searchResult) {
-        if (!commandData.setState(searchResult.command().get(), messageContext.getGuild(), true)) {
-            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, messageContext.getTextChannel());
+    private void enableCommand(EventWrapper wrapper, CommandSearchResult searchResult) {
+        if (!commandData.setState(searchResult.command().get(), wrapper.getGuild().get(), true)) {
+            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, wrapper);
         }
-        messageContext.getTextChannel().sendMessage(
-                localizeAllAndReplace(M_ENABLED_COMMAND.tag, messageContext.getGuild(),
+        wrapper.getMessageChannel().sendMessage(
+                localizeAllAndReplace(M_ENABLED_COMMAND.tag, wrapper.getGuild().get(),
                         searchResult.command().get().getCommandIdentifier())).queue();
     }
 
-    private void disableCommand(MessageEventDataWrapper messageContext, CommandSearchResult searchResult) {
+    private void disableCommand(EventWrapper wrapper, CommandSearchResult searchResult) {
         if (searchResult.command().get().getCommandIdentifier().equals(getCommandIdentifier())) {
-            MessageSender.sendMessage(M_CAN_NOT_DISABLE_COMMAND.tag, messageContext.getTextChannel());
+            MessageSender.sendMessage(M_CAN_NOT_DISABLE_COMMAND.tag, wrapper.getMessageChannel());
             return;
         }
-        if (!commandData.setState(searchResult.command().get(), messageContext.getGuild(), false)) {
-            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, messageContext.getTextChannel());
+        if (!commandData.setState(searchResult.command().get(), wrapper.getGuild().get(), false)) {
+            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, wrapper);
             return;
         }
-        messageContext.getTextChannel().sendMessage(
-                localizeAllAndReplace(M_DISABLED_COMMAND.tag, messageContext.getGuild(),
+        wrapper.getMessageChannel().sendMessage(
+                localizeAllAndReplace(M_DISABLED_COMMAND.tag, wrapper.getGuild().get(),
                         searchResult.command().get().getCommandIdentifier())).queue();
     }
 
-    private void channelList(MessageEventDataWrapper messageContext, CommandSearchResult searchResult) {
-        ListType listType = commandData.getChannelListType(searchResult.command().get(), messageContext.getGuild());
-        boolean checkActive = commandData.isChannelCheckActive(searchResult.command().get(), messageContext.getGuild());
+    private void channelList(EventWrapper wrapper, CommandSearchResult searchResult) {
+        Guild guild = wrapper.getGuild().get();
+        ListType listType = commandData.getChannelListType(searchResult.command().get(), guild);
+        boolean checkActive = commandData.isChannelCheckActive(searchResult.command().get(), guild);
         List<String> commandChannelList =
-                commandData.getChannelList(searchResult.command().get(), messageContext.getGuild());
-        List<TextChannel> textChannels = parser.getTextChannels(messageContext.getGuild(), commandChannelList);
+                commandData.getChannelList(searchResult.command().get(), guild);
+        List<TextChannel> textChannels = parser.getTextChannels(guild, commandChannelList);
 
-        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
-                .setTitle(localizeAllAndReplace(M_CHANNEL_SETTINGS.tag, messageContext.getGuild(),
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
+                .setTitle(localizeAllAndReplace(M_CHANNEL_SETTINGS.tag, guild,
                         searchResult.command().get().getCommandName()));
         if (checkActive) {
             switch (listType) {
@@ -354,52 +358,51 @@ public class CommandSettings extends Command implements ExecutableAsync, ReqPars
         } else {
             builder.setDescription(M_CAN_BE_USED_EVERYWHERE.tag);
         }
-        messageContext.getTextChannel().sendMessage(builder.build()).queue();
+        wrapper.getMessageChannel().sendMessage(builder.build()).queue();
     }
 
-    private void setChannelCheckListType(String[] args, MessageEventDataWrapper messageContext,
-                                         CommandSearchResult searchResult) {
+    private void setChannelCheckListType(String[] args, EventWrapper wrapper, CommandSearchResult searchResult) {
         ListType type = ListType.getType(args[2]);
 
         if (type == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_LIST_TYPE, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_LIST_TYPE, wrapper);
             return;
         }
 
-        if (!commandData.setChannelListType(searchResult.command().get(), messageContext.getGuild(), type)) {
-            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, messageContext.getTextChannel());
+        if (!commandData.setChannelListType(searchResult.command().get(), wrapper.getGuild().get(), type)) {
+            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, wrapper);
             return;
         }
 
         MessageSender.sendMessage(localizeAllAndReplace(
-                type == ListType.WHITELIST ? M_WHITELIST.tag : M_BLACKLIST.tag, messageContext.getGuild(),
-                searchResult.command().get().getCommandName()), messageContext.getTextChannel());
+                type == ListType.WHITELIST ? M_WHITELIST.tag : M_BLACKLIST.tag, wrapper,
+                searchResult.command().get().getCommandName()), wrapper.getMessageChannel());
     }
 
-    private void enableChannelCheck(MessageEventDataWrapper messageContext, CommandSearchResult searchResult) {
+    private void enableChannelCheck(EventWrapper wrapper, CommandSearchResult searchResult) {
         if (searchResult.command().get().getCommandIdentifier().equals(getCommandIdentifier())) {
-            MessageSender.sendMessage(M_CAN_NOT_ENABLE_CHANNEL_CHECK.tag, messageContext.getTextChannel());
+            MessageSender.sendMessage(M_CAN_NOT_ENABLE_CHANNEL_CHECK.tag, wrapper.getMessageChannel());
             return;
         }
-        if (!commandData.setChannelCheckActive(searchResult.command().get(), messageContext.getGuild(), true)) {
-            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, messageContext.getTextChannel());
+        if (!commandData.setChannelCheckActive(searchResult.command().get(), wrapper.getGuild().get(), true)) {
+            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, wrapper);
             return;
         }
         MessageSender.sendMessage(
-                localizeAllAndReplace(M_ENABLED_CHANNEL_CHECK.tag, messageContext.getGuild(),
+                localizeAllAndReplace(M_ENABLED_CHANNEL_CHECK.tag, wrapper,
                         searchResult.command().get().getCommandName()),
-                messageContext.getTextChannel());
+                wrapper.getMessageChannel());
     }
 
-    private void disableChannelCheck(MessageEventDataWrapper messageContext, CommandSearchResult searchResult) {
-        if (!commandData.setChannelCheckActive(searchResult.command().get(), messageContext.getGuild(), false)) {
-            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, messageContext.getTextChannel());
+    private void disableChannelCheck(EventWrapper wrapper, CommandSearchResult searchResult) {
+        if (!commandData.setChannelCheckActive(searchResult.command().get(), wrapper.getGuild().get(), false)) {
+            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, wrapper);
             return;
         }
         MessageSender.sendMessage(
-                localizeAllAndReplace(M_DISABLED_CHANNEL_CHECK.tag, messageContext.getGuild(),
+                localizeAllAndReplace(M_DISABLED_CHANNEL_CHECK.tag, wrapper,
                         searchResult.command().get().getCommandName()),
-                messageContext.getTextChannel());
+                wrapper.getMessageChannel());
     }
 
     @Override

@@ -2,7 +2,7 @@ package de.eldoria.shepard.commandmodules.ticketsystem.data;
 
 import de.eldoria.shepard.commandmodules.ticketsystem.util.TicketType;
 import de.eldoria.shepard.database.QueryObject;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ISnowflake;
@@ -44,7 +44,7 @@ public final class TicketData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean addType(Guild guild, Category category, String creationMessage,
-                           String keyword, MessageEventDataWrapper messageContext) {
+                           String keyword, EventWrapper messageContext) {
         String categoryId = null;
         if (category != null) {
             categoryId = category.getId();
@@ -71,7 +71,7 @@ public final class TicketData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeTypeByIndex(Guild guild, int id, MessageEventDataWrapper messageContext) {
+    public boolean removeTypeByIndex(Guild guild, int id, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_ticket_type_by_index(?,?)")) {
             statement.setString(1, guild.getId());
@@ -92,7 +92,7 @@ public final class TicketData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeTypeByKeyword(Guild guild, String keyword, MessageEventDataWrapper messageContext) {
+    public boolean removeTypeByKeyword(Guild guild, String keyword, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_ticket_type_by_keyword(?,?)")) {
             statement.setString(1, guild.getId());
@@ -113,7 +113,7 @@ public final class TicketData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Ticket type object or null if no type was found for keyword.
      */
-    public TicketType getTypeByKeyword(Guild guild, String keyword, MessageEventDataWrapper messageContext) {
+    public TicketType getTypeByKeyword(Guild guild, String keyword, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_ticket_type_by_keyword(?,?)")) {
             statement.setString(1, guild.getId());
@@ -140,7 +140,7 @@ public final class TicketData extends QueryObject {
      * @return Ticket type object or null if no type was found for channel.
      */
     public TicketType getTypeByChannel(Guild guild, TextChannel channel,
-                                       MessageEventDataWrapper messageContext) {
+                                       EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_ticket_type_by_channel(?,?)")) {
             statement.setString(1, guild.getId());
@@ -166,7 +166,7 @@ public final class TicketData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of ticket types.
      */
-    public List<TicketType> getTypes(Guild guild, MessageEventDataWrapper messageContext) {
+    public List<TicketType> getTypes(Guild guild, EventWrapper messageContext) {
         List<TicketType> types = new ArrayList<>();
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_ticket_types(?)")) {
@@ -195,7 +195,7 @@ public final class TicketData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean setCreationMessage(Guild guild, String keyword, String message,
-                                      MessageEventDataWrapper messageContext) {
+                                      EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.set_creation_message(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -220,7 +220,7 @@ public final class TicketData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean createChannel(Guild guild, TextChannel channel,
-                                 User ticketOwner, String keyword, MessageEventDataWrapper messageContext) {
+                                 User ticketOwner, String keyword, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.create_ticket_channel(?,?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -244,7 +244,7 @@ public final class TicketData extends QueryObject {
      * @return list of channel ids
      */
     public List<String> getChannelIdsByOwner(Guild guild, User channelOwner,
-                                             MessageEventDataWrapper messageContext) {
+                                             EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.get_channel_ids_by_owner(?,?)")) {
             statement.setString(1, guild.getId());
@@ -267,7 +267,7 @@ public final class TicketData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return list of channel ids
      */
-    public List<String> getChannelIdsByType(Guild guild, String type, MessageEventDataWrapper messageContext) {
+    public List<String> getChannelIdsByType(Guild guild, String type, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.get_ticket_channel_by_keyword(?,?)")) {
             statement.setString(1, guild.getId());
@@ -290,7 +290,7 @@ public final class TicketData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return id of the user.
      */
-    public String getChannelOwnerId(Guild guild, TextChannel channel, MessageEventDataWrapper messageContext) {
+    public String getChannelOwnerId(Guild guild, TextChannel channel, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.get_ticket_channel_owner(?,?)")) {
             statement.setString(1, guild.getId());
@@ -336,7 +336,7 @@ public final class TicketData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeChannel(Guild guild, TextChannel channel, MessageEventDataWrapper messageContext) {
+    public boolean removeChannel(Guild guild, TextChannel channel, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_ticket_channel(?,?)")) {
             statement.setString(1, guild.getId());
@@ -357,7 +357,7 @@ public final class TicketData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeChannelByUser(Guild guild, User ticketOwner, MessageEventDataWrapper messageContext) {
+    public boolean removeChannelByUser(Guild guild, User ticketOwner, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_ticket_channel_by_user(?,?)")) {
             statement.setString(1, guild.getId());
@@ -380,7 +380,7 @@ public final class TicketData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean setTypeOwnerRoles(Guild guild, String keyword, List<Role> roles,
-                                     MessageEventDataWrapper messageContext) {
+                                     EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.set_ticket_owner_roles(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -406,7 +406,7 @@ public final class TicketData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean setTypeSupportRoles(Guild guild, String keyword, List<Role> roles,
-                                       MessageEventDataWrapper messageContext) {
+                                       EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.set_ticket_support_roles(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -430,7 +430,7 @@ public final class TicketData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Return list of role ids
      */
-    public List<String> getTypeOwnerRoles(Guild guild, String keyword, MessageEventDataWrapper messageContext) {
+    public List<String> getTypeOwnerRoles(Guild guild, String keyword, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.get_ticket_owner_roles(?,?)")) {
             statement.setString(1, guild.getId());
@@ -454,7 +454,7 @@ public final class TicketData extends QueryObject {
      * @return list of role ids
      */
     public List<String> getTypeSupportRoles(Guild guild, String keyword,
-                                            MessageEventDataWrapper messageContext) {
+                                            EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.get_ticket_support_roles(?,?)")) {
             statement.setString(1, guild.getId());
@@ -477,7 +477,7 @@ public final class TicketData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return integer auto increment.
      */
-    public int getNextTicketCount(Guild guild, MessageEventDataWrapper messageContext) {
+    public int getNextTicketCount(Guild guild, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.get_next_ticket_count(?)")) {
             statement.setString(1, guild.getId());

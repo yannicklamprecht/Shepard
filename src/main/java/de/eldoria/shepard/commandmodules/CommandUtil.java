@@ -5,7 +5,7 @@ import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
-import net.dv8tion.jda.api.entities.Guild;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.awt.Color;
@@ -23,12 +23,12 @@ public class CommandUtil {
      * Get the command help as a localized embed.
      *
      * @param command command to generate the help
-     * @param guild   guild for locale settings
+     * @param wrapper   wrapper for locale settings
      * @param prefix  prefix of guild
      * @return localized embed.
      */
-    public static MessageEmbed getCommandHelpEmbed(Command command, Guild guild, String prefix) {
-        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(guild);
+    public static MessageEmbed getCommandHelpEmbed(Command command, EventWrapper wrapper, String prefix) {
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper);
 
         builder.setTitle("__**" + HelpLocale.M_HELP_FOR_COMMAND + " " + command.getCommandName() + "**__")
                 .setColor(Color.green);
@@ -50,7 +50,7 @@ public class CommandUtil {
         // Build subcommand field.
         if (command.getSubCommands().length != 0) {
             List<String> subcommandHelp = getSubcommandHelp(command.getSubCommands()).stream()
-                    .map(s -> TextLocalizer.localizeAll(s, guild).replace("\n", "\n> "))
+                    .map(s -> TextLocalizer.localizeAll(s, wrapper).replace("\n", "\n> "))
                     .collect(Collectors.toList());
             List<String> chunks = new ArrayList<>();
 

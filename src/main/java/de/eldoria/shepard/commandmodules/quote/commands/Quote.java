@@ -4,13 +4,14 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.quote.data.QuoteData;
 import de.eldoria.shepard.commandmodules.quote.types.QuoteElement;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -25,7 +26,7 @@ import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.M_N
 /**
  * Command which draws a random quote from database or a quote containing a keyword.
  */
-public class Quote extends Command implements Executable, ReqDataSource {
+public class Quote extends Command implements GuildChannelOnly, Executable, ReqDataSource {
 
     private QuoteData quoteData;
 
@@ -45,29 +46,29 @@ public class Quote extends Command implements Executable, ReqDataSource {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         List<QuoteElement> quotes;
         if (args.length > 0) {
-            quotes = quoteData.getQuotesByKeyword(messageContext.getGuild(),
-                    String.join(" ", Arrays.copyOfRange(args, 0, args.length)), messageContext);
+            quotes = quoteData.getQuotesByKeyword(wrapper.getGuild().get(),
+                    String.join(" ", Arrays.copyOfRange(args, 0, args.length)), wrapper);
 
         } else {
-            quotes = quoteData.getQuotes(messageContext.getGuild(), messageContext);
+            quotes = quoteData.getQuotes(wrapper.getGuild().get(), wrapper);
             if (quotes.size() == 0) {
-                MessageSender.sendMessage(M_NO_QUOTE_DEFINED.tag, messageContext.getTextChannel());
+                MessageSender.sendMessage(M_NO_QUOTE_DEFINED.tag, wrapper.getMessageChannel());
                 return;
             }
         }
 
         if (quotes.size() == 0) {
-            MessageSender.sendMessage(M_NO_QUOTE_FOUND.tag, messageContext.getTextChannel());
+            MessageSender.sendMessage(M_NO_QUOTE_FOUND.tag, wrapper.getMessageChannel());
             return;
         }
 
         Random rand = new Random();
         int i = rand.nextInt(quotes.size());
 
-        MessageSender.sendMessage(quotes.get(i).getQuote(), messageContext.getTextChannel());
+        MessageSender.sendMessage(quotes.get(i).getQuote(), wrapper.getMessageChannel());
     }
 
     @Override

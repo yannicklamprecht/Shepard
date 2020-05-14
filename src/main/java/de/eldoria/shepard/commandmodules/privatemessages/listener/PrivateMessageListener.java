@@ -37,9 +37,7 @@ public class PrivateMessageListener extends ListenerAdapter implements ReqComman
         String[] args = receivedMessage.split(" ");
 
         if (!args[0].isEmpty() && commands.getCommand(args[0].substring(1)).isPresent()) {
-            MessageSender.sendMessageToChannel(
-                    "I'm sorry, but I'm not your personal assistant. I am only available to the public.",
-                    messageContext.getChannel());
+            return;
         } else {
             privateMessages.addUser(author);
             TextChannel privateAnswerChannel = normandy.getPrivateAnswerChannel();

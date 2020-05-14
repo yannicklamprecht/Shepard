@@ -13,6 +13,8 @@ public enum ReminderLocal {
      * Localization key for subcommand remove.
      */
     C_DELETE("command.reminder.subcommand.remove"),
+    C_SNOOZE("command.reminder.subcommand.snooze"),
+    C_RESTORE("command.reminder.subcommand.restore"),
     /**
      * Localization key for subcommand list.
      */
@@ -25,7 +27,9 @@ public enum ReminderLocal {
      * Localization key for message format.
      */
     A_TIMESTAMP("command.reminder.argument.timestamp"),
+    A_INTERVAL("command.reminder.argument.interval"),
     AD_TIMESTAMP("command.reminder.argumentDescription.timestamp"),
+    AD_INTERVAL("command.reminder.argumentDescription.interval"),
     /**
      * Localization key for message current reminders.
      */
@@ -33,7 +37,11 @@ public enum ReminderLocal {
     /**
      * Localization key for message remind date.
      */
+    M_TITLE_CREATED("command.reminder.message.titleCreated"),
+    M_TITLE_SNOOZED("command.reminder.message.titleSnoozed"),
+    M_TITLE_RESTORED("command.reminder.message.titleRestored"),
     M_REMIND_DATE("command.reminder.message.remindDate"),
+    M_REMIND_DISPLAY("command.reminder.message.remindDisplay"),
     /**
      * Localization key for message remind time.
      */

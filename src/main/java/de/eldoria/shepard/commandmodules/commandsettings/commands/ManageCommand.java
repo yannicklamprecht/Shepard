@@ -5,6 +5,7 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.commandsettings.data.CommandData;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.util.TextLocalizer;
@@ -13,7 +14,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.util.BooleanState;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import javax.sql.DataSource;
 import java.util.Optional;
@@ -39,7 +40,7 @@ import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageCon
 /**
  * Manage the basic settings of a registered and active {@link Command}.
  */
-public class ManageCommand extends Command implements Executable, ReqParser, ReqDataSource {
+public class ManageCommand extends Command implements GuildChannelOnly, Executable, ReqParser, ReqDataSource {
 
     private ArgumentParser parser;
     private CommandData commandData;
@@ -74,109 +75,107 @@ public class ManageCommand extends Command implements Executable, ReqParser, Req
 
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         Optional<Command> command = parser.getCommand(args[1]);
         String cmd = args[0];
 
         if (command.isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.COMMAND_SEARCH_EMPTY, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.COMMAND_SEARCH_EMPTY, wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 0)) {
-            setNsfw(args, command.get(), messageContext);
+            setNsfw(args, command.get(), wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 1)) {
-            setAdminOnly(args, command.get(), messageContext);
+            setAdminOnly(args, command.get(), wrapper);
             return;
         }
         if (isSubCommand(cmd, 2) || isSubCommand(cmd, 3)) {
-            setCooldown(cmd, args, command.get(), messageContext);
+            setCooldown(cmd, args, command.get(), wrapper);
             return;
         }
-
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
     private void setCooldown(String cmd, String[] args, Command context,
-                             MessageEventDataWrapper messageContext) {
+                             EventWrapper wrapper) {
         OptionalInt seconds = ArgumentParser.parseInt(args[2]);
 
 
         if (seconds.isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, wrapper);
             return;
         }
 
         boolean userCooldown = isSubCommand(cmd, 2);
 
         if (userCooldown) {
-            if (!commandData.setUserCooldown(context, seconds.getAsInt(), messageContext)) {
+            if (!commandData.setUserCooldown(context, seconds.getAsInt(), wrapper)) {
                 return;
             }
         } else {
-            if (!commandData.setGuildCooldown(context, seconds.getAsInt(), messageContext)) {
+            if (!commandData.setGuildCooldown(context, seconds.getAsInt(), wrapper)) {
                 return;
             }
         }
         MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace(
                 "**" + (userCooldown ? M_SET_USER_COOLDOWN.tag : M_SET_GUILD_COOLDOWN.tag) + "**",
-                messageContext.getGuild(), "\"" + context.getCommandName().toUpperCase() + "\"",
-                seconds.getAsInt() + ""), messageContext.getTextChannel());
+                wrapper, "\"" + context.getCommandName().toUpperCase() + "\"",
+                seconds.getAsInt() + ""), wrapper.getMessageChannel());
     }
 
 
-    private void setAdminOnly(String[] args, Command command, MessageEventDataWrapper messageContext) {
+    private void setAdminOnly(String[] args, Command command, EventWrapper wrapper) {
         BooleanState bState = ArgumentParser.getBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, wrapper);
             return;
         }
 
         boolean state = bState.stateAsBoolean;
 
-        if (!commandData.setAdmin(command, state, messageContext)) {
+        if (!commandData.setAdmin(command, state, wrapper)) {
             return;
         }
 
         if (state) {
             MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace("**" + M_ACTIVATED_ADMIN + "**",
-                    messageContext.getGuild(), "\"" + command.getCommandName().toUpperCase() + "\""),
-                    messageContext.getTextChannel());
+                    wrapper, "\"" + command.getCommandName().toUpperCase() + "\""),
+                    wrapper.getMessageChannel());
 
         } else {
             MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace("**" + M_DEACTIVATED_ADMIN + "**",
-                    messageContext.getGuild(), "\"" + command.getCommandName().toUpperCase() + "\""),
-                    messageContext.getTextChannel());
+                    wrapper, "\"" + command.getCommandName().toUpperCase() + "\""),
+                    wrapper.getMessageChannel());
         }
     }
 
-    private void setNsfw(String[] args, Command command, MessageEventDataWrapper messageContext) {
+    private void setNsfw(String[] args, Command command, EventWrapper wrapper) {
         BooleanState bState = ArgumentParser.getBoolean(args[2]);
 
         if (bState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, wrapper);
             return;
         }
 
         boolean state = bState.stateAsBoolean;
 
-        if (!commandData.setNsfw(command, state, messageContext)) {
+        if (!commandData.setNsfw(command, state, wrapper)) {
             return;
         }
 
         if (state) {
             MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace("**" + M_ACTIVATED_NSFW + "**",
-                    messageContext.getGuild(), "\"" + command.getCommandName().toUpperCase() + "\""),
-                    messageContext.getTextChannel());
+                    wrapper, "\"" + command.getCommandName().toUpperCase() + "\""),
+                    wrapper.getMessageChannel());
 
         } else {
             MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace("**" + M_DEACTIVATED_NSFW + "**",
-                    messageContext.getGuild(), "\"" + command.getCommandName().toUpperCase() + "\""),
-                    messageContext.getTextChannel());
+                    wrapper, "\"" + command.getCommandName().toUpperCase() + "\""),
+                    wrapper.getMessageChannel());
         }
     }
 

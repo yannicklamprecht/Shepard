@@ -5,6 +5,7 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.kudos.data.KudoData;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.fun.KudoGambleLocale;
@@ -12,7 +13,7 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.util.reactions.Emoji;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
@@ -33,7 +34,7 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
  * The result is pseudo random.
  * This command requires asynchronous execution
  */
-public class KudoGamble extends Command implements ExecutableAsync, ReqDataSource {
+public class KudoGamble extends Command implements GuildChannelOnly, ExecutableAsync, ReqDataSource {
     private final int bonus = 64;
     private final int tier1 = 16;
     private final int tier2 = 4;
@@ -59,26 +60,26 @@ public class KudoGamble extends Command implements ExecutableAsync, ReqDataSourc
 
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         Message message;
         OptionalInt amount = ArgumentParser.parseInt(args[0]);
         if (amount.isEmpty() || amount.getAsInt() < 1) {
-            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, wrapper);
             return;
         }
-        if (!kudoData.tryTakePoints(messageContext.getGuild(),
-                messageContext.getAuthor(), amount.getAsInt(), messageContext)) {
-            MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_KUDOS, messageContext.getTextChannel());
+        if (!kudoData.tryTakePoints(wrapper.getGuild().get(),
+                wrapper.getAuthor(), amount.getAsInt(), wrapper)) {
+            MessageSender.sendSimpleError(ErrorType.NOT_ENOUGH_KUDOS, wrapper);
             return;
         }
-        MessageChannel channel = messageContext.getChannel();
+        MessageChannel channel = wrapper.getMessageChannel();
         StringBuilder messageText = new StringBuilder(
-                localizeAllAndReplace(KudoGambleLocale.M_START.tag, messageContext.getGuild(),
-                        "**" + messageContext.getMember().getEffectiveName() + "**"));
+                localizeAllAndReplace(KudoGambleLocale.M_START.tag, wrapper,
+                        "**" + wrapper.getMember().get().getEffectiveName() + "**"));
         message = channel.sendMessage(messageText.toString()).complete();
 
         messageText.append(System.lineSeparator()).append("**")
-                .append(localizeAll(KudoGambleLocale.M_GAMBLE.tag, messageContext.getGuild())).append("**")
+                .append(localizeAll(KudoGambleLocale.M_GAMBLE.tag, wrapper)).append("**")
                 .append(System.lineSeparator());
 
         String square = Emoji.BLACK_LARGE_SQUARE.unicode;
@@ -102,8 +103,7 @@ public class KudoGamble extends Command implements ExecutableAsync, ReqDataSourc
                     + getEmoji(win2) + " " + getEmoji(win3);
             message.editMessage(finalMessageText).complete();
         } catch (InterruptedException e) {
-            kudoData.addRubberPoints(messageContext.getGuild(),
-                    messageContext.getAuthor(), amount.getAsInt(), messageContext);
+            kudoData.addRubberPoints(wrapper.getGuild().get(), wrapper.getAuthor(), amount.getAsInt(), wrapper);
             return;
         }
 
@@ -121,7 +121,7 @@ public class KudoGamble extends Command implements ExecutableAsync, ReqDataSourc
         } else if (winId == tier1 * 3) {
             winAmount = amount.getAsInt() * 5;
         } else if (winId == bonus * 3) {
-            winAmount = amount.getAsInt() + kudoData.getAndClearJackpot(messageContext.getGuild(), messageContext);
+            winAmount = amount.getAsInt() + kudoData.getAndClearJackpot(wrapper.getGuild().get(), wrapper);
             jackpot = true;
         } else if (win1 == bonus || win2 == bonus || win3 == bonus) {
             //Bonus
@@ -136,35 +136,35 @@ public class KudoGamble extends Command implements ExecutableAsync, ReqDataSourc
         }
 
         if (winAmount == 0) {
-            int jackpotAmount = kudoData.addAndGetJackpot(messageContext.getGuild(), amount.getAsInt(), messageContext);
+            int jackpotAmount = kudoData.addAndGetJackpot(wrapper.getGuild().get(), amount.getAsInt(), wrapper);
             message.editMessage(finalMessageText + System.lineSeparator()
-                    + localizeAllAndReplace(KudoGambleLocale.M_LOSE.tag, messageContext.getGuild(),
+                    + localizeAllAndReplace(KudoGambleLocale.M_LOSE.tag, wrapper,
                     "**" + jackpotAmount + "**")).complete();
             return;
         }
 
         if (winAmount < amount.getAsInt()) {
-            int jackpotAmount = kudoData.addAndGetJackpot(messageContext.getGuild(),
-                    amount.getAsInt() - winAmount, messageContext);
-            kudoData.addRubberPoints(messageContext.getGuild(), messageContext.getAuthor(), winAmount, messageContext);
+            int jackpotAmount = kudoData.addAndGetJackpot(wrapper.getGuild().get(),
+                    amount.getAsInt() - winAmount, wrapper);
+            kudoData.addRubberPoints(wrapper.getGuild().get(), wrapper.getAuthor(), winAmount, wrapper);
             message.editMessage(finalMessageText + System.lineSeparator()
-                    + localizeAllAndReplace(KudoGambleLocale.M_PART_LOSE.tag, messageContext.getGuild(),
+                    + localizeAllAndReplace(KudoGambleLocale.M_PART_LOSE.tag, wrapper,
                     "**" + winAmount + "**", "**" + jackpotAmount + "**")).complete();
             return;
         }
 
         if (!jackpot) {
             message.editMessage(finalMessageText + System.lineSeparator()
-                    + localizeAllAndReplace(KudoGambleLocale.M_WIN.tag, messageContext.getGuild(),
+                    + localizeAllAndReplace(KudoGambleLocale.M_WIN.tag, wrapper,
                     "**" + winAmount + "**")).complete();
-            kudoData.addRubberPoints(messageContext.getGuild(), messageContext.getAuthor(), winAmount, messageContext);
+            kudoData.addRubberPoints(wrapper.getGuild().get(), wrapper.getAuthor(), winAmount, wrapper);
             return;
         }
 
         message.editMessage(finalMessageText + System.lineSeparator() + "**"
-                + localizeAllAndReplace(KudoGambleLocale.M_JACKPOT.tag + "**", messageContext.getGuild(),
+                + localizeAllAndReplace(KudoGambleLocale.M_JACKPOT.tag + "**", wrapper,
                 winAmount + "")).complete();
-        kudoData.addRubberPoints(messageContext.getGuild(), messageContext.getAuthor(), winAmount, messageContext);
+        kudoData.addRubberPoints(wrapper.getGuild().get(), wrapper.getAuthor(), winAmount, wrapper);
 
 
     }

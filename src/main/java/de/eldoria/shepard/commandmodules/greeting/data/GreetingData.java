@@ -2,7 +2,7 @@ package de.eldoria.shepard.commandmodules.greeting.data;
 
 import de.eldoria.shepard.commandmodules.greeting.types.GreetingSettings;
 import de.eldoria.shepard.database.QueryObject;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.sharding.ShardManager;
@@ -37,7 +37,7 @@ public class GreetingData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean setGreetingChannel(Guild guild, MessageChannel channel,
-                                      MessageEventDataWrapper messageContext) {
+                                      EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.set_greeting_channel(?,?)")) {
             statement.setString(1, guild.getId());
@@ -57,7 +57,7 @@ public class GreetingData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeGreetingChannel(Guild guild, MessageEventDataWrapper messageContext) {
+    public boolean removeGreetingChannel(Guild guild, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_greeting_channel(?)")) {
             statement.setString(1, guild.getId());
@@ -77,7 +77,7 @@ public class GreetingData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean setGreetingText(Guild guild, String text, MessageEventDataWrapper messageContext) {
+    public boolean setGreetingText(Guild guild, String text, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.set_greeting_text(?,?)")) {
             statement.setString(1, guild.getId());
@@ -102,7 +102,8 @@ public class GreetingData extends QueryObject {
             statement.setString(1, guild.getId());
             ResultSet result = statement.executeQuery();
             if (result.next()) {
-                return new GreetingSettings(shardManager, guild.getId(),
+                return new GreetingSettings(shardManager,
+                        guild.getId(),
                         result.getString("channel_id"),
                         result.getString("message"));
             }

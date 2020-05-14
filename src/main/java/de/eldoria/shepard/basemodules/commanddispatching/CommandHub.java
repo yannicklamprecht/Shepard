@@ -27,11 +27,10 @@ import de.eldoria.shepard.webapi.apiobjects.commandserialization.CommandInfos;
 import de.eldoria.shepard.webapi.apiobjects.commandserialization.FullCommandInfo;
 import de.eldoria.shepard.webapi.apiobjects.commandserialization.SimpleCommandInfo;
 import de.eldoria.shepard.webapi.apiobjects.commandserialization.SimpleCommandInfos;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import info.debatty.java.stringsimilarity.JaroWinkler;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import org.jetbrains.annotations.NotNull;
 
@@ -100,15 +99,15 @@ public final class CommandHub implements ReqConfig, ReqLatestCommands, ReqExecut
      * The command will only be executed it the user has access and the permission to execute the command.
      *
      * @param command command to execute
-     * @param label label of command
-     * @param args arguments of command
-     * @param messageContext message event data
+     * @param label   label of command
+     * @param args    arguments of command
+     * @param wrapper message event data
      */
-    public void dispatchCommand(Command command, String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void dispatchCommand(Command command, String label, String[] args, EventWrapper wrapper) {
         //Check if the context can be used on guild by user
-        if (!validator.canAccess(command, messageContext)) {
-            MessageSender.sendMessage(localizeAllAndReplace(M_COMMAND_NOT_FOUND.tag, messageContext.getGuild()),
-                    messageContext.getTextChannel());
+        if (!validator.canAccess(command, wrapper)) {
+            MessageSender.sendMessage(localizeAllAndReplace(M_COMMAND_NOT_FOUND.tag, wrapper),
+                    wrapper.getMessageChannel());
             return;
         }
 
@@ -117,82 +116,81 @@ public final class CommandHub implements ReqConfig, ReqLatestCommands, ReqExecut
         permission = matchingSubcommand.map(subCommand -> command.getCommandIdentifier() + "."
                 + subCommand.getSubCommandIdentifier()).orElseGet(command::getCommandIdentifier);
 
+
         //check if the user has the permission on the guild
-        if (!validator.canUse(permission, messageContext.getMember())) {
+        if (!validator.canUse(permission, wrapper)) {
             MessageSender.sendMessage(localizeAllAndReplace(M_INSUFFICIENT_PERMISSION.tag,
-                    messageContext.getGuild(), "**" + permission + "**"),
-                    messageContext.getTextChannel());
+                    wrapper, "**" + permission + "**"),
+                    wrapper.getMessageChannel());
             return;
         }
 
-        if (!validator.isCommandEnabled(command, messageContext.getGuild())) {
-            messageContext.getTextChannel()
+        if (!validator.isCommandEnabled(command, wrapper)) {
+            wrapper.getMessageChannel()
                     .sendMessage(localizeAllAndReplace("**" + M_COMMAND_DISABLED.tag + "**",
-                            messageContext.getGuild(), command.getCommandIdentifier())).queue();
+                            wrapper, command.getCommandIdentifier())).queue();
             return;
         }
 
         // Check if command can be used in channel
-        if (!validator.canUseInChannel(command, messageContext.getMember(),
-                messageContext.getGuild(), messageContext.getTextChannel())) {
-            messageContext.getTextChannel()
+        if (!validator.canUseInChannel(command, wrapper)) {
+            wrapper.getMessageChannel()
                     .sendMessage(localizeAllAndReplace("**" + M_COMMAND_DISABLED_IN_CHANNEL.tag + "**",
-                            messageContext.getGuild(), command.getCommandIdentifier())).queue();
+                            wrapper, command.getCommandIdentifier())).queue();
             return;
         }
 
 
         //Check if it is the help command
         if (args.length > 0 && args[0].equalsIgnoreCase("help")) {
-            sendHelpText(command, messageContext.getTextChannel());
+            sendHelpText(command, wrapper);
             return;
         }
 
         //Check if the arguments match the main command or one of the sub commands.
         if (!command.checkArguments(args)) {
             try {
-                MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
+                MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, wrapper);
                 return;
             } catch (InsufficientPermissionException ex) {
-                MessageSender.handlePermissionException(config, ex, messageContext.getTextChannel());
+                MessageSender.handlePermissionException(config, ex, wrapper);
                 return;
             }
         }
 
-        if (handleCooldown(command, messageContext)) {
+        if (handleCooldown(command, wrapper)) {
             return;
         }
 
 
-        MessageSender.logCommand(label, args, messageContext);
+        MessageSender.logCommand(label, args, wrapper);
 
-        runCommand(command, label, args, messageContext);
+        runCommand(command, label, args, wrapper);
 
-        cooldownManager.renewCooldown(command, messageContext.getGuild(), messageContext.getAuthor());
-        latestCommands.saveLatestCommand(messageContext.getGuild(), messageContext.getAuthor(), command, label, args);
+        cooldownManager.renewCooldown(command, wrapper);
+        latestCommands.saveLatestCommand(wrapper, command, label, args);
     }
 
-    private boolean handleCooldown(Command command, MessageEventDataWrapper messageContext) {
-        int currentCooldown = cooldownManager.getCurrentCooldown(
-                command, messageContext.getGuild(), messageContext.getAuthor());
+    private boolean handleCooldown(Command command, EventWrapper wrapper) {
+        int currentCooldown = cooldownManager.getCurrentCooldown(command, wrapper);
         if (currentCooldown != 0) {
             try {
-                MessageSender.sendMessage(TextLocalizer.localizeAllAndReplace(GeneralLocale.M_COOLDOWN.tag,
-                        messageContext.getGuild(), currentCooldown + ""), messageContext.getTextChannel());
+                wrapper.getMessageChannel().sendMessage(TextLocalizer.localizeAllAndReplace(GeneralLocale.M_COOLDOWN.tag,
+                        wrapper, currentCooldown + "")).queue();
             } catch (InsufficientPermissionException ex) {
-                MessageSender.handlePermissionException(config, ex, messageContext.getTextChannel());
+                MessageSender.handlePermissionException(config, ex, wrapper);
             }
             return true;
         }
         return false;
     }
 
-    private void sendHelpText(Command command, TextChannel channel) {
-        String prefix = prefixData.getPrefix(channel.getGuild(), null);
+    private void sendHelpText(Command command, EventWrapper wrapper) {
+        String prefix = prefixData.getPrefix(wrapper);
 
-        MessageEmbed commandHelpEmbed = CommandUtil.getCommandHelpEmbed(command, channel.getGuild(), prefix);
+        MessageEmbed commandHelpEmbed = CommandUtil.getCommandHelpEmbed(command, wrapper, prefix);
 
-        channel.sendMessage(commandHelpEmbed).queue();
+        wrapper.getMessageChannel().sendMessage(commandHelpEmbed).queue();
     }
 
     /**
@@ -216,9 +214,9 @@ public final class CommandHub implements ReqConfig, ReqLatestCommands, ReqExecut
      * @param command        command to execute
      * @param label          label of command
      * @param args           argument of command
-     * @param messageContext message context.
+     * @param wrapper message context.
      */
-    private void runCommand(Command command, String label, String[] args, MessageEventDataWrapper messageContext) {
+    private void runCommand(Command command, String label, String[] args, EventWrapper wrapper) {
         if (command instanceof ExecutableAsync) {
             CommandDispatchingError error = new CommandDispatchingError();
             if (threads.getActiveCount() >= config.getGeneralSettings().getCommandExecutionThreads() - 2) {
@@ -228,25 +226,25 @@ public final class CommandHub implements ReqConfig, ReqLatestCommands, ReqExecut
                     config.getGeneralSettings().getCommandExecutionThreads());
             threads.execute(() -> {
                 try {
-                    ((ExecutableAsync) command).execute(label, args, messageContext);
+                    ((ExecutableAsync) command).execute(label, args, wrapper);
                 } catch (InsufficientPermissionException e) {
-                    MessageSender.handlePermissionException(config, e, messageContext.getTextChannel());
+                    MessageSender.handlePermissionException(config, e, wrapper);
                 } catch (RuntimeException e) {
                     log.error(C.NOTIFY_ADMIN, "command execution failed: " + label + " " + String.join(" ", args), e);
                     log.error(C.NOTIFY_ADMIN, "Caused by", error);
-                    MessageSender.sendSimpleError(ErrorType.INTERNAL_ERROR, messageContext.getTextChannel());
+                    MessageSender.sendSimpleError(ErrorType.INTERNAL_ERROR, wrapper);
                 }
             });
             return;
         } else if (command instanceof Executable) {
             try {
-                ((Executable) command).execute(label, args, messageContext);
+                ((Executable) command).execute(label, args, wrapper);
             } catch (InsufficientPermissionException e) {
-                MessageSender.handlePermissionException(config, e, messageContext.getTextChannel());
+                MessageSender.handlePermissionException(config, e, wrapper);
             } catch (RuntimeException e) {
                 log.error(C.NOTIFY_ADMIN, "command execution failed: " + label + " "
                         + String.join(" ", args), label, String.join(" ", args), e);
-                MessageSender.sendSimpleError(ErrorType.INTERNAL_ERROR, messageContext.getTextChannel());
+                MessageSender.sendSimpleError(ErrorType.INTERNAL_ERROR, wrapper);
             }
             return;
         }

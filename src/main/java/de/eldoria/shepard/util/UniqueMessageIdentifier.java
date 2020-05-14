@@ -1,7 +1,8 @@
 package de.eldoria.shepard.util;
 
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
@@ -24,17 +25,29 @@ public final class UniqueMessageIdentifier {
         messageId = message;
     }
 
+    private UniqueMessageIdentifier(MessageChannel channel, long message) {
+        guildId = 0L;
+        channelId = channel.getIdLong();
+        messageId = message;
+    }
+
     /**
      * Get a unique message identifier.
-     * @param messageContext event data
+     *
+     * @param wrapper event data
      * @return a new unique message identifier for the message
      */
-    public static UniqueMessageIdentifier get(MessageEventDataWrapper messageContext) {
-        return new UniqueMessageIdentifier(messageContext.getTextChannel(), messageContext.getMessageIdLong());
+    public static UniqueMessageIdentifier get(EventWrapper wrapper) {
+        if (wrapper.isGuildEvent()) {
+            return new UniqueMessageIdentifier(wrapper.getTextChannel().get(), wrapper.getMessageIdLong());
+        } else {
+            return new UniqueMessageIdentifier(wrapper.getMessageChannel(), wrapper.getMessageIdLong());
+        }
     }
 
     /**
      * Creates a new unique message identifier.
+     *
      * @param messageContext event data
      * @return a new unique message identifier for the message
      */
@@ -49,7 +62,7 @@ public final class UniqueMessageIdentifier {
      * @return a new unique message identifier for the message
      */
     public static UniqueMessageIdentifier get(Message message) {
-        return new UniqueMessageIdentifier(message.getTextChannel(), message.getIdLong());
+        return new UniqueMessageIdentifier(message.getChannel(), message.getIdLong());
     }
 
     /**

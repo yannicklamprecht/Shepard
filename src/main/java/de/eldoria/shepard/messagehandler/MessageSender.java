@@ -8,7 +8,7 @@ import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.util.Replacer;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllByChannel;
 import static java.lang.System.lineSeparator;
 
 @Slf4j
@@ -35,10 +36,10 @@ public final class MessageSender {
      *
      * @param title   Title of the chatbox.
      * @param fields  List of fields for the chatbox.
-     * @param channel channel
+     * @param wrapper wrapper for channel determination
      */
-    public static void sendTextBox(String title, List<LocalizedField> fields, TextChannel channel) {
-        sendTextBox(title, fields, channel, Color.gray);
+    public static void sendTextBox(String title, List<LocalizedField> fields, EventWrapper wrapper) {
+        sendTextBox(title, fields, Color.gray, wrapper);
     }
 
     /**
@@ -46,18 +47,18 @@ public final class MessageSender {
      *
      * @param title   Title of the chatbox.
      * @param fields  List of fields for the chatbox.
-     * @param channel channel
+     * @param wrapper wrapper for channel determination
      * @param color   Color of the text box
      */
-    public static void sendTextBox(String title, List<LocalizedField> fields, TextChannel channel,
-                                   Color color) {
+    public static void sendTextBox(String title, List<LocalizedField> fields, Color color,
+                                   EventWrapper wrapper) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(TextLocalizer.localizeAll(title, channel))
+                .setTitle(TextLocalizer.localizeAll(title, wrapper))
                 .setColor(color);
         for (LocalizedField field : fields) {
             builder.addField(field.getField());
         }
-        channel.sendMessage(builder.build()).queue();
+        wrapper.getMessageChannel().sendMessage(builder.build()).queue();
     }
 
     /**
@@ -65,23 +66,10 @@ public final class MessageSender {
      *
      * @param title       Title of text box
      * @param description Text of textbox
-     * @param reaction    Reaction for thumbnail
-     * @param channel     channel
+     * @param wrapper     wrapper for channel determination
      */
-    public static void sendSimpleTextBox(String title, String description,
-                                         ShepardReactions reaction, TextChannel channel) {
-        sendSimpleTextBox(title, description, Color.gray, reaction, channel);
-    }
-
-    /**
-     * Send a simple text box with title and text.
-     *
-     * @param title       Title of text box
-     * @param description Text of textbox
-     * @param channel     channel
-     */
-    public static void sendSimpleTextBox(String title, String description, TextChannel channel) {
-        sendSimpleTextBox(title, description, Color.gray, ShepardReactions.NONE, channel);
+    public static void sendSimpleTextBox(String title, String description, EventWrapper wrapper) {
+        sendSimpleTextBox(title, description, Color.gray, ShepardReactions.NONE, wrapper);
     }
 
     /**
@@ -90,11 +78,11 @@ public final class MessageSender {
      * @param title       Title of text box
      * @param description Text of textbox
      * @param color       Color of the text box
-     * @param channel     channel
+     * @param wrapper     wrapper for channel determination
      */
     public static void sendSimpleTextBox(String title, String description, Color color,
-                                         TextChannel channel) {
-        sendSimpleTextBox(title, description, color, ShepardReactions.NONE, channel);
+                                         EventWrapper wrapper) {
+        sendSimpleTextBox(title, description, color, ShepardReactions.NONE, wrapper);
     }
 
     /**
@@ -104,34 +92,34 @@ public final class MessageSender {
      * @param description Text of textbox
      * @param color       Color of the text box
      * @param reaction    Reaction for thumbnail
-     * @param channel     channel to send
+     * @param wrapper     wrapper for channel determination
      */
     public static void sendSimpleTextBox(String title, String description, Color color,
-                                         ShepardReactions reaction, TextChannel channel) {
+                                         ShepardReactions reaction, EventWrapper wrapper) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(TextLocalizer.localizeAll(title, channel))
+                .setTitle(TextLocalizer.localizeAll(title, wrapper))
                 .setColor(color)
-                .setDescription(TextLocalizer.localizeAll(description, channel));
+                .setDescription(TextLocalizer.localizeAll(description, wrapper));
         if (reaction != ShepardReactions.NONE) {
             builder.setThumbnail(reaction.thumbnail);
         }
-        channel.sendMessage(builder.build()).queue();
+        wrapper.getMessageChannel().sendMessage(builder.build()).queue();
     }
 
     /**
      * Sends a error with text box.
      *
      * @param fields  List of fields.
-     * @param channel channel
+     * @param wrapper wrapper for channel determination
      */
-    public static void sendError(LocalizedField[] fields, TextChannel channel) {
+    public static void sendError(LocalizedField[] fields, EventWrapper wrapper) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("ERROR!")
                 .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
         for (LocalizedField field : fields) {
             builder.addField(field.getField())
                     .setColor(Color.red);
-            channel.sendMessage(builder.build()).queue();
+            wrapper.getMessageChannel().sendMessage(builder.build()).queue();
         }
     }
 
@@ -139,13 +127,16 @@ public final class MessageSender {
      * Sends a simple error with predefined error messages.
      *
      * @param type    error type
-     * @param channel channel
+     * @param wrapper channel
      */
-    public static void sendSimpleError(ErrorType type, TextChannel channel) {
-        if (type.isEmbed) {
-            sendSimpleErrorEmbed(localizeAll(type.taggedMessage, channel.getGuild()), channel);
+    public static void sendSimpleError(ErrorType type, EventWrapper wrapper) {
+        if (type.isEmbed && wrapper.getGuild().isPresent()) {
+            sendSimpleErrorEmbed(localizeAll(type.taggedMessage, wrapper), wrapper.getMessageChannel());
+        } else if (type.isEmbed) {
+            sendSimpleErrorEmbed(localizeAllByChannel(type.taggedMessage, wrapper.getMessageChannel()), wrapper.getMessageChannel());
         } else {
-            sendMessage(type.taggedMessage, channel);
+
+            sendMessage(type.taggedMessage, wrapper.getMessageChannel());
         }
 
     }
@@ -172,28 +163,28 @@ public final class MessageSender {
     /**
      * Sends a simple error to a channel.
      *
-     * @param config config of bot
+     * @param config  config of bot
      * @param error   Error message
-     * @param channel channel
+     * @param wrapper wrapper
      */
     public static void handlePermissionException(Config config, InsufficientPermissionException error,
-                                                 TextChannel channel) {
-        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(channel.getGuild())
+                                                 EventWrapper wrapper) {
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
                 .setTitle("ERROR!")
                 .setDescription(ErrorType.GENERAL.taggedMessage)
                 .addField("Error", error.getMessage(), false)
                 .setColor(Color.red)
                 .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
         try {
-            channel.sendMessage(builder.build()).queue();
+            wrapper.getMessageChannel().sendMessage(builder.build()).queue();
         } catch (InsufficientPermissionException e) {
             if (Arrays.stream(config.getBotlist().getGuildIds())
-                    .noneMatch(id -> id == channel.getGuild().getIdLong())) {
-                channel.getGuild().getOwner().getUser().openPrivateChannel().queue(a -> {
+                    .noneMatch(id -> id == wrapper.getGuild().get().getIdLong())) {
+                wrapper.getGuild().get().getOwner().getUser().openPrivateChannel().queue(a -> {
                     EmbedBuilder privateBuilder = new EmbedBuilder()
                             .setTitle("ERROR!")
-                            .setDescription("There was an Error on your server **" + channel.getGuild().getName()
-                                    + "** in Channel **" + channel.getName() + "**, while doing my job.")
+                            .setDescription("There was an Error on your server **" + wrapper.getGuild().get().getName()
+                                    + "** in Channel **" + wrapper.getMessageChannel().getName() + "**, while doing my job.")
                             .addField("Error", error.getMessage(), false)
                             .setColor(Color.red)
                             .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
@@ -231,17 +222,24 @@ public final class MessageSender {
     /**
      * Log a command to the command log channel.
      *
-     * @param label          label of command
-     * @param args           arguments of command
-     * @param messageContext context of command
+     * @param label   label of command
+     * @param args    arguments of command
+     * @param wrapper context of command
      */
-    public static void logCommand(String label, String[] args, MessageEventDataWrapper messageContext) {
-        var mention = messageContext.getAuthor().getAsTag();
-        var cmd = messageContext.getMessage().getContentStripped();
-        var guild = messageContext.getGuild().getName();
-        var guildId = messageContext.getGuild().getId();
+    public static void logCommand(String label, String[] args, EventWrapper wrapper) {
+        var mention = wrapper.getAuthor().getAsTag();
+        var cmd = wrapper.getMessage().getContentStripped();
+        var guild = "Private message";
+        var guildId = "0";
 
-        log.debug(C.COMMAND, "command execution by {} in guild {}({}): {}", mention, guild, guildId, cmd);
+        if (wrapper.isGuildEvent()) {
+            guild = wrapper.getGuild().get().getName();
+            guildId = wrapper.getGuild().get().getId();
+            log.debug(C.COMMAND, "command execution by {} in guild {}({}): {}", mention, guild, guildId, cmd);
+        } else {
+            log.debug(C.COMMAND, "command execution by {} in private message: {}", mention, cmd);
+        }
+
     }
 
     /**
@@ -250,10 +248,10 @@ public final class MessageSender {
      * @param message Message to send.
      * @param channel channel
      */
-    public static void sendMessage(String message, TextChannel channel) {
+    public static void sendMessage(String message, MessageChannel channel) {
         if (message.isEmpty() || channel == null) return;
 
-        String localizedMessage = TextLocalizer.localizeAll(message, channel);
+        String localizedMessage = TextLocalizer.localizeAllByChannel(message, channel);
 
         sendSplitMessage(localizedMessage, channel);
     }
@@ -287,14 +285,13 @@ public final class MessageSender {
 
     /**
      * Sends a message to a user.
-     *
-     * @param user           User to send
+     *  @param user           User to send
      * @param attachments    Attachments to send
      * @param text           Text to send
      * @param messageContext message informations.
      */
     public static void sendAttachment(User user, List<Message.Attachment> attachments, String text,
-                                      TextChannel messageContext) {
+                                      MessageChannel messageContext) {
         user.openPrivateChannel().queue(privateChannel -> {
             privateChannel.sendMessage(text).queue();
             if (!attachments.isEmpty()) {

@@ -2,27 +2,35 @@ package de.eldoria.shepard.core;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import de.eldoria.shepard.basemodules.commanddispatching.CommandHub;
+import de.eldoria.shepard.modulebuilder.requirements.ReqCommands;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.webapi.apiobjects.ShardStatistic;
+import de.eldoria.shepard.webapi.apiobjects.SystemStatistic;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-public class Statistics implements Runnable, ReqShardManager, ReqInit {
+@Slf4j
+public class Statistics implements Runnable, ReqShardManager, ReqCommands, ReqInit {
     private final Map<Integer, long[]> commandsDispatched = new HashMap<>();
     private final Map<Integer, long[]> eventsFired = new HashMap<>();
     private Cache<Integer, Integer> userCache;
     private Cache<Integer, Integer> guildCache;
     private int currentMin = 0;
     private ShardManager shardManager;
+    private CommandHub commandHub;
 
     public Statistics() {
     }
@@ -69,6 +77,28 @@ public class Statistics implements Runnable, ReqShardManager, ReqInit {
                 eventsFired);
     }
 
+    public SystemStatistic getSystemStatistic() {
+        List<ShardStatistic> shardStatistics = shardManager.getShardCache()
+                .stream().map(jda -> {
+                    try {
+                        return getShardStatistic(jda);
+                    } catch (ExecutionException e) {
+                        log.error("An error occured while building the system statistics", e);
+                    }
+                    return new ShardStatistic(jda.getShardInfo().getShardId(),
+                            JDA.Status.DISCONNECTED, 0, 0, 0, 0);
+                }).collect(Collectors.toList());
+
+        int shardsTotal = shardManager.getShardsTotal();
+        int commands = commandHub.getCommands().size();
+        double ramUsed = Math.round(
+                (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000d / 1000d) / 1000d;
+
+        int threads = Thread.activeCount();
+
+        return new SystemStatistic(shardsTotal, commands, ramUsed, threads, shardStatistics);
+    }
+
     private long arraySum(long[] array) {
         return Arrays.stream(array).sum();
     }
@@ -92,5 +122,10 @@ public class Statistics implements Runnable, ReqShardManager, ReqInit {
                 .maximumSize(shardManager.getShardsTotal())
                 .expireAfterWrite(10, TimeUnit.MINUTES)
                 .build();
+    }
+
+    @Override
+    public void addCommands(CommandHub commandHub) {
+        this.commandHub = commandHub;
     }
 }

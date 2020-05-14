@@ -9,7 +9,7 @@ import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.FileHelper;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import java.io.File;
 
@@ -36,16 +36,16 @@ public class MockingSpongebob extends Command implements ExecutableAsync {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         if (args.length == 0) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, wrapper);
             return;
         }
         File image = FileHelper.getFileFromURL(BASE_URL + String.join("%20", args) + ".jpg");
         if (image == null) {
-            MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.SERVICE_UNAVAILABLE, wrapper);
         } else {
-            messageContext.getChannel().sendFile(image).queue();
+            wrapper.getMessageChannel().sendFile(image).queue();
         }
     }
 }

@@ -1,7 +1,7 @@
 package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.QueryObject;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 
@@ -42,7 +42,7 @@ public final class MuteData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean setMuted(Guild guild, User user, String duration, MessageEventDataWrapper messageContext) {
+    public boolean setMuted(Guild guild, User user, String duration, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.set_muted(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -58,7 +58,7 @@ public final class MuteData extends QueryObject {
         return true;
     }
 
-    private void refreshGuildData(Guild guild, MessageEventDataWrapper messageContext) {
+    private void refreshGuildData(Guild guild, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.get_muted_users(?)")) {
             statement.setString(1, guild.getId());
@@ -80,7 +80,7 @@ public final class MuteData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeMute(Guild guild, User user, MessageEventDataWrapper messageContext) {
+    public boolean removeMute(Guild guild, User user, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_mute(?,?)")) {
             statement.setString(1, guild.getId());
@@ -101,7 +101,7 @@ public final class MuteData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of muted users on a server.
      */
-    public List<String> getMutedUsers(Guild guild, MessageEventDataWrapper messageContext) {
+    public List<String> getMutedUsers(Guild guild, EventWrapper messageContext) {
         if (lastRefresh.isBefore(LocalDateTime.now().minusMinutes(1))) {
 
 

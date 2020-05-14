@@ -2,7 +2,7 @@ package de.eldoria.shepard.commandmodules.language;
 
 import de.eldoria.shepard.database.QueryObject;
 import de.eldoria.shepard.localization.util.LocaleCode;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
 
@@ -30,17 +30,17 @@ public class LocaleData extends QueryObject {
      *
      * @param guild          Guild for which the languageCode should be set
      * @param localeCode     languageCode to set.
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper wrapper from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean setLanguage(Guild guild, LocaleCode localeCode, MessageEventDataWrapper messageContext) {
+    public boolean setLanguage(Guild guild, LocaleCode localeCode, EventWrapper wrapper) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.set_language(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, localeCode.code);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
             return false;
         }
 

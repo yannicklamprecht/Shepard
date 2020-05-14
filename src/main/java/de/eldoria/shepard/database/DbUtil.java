@@ -3,7 +3,7 @@ package de.eldoria.shepard.database;
 import de.eldoria.shepard.database.types.Rank;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.User;
@@ -65,17 +65,17 @@ public final class DbUtil {
      * Handles SQL Exceptions and throws it.
      *
      * @param ex    SQL Exception
-     * @param event Event for error sending to channel to inform user.
+     * @param wrapper Event for error sending to channel to inform user.
      */
-    public static void handleException(SQLException ex, MessageEventDataWrapper event) {
+    public static void handleException(SQLException ex, EventWrapper wrapper) {
 
         String builder = "SQLException: " + ex.getMessage() + "\n"
                 + "SQLState: " + ex.getSQLState() + "\n"
                 + "VendorError: " + ex.getErrorCode();
         log.error(builder, ex);
 
-        if (event != null) {
-            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, event.getTextChannel());
+        if (wrapper != null) {
+            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, wrapper);
         }
     }
 

@@ -3,6 +3,7 @@ package de.eldoria.shepard.basemodules.reactionactions.actions;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.CommandUtil;
 import de.eldoria.shepard.util.reactions.Emoji;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 public class SendCommandHelp extends Action {
@@ -23,8 +24,8 @@ public class SendCommandHelp extends Action {
     }
 
     @Override
-    protected void internalExecute(GuildMessageReactionAddEvent event) {
-        event.getChannel().sendMessage(
-                CommandUtil.getCommandHelpEmbed(command, event.getGuild(), prefix)).queue();
+    protected void internalExecute(EventWrapper wrapper) {
+        wrapper.getMessageChannel().sendMessage(
+                CommandUtil.getCommandHelpEmbed(command, wrapper, prefix)).queue();
     }
 }

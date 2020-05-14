@@ -3,7 +3,9 @@ package de.eldoria.shepard.basemodules.reactionactions;
 import de.eldoria.shepard.core.Statistics;
 import de.eldoria.shepard.modulebuilder.requirements.ReqReactionAction;
 import de.eldoria.shepard.modulebuilder.requirements.ReqStatistics;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
@@ -18,7 +20,16 @@ public class ReactionActionListener extends ListenerAdapter implements ReqReacti
             return;
         }
         statistics.eventDispatched(event.getJDA());
-        reactionAction.invokeReactionAction(event);
+        reactionAction.invokeReactionAction(EventWrapper.wrap(event));
+    }
+
+    @Override
+    public void onPrivateMessageReactionAdd(@Nonnull PrivateMessageReactionAddEvent event) {
+        if (event.getReaction().isSelf()) {
+            return;
+        }
+        statistics.eventDispatched(event.getJDA());
+        reactionAction.invokeReactionAction(EventWrapper.wrap(event));
     }
 
     @Override

@@ -2,6 +2,7 @@ package de.eldoria.shepard.basemodules.reactionactions.actions;
 
 import de.eldoria.shepard.basemodules.reactionactions.util.ReactionType;
 import de.eldoria.shepard.util.reactions.Emoji;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -32,7 +33,7 @@ public abstract class Action {
         if (exclusiveUser != null) {
             this.userId = exclusiveUser.getIdLong();
         }
-        this.secondsValid = Math.max(60, Math.min(3600, secondsValid));
+        this.secondsValid = Math.max(60, Math.min(60 * 60, secondsValid));
         this.oneTime = oneTime;
     }
 
@@ -41,7 +42,7 @@ public abstract class Action {
      *
      * @param event event for action information.
      */
-    public final void execute(GuildMessageReactionAddEvent event) {
+    public final void execute(EventWrapper event) {
         if (!event.getReactionEmote().isEmoji()) {
             return;
         }
@@ -50,7 +51,7 @@ public abstract class Action {
             if (event.getReaction().isSelf()) {
                 return;
             }
-            if (userId != 0 && event.getUser().getIdLong() != userId) {
+            if (userId != 0 && event.getActor().getIdLong() != userId) {
                 return;
             }
 
@@ -66,9 +67,9 @@ public abstract class Action {
     /**
      * Execute the internal functions.
      *
-     * @param event event for information
+     * @param wrapper wrapper for information
      */
-    protected abstract void internalExecute(GuildMessageReactionAddEvent event);
+    protected abstract void internalExecute(EventWrapper wrapper);
 
     /**
      * Check if the action is used and cant be used anymore.

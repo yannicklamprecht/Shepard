@@ -1,9 +1,11 @@
 package de.eldoria.shepard.commandmodules.changelog;
 
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.core.Statistics;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqStatistics;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -20,7 +22,7 @@ import java.util.List;
 
 import static java.lang.System.lineSeparator;
 
-public class ChangelogListener extends ListenerAdapter implements ReqDataSource, ReqStatistics {
+public class ChangelogListener extends ListenerAdapter implements GuildChannelOnly, ReqDataSource, ReqStatistics {
 
     private ChangelogData changelogData;
     private Statistics statistics;
@@ -65,12 +67,14 @@ public class ChangelogListener extends ListenerAdapter implements ReqDataSource,
             return;
         }
 
+        EventWrapper wrapper = EventWrapper.fakeGuildEvent(null, channelById, null, guild);
+
         if (add) {
             MessageSender.sendSimpleTextBox("[+] " + user.getAsTag(),
-                    String.join(lineSeparator(), observedRoles), Color.green, channelById);
+                    String.join(lineSeparator(), observedRoles), Color.green, wrapper);
         } else {
             MessageSender.sendSimpleTextBox("[-] " + user.getAsTag(),
-                    String.join(lineSeparator(), observedRoles), Color.red, channelById);
+                    String.join(lineSeparator(), observedRoles), Color.red, wrapper);
         }
     }
 

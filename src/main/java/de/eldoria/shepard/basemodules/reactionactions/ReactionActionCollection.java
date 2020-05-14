@@ -4,6 +4,7 @@ import de.eldoria.shepard.basemodules.reactionactions.actions.Action;
 import de.eldoria.shepard.basemodules.reactionactions.util.ActionRemover;
 import de.eldoria.shepard.basemodules.reactionactions.util.ReactionType;
 import de.eldoria.shepard.util.UniqueMessageIdentifier;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
@@ -39,7 +40,7 @@ public class ReactionActionCollection {
      *
      * @param event event for check
      */
-    public void invokeReactionAction(GuildMessageReactionAddEvent event) {
+    public void invokeReactionAction(EventWrapper event) {
         UniqueMessageIdentifier umi = UniqueMessageIdentifier.get(event);
         if (reactionActions.containsKey(umi)) {
             List<Action> actions = reactionActions.get(umi);

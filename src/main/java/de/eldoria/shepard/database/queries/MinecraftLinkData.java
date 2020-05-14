@@ -2,7 +2,7 @@ package de.eldoria.shepard.database.queries;
 
 import de.eldoria.shepard.database.QueryObject;
 import de.eldoria.shepard.database.types.MinecraftLink;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.User;
 
@@ -31,7 +31,7 @@ public final class MinecraftLinkData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Minecraft Link object or null if no link was found
      */
-    public MinecraftLink getLinkByUserId(User user, MessageEventDataWrapper messageContext) {
+    public MinecraftLink getLinkByUserId(User user, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_minecraft_link_user_id(?)")) {
             statement.setString(1, getIdRaw(user.getId()));
@@ -53,7 +53,7 @@ public final class MinecraftLinkData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Minecraft Link object or null if no link was found
      */
-    public MinecraftLink getLinkByUUID(JDA jda, String uuid, MessageEventDataWrapper messageContext) {
+    public MinecraftLink getLinkByUUID(JDA jda, String uuid, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_minecraft_link_uuid(?)")) {
             statement.setString(1, getIdRaw(uuid));
@@ -75,7 +75,7 @@ public final class MinecraftLinkData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean addLinkCode(String code, String uuid, MessageEventDataWrapper messageContext) {
+    public boolean addLinkCode(String code, String uuid, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.add_minecraft_link_code(?,?)")) {
             statement.setString(1, code);
@@ -95,7 +95,7 @@ public final class MinecraftLinkData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return UUID as String.
      */
-    public String getUUIDByCode(String code, MessageEventDataWrapper messageContext) {
+    public String getUUIDByCode(String code, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.add_minecraft_link_code(?)")) {
             statement.setString(1, code);

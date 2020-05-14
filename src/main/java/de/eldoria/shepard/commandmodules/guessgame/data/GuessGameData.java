@@ -3,8 +3,7 @@ package de.eldoria.shepard.commandmodules.guessgame.data;
 import de.eldoria.shepard.commandmodules.guessgame.util.GuessGameImage;
 import de.eldoria.shepard.database.QueryObject;
 import de.eldoria.shepard.database.types.Rank;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
-import net.dv8tion.jda.api.JDA;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.User;
@@ -42,7 +41,7 @@ public final class GuessGameData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean addHentaiImage(String croppedImage, String fullImage, boolean hentai,
-                                  MessageEventDataWrapper messageContext) {
+                                  EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.add_guess_game_image(?,?,?)")) {
             statement.setString(1, croppedImage);
@@ -62,7 +61,7 @@ public final class GuessGameData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return hentai image object
      */
-    public GuessGameImage getImage(MessageEventDataWrapper messageContext) {
+    public GuessGameImage getImage(EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_hentai_image_data()")) {
             ResultSet result = statement.executeQuery();
@@ -85,7 +84,7 @@ public final class GuessGameData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return hentai image object
      */
-    public GuessGameImage getImage(String link, MessageEventDataWrapper messageContext) {
+    public GuessGameImage getImage(String link, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_image_set(?)")) {
             statement.setString(1, link);
@@ -109,7 +108,7 @@ public final class GuessGameData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeImage(String imageUrl, MessageEventDataWrapper messageContext) {
+    public boolean removeImage(String imageUrl, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_hentai_image(?)")) {
             statement.setString(1, imageUrl);
@@ -129,7 +128,7 @@ public final class GuessGameData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean changeImageFlag(String imageUrl, boolean nsfw, MessageEventDataWrapper messageContext) {
+    public boolean changeImageFlag(String imageUrl, boolean nsfw, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.change_hentai_image_flag(?,?)")) {
             statement.setString(1, imageUrl);
@@ -151,7 +150,7 @@ public final class GuessGameData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      */
     public void addVoteScore(Guild guild, List<User> users, int score,
-                             MessageEventDataWrapper messageContext) {
+                             EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.add_guess_game_score(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -174,7 +173,7 @@ public final class GuessGameData extends QueryObject {
      * @param jda            jda instance
      * @return sorted list of ranks in descending order.
      */
-    public List<Rank> getTopScore(Guild guild, int scoreAmount, MessageEventDataWrapper messageContext, ShardManager jda) {
+    public List<Rank> getTopScore(Guild guild, int scoreAmount, EventWrapper messageContext, ShardManager jda) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_guess_game_top_score(?,?)")) {
             statement.setString(1, guild.getId());
@@ -194,7 +193,7 @@ public final class GuessGameData extends QueryObject {
      * @param shardManager            shardManager instance
      * @return sorted list of ranks in descending order.
      */
-    public List<Rank> getGlobalTopScore(int scoreAmount, MessageEventDataWrapper messageContext, ShardManager shardManager) {
+    public List<Rank> getGlobalTopScore(int scoreAmount, EventWrapper messageContext, ShardManager shardManager) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_guess_game_global_top_score(?)")) {
             statement.setInt(1, scoreAmount);
@@ -213,7 +212,7 @@ public final class GuessGameData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return score of user.
      */
-    public int getUserScore(Guild guild, User user, MessageEventDataWrapper messageContext) {
+    public int getUserScore(Guild guild, User user, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_guess_game_user_score(?,?)")) {
             statement.setString(1, guild.getId());
@@ -235,7 +234,7 @@ public final class GuessGameData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return global score of user
      */
-    public int getGlobalUserScore(User user, MessageEventDataWrapper messageContext) {
+    public int getGlobalUserScore(User user, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_guess_game_global_user_score(?)")) {
             statement.setString(1, user.getId());

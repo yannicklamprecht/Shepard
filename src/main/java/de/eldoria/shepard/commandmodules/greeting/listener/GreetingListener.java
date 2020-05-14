@@ -45,7 +45,7 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
         GreetingSettings greeting = greetingData.getGreeting(event.getGuild());
 
         if (greeting == null) return;
-
+        if (greeting.getChannel() == null) return;
         Optional<TextChannel> textChannel = ArgumentParser.getTextChannel(event.getGuild(),
                 greeting.getChannel().getId());
 

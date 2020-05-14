@@ -5,6 +5,7 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.guessgame.data.GuessGameData;
 import de.eldoria.shepard.commandmodules.guessgame.util.GuessGameImage;
 import de.eldoria.shepard.commandmodules.guessgame.util.ImageRegister;
@@ -15,7 +16,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.FileHelper;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import javax.sql.DataSource;
@@ -44,7 +45,7 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
  * Allows adding and removal of images.
  * Reflagging of a image is also possible.
  */
-public class GuessGameConfig extends Command implements ExecutableAsync, ReqDataSource, ReqInit {
+public class GuessGameConfig extends Command implements GuildChannelOnly, ExecutableAsync, ReqDataSource, ReqInit {
     private final ImageRegister register;
     private DataSource source;
     private GuessGameData guessGameData;
@@ -80,105 +81,103 @@ public class GuessGameConfig extends Command implements ExecutableAsync, ReqData
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
         if (isSubCommand(cmd, 0)) {
-            addImage(args, messageContext);
+            addImage(args, wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 1)) {
-            removeImage(args, messageContext);
+            removeImage(args, wrapper);
             return;
         }
         if (isSubCommand(cmd, 2)) {
-            changeFlag(args, messageContext);
+            changeFlag(args, wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 3)) {
-            showImageSet(args, messageContext);
+            showImageSet(args, wrapper);
             return;
         }
         if (isSubCommand(cmd, 4)) {
-            register.cancelConfiguration(messageContext);
-            MessageSender.sendMessage(M_REGISTRATION_CANCELED.tag, messageContext.getTextChannel());
+            register.cancelConfiguration(wrapper);
+            MessageSender.sendMessage(M_REGISTRATION_CANCELED.tag, wrapper.getMessageChannel());
             return;
         }
-
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
-    private void showImageSet(String[] args, MessageEventDataWrapper messageContext) {
+    private void showImageSet(String[] args, EventWrapper wrapper) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, wrapper);
             return;
         }
-        GuessGameImage image = guessGameData.getImage(args[1], messageContext);
+        GuessGameImage image = guessGameData.getImage(args[1], wrapper);
         if (image == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_IMAGE_URL, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_IMAGE_URL, wrapper);
             return;
         }
 
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle(localizeAllAndReplace(M_DISPLAY_IMAGE.tag,
-                        messageContext.getGuild(), image.isNsfw() ? "NSFW" : "SFW"))
+                        wrapper, image.isNsfw() ? "NSFW" : "SFW"))
                 .setThumbnail(image.getCroppedImage())
                 .setImage(image.getFullImage())
                 .setColor(image.isNsfw() ? Color.red : Color.green);
 
-        messageContext.getChannel().sendMessage(builder.build()).queue();
+        wrapper.getMessageChannel().sendMessage(builder.build()).queue();
     }
 
-    private void changeFlag(String[] args, MessageEventDataWrapper messageContext) {
+    private void changeFlag(String[] args, EventWrapper wrapper) {
         if (args.length != 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, wrapper);
             return;
         }
         BooleanState booleanState = ArgumentParser.getBoolean(args[2], "nsfw", "sfw");
         if (booleanState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, wrapper);
             return;
         }
 
         File fileFromURL = FileHelper.getFileFromURL(args[1]);
 
         if (fileFromURL == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_IMAGE_URL, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_IMAGE_URL, wrapper);
             return;
         }
 
-        if (guessGameData.changeImageFlag(args[1], booleanState.stateAsBoolean, messageContext)) {
+        if (guessGameData.changeImageFlag(args[1], booleanState.stateAsBoolean, wrapper)) {
             MessageSender.sendMessage(localizeAllAndReplace(M_CHANGED_FLAG.tag,
-                    messageContext.getGuild(), booleanState.stateAsBoolean ? "NSFW" : "SFW"),
-                    messageContext.getTextChannel());
-            messageContext.getChannel().sendFile(fileFromURL).queue();
+                    wrapper, booleanState.stateAsBoolean ? "NSFW" : "SFW"),
+                    wrapper.getMessageChannel());
+            wrapper.getMessageChannel().sendFile(fileFromURL).queue();
         }
     }
 
-    private void removeImage(String[] args, MessageEventDataWrapper messageContext) {
+    private void removeImage(String[] args, EventWrapper wrapper) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, wrapper);
             return;
         }
-        if (guessGameData.removeImage(args[1], messageContext)) {
-            MessageSender.sendMessage(M_REMOVED_IMAGE.tag, messageContext.getTextChannel());
+        if (guessGameData.removeImage(args[1], wrapper)) {
+            MessageSender.sendMessage(M_REMOVED_IMAGE.tag, wrapper.getMessageChannel());
         }
     }
 
-    private void addImage(String[] args, MessageEventDataWrapper messageContext) {
+    private void addImage(String[] args, EventWrapper wrapper) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, wrapper);
             return;
         }
         BooleanState booleanState = ArgumentParser.getBoolean(args[1], "nsfw", "sfw");
         if (booleanState == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, wrapper);
             return;
         }
-        register.startConfiguration(messageContext,
+        register.startConfiguration(wrapper,
                 booleanState.stateAsBoolean);
-        MessageSender.sendMessage(M_STARTED_REGISTRATION.tag, messageContext.getTextChannel());
+        MessageSender.sendMessage(M_STARTED_REGISTRATION.tag, wrapper.getMessageChannel());
     }
 
     @Override

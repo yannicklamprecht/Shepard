@@ -2,7 +2,7 @@ package de.eldoria.shepard.commandmodules.quote.data;
 
 import de.eldoria.shepard.commandmodules.quote.types.QuoteElement;
 import de.eldoria.shepard.database.QueryObject;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 
 import javax.sql.DataSource;
@@ -33,7 +33,7 @@ public final class QuoteData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean addQuote(Guild guild, String quote, MessageEventDataWrapper messageContext) {
+    public boolean addQuote(Guild guild, String quote, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.add_quote(?,?)")) {
             statement.setString(1, guild.getId());
@@ -55,7 +55,7 @@ public final class QuoteData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean alterQuote(Guild guild, int quoteId, String quote, MessageEventDataWrapper messageContext) {
+    public boolean alterQuote(Guild guild, int quoteId, String quote, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.alter_quote(?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -77,7 +77,7 @@ public final class QuoteData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeQuote(Guild guild, int quoteId, MessageEventDataWrapper messageContext) {
+    public boolean removeQuote(Guild guild, int quoteId, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_quote(?,?)")) {
             statement.setString(1, guild.getId());
@@ -97,7 +97,7 @@ public final class QuoteData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public List<QuoteElement> getQuotes(Guild guild, MessageEventDataWrapper messageContext) {
+    public List<QuoteElement> getQuotes(Guild guild, EventWrapper messageContext) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_quotes(?)")) {
@@ -121,7 +121,7 @@ public final class QuoteData extends QueryObject {
      * @return List of Quote objects
      */
     public List<QuoteElement> getQuotesByKeyword(Guild guild, String keyword,
-                                                 MessageEventDataWrapper messageContext) {
+                                                 EventWrapper messageContext) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_quotes_by_keyword(?,?)")) {
@@ -144,7 +144,7 @@ public final class QuoteData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public int getQuotesCount(Guild guild, MessageEventDataWrapper messageContext) {
+    public int getQuotesCount(Guild guild, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.get_quote_count(?)")) {
             statement.setString(1, guild.getId());
@@ -166,7 +166,7 @@ public final class QuoteData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return List of Quote objects
      */
-    public int getQuotesCountByKeyword(Guild guild, String keyword, MessageEventDataWrapper messageContext) {
+    public int getQuotesCountByKeyword(Guild guild, String keyword, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.get_quote_count_by_keyword(?,?)")) {
             statement.setString(1, guild.getId());

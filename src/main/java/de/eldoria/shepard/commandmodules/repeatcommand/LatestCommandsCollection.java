@@ -1,6 +1,7 @@
 package de.eldoria.shepard.commandmodules.repeatcommand;
 
 import de.eldoria.shepard.commandmodules.Command;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 
@@ -22,13 +23,18 @@ public final class LatestCommandsCollection {
     /**
      * Get the latest command of a user on a guild.
      *
-     * @param guild guild for lookup
-     * @param user  user for lookup
+     * @param wrapper  wrapper for lookup
      * @return Saved Command or null if no command was found.
      */
-    public synchronized SavedCommand getLatestCommand(Guild guild, User user) {
-        if (latestCommands.containsKey(guild.getIdLong())) {
-            return latestCommands.get(guild.getIdLong()).get(user.getIdLong());
+    public synchronized SavedCommand getLatestCommand(EventWrapper wrapper) {
+        if (wrapper.isGuildEvent()) {
+            if (latestCommands.containsKey(wrapper.getGuild().get().getIdLong())) {
+                return latestCommands.get(wrapper.getGuild().get().getIdLong()).get(wrapper.getAuthor().getIdLong());
+            }
+        } else {
+            if (latestCommands.containsKey(0L)) {
+                return latestCommands.get(0L).get(wrapper.getAuthor().getIdLong());
+            }
         }
         return null;
     }
@@ -36,16 +42,20 @@ public final class LatestCommandsCollection {
     /**
      * Save the latest command.
      *
-     * @param guild   guild for saving
-     * @param user    user for saving
+     * @param wrapper wrapper for cooldown renewal
      * @param command command which should be saved
      * @param label   label of command
      * @param args    command arguments
      */
-    public synchronized void saveLatestCommand(Guild guild, User user, Command command, String label, String[] args) {
+    public synchronized void saveLatestCommand(EventWrapper wrapper, Command command, String label, String[] args) {
         if (command.getClass().getSimpleName().equals(RepeatCommand.class.getSimpleName())) return;
-        latestCommands.putIfAbsent(guild.getIdLong(), new HashMap<>());
-        latestCommands.get(guild.getIdLong()).put(user.getIdLong(), new SavedCommand(command, label, args));
+        long guildId = 0L;
+        if (wrapper.isGuildEvent()) {
+            guildId = wrapper.getGuild().get().getIdLong();
+        }
+        latestCommands.putIfAbsent(guildId, new HashMap<>());
+        latestCommands.get(guildId).put(wrapper.getAuthor().getIdLong(), new SavedCommand(command, label, args));
+
     }
 
     public static final class SavedCommand {

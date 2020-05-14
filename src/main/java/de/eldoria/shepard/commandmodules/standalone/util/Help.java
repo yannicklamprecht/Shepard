@@ -21,7 +21,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqExecutionValidator;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.util.Colors;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import javax.sql.DataSource;
@@ -68,68 +68,67 @@ public class Help extends Command implements Executable, ReqCommands, ReqExecuti
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         //Command List
         if (args.length == 0) {
-            listCommands(messageContext);
+            listCommands(wrapper);
             return;
         }
 
         Optional<Command> command = commands.getCommand(args[0]);
-        if (command.isEmpty() || !validator.canAccess(command.get(), messageContext)) {
-            MessageSender.sendSimpleError(ErrorType.COMMAND_NOT_FOUND, messageContext.getTextChannel());
+        if (command.isEmpty() || !validator.canAccess(command.get(), wrapper)) {
+            MessageSender.sendSimpleError(ErrorType.COMMAND_NOT_FOUND, wrapper);
             return;
         }
 
-        String prefix = prefixData.getPrefix(messageContext.getGuild(), messageContext);
+        String prefix = prefixData.getPrefix(wrapper.getGuild().get());
         //Command Help
         if (args.length == 1) {
-            commandHelp(messageContext, command.get(), prefix);
+            commandHelp(wrapper, command.get(), prefix);
             return;
         }
 
-        MessageSender.sendMessage(localizeAllAndReplace(HelpLocale.M_USAGE.tag, messageContext.getGuild(),
-                prefix), messageContext.getTextChannel());
+        MessageSender.sendMessage(localizeAllAndReplace(HelpLocale.M_USAGE.tag, wrapper,
+                prefix), wrapper.getMessageChannel());
     }
 
     /* Sends help for a specific command with description, alias and usage.*/
-    private void commandHelp(MessageEventDataWrapper messageContext, Command command, String prefix) {
-        if (validator.canAccess(command, messageContext)
-                && validator.canUse(command, messageContext.getMember())) {
-            MessageEmbed embed = CommandUtil.getCommandHelpEmbed(command, messageContext.getGuild(), prefix);
-            messageContext.getTextChannel().sendMessage(embed).queue();
+    private void commandHelp(EventWrapper wrapper, Command command, String prefix) {
+        if (validator.canAccess(command, wrapper)
+                && validator.canUse(command, wrapper)) {
+            MessageEmbed embed = CommandUtil.getCommandHelpEmbed(command, wrapper, prefix);
+            wrapper.getMessageChannel().sendMessage(embed).queue();
         } else {
             MessageSender.sendMessage(localizeAllAndReplace(M_INSUFFICIENT_PERMISSION.tag,
-                    messageContext.getGuild(), "**" + command.getCommandName() + "**"),
-                    messageContext.getTextChannel());
+                    wrapper, "**" + command.getCommandName() + "**"),
+                    wrapper.getMessageChannel());
         }
     }
 
     /* Sends a list of all commands with description */
-    private void listCommands(MessageEventDataWrapper messageContext) {
+    private void listCommands(EventWrapper wrapper) {
         Map<CommandCategory, List<Command>> commands = new HashMap<>();
 
         List<LocalizedField> fields = new ArrayList<>();
 
         for (Command command : this.commands.getCommands()) {
-            if (!validator.displayInHelp(command, messageContext.getMember(), messageContext.getGuild(),
-                    messageContext.getTextChannel())) {
+            if (!validator.displayInHelp(command, wrapper)) {
                 continue;
             }
             commands.putIfAbsent(command.getCategory(), new ArrayList<>());
             commands.get(command.getCategory()).add(command);
         }
 
-        fields.add(getCommandField(commands, CommandCategory.BOT_CONFIG, messageContext));
-        fields.add(getCommandField(commands, CommandCategory.ADMIN, messageContext));
-        fields.add(getCommandField(commands, CommandCategory.MODERATION, messageContext));
-        fields.add(getCommandField(commands, CommandCategory.EXCLUSIVE, messageContext));
-        fields.add(getCommandField(commands, CommandCategory.FUN, messageContext));
-        fields.add(getCommandField(commands, CommandCategory.UTIL, messageContext));
+        fields.add(getCommandField(commands, CommandCategory.BOT_CONFIG, wrapper));
+        fields.add(getCommandField(commands, CommandCategory.ADMIN, wrapper));
+        fields.add(getCommandField(commands, CommandCategory.MODERATION, wrapper));
+        fields.add(getCommandField(commands, CommandCategory.EXCLUSIVE, wrapper));
+        fields.add(getCommandField(commands, CommandCategory.FUN, wrapper));
+        fields.add(getCommandField(commands, CommandCategory.UTIL, wrapper));
         fields.add(new LocalizedField("", localizeAllAndReplace(HelpLocale.M_LIST_COMMANDS.tag,
-                messageContext.getGuild(),
-                "`" + prefixData.getPrefix(messageContext.getGuild(), messageContext) + "<command> help`"),
-                false, messageContext));
+                wrapper,
+                "`" + prefixData.getPrefix(wrapper) + "<command> help`"),
+                false, wrapper));
         fields.add(new LocalizedField(HelpLocale.M_MAYBE_USEFUL.tag,
                 "**[" + HelpLocale.M_INVITE_ME + "]"
                         + "(https://discordapp.com/oauth2/authorize?client_id=512413049894731780&scope=bot&permissions=1544027254), "
@@ -137,11 +136,11 @@ public class Help extends Command implements Executable, ReqCommands, ReqExecuti
                         + "[" + HelpLocale.M_FULL_COMMAND_LIST + "](https://www.shepardbot.de/commands), "
                         + "[" + HelpLocale.M_PERMISSION_HELP + "]"
                         + "(https://gitlab.com/shepardbot/ShepardBot/-/wikis/Commands/Permission-and-Command-Settings)**",
-                false, messageContext));
+                false, wrapper));
 
         fields.removeIf(Objects::isNull);
 
-        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
                 .setTitle("__**" + HelpLocale.M_COMMANDS + "**__");
 
         for (var field : fields) {
@@ -152,7 +151,7 @@ public class Help extends Command implements Executable, ReqCommands, ReqExecuti
 
         builder.setColor(Colors.Pastel.GREEN);
 
-        messageContext.getTextChannel().sendMessage(builder.build()).queue();
+        wrapper.getMessageChannel().sendMessage(builder.build()).queue();
     }
 
     private String getCommandNames(List<Command> commands) {
@@ -160,11 +159,11 @@ public class Help extends Command implements Executable, ReqCommands, ReqExecuti
     }
 
     private LocalizedField getCommandField(Map<CommandCategory, List<Command>> commands, CommandCategory category,
-                                           MessageEventDataWrapper messageContext) {
+                                           EventWrapper wrapper) {
         List<Command> list = commands.getOrDefault(category, Collections.emptyList());
         if (!list.isEmpty()) {
             return new LocalizedField(category.categoryName,
-                    getCommandNames(list), false, messageContext);
+                    getCommandNames(list), false, wrapper);
         }
         return null;
     }

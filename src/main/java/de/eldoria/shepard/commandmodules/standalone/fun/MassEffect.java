@@ -10,7 +10,7 @@ import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.MassEffectLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -58,14 +58,14 @@ public class MassEffect extends Command implements Executable {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         List<String> filteredQuotes;
         if (args.length != 0) {
             filteredQuotes = quotes.stream()
                     .filter(q -> q.toLowerCase().contains(ArgumentParser.getMessage(args, 0).toLowerCase()))
                     .collect(Collectors.toList());
             if (filteredQuotes.size() == 0) {
-                MessageSender.sendSimpleError(ErrorType.NO_QUOTE_FOUND, messageContext.getTextChannel());
+                MessageSender.sendSimpleError(ErrorType.NO_QUOTE_FOUND, wrapper);
                 return;
             }
         } else {
@@ -75,7 +75,7 @@ public class MassEffect extends Command implements Executable {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("Mass Effect Quote")
                 .setDescription(filteredQuotes.get(new Random().nextInt(filteredQuotes.size())));
-        messageContext.getChannel().sendMessage(builder.build()).queue();
+        wrapper.getMessageChannel().sendMessage(builder.build()).queue();
     }
 
     @Data

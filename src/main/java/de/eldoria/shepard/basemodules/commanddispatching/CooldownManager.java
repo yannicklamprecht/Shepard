@@ -3,6 +3,7 @@ package de.eldoria.shepard.basemodules.commanddispatching;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.commandsettings.data.CommandData;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 
@@ -36,15 +37,20 @@ public final class CooldownManager implements Runnable, ReqDataSource {
 
     /**
      * Check if the command is not in cooldown by the user and on the guild.
-     * Triggers a new cooldown if the command can be executed.
      *
      * @param command command to check the cooldown
-     * @param user    user to check
-     * @param guild   guild to check
+     * @param wrapper wrapper for cooldown check
      * @return the cooldown in seconds or 0 if there is no cooldown.
      */
-    public int getCurrentCooldown(Command command, Guild guild, User user) {
-        long cooldown = Math.max(getGuildCooldown(command, guild), getUserCooldown(command, user));
+    public int getCurrentCooldown(Command command, EventWrapper wrapper) {
+        long cooldown;
+        if (wrapper.isGuildEvent()) {
+            cooldown = Math.max(getGuildCooldown(command, wrapper.getGuild().get()),
+                    getUserCooldown(command, wrapper.getAuthor()));
+        } else {
+            cooldown = getUserCooldown(command, wrapper.getAuthor());
+        }
+
         if (cooldown == 0) {
             return 0;
         }
@@ -55,19 +61,20 @@ public final class CooldownManager implements Runnable, ReqDataSource {
      * Restarts the cooldown for the command.
      *
      * @param command command for cooldown
-     * @param guild   guild for cooldown
-     * @param user    user for cooldown
+     * @param wrapper wrapper for cooldown check
      */
-    public void renewCooldown(Command command, Guild guild, User user) {
+    public void renewCooldown(Command command, EventWrapper wrapper) {
 
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime userCooldownTime = now.plusSeconds(commandData.getUserCooldown(command));
         userCooldown.putIfAbsent(command, new HashMap<>());
-        userCooldown.get(command).put(user.getIdLong(), userCooldownTime);
+        userCooldown.get(command).put(wrapper.getAuthor().getIdLong(), userCooldownTime);
 
-        LocalDateTime guildCooldownTime = now.plusSeconds(commandData.getGuildCooldown(command));
-        guildCooldown.putIfAbsent(command, new HashMap<>());
-        guildCooldown.get(command).put(guild.getIdLong(), guildCooldownTime);
+        if (wrapper.isGuildEvent()) {
+            LocalDateTime guildCooldownTime = now.plusSeconds(commandData.getGuildCooldown(command));
+            guildCooldown.putIfAbsent(command, new HashMap<>());
+            guildCooldown.get(command).put(wrapper.getGuild().get().getIdLong(), guildCooldownTime);
+        }
 
     }
 

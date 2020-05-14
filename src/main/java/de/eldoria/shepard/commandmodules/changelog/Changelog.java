@@ -5,13 +5,14 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -44,7 +45,7 @@ import static java.lang.System.lineSeparator;
  * Similar to AuditLog, but can also log bot actions in the future.
  * The logging events are present in {@link ChangelogListener}.
  */
-public class Changelog extends Command implements Executable, ReqParser, ReqDataSource {
+public class Changelog extends Command implements GuildChannelOnly, Executable, ReqParser, ReqDataSource {
     private ArgumentParser parser;
     private ChangelogData changelogData;
 
@@ -75,90 +76,87 @@ public class Changelog extends Command implements Executable, ReqParser, ReqData
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
         if (isSubCommand(cmd, 0) || isSubCommand(cmd, 1)) {
-            modifyRoles(args, messageContext, cmd);
+            modifyRoles(args, wrapper, cmd);
             return;
         }
 
         if (isSubCommand(cmd, 2)) {
-            activate(args, messageContext);
+            activate(args, wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 3)) {
-            deactivate(messageContext);
+            deactivate(wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 4)) {
-            showRoles(messageContext);
+            showRoles(wrapper);
             return;
         }
-
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
-    private void showRoles(MessageEventDataWrapper messageContext) {
-        List<String> collect = parser.getRoles(messageContext.getGuild(),
-                changelogData.getRoles(messageContext.getGuild(), messageContext))
+    private void showRoles(EventWrapper messageContext) {
+        List<String> collect = parser.getRoles(messageContext.getGuild().get(),
+                changelogData.getRoles(messageContext.getGuild().get(), messageContext))
                 .stream().map(IMentionable::getAsMention).collect(Collectors.toList());
 
         MessageSender.sendSimpleTextBox(M_LOGGED_ROLES.tag,
-                String.join(lineSeparator(), collect), messageContext.getTextChannel());
+                String.join(lineSeparator(), collect), messageContext);
     }
 
-    private void deactivate(MessageEventDataWrapper messageContext) {
-        if (changelogData.removeChannel(messageContext.getGuild(), messageContext)) {
-            MessageSender.sendMessage(M_DEACTIVATED.tag,
-                    messageContext.getTextChannel());
+    private void deactivate(EventWrapper messageContext) {
+        if (changelogData.removeChannel(messageContext.getGuild().get(), messageContext)) {
+            MessageSender.sendMessage(M_DEACTIVATED.tag, messageContext.getMessageChannel());
         }
     }
 
-    private void activate(String[] args, MessageEventDataWrapper messageContext) {
+    private void activate(String[] args, EventWrapper messageContext) {
         Optional<TextChannel> textChannel;
         if (args.length == 1) {
-            textChannel = Optional.of(messageContext.getTextChannel());
+            textChannel = messageContext.getTextChannel();
         } else {
-            textChannel = ArgumentParser.getTextChannel(messageContext.getGuild(), args[1]);
+            textChannel = ArgumentParser.getTextChannel(messageContext.getGuild().get(), args[1]);
         }
 
 
         if (textChannel.isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, messageContext);
             return;
         }
 
-        if (changelogData.setChannel(messageContext.getGuild(), textChannel.get(), messageContext)) {
+        if (changelogData.setChannel(messageContext.getGuild().get(), textChannel.get(), messageContext)) {
             MessageSender.sendMessage(M_ACTIVATED + " " + textChannel.get().getAsMention(),
-                    messageContext.getTextChannel());
+                    messageContext.getMessageChannel());
         }
     }
 
-    private void modifyRoles(String[] args, MessageEventDataWrapper messageContext, String cmd) {
+    private void modifyRoles(String[] args, EventWrapper messageContext, String cmd) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
             return;
         }
 
-        Optional<Role> role = parser.getRole(messageContext.getGuild(), args[1]);
+        Optional<Role> role = parser.getRole(messageContext.getGuild().get(), args[1]);
 
         if (role.isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ROLE, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ROLE, messageContext);
             return;
         }
 
         if (isSubCommand(cmd, 0)) {
-            if (changelogData.addRole(messageContext.getGuild(), role.get(), messageContext)) {
+            if (changelogData.addRole(messageContext.getGuild().get(), role.get(), messageContext)) {
                 MessageSender.sendMessage(localizeAllAndReplace(M_ADDED_ROLE.tag,
-                        messageContext.getGuild(),
-                        "**" + role.get().getName() + "**"), messageContext.getTextChannel());
+                        messageContext,
+                        "**" + role.get().getName() + "**"), messageContext.getMessageChannel());
             }
         } else {
-            if (changelogData.removeRole(messageContext.getGuild(), role.get(), messageContext)) {
-                MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED_ROLE.tag, messageContext.getGuild(),
-                        "**" + role.get().getName() + "**"), messageContext.getTextChannel());
+            if (changelogData.removeRole(messageContext.getGuild().get(), role.get(), messageContext)) {
+                MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED_ROLE.tag, messageContext,
+                        "**" + role.get().getName() + "**"), messageContext.getMessageChannel());
             }
         }
     }

@@ -2,7 +2,7 @@ package de.eldoria.shepard.commandmodules.guessgame.util;
 
 import de.eldoria.shepard.commandmodules.guessgame.data.GuessGameData;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -22,42 +22,42 @@ public final class ImageRegister implements ReqDataSource {
     /**
      * Starts a new configruation for a user.
      *
-     * @param messageContext message context
+     * @param wrapper message context
      * @param nsfw           true if nsfw
      */
-    public void startConfiguration(MessageEventDataWrapper messageContext, boolean nsfw) {
-        configurations.put(new UserChannelKey(messageContext), new ImageConfiguration(nsfw));
+    public void startConfiguration(EventWrapper wrapper, boolean nsfw) {
+        configurations.put(new UserChannelKey(wrapper), new ImageConfiguration(nsfw));
     }
 
     /**
      * Add a new image.
      *
-     * @param messageContext message context
+     * @param wrapper message context
      * @param url            url to add
      */
-    public void addImage(MessageEventDataWrapper messageContext, String url) {
-        switch (getConfigurationState(messageContext)) {
+    public void addImage(EventWrapper wrapper, String url) {
+        switch (getConfigurationState(wrapper)) {
             case NONE:
             case CONFIGURED:
                 break;
             case CROPPED:
             case FULL:
-                configurations.get(new UserChannelKey(messageContext)).addImage(url);
+                configurations.get(new UserChannelKey(wrapper)).addImage(url);
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + getConfigurationState(messageContext));
+                throw new IllegalStateException("Unexpected value: " + getConfigurationState(wrapper));
         }
     }
 
     /**
      * Register configuration if registration is complete.
      *
-     * @param messageContext message context
+     * @param wrapper message context
      * @return true if the image was registered
      */
-    public boolean registerConfiguration(MessageEventDataWrapper messageContext) {
-        if (getConfigurationState(messageContext) == ConfigurationState.CONFIGURED) {
-            UserChannelKey channelKey = new UserChannelKey(messageContext);
+    public boolean registerConfiguration(EventWrapper wrapper) {
+        if (getConfigurationState(wrapper) == ConfigurationState.CONFIGURED) {
+            UserChannelKey channelKey = new UserChannelKey(wrapper);
             boolean success = configurations.get(channelKey).registerAtDatabase(guessGameData);
             configurations.remove(channelKey);
             return success;
@@ -71,18 +71,18 @@ public final class ImageRegister implements ReqDataSource {
      *
      * @param messageContext message context
      */
-    public void cancelConfiguration(MessageEventDataWrapper messageContext) {
+    public void cancelConfiguration(EventWrapper messageContext) {
         configurations.remove(new UserChannelKey(messageContext));
     }
 
     /**
      * Get the current configuration state for a user in a channel.
      *
-     * @param messageContext message context
+     * @param wrapper message context
      * @return configuration state
      */
-    public ConfigurationState getConfigurationState(MessageEventDataWrapper messageContext) {
-        UserChannelKey key = new UserChannelKey(messageContext);
+    public ConfigurationState getConfigurationState(EventWrapper wrapper) {
+        UserChannelKey key = new UserChannelKey(wrapper);
         if (configurations.containsKey(key)) {
             return configurations.get(key).getConfigurationState();
         }
@@ -92,11 +92,11 @@ public final class ImageRegister implements ReqDataSource {
     /**
      * Get the current image configuration.
      *
-     * @param messageContext message context
+     * @param wrapper message context
      * @return configuration or null
      */
-    public ImageConfiguration getConfiguration(MessageEventDataWrapper messageContext) {
-        return configurations.get(new UserChannelKey(messageContext));
+    public ImageConfiguration getConfiguration(EventWrapper wrapper) {
+        return configurations.get(new UserChannelKey(wrapper));
     }
 
     @Override
@@ -108,9 +108,9 @@ public final class ImageRegister implements ReqDataSource {
         final long userId;
         final long channelId;
 
-        UserChannelKey(MessageEventDataWrapper messageContext) {
-            this.userId = messageContext.getAuthor().getIdLong();
-            this.channelId = messageContext.getChannel().getIdLong();
+        UserChannelKey(EventWrapper wrapper) {
+            this.userId = wrapper.getAuthor().getIdLong();
+            this.channelId = wrapper.getMessageChannel().getIdLong();
         }
 
         @Override

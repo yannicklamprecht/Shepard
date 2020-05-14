@@ -17,7 +17,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.modulebuilder.requirements.ReqLatestCommands;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import okhttp3.OkHttpClient;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_MESSAGE;
@@ -43,29 +43,35 @@ public class Feedback extends Command implements ExecutableAsync, ReqLatestComma
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         WebhookEmbedBuilder builder = new WebhookEmbedBuilder()
                 .setAuthor(new WebhookEmbed.EmbedAuthor(
-                        messageContext.getAuthor().getAsTag() + " (" + messageContext.getAuthor().getId() + ")",
-                        messageContext.getAuthor().getEffectiveAvatarUrl(), ""))
-                .setDescription(ArgumentParser.getMessage(args, 0))
-                .setTitle(new WebhookEmbed.EmbedTitle("New "
-                        + (label.equalsIgnoreCase("bugreport") ? "Bugreport" : "Feedback") + " by "
-                        + messageContext.getAuthor().getAsTag()
-                        + " from Guild "
-                        + messageContext.getGuild().getName(), ""));
+                        wrapper.getAuthor().getAsTag() + " (" + wrapper.getAuthor().getId() + ")",
+                        wrapper.getAuthor().getEffectiveAvatarUrl(), ""))
+                .setDescription(ArgumentParser.getMessage(args, 0));
+        if (wrapper.isGuildEvent()) {
+            builder.setTitle(new WebhookEmbed.EmbedTitle("New "
+                    + (label.equalsIgnoreCase("bugreport") ? "Bugreport" : "Feedback") + " by "
+                    + wrapper.getAuthor().getAsTag()
+                    + " from Guild "
+                    + wrapper.getGuild().get().getName(), ""));
+        } else {
+            builder.setTitle(new WebhookEmbed.EmbedTitle("New "
+                    + (label.equalsIgnoreCase("bugreport") ? "Bugreport" : "Feedback") + " by "
+                    + wrapper.getAuthor().getAsTag(), ""));
+        }
+
         if (label.equalsIgnoreCase("bugreport")) {
-            LatestCommandsCollection.SavedCommand latestCommand =
-                    latestCommands.getLatestCommand(messageContext.getGuild(), messageContext.getAuthor());
+            LatestCommandsCollection.SavedCommand latestCommand = latestCommands.getLatestCommand(wrapper);
             if (latestCommand != null) {
                 builder.addField(new WebhookEmbed.EmbedField(false, "Last Command",
                         latestCommand.getLabel() + " " + String.join(" ", latestCommand.getArgs())));
             }
         }
+
         webhookClient.send(builder.build());
 
-        MessageSender.sendMessage(FeedbackLocale.M_THANK_YOU.tag,
-                messageContext.getTextChannel());
+        MessageSender.sendMessage(FeedbackLocale.M_THANK_YOU.tag, wrapper.getMessageChannel());
     }
 
     @Override

@@ -4,6 +4,7 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -11,7 +12,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import javax.sql.DataSource;
 
@@ -25,7 +26,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.
 /**
  * Command to change the bot prefix on a guild.
  */
-public class Prefix extends Command implements Executable, ReqConfig, ReqDataSource, ReqInit {
+public class Prefix extends Command implements GuildChannelOnly, Executable, ReqConfig, ReqDataSource, ReqInit {
 
     private Config config;
     private DataSource source;
@@ -48,40 +49,38 @@ public class Prefix extends Command implements Executable, ReqConfig, ReqDataSou
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
         if (isSubCommand(cmd, 0)) {
-            set(args, messageContext);
+            set(args, wrapper);
             return;
         }
         if (isSubCommand(cmd, 1)) {
-            reset(messageContext);
+            reset(wrapper);
             return;
         }
-
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
-    private void reset(MessageEventDataWrapper messageContext) {
-        if (prefixData.setPrefix(messageContext.getGuild(), config.getGeneralSettings().getPrefix(), messageContext)) {
+    private void reset(EventWrapper messageContext) {
+        if (prefixData.setPrefix(messageContext.getGuild().get(), config.getGeneralSettings().getPrefix(), messageContext)) {
             MessageSender.sendMessage(M_CHANGED + " '" + config.getGeneralSettings().getPrefix() + "'",
-                    messageContext.getTextChannel());
+                    messageContext.getMessageChannel());
         }
     }
 
-    private void set(String[] args, MessageEventDataWrapper messageContext) {
+    private void set(String[] args, EventWrapper messageContext) {
         if (args.length == 1) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext);
             return;
         }
 
         if (args[1].length() > 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_PREFIX_LENGTH, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_PREFIX_LENGTH, messageContext);
             return;
         }
 
-        if (prefixData.setPrefix(messageContext.getGuild(), args[1].trim(), messageContext)) {
-            MessageSender.sendMessage(M_CHANGED + " '" + args[1].trim() + "'", messageContext.getTextChannel());
+        if (prefixData.setPrefix(messageContext.getGuild().get(), args[1].trim(), messageContext)) {
+            MessageSender.sendMessage(M_CHANGED + " '" + args[1].trim() + "'", messageContext.getMessageChannel());
         }
     }
 

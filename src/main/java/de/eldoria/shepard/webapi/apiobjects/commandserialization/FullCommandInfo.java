@@ -2,6 +2,7 @@ package de.eldoria.shepard.webapi.apiobjects.commandserialization;
 
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.util.TextLocalizer;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.Data;
 
 /**
@@ -34,9 +35,9 @@ public class FullCommandInfo {
         this.commandIdentifier = commandIdentifier;
         this.commandName = commandName;
         aliases = commandAliases.length == 0 ? null : commandAliases;
-        this.description = TextLocalizer.localizeAllAndReplace(commandDesc, null);
+        this.description = TextLocalizer.localizeAllAndReplace(commandDesc, EventWrapper.fakeEmpty());
         this.standaloneDescription = standaloneDescription != null
-                ? TextLocalizer.localizeAllAndReplace(standaloneDescription, null) : null;
+                ? TextLocalizer.localizeAllAndReplace(standaloneDescription, EventWrapper.fakeEmpty()) : null;
         this.category = category;
         this.subCommands = subCommands;
     }

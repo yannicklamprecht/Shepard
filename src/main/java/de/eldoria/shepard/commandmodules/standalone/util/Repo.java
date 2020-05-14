@@ -7,7 +7,7 @@ import de.eldoria.shepard.localization.enums.commands.util.RepoLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.util.Colors;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 public class Repo extends Command implements Executable {
     public Repo() {
@@ -18,12 +18,12 @@ public class Repo extends Command implements Executable {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
+    public void execute(String label, String[] args, EventWrapper wrapper) {
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
                 .setTitle(RepoLocale.M_TITLE.tag)
                 .setDescription("[" + RepoLocale.M_TAKE_A_LOOK + "](https://gitlab.com/shepardbot/ShepardBot)")
                 .setColor(Colors.Pastel.ORANGE)
                 .setThumbnail(ShepardReactions.WINK.thumbnail);
-        messageContext.getTextChannel().sendMessage(builder.build()).queue();
+        wrapper.getMessageChannel().sendMessage(builder.build()).queue();
     }
 }

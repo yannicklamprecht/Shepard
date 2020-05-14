@@ -5,11 +5,12 @@ import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.commandsettings.types.CommandSettings;
 import de.eldoria.shepard.commandmodules.commandsettings.types.ListType;
 import de.eldoria.shepard.database.QueryObject;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.ISnowflake;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -47,7 +48,7 @@ public final class CommandData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean addUser(Command context, User user, MessageEventDataWrapper messageContext) {
+    public boolean addUser(Command context, User user, EventWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -71,7 +72,7 @@ public final class CommandData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean removeUser(Command context, User user,
-                              MessageEventDataWrapper messageContext) {
+                              EventWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -95,7 +96,7 @@ public final class CommandData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean addGuild(Command context, Guild guild,
-                            MessageEventDataWrapper messageContext) {
+                            EventWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -119,7 +120,7 @@ public final class CommandData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean removeGuild(Command command, Guild guild,
-                               MessageEventDataWrapper messageContext) {
+                               EventWrapper messageContext) {
         String commandIdentifier = command.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -146,7 +147,7 @@ public final class CommandData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean addUserPermission(String command, Guild guild,
-                                     User user, MessageEventDataWrapper messageContext) {
+                                     User user, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.add_command_user_permission(?,?,?)")) {
             statement.setString(1, command);
@@ -172,7 +173,7 @@ public final class CommandData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean removeUserPermission(String command, Guild guild,
-                                        User user, MessageEventDataWrapper messageContext) {
+                                        User user, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.remove_command_user_permission(?,?,?)")) {
             statement.setString(1, command);
@@ -198,7 +199,7 @@ public final class CommandData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean addRolePermission(String command, Guild guild,
-                                     Role role, MessageEventDataWrapper messageContext) {
+                                     Role role, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.add_command_role_permission(?,?,?)")) {
             statement.setString(1, command);
@@ -222,7 +223,7 @@ public final class CommandData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean removeRolePermission(String command, Guild guild,
-                                        Role role, MessageEventDataWrapper messageContext) {
+                                        Role role, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.remove_command_role_permission(?,?,?)")) {
             statement.setString(1, command);
@@ -245,7 +246,7 @@ public final class CommandData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean setAdmin(Command context, boolean state,
-                            MessageEventDataWrapper messageContext) {
+                            EventWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -269,7 +270,7 @@ public final class CommandData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean setNsfw(Command context, boolean state,
-                           MessageEventDataWrapper messageContext) {
+                           EventWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -293,7 +294,7 @@ public final class CommandData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean setUserCheckActive(Command context, boolean state,
-                                      MessageEventDataWrapper messageContext) {
+                                      EventWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -317,7 +318,7 @@ public final class CommandData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean setGuildCheckActive(Command context, boolean state,
-                                       MessageEventDataWrapper messageContext) {
+                                       EventWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -341,7 +342,7 @@ public final class CommandData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean setUserListType(Command context, ListType listType,
-                                   MessageEventDataWrapper messageContext) {
+                                   EventWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -365,7 +366,7 @@ public final class CommandData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean setGuildListType(Command context, ListType listType,
-                                    MessageEventDataWrapper messageContext) {
+                                    EventWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -389,7 +390,7 @@ public final class CommandData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean setGuildCooldown(Command context, int seconds,
-                                    MessageEventDataWrapper messageContext) {
+                                    EventWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -413,7 +414,7 @@ public final class CommandData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean setUserCooldown(Command context, int seconds,
-                                   MessageEventDataWrapper messageContext) {
+                                   EventWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         try (var conn = source.getConnection(); PreparedStatement statement = conn
@@ -441,7 +442,7 @@ public final class CommandData extends QueryObject {
      * @return true if the database access was successful
      */
     public boolean setPermissionOverride(String command, boolean state,
-                                         Guild guild, MessageEventDataWrapper messageContext) {
+                                         Guild guild, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.set_permission_override(?,?,?)")) {
             statement.setString(1, command);
@@ -462,7 +463,7 @@ public final class CommandData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Context data object.
      */
-    public CommandSettings getCommandData(Command context, MessageEventDataWrapper messageContext) {
+    public CommandSettings getCommandData(Command context, EventWrapper messageContext) {
         String commandIdentifier = context.getCommandIdentifier();
 
         CommandSettings data = new CommandSettings();
@@ -662,10 +663,12 @@ public final class CommandData extends QueryObject {
         throw new RuntimeException(command + " has no complete setup");
     }
 
+
+
     /**
      * Checks if a user or guild can access a command.
      * The result is determined by bot settings and is not influences by any guild specific settings.
-     * See {@link #canUse(String, Member)} and {@link #canUseInChannel(String, Member, Guild, TextChannel)}
+     * See {@link #canUse(String, Member)} and {@link #canUseInChannel(String, Member, Guild, MessageChannel)}
      * for guild specific checks.
      *
      * @param command command to check for
@@ -673,11 +676,38 @@ public final class CommandData extends QueryObject {
      * @return true if a user can access a command on his guild.
      */
     public boolean canAccess(Command command, Member member) {
+        return canAccess(command, member.getUser(), member.getGuild());
+    }
+    /**
+     * Checks if a user can access a command.
+     * The result is determined by bot settings and is not influences by any guild specific settings.
+     * See {@link #canUse(String, Member)} and {@link #canUseInChannel(String, Member, Guild, MessageChannel)}
+     * for guild specific checks.
+     *
+     * @param command command to check for
+     * @param user  user to check
+     * @return true if a user can access a command on his guild.
+     */
+    public boolean canAccess(Command command, User user) {
+        return canAccess(command, user, null);
+    }
+
+    /**
+     * Checks if a user or guild can access a command.
+     * The result is determined by bot settings and is not influences by any guild specific settings.
+     * See {@link #canUse(String, Member)} and {@link #canUseInChannel(String, Member, Guild, MessageChannel)}
+     * for guild specific checks.
+     *
+     * @param command command to check for
+     * @param user  user to check
+     * @return true if a user can access a command on his guild.
+     */
+    private boolean canAccess(Command command, User user, Guild guild) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.can_access(?,?,?)")) {
             statement.setString(1, command.getCommandIdentifier());
-            statement.setLong(2, member.getGuild().getIdLong());
-            statement.setLong(3, member.getIdLong());
+            statement.setLong(2, guild == null ? 0L : guild.getIdLong());
+            statement.setLong(3, user.getIdLong());
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getBoolean(1);
@@ -700,7 +730,7 @@ public final class CommandData extends QueryObject {
      * @param channel channel to check
      * @return true if the command or subcommand can be used in the channel
      */
-    public boolean canUseInChannel(String command, Member member, Guild guild, TextChannel channel) {
+    public boolean canUseInChannel(String command, Member member, Guild guild, MessageChannel channel) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.can_use_in_channel(?,?,?,?,?)")) {
             statement.setString(1, command);
@@ -723,7 +753,7 @@ public final class CommandData extends QueryObject {
 
     /**
      * Checks if a command should be displayed in help.
-     * A command is displayed if the {@link #canUseInChannel(String, Member, Guild, TextChannel)} and
+     * A command is displayed if the {@link #canUseInChannel(String, Member, Guild, MessageChannel)} and
      * {@link #getState(Command, Guild)} return true.
      *
      * @param command command identifier. A command identifier can be the root
@@ -734,7 +764,7 @@ public final class CommandData extends QueryObject {
      * @param channel channel to check for
      * @return true if a command should be displayed.
      */
-    public boolean isDisplayedInHelp(String command, Member member, Guild guild, TextChannel channel) {
+    public boolean isDisplayedInHelp(String command, Member member, Guild guild, MessageChannel channel) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_settings.help_display_check(?,?,?,?,?,?)")) {
             statement.setString(1, command);
@@ -983,7 +1013,7 @@ public final class CommandData extends QueryObject {
      * If the command requires a permission all subcommand require a permission too.
      * If a command does not require a permission, a subcommand can require a permission.
      * Wether a command or subcommand require a permission is changed by
-     * the {@link #setPermissionOverride(String, boolean, Guild, MessageEventDataWrapper)} Method.
+     * the {@link #setPermissionOverride(String, boolean, Guild, EventWrapper)} Method.
      *
      * @param command command identifier. A command identifier can be the root
      *                command {@link Command#getCommandIdentifier()} or a string containing the command

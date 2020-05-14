@@ -13,7 +13,8 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqNormandy;
 import de.eldoria.shepard.modulebuilder.requirements.ReqPrivateMessages;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.util.Verifier;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.User;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USER;
@@ -44,15 +45,15 @@ public class PrivateAnswer extends Command implements Executable, ReqPrivateMess
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        if (messageContext.getChannel() != normandy.getPrivateAnswerChannel()) {
-            MessageSender.sendSimpleError(ErrorType.EXCLUSIVE_CHANNEL, messageContext.getTextChannel());
+    public void execute(String label, String[] args, EventWrapper wrapper) {
+        if (Verifier.equalSnowflake(wrapper.getMessageChannel(), normandy.getPrivateAnswerChannel())) {
+            MessageSender.sendSimpleError(ErrorType.EXCLUSIVE_CHANNEL, wrapper);
             return;
         }
 
         User user = privateMessages.getUser(args[0]);
 
-        PrivateMessageHelper.sendPrivateMessage(args, messageContext, user);
+        PrivateMessageHelper.sendPrivateMessage(args, wrapper, user);
     }
 
     @Override

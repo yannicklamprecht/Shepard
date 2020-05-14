@@ -13,7 +13,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.util.AddressType;
 import de.eldoria.shepard.util.Verifier;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import java.awt.Color;
 
@@ -45,17 +45,17 @@ public class McPing extends Command implements Executable {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         AddressType addressType = Verifier.getAddressType(args[0]);
         if (addressType == AddressType.NONE) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ADDRESS, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ADDRESS, wrapper);
             return;
         }
         PingMinecraftServer.MinecraftPing minecraftPing = PingMinecraftServer.pingServer(args[0]);
 
         if (minecraftPing != null && minecraftPing.isOnline()) {
 
-            LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext.getGuild())
+            LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
                     .setTitle(M_STATUS_OF + " " + minecraftPing.getHostname())
                     .addField("IP", minecraftPing.getIp() + "", true)
                     .addField("PORT", minecraftPing.getPort() + "", true)
@@ -67,14 +67,14 @@ public class McPing extends Command implements Executable {
                             + "", false)
                     .setColor(Color.green)
                     .setThumbnail(ShepardReactions.EXCITED.thumbnail);
-            messageContext.getChannel().sendMessage(builder.build()).queue();
+            wrapper.getMessageChannel().sendMessage(builder.build()).queue();
         } else {
-            LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext.getGuild())
+            LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
                     .setTitle(M_SERVER_DOWN.tag)
                     .setColor(Color.red)
                     .setThumbnail(ShepardReactions.SHULKY.thumbnail);
 
-            messageContext.getChannel().sendMessage(builder.build()).queue();
+            wrapper.getMessageChannel().sendMessage(builder.build()).queue();
         }
     }
 }

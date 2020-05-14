@@ -5,13 +5,14 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.quote.data.QuoteData;
 import de.eldoria.shepard.commandmodules.quote.types.QuoteElement;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import javax.sql.DataSource;
 import java.awt.Color;
@@ -40,7 +41,7 @@ import static java.lang.System.lineSeparator;
 /**
  * Command to add, remove, alter and list quotes.
  */
-public class ManageQuote extends Command implements Executable, ReqDataSource {
+public class ManageQuote extends Command implements GuildChannelOnly, Executable, ReqDataSource {
 
     private QuoteData quoteData;
 
@@ -70,34 +71,32 @@ public class ManageQuote extends Command implements Executable, ReqDataSource {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
         if (isSubCommand(cmd, 0)) {
-            create(args, messageContext);
+            create(args, wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 1)) {
-            alter(args, messageContext);
+            alter(args, wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 2)) {
-            remove(args, messageContext);
+            remove(args, wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 3)) {
-            list(args, messageContext);
+            list(args, wrapper);
             return;
         }
-
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
-    private void alter(String[] args, MessageEventDataWrapper messageContext) {
+    private void alter(String[] args, EventWrapper messageContext) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
         }
 
         int quoteId = verifyId(args[1], messageContext);
@@ -108,36 +107,35 @@ public class ManageQuote extends Command implements Executable, ReqDataSource {
 
         String quote = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
 
-        if (quoteData.alterQuote(messageContext.getGuild(), quoteId, quote, messageContext)) {
+        if (quoteData.alterQuote(messageContext.getGuild().get(), quoteId, quote, messageContext)) {
             MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_CHANGED_QUOTE.tag,
-                    messageContext.getGuild(), "**" + quoteId + "**"), quote, Color.blue,
-                    messageContext.getTextChannel());
+                    messageContext, "**" + quoteId + "**"), quote, Color.blue, messageContext);
         }
     }
 
-    private void list(String[] args, MessageEventDataWrapper messageContext) {
+    private void list(String[] args, EventWrapper messageContext) {
         List<QuoteElement> quotes;
         if (args.length > 1) {
-            quotes = quoteData.getQuotesByKeyword(messageContext.getGuild(),
+            quotes = quoteData.getQuotesByKeyword(messageContext.getGuild().get(),
                     String.join(" ", Arrays.copyOfRange(args, 1, args.length)), messageContext);
 
         } else {
-            quotes = quoteData.getQuotes(messageContext.getGuild(), messageContext);
+            quotes = quoteData.getQuotes(messageContext.getGuild().get(), messageContext);
         }
 
         if (quotes.size() == 0) {
-            MessageSender.sendMessage(M_NO_QUOTES.tag, messageContext.getTextChannel());
+            MessageSender.sendMessage(M_NO_QUOTES.tag, messageContext.getMessageChannel());
         }
 
         String message = quotes.stream()
                 .map(quote -> "**" + quote.getQuoteId() + "** -> " + quote.getQuote() + lineSeparator())
                 .collect(Collectors.joining());
-        MessageSender.sendMessage(message, messageContext.getTextChannel());
+        MessageSender.sendMessage(message, messageContext.getMessageChannel());
     }
 
-    private void remove(String[] args, MessageEventDataWrapper messageContext) {
+    private void remove(String[] args, EventWrapper messageContext) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
         }
 
         int quoteId = verifyId(args[1], messageContext);
@@ -146,22 +144,22 @@ public class ManageQuote extends Command implements Executable, ReqDataSource {
             return;
         }
 
-        if (quoteData.removeQuote(messageContext.getGuild(), quoteId, messageContext)) {
+        if (quoteData.removeQuote(messageContext.getGuild().get(), quoteId, messageContext)) {
             MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED_QUOTE.tag,
-                    messageContext.getGuild(), "**" + quoteId + "**"), messageContext.getTextChannel());
+                    messageContext, "**" + quoteId + "**"), messageContext.getMessageChannel());
         }
     }
 
-    private void create(String[] args, MessageEventDataWrapper messageContext) {
+    private void create(String[] args, EventWrapper messageContext) {
         if (args.length == 1) {
-            MessageSender.sendSimpleError(ErrorType.NO_QUOTE_FOUND, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.NO_QUOTE_FOUND, messageContext);
             return;
         }
 
         String quote = ArgumentParser.getMessage(args, 1);
 
-        if (quoteData.addQuote(messageContext.getGuild(), quote, messageContext)) {
-            MessageSender.sendSimpleTextBox(M_SAVED_QUOTE.tag, quote, Color.green, messageContext.getTextChannel());
+        if (quoteData.addQuote(messageContext.getGuild().get(), quote, messageContext)) {
+            MessageSender.sendSimpleTextBox(M_SAVED_QUOTE.tag, quote, Color.green, messageContext);
         }
     }
 
@@ -172,16 +170,16 @@ public class ManageQuote extends Command implements Executable, ReqDataSource {
      * @param messageContext message context for error logging
      * @return -1 when the string is not a number or the number is <0 or larger than the amount of quotes.
      */
-    private int verifyId(String number, MessageEventDataWrapper messageContext) {
-        int quotesCount = quoteData.getQuotesCount(messageContext.getGuild(), messageContext);
+    private int verifyId(String number, EventWrapper messageContext) {
+        int quotesCount = quoteData.getQuotesCount(messageContext.getGuild().get(), messageContext);
         OptionalInt quoteId = ArgumentParser.parseInt(number);
         if (quoteId.isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext);
             return -1;
         }
 
         if (quoteId.getAsInt() > quotesCount || quoteId.getAsInt() < 0) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext);
             return -1;
         }
         return quoteId.getAsInt();

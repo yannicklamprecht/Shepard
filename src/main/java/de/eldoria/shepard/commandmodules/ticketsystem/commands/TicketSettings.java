@@ -5,6 +5,7 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.ticketsystem.data.TicketData;
 import de.eldoria.shepard.commandmodules.ticketsystem.util.TicketHelper;
 import de.eldoria.shepard.commandmodules.ticketsystem.util.TicketType;
@@ -13,7 +14,7 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Member;
@@ -53,7 +54,7 @@ import static java.lang.System.lineSeparator;
 /**
  * Command to configure the Ticket types on a guild.
  */
-public class TicketSettings extends Command implements Executable, ReqParser, ReqDataSource {
+public class TicketSettings extends Command implements GuildChannelOnly, Executable, ReqParser, ReqDataSource {
     private ArgumentParser parser;
     private TicketData ticketData;
 
@@ -93,10 +94,10 @@ public class TicketSettings extends Command implements Executable, ReqParser, Re
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
         String type = args[1];
-        Optional<TicketType> ticket = ticketData.getTypes(messageContext.getGuild(), messageContext).stream()
+        Optional<TicketType> ticket = ticketData.getTypes(wrapper.getGuild().get(), wrapper).stream()
                 .filter(ticketType -> ticketType.getKeyword().equalsIgnoreCase(type)).findFirst();
 
         SubCommand arg = subCommands[0];
@@ -104,158 +105,157 @@ public class TicketSettings extends Command implements Executable, ReqParser, Re
         //All validation operations are inside the method except when they are needed for more than one method.
         if (isSubCommand(cmd, 0)) {
             if (ticket.isEmpty()) {
-                createType(args, messageContext, type);
+                createType(args, wrapper, type);
             } else {
-                MessageSender.sendSimpleError(ErrorType.TYPE_ALREADY_DEFINED, messageContext.getTextChannel());
+                MessageSender.sendSimpleError(ErrorType.TYPE_ALREADY_DEFINED, wrapper);
             }
             return;
         }
 
         if (ticket.isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.TYPE_NOT_FOUND, wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 1)) {
-            removeType(args, messageContext, ticket.get());
+            removeType(args, wrapper, ticket.get());
             return;
         }
 
         if (isSubCommand(cmd, 2) || isSubCommand(cmd, 3)) {
-            setRoles(args, messageContext, cmd, ticket.get());
+            setRoles(args, wrapper, cmd, ticket.get());
             return;
         }
 
         if (isSubCommand(cmd, 4) || cmd.equalsIgnoreCase("scc")) {
-            setChannelCategory(args, messageContext, ticket.get());
+            setChannelCategory(args, wrapper, ticket.get());
             return;
         }
 
         if (isSubCommand(cmd, 5)) {
-            setCreationMessage(args, messageContext, ticket.get());
+            setCreationMessage(args, wrapper, ticket.get());
             return;
         }
-
-        MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
     }
 
-    private void setCreationMessage(String[] args, MessageEventDataWrapper messageContext, TicketType scopeTicket) {
+    private void setCreationMessage(String[] args, EventWrapper wrapper, TicketType scopeTicket) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, wrapper);
             return;
         }
 
         String message = ArgumentParser.getMessage(args, 2);
 
-        if (ticketData.setCreationMessage(messageContext.getGuild(), scopeTicket.getKeyword(), message,
-                messageContext)) {
+        if (ticketData.setCreationMessage(wrapper.getGuild().get(), scopeTicket.getKeyword(), message,
+                wrapper)) {
             MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_SET_CREATION_MESSAGE.tag,
-                    messageContext.getGuild(), scopeTicket.getKeyword()), message, messageContext.getTextChannel());
+                    wrapper, scopeTicket.getKeyword()), message, wrapper);
         }
     }
 
-    private void setChannelCategory(String[] args, MessageEventDataWrapper messageContext, TicketType scopeTicket) {
+    private void setChannelCategory(String[] args, EventWrapper messageContext, TicketType scopeTicket) {
         if (args.length != 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
             return;
         }
 
-        Category category = messageContext.getGuild().getCategoryById(args[2]);
+        Category category = messageContext.getGuild().get().getCategoryById(args[2]);
 
         if (category == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_CATEGORY, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_CATEGORY, messageContext);
             return;
         }
 
-        if (ticketData.addType(messageContext.getGuild(), category, null,
+        if (ticketData.addType(messageContext.getGuild().get(), category, null,
                 scopeTicket.getKeyword(), messageContext)) {
-            MessageSender.sendMessage(localizeAllAndReplace(M_SET_CATEGORY.tag, messageContext.getGuild(),
-                    "**" + scopeTicket.getKeyword() + "**", category.getName()), messageContext.getTextChannel());
+            MessageSender.sendMessage(localizeAllAndReplace(M_SET_CATEGORY.tag, messageContext,
+                    "**" + scopeTicket.getKeyword() + "**", category.getName()),
+                    messageContext.getMessageChannel());
         }
     }
 
-    private void setRoles(String[] args, MessageEventDataWrapper messageContext, String cmd, TicketType scopeTicket) {
+    private void setRoles(String[] args, EventWrapper wrapper, String cmd, TicketType scopeTicket) {
         if (args.length < 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, wrapper);
             return;
         }
 
-        List<Role> validRoles = parser.getRoles(messageContext.getGuild(),
+        List<Role> validRoles = parser.getRoles(wrapper.getGuild().get(),
                 ArgumentParser.getRangeAsList(args, 2));
 
         String roleMentions = validRoles.stream().map(IMentionable::getAsMention)
                 .collect(Collectors.joining(lineSeparator()));
 
         if (isSubCommand(cmd, 2)) {
-            if (ticketData.setTypeOwnerRoles(messageContext.getGuild(), scopeTicket.getKeyword(),
-                    validRoles, messageContext)) {
+            if (ticketData.setTypeOwnerRoles(wrapper.getGuild().get(), scopeTicket.getKeyword(),
+                    validRoles, wrapper)) {
 
                 MessageSender.sendSimpleTextBox(M_SET_OWNER_ROLES.tag + " **"
-                        + scopeTicket.getKeyword() + "**:", roleMentions, messageContext.getTextChannel());
+                        + scopeTicket.getKeyword() + "**:", roleMentions, wrapper);
             }
 
-        } else if (ticketData.setTypeSupportRoles(messageContext.getGuild(), scopeTicket.getKeyword(),
-                validRoles, messageContext)) {
+        } else if (ticketData.setTypeSupportRoles(wrapper.getGuild().get(), scopeTicket.getKeyword(),
+                validRoles, wrapper)) {
             MessageSender.sendSimpleTextBox(M_SET_SUPPORT_ROLES.tag + " **"
-                    + scopeTicket.getKeyword() + "**:", roleMentions, messageContext.getTextChannel());
+                    + scopeTicket.getKeyword() + "**:", roleMentions, wrapper);
         }
 
     }
 
-    private void removeType(String[] args, MessageEventDataWrapper messageContext, TicketType scopeTicket) {
+    private void removeType(String[] args, EventWrapper wrapper, TicketType scopeTicket) {
         if (args.length != 2) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, wrapper);
             return;
         }
-        List<TextChannel> validTextChannels = parser.getTextChannels(messageContext.getGuild(),
-                ticketData.getChannelIdsByType(messageContext.getGuild(),
-                        scopeTicket.getKeyword(), messageContext));
+        List<TextChannel> validTextChannels = parser.getTextChannels(wrapper.getGuild().get(),
+                ticketData.getChannelIdsByType(wrapper.getGuild().get(),
+                        scopeTicket.getKeyword(), wrapper));
 
-        List<Role> typeOwnerRoles = parser.getRoles(messageContext.getGuild(),
-                ticketData.getTypeOwnerRoles(messageContext.getGuild(),
-                        scopeTicket.getKeyword(), messageContext));
+        List<Role> typeOwnerRoles = parser.getRoles(wrapper.getGuild().get(),
+                ticketData.getTypeOwnerRoles(wrapper.getGuild().get(),
+                        scopeTicket.getKeyword(), wrapper));
 
 
         Set<Member> members = new HashSet<>();
 
         for (TextChannel channel : validTextChannels) {
 
-            Member member = parser.getGuildMember(messageContext.getGuild(),
-                    ticketData.getChannelOwnerId(messageContext.getGuild(), channel, messageContext));
+            Member member = parser.getGuildMember(wrapper.getGuild().get(),
+                    ticketData.getChannelOwnerId(wrapper.getGuild().get(), channel, wrapper));
 
             if (member == null) continue;
             members.add(member);
         }
 
         for (Member member : members) {
-            TicketHelper.removeAndUpdateTicketRoles(ticketData, parser, messageContext, member, typeOwnerRoles);
+            TicketHelper.removeAndUpdateTicketRoles(ticketData, parser, wrapper, member, typeOwnerRoles);
         }
 
-        if (ticketData.removeTypeByKeyword(messageContext.getGuild(), scopeTicket.getKeyword(), messageContext)) {
+        if (ticketData.removeTypeByKeyword(wrapper.getGuild().get(), scopeTicket.getKeyword(), wrapper)) {
             for (TextChannel channel : validTextChannels) {
                 channel.delete().queue();
             }
-            MessageSender.sendMessage(localizeAllAndReplace(M_REMOVE_TYPE.tag, messageContext.getGuild(),
-                    "**" + scopeTicket.getKeyword() + "**"), messageContext.getTextChannel());
+            MessageSender.sendMessage(localizeAllAndReplace(M_REMOVE_TYPE.tag, wrapper.getGuild().get(),
+                    "**" + scopeTicket.getKeyword() + "**"), wrapper.getMessageChannel());
         }
     }
 
-    private void createType(String[] args, MessageEventDataWrapper messageContext, String type) {
+    private void createType(String[] args, EventWrapper wrapper, String type) {
         if (args.length != 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, wrapper);
             return;
         }
 
-        Category category = messageContext.getGuild().getCategoryById(args[2]);
+        Category category = wrapper.getGuild().get().getCategoryById(args[2]);
 
         if (category == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_CATEGORY, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_CATEGORY, wrapper);
             return;
         }
 
-        if (ticketData.addType(messageContext.getGuild(), category, "", type, messageContext)) {
+        if (ticketData.addType(wrapper.getGuild().get(), category, "", type, wrapper)) {
             MessageSender.sendMessage(M_CREATE_TYPE.tag + " **"
-                    + type.toLowerCase() + "**", messageContext.getTextChannel());
+                    + type.toLowerCase() + "**", wrapper.getMessageChannel());
         }
     }
 

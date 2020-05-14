@@ -5,6 +5,7 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.privatemessages.util.PrivateMessageHelper;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.core.util.Normandy;
@@ -13,7 +14,8 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqNormandy;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.util.Verifier;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.User;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_USER;
@@ -23,7 +25,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessag
 /**
  * Command which makes it possible to send private messages as the bot.
  */
-public class SendPrivateMessage extends Command implements Executable, ReqParser, ReqNormandy {
+public class SendPrivateMessage extends Command implements Executable, GuildChannelOnly, ReqParser, ReqNormandy {
     private ArgumentParser parser;
     private Normandy normandy;
 
@@ -44,20 +46,20 @@ public class SendPrivateMessage extends Command implements Executable, ReqParser
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        if (messageContext.getChannel() != normandy.getPrivateAnswerChannel()) {
-            MessageSender.sendSimpleError(ErrorType.EXCLUSIVE_CHANNEL, messageContext.getTextChannel());
+    public void execute(String label, String[] args, EventWrapper wrapper) {
+        if (!Verifier.equalSnowflake(wrapper.getMessageChannel(), normandy.getPrivateAnswerChannel())) {
+            MessageSender.sendSimpleError(ErrorType.EXCLUSIVE_CHANNEL, wrapper);
             return;
         }
 
         User user = parser.getUser(args[0]);
 
         if (user == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_USER, wrapper);
             return;
         }
 
-        PrivateMessageHelper.sendPrivateMessage(args, messageContext, user);
+        PrivateMessageHelper.sendPrivateMessage(args, wrapper, user);
     }
 
     @Override

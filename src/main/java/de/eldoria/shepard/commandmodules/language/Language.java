@@ -4,13 +4,14 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.util.LocaleCode;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.util.TextFormatting;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
@@ -29,7 +30,8 @@ import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocal
  * Command to specify the bot config.
  * Languages are loaded from {@link de.eldoria.shepard.localization.LanguageHandler}
  */
-public class Language extends Command implements Executable, ReqDataSource {
+// TODO: Allow user to set own language to override global or guild settings.
+public class Language extends Command implements GuildChannelOnly, Executable, ReqDataSource {
 
     private LocaleData localeData;
 
@@ -53,25 +55,23 @@ public class Language extends Command implements Executable, ReqDataSource {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
         if (isSubCommand(cmd, 0)) {
-            set(args, messageContext);
+            set(args, wrapper);
             return;
         }
         if (isSubCommand(cmd, 1)) {
-            reset(messageContext);
+            reset(wrapper);
             return;
         }
         if (isSubCommand(cmd, 2)) {
-            list(messageContext);
+            list(wrapper);
             return;
         }
-
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
-    private void list(MessageEventDataWrapper messageContext) {
+    private void list(EventWrapper wrapper) {
         TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(Arrays.asList(LocaleCode.values()),
                 "Language Name", "Language Code");
         for (LocaleCode code : LocaleCode.values()) {
@@ -80,29 +80,29 @@ public class Language extends Command implements Executable, ReqDataSource {
         }
 
         MessageSender.sendMessage(M_LIST + tableBuilder.toString() + "__" + M_SUBMIT + "__",
-                messageContext.getTextChannel());
+                wrapper.getMessageChannel());
     }
 
-    private void reset(MessageEventDataWrapper messageContext) {
-        if (localeData.setLanguage(messageContext.getGuild(), LocaleCode.EN_US, messageContext)) {
+    private void reset(EventWrapper wrapper) {
+        if (localeData.setLanguage(wrapper.getGuild().get(), LocaleCode.EN_US, wrapper)) {
             MessageSender.sendMessage(M_CHANGED + " '" + LocaleCode.EN_US + "'",
-                    messageContext.getTextChannel());
+                    wrapper.getMessageChannel());
         }
     }
 
-    private void set(String[] args, MessageEventDataWrapper messageContext) {
+    private void set(String[] args, EventWrapper wrapper) {
         if (args.length == 1) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, wrapper);
             return;
         }
         LocaleCode localeCode = LocaleCode.parse(args[1]);
         if (localeCode == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_LOCALE_CODE, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_LOCALE_CODE, wrapper);
             return;
         }
 
-        if (localeData.setLanguage(messageContext.getGuild(), localeCode, messageContext)) {
-            MessageSender.sendMessage(M_CHANGED + " `" + localeCode + "`", messageContext.getTextChannel());
+        if (localeData.setLanguage(wrapper.getGuild().get(), localeCode, wrapper)) {
+            MessageSender.sendMessage(M_CHANGED + " `" + localeCode + "`", wrapper.getMessageChannel());
         }
     }
 

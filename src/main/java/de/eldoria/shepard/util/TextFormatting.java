@@ -3,7 +3,7 @@ package de.eldoria.shepard.util;
 import de.eldoria.shepard.database.types.Rank;
 import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.localization.util.TextLocalizer;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
@@ -126,11 +126,11 @@ public final class TextFormatting {
      * @param messageContext message context for localisation
      * @return table of ranks
      */
-    public static String getRankTable(List<Rank> ranks, MessageEventDataWrapper messageContext) {
+    public static String getRankTable(List<Rank> ranks, EventWrapper messageContext) {
         TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(ranks,
-                TextLocalizer.localizeAllAndReplace(WordsLocale.RANK.tag, messageContext.getGuild()),
-                TextLocalizer.localizeAllAndReplace(WordsLocale.USER.tag, messageContext.getGuild()),
-                TextLocalizer.localizeAllAndReplace(WordsLocale.POINTS.tag, messageContext.getGuild()));
+                TextLocalizer.localizeAllAndReplace(WordsLocale.RANK.tag, messageContext),
+                TextLocalizer.localizeAllAndReplace(WordsLocale.USER.tag, messageContext),
+                TextLocalizer.localizeAllAndReplace(WordsLocale.POINTS.tag, messageContext));
 
         int ranking = 1;
         for (Rank rank : ranks) {

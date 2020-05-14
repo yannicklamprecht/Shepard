@@ -71,11 +71,14 @@ public class LogListener extends ListenerAdapter implements Runnable {
             log.info(C.STATUS,
                     "Shard {} was disconnected for {} seconds. Everything is fine.",
                     shardId, seconds);
+        } else {
+            log.debug("Shard {} reconnected", jda.getShardInfo().getShardId());
         }
     }
 
     @Override
     public void onReady(@Nonnull ReadyEvent event) {
+        handleShardReconnect(event.getJDA());
         log.info("Shard {}/{} started. Shard is connected to {} guilds.",
                 event.getJDA().getShardInfo().getShardId() + 1,
                 event.getJDA().getShardManager().getShardsTotal(),

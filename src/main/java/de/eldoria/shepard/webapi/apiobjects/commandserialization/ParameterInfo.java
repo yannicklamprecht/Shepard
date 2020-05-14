@@ -1,6 +1,7 @@
 package de.eldoria.shepard.webapi.apiobjects.commandserialization;
 
 import de.eldoria.shepard.localization.util.TextLocalizer;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.Getter;
 
 @Getter
@@ -27,8 +28,8 @@ public class ParameterInfo {
         this.command = command;
         this.commandName = commandName;
         this.shortCommand = shortCommand;
-        this.inputName = TextLocalizer.localizeAllAndReplace(inputName, null);
-        this.inputDescription = TextLocalizer.localizeAllAndReplace(inputDescription, null);
+        this.inputName = TextLocalizer.localizeAllAndReplace(inputName, EventWrapper.fakeEmpty());
+        this.inputDescription = TextLocalizer.localizeAllAndReplace(inputDescription, EventWrapper.fakeEmpty());
         this.required = required || command;
     }
 }

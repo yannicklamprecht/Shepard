@@ -5,6 +5,7 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.greeting.data.GreetingData;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -12,7 +13,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
@@ -35,7 +36,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLoca
 /**
  * Command to configure the greeting message and channel.
  */
-public class Greeting extends Command implements Executable, ReqShardManager, ReqInit, ReqDataSource {
+public class Greeting extends Command implements GuildChannelOnly, Executable, ReqShardManager, ReqInit, ReqDataSource {
     private ShardManager shardManager;
     private GreetingData data;
     private DataSource source;
@@ -62,66 +63,65 @@ public class Greeting extends Command implements Executable, ReqShardManager, Re
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
         if (isSubCommand(cmd, 0)) {
-            setChannel(args, messageContext);
+            setChannel(args, wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 1)) {
-            removeChannel(messageContext);
+            removeChannel(wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 2)) {
-            setMessage(args, messageContext);
+            setMessage(args, wrapper);
             return;
         }
 
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
-    private void setMessage(String[] args, MessageEventDataWrapper messageContext) {
+    private void setMessage(String[] args, EventWrapper messageContext) {
         if (args.length > 1) {
             String message = ArgumentParser.getMessage(args, 1);
 
-            if (data.setGreetingText(messageContext.getGuild(), message, messageContext)) {
+            if (data.setGreetingText(messageContext.getGuild().get(), message, messageContext)) {
                 MessageSender.sendSimpleTextBox("**" + M_SET_MESSAGE + "**",
-                        message, messageContext.getTextChannel());
+                        message, messageContext);
             }
             return;
         }
-        MessageSender.sendSimpleError(ErrorType.NO_MESSAGE_FOUND, messageContext.getTextChannel());
+        MessageSender.sendSimpleError(ErrorType.NO_MESSAGE_FOUND, messageContext);
     }
 
-    private void removeChannel(MessageEventDataWrapper messageContext) {
-        if (data.removeGreetingChannel(messageContext.getGuild(), messageContext)) {
-            MessageSender.sendMessage(M_REMOVED_CHANNEL.tag, messageContext.getTextChannel());
+    private void removeChannel(EventWrapper messageContext) {
+        if (data.removeGreetingChannel(messageContext.getGuild().get(), messageContext)) {
+            MessageSender.sendMessage(M_REMOVED_CHANNEL.tag, messageContext.getMessageChannel());
         }
     }
 
-    private void setChannel(String[] args, MessageEventDataWrapper messageContext) {
+    private void setChannel(String[] args, EventWrapper messageContext) {
         if (args.length == 1) {
-            if (data.setGreetingChannel(messageContext.getGuild(),
-                    messageContext.getChannel(), messageContext)) {
+            if (data.setGreetingChannel(messageContext.getGuild().get(),
+                    messageContext.getTextChannel().get(), messageContext)) {
                 MessageSender.sendMessage(M_SET_CHANNEL + " "
-                        + messageContext.getTextChannel().getAsMention(), messageContext.getTextChannel());
+                        + messageContext.getTextChannel().get().getAsMention(), messageContext.getMessageChannel());
             }
             return;
         } else if (args.length == 2) {
-            Optional<TextChannel> channel = ArgumentParser.getTextChannel(messageContext.getGuild(), args[1]);
+            Optional<TextChannel> channel = ArgumentParser.getTextChannel(messageContext.getGuild().get(), args[1]);
 
             if (channel.isPresent()) {
-                if (data.setGreetingChannel(messageContext.getGuild(), channel.get(), messageContext)) {
+                if (data.setGreetingChannel(messageContext.getGuild().get(), channel.get(), messageContext)) {
                     MessageSender.sendMessage(
                             M_SET_CHANNEL + " "
-                                    + channel.get().getAsMention(), messageContext.getTextChannel());
+                                    + channel.get().getAsMention(), messageContext.getTextChannel().get());
                 }
                 return;
             }
         }
-        MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext.getTextChannel());
+        MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext);
     }
 
     @Override

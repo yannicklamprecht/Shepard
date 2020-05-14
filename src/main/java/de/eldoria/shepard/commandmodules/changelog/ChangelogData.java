@@ -1,7 +1,7 @@
 package de.eldoria.shepard.commandmodules.changelog;
 
 import de.eldoria.shepard.database.QueryObject;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -32,17 +32,17 @@ class ChangelogData extends QueryObject {
      *
      * @param guild          guild on which the role should be added
      * @param role           id of the role id of the role
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper wrapper from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean addRole(Guild guild, Role role, MessageEventDataWrapper messageContext) {
+    public boolean addRole(Guild guild, Role role, EventWrapper wrapper) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.add_changelog_role(?,?)")) {
             statement.setString(1, guild.getId());
             statement.setString(2, role.getId());
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
             return false;
         }
         return true;
@@ -56,7 +56,7 @@ class ChangelogData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeRole(Guild guild, Role role, MessageEventDataWrapper messageContext) {
+    public boolean removeRole(Guild guild, Role role, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_changelog_role(?,?)")) {
             statement.setString(1, guild.getId());
@@ -77,7 +77,7 @@ class ChangelogData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean setChannel(Guild guild, TextChannel channel, MessageEventDataWrapper messageContext) {
+    public boolean setChannel(Guild guild, TextChannel channel, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.set_changelog_channel(?,?)")) {
             statement.setString(1, guild.getId());
@@ -97,7 +97,7 @@ class ChangelogData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeChannel(Guild guild, MessageEventDataWrapper messageContext) {
+    public boolean removeChannel(Guild guild, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_changelog_channel(?)")) {
             statement.setString(1, guild.getId());
@@ -116,7 +116,7 @@ class ChangelogData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return list of role ids
      */
-    public List<String> getRoles(Guild guild, MessageEventDataWrapper messageContext) {
+    public List<String> getRoles(Guild guild, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.get_changelog_roles(?)")) {
             statement.setString(1, guild.getId());
@@ -137,7 +137,7 @@ class ChangelogData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return channel id as string
      */
-    public String getChannel(Guild guild, MessageEventDataWrapper messageContext) {
+    public String getChannel(Guild guild, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.get_changelog_channel(?)")) {
             statement.setString(1, guild.getId());

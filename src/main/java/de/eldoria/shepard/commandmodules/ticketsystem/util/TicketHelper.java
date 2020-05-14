@@ -4,7 +4,7 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.ticketsystem.commands.Ticket;
 import de.eldoria.shepard.commandmodules.ticketsystem.commands.TicketSettings;
 import de.eldoria.shepard.commandmodules.ticketsystem.data.TicketData;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -30,31 +30,31 @@ public final class TicketHelper {
      * @param rolesToRemove  roles as string list
      */
     public static void removeAndUpdateTicketRoles(TicketData ticketData, ArgumentParser parser,
-                                                  MessageEventDataWrapper messageContext,
+                                                  EventWrapper messageContext,
                                                   Member member, List<Role> rolesToRemove) {
         //Get all other ticket channels of the owner
-        List<String> channelIds = ticketData.getChannelIdsByOwner(messageContext.getGuild(),
+        List<String> channelIds = ticketData.getChannelIdsByOwner(messageContext.getGuild().get(),
                 member.getUser(), messageContext);
 
-        List<TextChannel> channels = parser.getTextChannels(messageContext.getGuild(), channelIds);
+        List<TextChannel> channels = parser.getTextChannels(messageContext.getGuild().get(), channelIds);
 
         //Create a set of all roles the player should keep.
         Set<Role> newRoleSet = new HashSet<>();
         for (TextChannel channel : channels) {
-            List<Role> roles = parser.getRoles(messageContext.getGuild(),
-                    ticketData.getChannelOwnerRoles(messageContext.getGuild(), channel));
+            List<Role> roles = parser.getRoles(messageContext.getGuild().get(),
+                    ticketData.getChannelOwnerRoles(messageContext.getGuild().get(), channel));
             newRoleSet.addAll(roles);
         }
 
         //Removes all roles for the current ticket
         for (Role role : rolesToRemove) {
-            messageContext.getGuild().removeRoleFromMember(member, role).queue();
+            messageContext.getGuild().get().removeRoleFromMember(member, role).queue();
         }
 
         //Adds all roles for the other tickets. needed if two ticket types use the same role or
         // if there are more than one ticket channel with this type.
         for (Role role : newRoleSet) {
-            messageContext.getGuild().addRoleToMember(member, role).queue();
+            messageContext.getGuild().get().addRoleToMember(member, role).queue();
         }
     }
 }

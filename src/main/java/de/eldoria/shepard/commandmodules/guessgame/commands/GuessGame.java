@@ -4,8 +4,8 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.guessgame.data.GuessGameData;
-import de.eldoria.shepard.commandmodules.guessgame.listener.GuessGameListener;
 import de.eldoria.shepard.commandmodules.guessgame.util.GuessGameEvaluator;
 import de.eldoria.shepard.commandmodules.guessgame.util.GuessGameImage;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
@@ -20,7 +20,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.reactions.ShepardEmote;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
@@ -49,7 +49,7 @@ import static java.lang.System.lineSeparator;
  * A started guess game will be manages by a {@link GuessGameEvaluator}.
  * Provides information about user scores.
  */
-public class GuessGame extends Command implements Executable, ReqShardManager, ReqDataSource, ReqInit {
+public class GuessGame extends Command implements Executable, GuildChannelOnly, ReqShardManager, ReqDataSource, ReqInit {
 
     private ChannelEvaluator<GuessGameEvaluator> evaluator;
     private ShardManager shardManager;
@@ -59,7 +59,7 @@ public class GuessGame extends Command implements Executable, ReqShardManager, R
     /**
      * Create a new guess game command.
      */
-    public GuessGame() {
+    public GuessGame(ChannelEvaluator<GuessGameEvaluator> evaluator) {
         super("guessGame",
                 new String[] {"gg", "nsfwornot"},
                 GuessGameLocale.DESCRIPTION.tag,
@@ -75,85 +75,86 @@ public class GuessGame extends Command implements Executable, ReqShardManager, R
                         .build(),
                 C_START.tag,
                 CommandCategory.FUN);
+        this.evaluator = evaluator;
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        if (!isArgument(messageContext.getChannel().getName(),
+    public void execute(String label, String[] args, EventWrapper wrapper) {
+        if (!isArgument(wrapper.getMessageChannel().getName(),
                 "guessgame", "guess-game", "nsfwornot", "nsfw-or-not")) {
-            MessageSender.sendMessage(M_MINIGAME_CHANNEL.tag, messageContext.getTextChannel());
+            MessageSender.sendMessage(M_MINIGAME_CHANNEL.tag, wrapper.getMessageChannel());
             return;
         }
         if (args.length == 0) {
-            startGame(messageContext);
+            startGame(wrapper);
             return;
         }
         if (args.length != 1) {
-            MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_MANY_ARGUMENTS, wrapper);
             return;
         }
 
         String cmd = args[0];
 
         if (isSubCommand(cmd, 0)) {
-            int userScore = guessGameData.getUserScore(messageContext.getGuild(),
-                    messageContext.getAuthor(), messageContext);
-            MessageSender.sendMessage(M_SCORE + " **" + userScore + "**", messageContext.getTextChannel());
+            int userScore = guessGameData.getUserScore(wrapper.getGuild().get(),
+                    wrapper.getAuthor(), wrapper);
+            MessageSender.sendMessage(M_SCORE + " **" + userScore + "**", wrapper.getMessageChannel());
             return;
         }
 
         if (isSubCommand(cmd, 1)) {
-            int userScore = guessGameData.getGlobalUserScore(messageContext.getAuthor(), messageContext);
-            MessageSender.sendMessage(M_SCORE_GLOBAL + " **" + userScore, messageContext.getTextChannel());
+            int userScore = guessGameData.getGlobalUserScore(wrapper.getAuthor(), wrapper);
+            MessageSender.sendMessage(M_SCORE_GLOBAL + " **" + userScore, wrapper.getMessageChannel());
             return;
         }
 
         if (isSubCommand(cmd, 2)) {
-            sendTopScores(false, messageContext);
+            sendTopScores(false, wrapper);
         }
         if (isSubCommand(cmd, 3)) {
-            sendTopScores(true, messageContext);
+            sendTopScores(true, wrapper);
         }
     }
 
-    private void sendTopScores(boolean global, MessageEventDataWrapper messageContext) {
+    private void sendTopScores(boolean global, EventWrapper messageContext) {
         List<Rank> ranks = global
                 ? guessGameData.getGlobalTopScore(10, messageContext, shardManager)
-                : guessGameData.getTopScore(messageContext.getGuild(), 10, messageContext, shardManager);
+                : guessGameData.getTopScore(messageContext.getGuild().get(), 10, messageContext, shardManager);
 
         String rankTable = TextFormatting.getRankTable(ranks, messageContext);
 
         String ranking = global ? M_GLOBAL_RANKING.tag : M_SERVER_RANKING.tag;
 
-        MessageSender.sendMessage("**" + ranking + "**" + lineSeparator() + rankTable, messageContext.getTextChannel());
+        MessageSender.sendMessage("**" + ranking + "**" + lineSeparator() + rankTable, messageContext.getTextChannel().get());
     }
 
-    private void startGame(MessageEventDataWrapper messageContext) {
-        if (evaluator.isEvaluationActive(messageContext.getTextChannel())) {
-            MessageSender.sendMessage(M_ROUND_IN_PROGRESS.tag, messageContext.getTextChannel());
+    private void startGame(EventWrapper messageContext) {
+        if (evaluator.isEvaluationActive(messageContext.getTextChannel().get())) {
+            MessageSender.sendMessage(M_ROUND_IN_PROGRESS.tag, messageContext.getMessageChannel());
             return;
         }
 
-        GuessGameImage hentaiImage = guessGameData.getImage(messageContext);
-        if (hentaiImage == null) {
+        GuessGameImage image = guessGameData.getImage(messageContext);
+        if (image == null) {
             return;
         }
 
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
                 .setTitle(M_TITLE.tag)
-                .setDescription(localizeAllAndReplace(M_GAME_DESCRIPTION.tag, messageContext.getGuild(),
+                .setDescription(localizeAllAndReplace(M_GAME_DESCRIPTION.tag, messageContext,
                         ShepardEmote.ANIM_CHECKMARK.getEmote(shardManager).getAsMention(),
                         ShepardEmote.ANIM_CROSS.getEmote(shardManager).getAsMention(),
                         "30"))
-                .setImage(hentaiImage.getCroppedImage())
+                .setImage(image.getCroppedImage())
                 .setFooter(M_GAME_FOOTER.tag);
 
-        messageContext.getChannel().sendMessage(builder.build())
+        messageContext.getMessageChannel().sendMessage(builder.build())
                 .queue(message -> {
                     message.addReaction(ShepardEmote.ANIM_CHECKMARK.getEmote(shardManager)).queue();
                     message.addReaction(ShepardEmote.ANIM_CROSS.getEmote(shardManager)).queue();
                     evaluator.scheduleEvaluation(message, 30,
-                            new GuessGameEvaluator(guessGameData, evaluator, shardManager, message, hentaiImage));
+                            new GuessGameEvaluator(guessGameData, evaluator, shardManager, message, image));
                 });
     }
 

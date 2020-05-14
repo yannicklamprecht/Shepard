@@ -2,7 +2,7 @@ package de.eldoria.shepard.commandmodules.monitoring.data;
 
 import de.eldoria.shepard.commandmodules.monitoring.util.Address;
 import de.eldoria.shepard.database.QueryObject;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -37,7 +37,7 @@ public final class MonitoringData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean addMonitoringAddress(Guild guild, String address, String name, boolean minecraftIp,
-                                        MessageEventDataWrapper messageContext) {
+                                        EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.add_monitoring_address(?,?,?,?)")) {
             statement.setString(1, guild.getId());
@@ -61,7 +61,7 @@ public final class MonitoringData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean removeMonitoringAddressByIndex(Guild guild, int index,
-                                                  MessageEventDataWrapper messageContext) {
+                                                  EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_monitoring_address_by_index(?,?)")) {
             statement.setString(1, guild.getId());
@@ -83,7 +83,7 @@ public final class MonitoringData extends QueryObject {
      * @return true if the query execution was successful
      */
     public boolean setMonitoringChannel(Guild guild, TextChannel channel,
-                                        MessageEventDataWrapper messageContext) {
+                                        EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.set_monitoring_channel(?,?)")) {
             statement.setString(1, guild.getId());
@@ -103,7 +103,7 @@ public final class MonitoringData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean removeMonitoringChannel(Guild guild, MessageEventDataWrapper messageContext) {
+    public boolean removeMonitoringChannel(Guild guild, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_monitoring_channel(?)")) {
             statement.setString(1, guild.getId());
@@ -122,11 +122,11 @@ public final class MonitoringData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return list of address object
      */
-    public List<Address> getMonitoringAddressesForGuild(Guild guild, MessageEventDataWrapper messageContext) {
+    public List<Address> getMonitoringAddressesForGuild(Guild guild, EventWrapper messageContext) {
         return getMonitoringAddressesForGuild(guild.getIdLong(), messageContext);
     }
 
-    private List<Address> getMonitoringAddressesForGuild(long guild, MessageEventDataWrapper messageContext) {
+    private List<Address> getMonitoringAddressesForGuild(long guild, EventWrapper messageContext) {
         List<Address> addresses = new ArrayList<>();
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * from shepard_func.get_monitoring_addresses_for_guild(?)")) {
@@ -152,7 +152,7 @@ public final class MonitoringData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return Channel id as string
      */
-    public String getMonitoringChannel(Guild guild, MessageEventDataWrapper messageContext) {
+    public String getMonitoringChannel(Guild guild, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.get_monitoring_channel(?)")) {
             statement.setString(1, guild.getId());

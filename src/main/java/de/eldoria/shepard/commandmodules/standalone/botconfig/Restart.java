@@ -10,7 +10,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqShepard;
 import de.eldoria.shepard.util.ExitCode;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 /**
  * Command to restart the bot. Only usable on a bot, where {@link GeneralSettings#isBeta()} is not true.
@@ -33,12 +33,12 @@ public class Restart extends Command implements Executable, ReqConfig, ReqShepar
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         if (config.getGeneralSettings().isBeta()) {
-            MessageSender.sendMessage("Only on main bot!", messageContext.getTextChannel());
+            MessageSender.sendMessage("Only on main bot!", wrapper.getMessageChannel());
             return;
         }
-        MessageSender.sendMessage("**RESTARTING**", messageContext.getTextChannel());
+        MessageSender.sendMessage("**RESTARTING**", wrapper.getMessageChannel());
         bot.shutdown(ExitCode.RESTART);
     }
 

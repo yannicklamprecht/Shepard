@@ -5,7 +5,7 @@ import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 import java.util.Collections;
 
@@ -23,22 +23,22 @@ public class HireMe extends Command implements Executable {
      * Creates new Hire me object.
      */
     public HireMe() {
-        super("hireMe",
-                new String[] {"Iwantyou"},
+        super("invite",
+                new String[] {"Iwantyou", "hireMe"},
                 DESCRIPTION.tag,
                 CommandCategory.UTIL);
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        if (label.equalsIgnoreCase(commandName)) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
+        if (label.equalsIgnoreCase(commandName) || label.equalsIgnoreCase("invite")) {
             MessageSender.sendTextBox(null, Collections.singletonList(new LocalizedField(M_HIRE_ME.tag,
                     "[" + M_TAKE_ME + "](http://bit.ly/shepardbot)",
-                    false, messageContext)), messageContext.getTextChannel());
+                    false, wrapper)), wrapper);
         } else {
             MessageSender.sendTextBox(null, Collections.singletonList(new LocalizedField(M_I_WANT_YOU.tag,
                     "[" + M_TAKE_ME + "](http://bit.ly/shepardbot)",
-                    false, messageContext)), messageContext.getTextChannel());
+                    false, wrapper)), wrapper);
         }
     }
 }

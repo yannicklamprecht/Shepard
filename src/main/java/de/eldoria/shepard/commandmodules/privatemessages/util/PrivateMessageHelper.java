@@ -6,7 +6,7 @@ import de.eldoria.shepard.commandmodules.privatemessages.commands.SendPrivateMes
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.reactions.Emoji;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.User;
 
 /**
@@ -24,16 +24,16 @@ public final class PrivateMessageHelper {
      * @param messageContext message context for error handling
      * @param user           user which should receive the message
      */
-    public static void sendPrivateMessage(String[] args, MessageEventDataWrapper messageContext, User user) {
+    public static void sendPrivateMessage(String[] args, EventWrapper messageContext, User user) {
         if (user == null) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_USER, messageContext);
             return;
         }
 
         String text = ArgumentParser.getMessage(args, 1);
 
         MessageSender.sendAttachment(user, messageContext.getMessage().getAttachments(), text,
-                messageContext.getTextChannel());
+                messageContext.getMessageChannel());
 
         messageContext.getMessage().addReaction(Emoji.CHECK_MARK_BUTTON.unicode).queue();
     }

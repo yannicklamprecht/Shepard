@@ -7,6 +7,7 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.commandsettings.data.CommandData;
 import de.eldoria.shepard.commandmodules.commandsettings.types.ModifyType;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
@@ -21,7 +22,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqExecutionValidator;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.Colors;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Role;
@@ -59,7 +60,7 @@ import static de.eldoria.shepard.localization.enums.listener.CommandListenerLoca
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
-public class Permission extends Command implements Executable, ReqParser, ReqExecutionValidator, ReqDataSource {
+public class Permission extends Command implements GuildChannelOnly, Executable, ReqParser, ReqExecutionValidator, ReqDataSource {
     private ArgumentParser parser;
     private CommandData commandData;
     private ExecutionValidator validator;
@@ -95,63 +96,61 @@ public class Permission extends Command implements Executable, ReqParser, ReqExe
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
 
         CommandSearchResult command = parser.searchCommand(args[1]);
 
         if (command.isEmpty()) {
             MessageSender.sendSimpleError(ErrorType.COMMAND_SEARCH_EMPTY,
-                    messageContext.getTextChannel());
+                    wrapper);
             return;
         }
 
-        if (!validator.canAccess(command.command().get(), messageContext)) {
+        if (!validator.canAccess(command.command().get(), wrapper)) {
             MessageSender.sendSimpleError(ErrorType.COMMAND_SEARCH_EMPTY,
-                    messageContext.getTextChannel());
+                    wrapper);
             return;
         }
 
-        if (!validator.canUse(command.getIdentifier(), messageContext.getMember())) {
+        if (!validator.canUse(command.getIdentifier(), wrapper)) {
             MessageSender.sendMessage(localizeAllAndReplace(M_INSUFFICIENT_PERMISSION.tag,
-                    messageContext.getGuild(), "**" + command.getIdentifier() + "**"),
-                    messageContext.getTextChannel());
+                    wrapper, "**" + command.getIdentifier() + "**"),
+                    wrapper.getMessageChannel());
             return;
         }
 
         String cmd = args[0];
         if (isSubCommand(cmd, 0)) {
-            modifyPermission(args, messageContext, command.getIdentifier(), ModifyType.ADD);
+            modifyPermission(args, wrapper, command.getIdentifier(), ModifyType.ADD);
             return;
         }
         if (isSubCommand(cmd, 1)) {
-            modifyPermission(args, messageContext, command.getIdentifier(), ModifyType.REMOVE);
+            modifyPermission(args, wrapper, command.getIdentifier(), ModifyType.REMOVE);
             return;
         }
 
         if (isSubCommand(cmd, 2)) {
-            smallInfo(messageContext, command.getIdentifier());
+            smallInfo(wrapper, command.getIdentifier());
             return;
         }
 
         if (isSubCommand(cmd, 3)) {
-            overridePermission(args, messageContext, command.getIdentifier());
+            overridePermission(args, wrapper, command.getIdentifier());
             return;
         }
 
         if (isSubCommand(cmd, 4)) {
-            info(messageContext, command.command().get());
+            info(wrapper, command.command().get());
             return;
         }
-
-        MessageSender.sendSimpleError(ErrorType.INVALID_ACTION, messageContext.getTextChannel());
     }
 
 
-    private void info(MessageEventDataWrapper messageContext, Command command) {
-        LocalizedEmbedBuilder embedBuilder = new LocalizedEmbedBuilder(messageContext)
-                .setTitle(TextLocalizer.localizeAllAndReplace(M_INFO_TITLE.tag, messageContext.getGuild(),
+    private void info(EventWrapper wrapper, Command command) {
+        LocalizedEmbedBuilder embedBuilder = new LocalizedEmbedBuilder(wrapper)
+                .setTitle(TextLocalizer.localizeAllAndReplace(M_INFO_TITLE.tag, wrapper,
                         command.getCommandName()));
-        Guild guild = messageContext.getGuild();
+        Guild guild = wrapper.getGuild().get();
 
         // Command
         addCommandInfo(GeneralLocale.A_COMMAND_NAME.tag, false, command.getCommandIdentifier(), guild, embedBuilder);
@@ -177,7 +176,7 @@ public class Permission extends Command implements Executable, ReqParser, ReqExe
                         + "(https://gitlab.com/shepardbot/ShepardBot/-/wikis/Commands/Permission-and-Command-Settings)",
                 false);
 
-        messageContext.getTextChannel().sendMessage(embedBuilder.build()).queue();
+        wrapper.getMessageChannel().sendMessage(embedBuilder.build()).queue();
     }
 
     private void addCommandInfo(String title, boolean inline, String permission, Guild guild,
@@ -212,73 +211,73 @@ public class Permission extends Command implements Executable, ReqParser, ReqExe
         embed.addField(title, builder.toString(), inline);
     }
 
-    private void overridePermission(String[] args, MessageEventDataWrapper messageContext, String command) {
+    private void overridePermission(String[] args, EventWrapper wrapper, String command) {
         if (args.length != 3) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, wrapper);
             return;
         }
 
         BooleanState state = ArgumentParser.getBoolean(args[2]);
         if (state == BooleanState.UNDEFINED) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_BOOLEAN, wrapper);
         }
 
         if (command.endsWith("*")) {
             MessageSender.sendMessage(PermissionLocale.E_PERMISSION_OVERRIDE.tag,
-                    messageContext.getTextChannel());
+                    wrapper.getMessageChannel());
             return;
         }
 
-        if (!commandData.setPermissionOverride(command, state.stateAsBoolean, messageContext.getGuild(),
-                messageContext)) {
-            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, messageContext.getTextChannel());
+        if (!commandData.setPermissionOverride(command, state.stateAsBoolean, wrapper.getGuild().get(),
+                wrapper)) {
+            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, wrapper);
         }
         StringBuilder builder = new StringBuilder();
         if (state.stateAsBoolean) {
             builder.append(TextLocalizer.localizeAllAndReplace(PermissionLocale.M_OVERRIDE_ACTIVATED.tag,
-                    messageContext.getGuild(), "**" + command + "**"));
+                    wrapper, "**" + command + "**"));
         } else {
             builder.append(TextLocalizer.localizeAllAndReplace(PermissionLocale.M_OVERRIDE_DEACTIVATED.tag,
-                    messageContext.getGuild(), "**" + command + "**"));
+                    wrapper, "**" + command + "**"));
         }
         builder.append(lineSeparator());
 
         boolean subcommand = command.contains(".");
 
         if (subcommand) {
-            if (validator.requirePermission(command, messageContext.getGuild()) && !state.stateAsBoolean) {
+            if (validator.requirePermission(command, wrapper.getGuild().get()) && !state.stateAsBoolean) {
                 // Permission override for subcommand is not active because the command requires a permission
                 builder.append(localizeAllAndReplace(
-                        PermissionLocale.M_SUB_COMMAND_PERMISSION_OVERRIDEN.tag, messageContext.getGuild()));
+                        PermissionLocale.M_SUB_COMMAND_PERMISSION_OVERRIDEN.tag, wrapper));
 
-            } else if (validator.requirePermission(command, messageContext.getGuild())) {
+            } else if (validator.requirePermission(command, wrapper.getGuild().get())) {
                 // Subcommand requires now a permission
                 builder.append(TextLocalizer.localizeAllAndReplace(
-                        PermissionLocale.M_SUB_COMMAND_PERMISSION_NEEDED.tag, messageContext.getGuild()));
+                        PermissionLocale.M_SUB_COMMAND_PERMISSION_NEEDED.tag, wrapper));
             } else {
                 // Subcommand does not require a permission
                 builder.append(TextLocalizer.localizeAllAndReplace(
-                        PermissionLocale.M_SUB_COMMAND_PERMISSION_NOT_NEEDED.tag, messageContext.getGuild()));
+                        PermissionLocale.M_SUB_COMMAND_PERMISSION_NOT_NEEDED.tag, wrapper));
             }
         } else {
-            if (validator.requirePermission(command, messageContext.getGuild())) {
+            if (validator.requirePermission(command, wrapper.getGuild().get())) {
                 builder.append(TextLocalizer.localizeAllAndReplace(
-                        PermissionLocale.M_PERMISSION_REQUIRED_MESSAGE.tag, messageContext.getGuild()));
+                        PermissionLocale.M_PERMISSION_REQUIRED_MESSAGE.tag, wrapper));
             } else {
                 builder.append(TextLocalizer.localizeAllAndReplace(
-                        PermissionLocale.M_PERMISSION_NOT_REQUIRED_MESSAGE.tag, messageContext.getGuild()));
+                        PermissionLocale.M_PERMISSION_NOT_REQUIRED_MESSAGE.tag, wrapper));
             }
         }
-        MessageSender.sendMessage(builder.toString(), messageContext.getTextChannel());
+        MessageSender.sendMessage(builder.toString(), wrapper.getMessageChannel());
 
     }
 
-    private void smallInfo(MessageEventDataWrapper messageContext, String command) {
-        LocalizedEmbedBuilder embedBuilder = new LocalizedEmbedBuilder(messageContext)
-                .setTitle(TextLocalizer.localizeAllAndReplace(M_INFO_TITLE.tag, messageContext.getGuild(), command));
+    private void smallInfo(EventWrapper wrapper, String command) {
+        LocalizedEmbedBuilder embedBuilder = new LocalizedEmbedBuilder(wrapper)
+                .setTitle(TextLocalizer.localizeAllAndReplace(M_INFO_TITLE.tag, wrapper, command));
 
-        List<User> users = getUsersWithPermissions(command, messageContext.getGuild());
-        List<Role> roles = getRolesWithPermissions(command, messageContext.getGuild());
+        List<User> users = getUsersWithPermissions(command, wrapper.getGuild().get());
+        List<Role> roles = getRolesWithPermissions(command, wrapper.getGuild().get());
 
         String mentions;
         if (!users.isEmpty()) {
@@ -293,26 +292,26 @@ public class Permission extends Command implements Executable, ReqParser, ReqExe
             embedBuilder.addField(M_ROLE_ACCESS.tag, mentions, false);
         }
 
-        messageContext.getTextChannel().sendMessage(embedBuilder.build()).queue();
+        wrapper.getMessageChannel().sendMessage(embedBuilder.build()).queue();
     }
 
-    private void modifyPermission(String[] args, MessageEventDataWrapper messageContext, String context,
+    private void modifyPermission(String[] args, EventWrapper wrapper, String context,
                                   ModifyType modifyType) {
-        List<User> validUser = parser.getGuildUsers(messageContext.getGuild(),
+        List<User> validUser = parser.getGuildUsers(wrapper.getGuild().get(),
                 ArgumentParser.getRangeAsList(Arrays.asList(args), 2));
 
-        List<Role> validRoles = parser.getRoles(messageContext.getGuild(),
+        List<Role> validRoles = parser.getRoles(wrapper.getGuild().get(),
                 ArgumentParser.getRangeAsList(args, 2));
 
         for (User user : validUser) {
             if (modifyType == ModifyType.ADD) {
                 if (!commandData.addUserPermission(context,
-                        messageContext.getGuild(), user, messageContext)) {
+                        wrapper.getGuild().get(), user, wrapper)) {
                     return;
                 }
             } else {
                 if (!commandData.removeUserPermission(context,
-                        messageContext.getGuild(), user, messageContext)) {
+                        wrapper.getGuild().get(), user, wrapper)) {
                     return;
                 }
             }
@@ -321,27 +320,27 @@ public class Permission extends Command implements Executable, ReqParser, ReqExe
         for (Role role : validRoles) {
             if (modifyType == ModifyType.ADD) {
                 if (!commandData.addRolePermission(context,
-                        messageContext.getGuild(), role, messageContext)) {
+                        wrapper.getGuild().get(), role, wrapper)) {
                     return;
                 }
             } else {
                 if (!commandData.removeRolePermission(context,
-                        messageContext.getGuild(), role, messageContext)) {
+                        wrapper.getGuild().get(), role, wrapper)) {
                     return;
                 }
             }
         }
 
-        sendMessage(messageContext, context, modifyType, validUser, validRoles);
+        sendMessage(wrapper, context, modifyType, validUser, validRoles);
 
     }
 
-    private void sendMessage(MessageEventDataWrapper messageContext, String contextName, ModifyType modifyType,
+    private void sendMessage(EventWrapper wrapper, String contextName, ModifyType modifyType,
                              List<User> users, List<Role> roles) {
-        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
                 .setColor(modifyType == ModifyType.ADD ? Colors.Pastel.DARK_GREEN : Colors.Pastel.RED)
                 .setTitle(localizeAllAndReplace(modifyType == ModifyType.ADD
-                        ? M_ACCESS_GRANTED.tag : M_ACCESS_REVOKED.tag, messageContext.getGuild(), contextName));
+                        ? M_ACCESS_GRANTED.tag : M_ACCESS_REVOKED.tag, wrapper, contextName));
 
         if (!users.isEmpty()) {
             String names = users.stream().map(IMentionable::getAsMention).collect(Collectors.joining(lineSeparator()));
@@ -354,12 +353,11 @@ public class Permission extends Command implements Executable, ReqParser, ReqExe
                     ? M_ROLE_ACCESS_GRANTED.tag : M_ROLE_ACCESS_REVOKED.tag, names, false);
         }
 
-        messageContext.getTextChannel().sendMessage(builder.build()).queue();
+        wrapper.getMessageChannel().sendMessage(builder.build()).queue();
     }
 
     /**
-     * Get the roles, which have access to this context on the
-     * guild of the {@link MessageEventDataWrapper} message context.
+     * Get the roles, which have access to this context on the guild.
      *
      * @param guild guild lookup
      * @return list of all roles with access to this context
@@ -370,8 +368,7 @@ public class Permission extends Command implements Executable, ReqParser, ReqExe
     }
 
     /**
-     * Get the users, which have access to this context on the
-     * guild of the {@link MessageEventDataWrapper} message context.
+     * Get the users, which have access to this context on the guild.
      *
      * @param guild guild lookup
      * @return list of all roles with access to this context

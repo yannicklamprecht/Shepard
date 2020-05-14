@@ -13,7 +13,8 @@ import de.eldoria.shepard.modulebuilder.ModuleBuilder;
 public class GuessGameModule implements ModuleBuilder {
     @Override
     public void buildModule(SharedResources resources) {
-        addAndInit(new GuessGame(), resources);
+        ChannelEvaluator<GuessGameEvaluator> evaluator = new ChannelEvaluator<>(5);
+        addAndInit(new GuessGame(evaluator), resources);
 
         // Guess Game image register
         ImageRegister register = new ImageRegister();
@@ -21,7 +22,6 @@ public class GuessGameModule implements ModuleBuilder {
         addAndInit(new GuessGameConfig(register), resources);
         addAndInit(new GuessGameImageRegisterListener(register), resources);
 
-        ChannelEvaluator<GuessGameEvaluator> evaluator = new ChannelEvaluator<>(5);
         addAndInit(new GuessGameListener(evaluator), resources);
 
     }

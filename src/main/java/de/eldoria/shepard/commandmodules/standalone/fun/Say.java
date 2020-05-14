@@ -5,11 +5,12 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.SayLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Role;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
 import static de.eldoria.shepard.localization.enums.commands.fun.SayLocale.A_SAY;
 import static de.eldoria.shepard.localization.enums.commands.fun.SayLocale.DESCRIPTION;
 
-public class Say extends Command implements Executable {
+public class Say extends Command implements GuildChannelOnly, Executable {
 
     /**
      * Creates a new Sayd command object.
@@ -34,20 +35,20 @@ public class Say extends Command implements Executable {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
 
-        List<Role> mentionedRoles = messageContext.getMessage().getMentionedRoles();
-        boolean everyone = messageContext.getMessage().mentionsEveryone();
+        List<Role> mentionedRoles = wrapper.getMessage().getMentionedRoles();
+        boolean everyone = wrapper.getMessage().mentionsEveryone();
 
         if (!mentionedRoles.isEmpty() || everyone) {
-            MessageSender.sendMessage(SayLocale.A_MENTION.tag, messageContext.getTextChannel());
+            MessageSender.sendMessage(SayLocale.A_MENTION.tag, wrapper.getMessageChannel());
             return;
         }
 
-        messageContext.getTextChannel().sendMessage(ArgumentParser.getMessage(args, 0)).queue();
+        wrapper.getMessageChannel().sendMessage(ArgumentParser.getMessage(args, 0)).queue();
 
-        if (label.equalsIgnoreCase("sayd")) {
-            messageContext.getMessage().delete().queue();
+        if (label.equalsIgnoreCase("sayd") && wrapper.isGuildEvent()) {
+            wrapper.getMessage().delete().queue();
         }
     }
 }

@@ -6,7 +6,7 @@ import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.util.VoteLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 
 /**
  * Command which provides a vote link to the botlist.
@@ -24,13 +24,13 @@ public class Vote extends Command implements Executable {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
-        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
+    public void execute(String label, String[] args, EventWrapper wrapper) {
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
                 .setTitle(VoteLocale.M_TITLE.tag)
                 .setDescription(VoteLocale.M_TEXT.tag + System.lineSeparator()
                         + "[" + VoteLocale.M_CLICK + "](https://top.gg/bot/512413049894731780/vote)\n"
                         + "[" + VoteLocale.M_CLICK + "](https://discordbotlist.com/bots/512413049894731780)")
                 .setThumbnail(ShepardReactions.WINK.thumbnail);
-        messageContext.getTextChannel().sendMessage(builder.build()).queue();
+        wrapper.getMessageChannel().sendMessage(builder.build()).queue();
     }
 }
