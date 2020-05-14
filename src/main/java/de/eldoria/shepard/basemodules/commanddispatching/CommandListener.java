@@ -11,6 +11,7 @@ import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
 import de.eldoria.shepard.modulebuilder.requirements.ReqCommands;
@@ -20,10 +21,12 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqExecutionValidator;
 import de.eldoria.shepard.modulebuilder.requirements.ReqReactionAction;
 import de.eldoria.shepard.modulebuilder.requirements.ReqStatistics;
 import de.eldoria.shepard.util.Verifier;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +41,6 @@ import java.util.Optional;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_COMMAND_NOT_FOUND;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_HELP_COMMAND;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_SUGGESTION;
-import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 @Slf4j
 public class CommandListener extends ListenerAdapter
@@ -57,15 +59,27 @@ public class CommandListener extends ListenerAdapter
     }
 
     @Override
+    public void onPrivateMessageReceived(@Nonnull PrivateMessageReceivedEvent event) {
+        onCommand(EventWrapper.wrap(event));
+    }
+
+    @Override
+    public void onPrivateMessageUpdate(@Nonnull PrivateMessageUpdateEvent event) {
+        if (event.getMessage().getTimeCreated().isAfter(OffsetDateTime.now().minusMinutes(5))) {
+            onCommand(EventWrapper.wrap(event));
+        }
+    }
+
+    @Override
     public void onGuildMessageUpdate(@Nonnull GuildMessageUpdateEvent event) {
         if (event.getMessage().getTimeCreated().isAfter(OffsetDateTime.now().minusMinutes(5))) {
-            onCommand(new MessageEventDataWrapper(event));
+            onCommand(EventWrapper.wrap(event));
         }
     }
 
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
-        onCommand(new MessageEventDataWrapper(event));
+        onCommand(EventWrapper.wrap(event));
     }
 
     /**
@@ -73,27 +87,27 @@ public class CommandListener extends ListenerAdapter
      * Suggests a command if no command is valid and some similar command are found.
      * Parses the input into commands.
      *
-     * @param messageContext context to check
+     * @param eventWrapper context to check
      */
-    private void onCommand(MessageEventDataWrapper messageContext) {
-        statistics.eventDispatched(messageContext.getJDA());
+    private void onCommand(EventWrapper eventWrapper) {
+        statistics.eventDispatched(eventWrapper.getJDA());
 
-        String receivedMessage = messageContext.getMessage().getContentRaw();
+        String receivedMessage = eventWrapper.getMessage().getContentRaw();
         receivedMessage = receivedMessage.replaceAll("\\s\\s+", " ");
         String[] args = receivedMessage.split(" ");
 
         // Check if message is command
-        if (!isCommand(receivedMessage, args, messageContext)) return;
+        if (!isCommand(receivedMessage, args, eventWrapper)) return;
 
-        statistics.commandDispatched(messageContext.getJDA());
+        statistics.commandDispatched(eventWrapper.getJDA());
 
         // Ignore if the command is send by shepard
-        if (Verifier.equalSnowflake(messageContext.getAuthor(), messageContext.getJDA().getSelfUser())
-                || messageContext.getAuthor().isBot()) {
+        if (Verifier.equalSnowflake(eventWrapper.getAuthor(), eventWrapper.getJDA().getSelfUser())
+                || eventWrapper.getAuthor().isBot()) {
             return;
         }
 
-        args = stripArgs(receivedMessage, args, messageContext);
+        args = stripArgs(receivedMessage, args, eventWrapper);
         String label = args[0];
         args = buildArgs(args);
 
@@ -101,35 +115,38 @@ public class CommandListener extends ListenerAdapter
         Optional<Command> command = commands.getCommand(label);
 
         if (command.isPresent()) {
-            commands.dispatchCommand(command.get(), label, args, messageContext);
+            commands.dispatchCommand(command.get(), label, args, eventWrapper);
             return;
         }
-        String prefix = prefixData.getPrefix(messageContext.getGuild(), messageContext);
+        String prefix = config.getGeneralSettings().getPrefix();
+        if (eventWrapper.isGuildEvent()) {
+            prefix = prefixData.getPrefix(eventWrapper.getGuild().get());
+        }
 
-        if (searchAndSendSuggestion(messageContext, args, label, prefix)) return;
+        if (searchAndSendSuggestion(eventWrapper, args, label, prefix)) return;
 
         MessageSender.sendError(
                 new LocalizedField[] {
-                        new LocalizedField(M_COMMAND_NOT_FOUND.tag, localizeAllAndReplace(M_HELP_COMMAND.tag,
-                                messageContext.getGuild(), "`" + prefix + "help`"), false, messageContext)},
-                messageContext.getTextChannel());
+                        new LocalizedField(M_COMMAND_NOT_FOUND.tag, TextLocalizer.localizeAllAndReplace(M_HELP_COMMAND.tag,
+                                eventWrapper, "`" + prefix + "help`"), false, eventWrapper)},
+                eventWrapper);
     }
 
-    private boolean searchAndSendSuggestion(MessageEventDataWrapper messageContext,
+    private boolean searchAndSendSuggestion(EventWrapper eventWrapper,
                                             String[] args, String label, String prefix) {
         List<Command> similarCommand = commands.getSimilarCommands(label);
         if (!similarCommand.isEmpty()) {
             for (Command cmd : similarCommand) {
-                if (!executionValidator.canAccess(cmd, messageContext)) continue;
-                LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext.getGuild())
+                if (!executionValidator.canAccess(cmd, eventWrapper)) continue;
+                LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(eventWrapper)
                         .setTitle(M_COMMAND_NOT_FOUND.tag)
                         .setColor(Color.green)
                         .setDescription(M_SUGGESTION + System.lineSeparator() + "**" + cmd.getCommandName() + "**")
                         .setThumbnail(ShepardReactions.WINK.thumbnail);
 
-                messageContext.getTextChannel().sendMessage(builder.build()).queue(m ->
+                eventWrapper.getMessageChannel().sendMessage(builder.build()).queue(m ->
                         reactionAction.addReactionAction(
-                                m, new ExecuteCommand(commands, messageContext.getAuthor(), cmd, args, messageContext),
+                                m, new ExecuteCommand(commands, eventWrapper.getAuthor(), cmd, args, eventWrapper),
                                 new SendCommandHelp(cmd, prefix)));
                 return true;
             }
@@ -149,20 +166,20 @@ public class CommandListener extends ListenerAdapter
         return newArgs;
     }
 
-    private boolean isCommand(String receivedMessage, String[] args, MessageEventDataWrapper messageContext) {
+    private boolean isCommand(String receivedMessage, String[] args, EventWrapper eventWrapper) {
         boolean isCommand = false;
-        String prefix = prefixData.getPrefix(messageContext.getGuild(), messageContext);
+        String prefix = prefixData.getPrefix(eventWrapper);
         if (receivedMessage.startsWith(prefix)) {
             isCommand = true;
             //Check if the message is a command executed by a mention of the bot.
-        } else if (DbUtil.getIdRaw(args[0]).contentEquals(messageContext.getJDA().getSelfUser().getId())) {
+        } else if (DbUtil.getIdRaw(args[0]).contentEquals(eventWrapper.getJDA().getSelfUser().getId())) {
             isCommand = true;
         }
         return isCommand;
     }
 
-    private String[] stripArgs(String receivedMessage, String[] args, MessageEventDataWrapper messageContext) {
-        String prefix = prefixData.getPrefix(messageContext.getGuild(), messageContext);
+    private String[] stripArgs(String receivedMessage, String[] args, EventWrapper messageContext) {
+        String prefix = prefixData.getPrefix(messageContext);
         String[] strippedArgs;
         if (receivedMessage.startsWith(prefix)) {
             args[0] = args[0].substring(prefix.length());
