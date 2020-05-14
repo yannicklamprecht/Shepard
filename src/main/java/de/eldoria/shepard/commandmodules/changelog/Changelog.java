@@ -4,8 +4,8 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -13,6 +13,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.wrapper.EventWrapper;
+import de.eldoria.shepard.wrapper.EventContext;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -45,7 +46,8 @@ import static java.lang.System.lineSeparator;
  * Similar to AuditLog, but can also log bot actions in the future.
  * The logging events are present in {@link ChangelogListener}.
  */
-public class Changelog extends Command implements GuildChannelOnly, Executable, ReqParser, ReqDataSource {
+@CommandUsage(EventContext.GUILD)
+public class Changelog extends Command implements Executable, ReqParser, ReqDataSource {
     private ArgumentParser parser;
     private ChangelogData changelogData;
 

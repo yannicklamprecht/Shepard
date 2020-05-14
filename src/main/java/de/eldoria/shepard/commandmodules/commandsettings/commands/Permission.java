@@ -6,8 +6,8 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ExecutionValidator
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.commandsettings.data.CommandData;
 import de.eldoria.shepard.commandmodules.commandsettings.types.ModifyType;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
@@ -22,6 +22,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqExecutionValidator;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.Colors;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.IMentionable;
@@ -60,7 +61,8 @@ import static de.eldoria.shepard.localization.enums.listener.CommandListenerLoca
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
-public class Permission extends Command implements GuildChannelOnly, Executable, ReqParser, ReqExecutionValidator, ReqDataSource {
+@CommandUsage(EventContext.GUILD)
+public class Permission extends Command implements Executable, ReqParser, ReqExecutionValidator, ReqDataSource {
     private ArgumentParser parser;
     private CommandData commandData;
     private ExecutionValidator validator;

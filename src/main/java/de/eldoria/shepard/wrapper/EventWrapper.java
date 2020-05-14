@@ -25,7 +25,7 @@ public class EventWrapper {
 
     // General Event data
     private final JDA jda;
-    private MessageContext context;
+    private EventContext context;
     private final MessageChannel messageChannel;
     private final User actor;
     private final Message message;
@@ -40,7 +40,7 @@ public class EventWrapper {
     private EventWrapper(JDA jda, MessageChannel channel, User user, Message message, Guild guild) {
         this(jda, channel, user, message);
         this.guild = guild;
-        context = MessageContext.GUILD_CHANNEL;
+        context = EventContext.GUILD;
     }
 
     private EventWrapper(JDA jda, MessageChannel channel, User user, Message message) {
@@ -48,7 +48,7 @@ public class EventWrapper {
         this.messageChannel = channel;
         this.actor = user;
         this.message = message;
-        context = MessageContext.PRIVATE_CHANNEL;
+        context = EventContext.PRIVATE;
     }
 
     private EventWrapper(JDA jda, MessageChannel channel, User user, Message message, Guild guild, MessageReaction messageReaction) {
@@ -133,16 +133,16 @@ public class EventWrapper {
         return messageReaction;
     }
 
-    public MessageContext getMessageContext() {
+    public EventContext getMessageContext() {
         return context;
     }
 
     public boolean isGuildEvent() {
-        return context == MessageContext.GUILD_CHANNEL && guild != null;
+        return context == EventContext.GUILD && guild != null;
     }
 
     public boolean isPrivateEvent() {
-        return context == MessageContext.PRIVATE_CHANNEL;
+        return context == EventContext.PRIVATE;
     }
 
     public JDA getJDA() {

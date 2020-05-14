@@ -4,14 +4,15 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.quote.data.QuoteData;
 import de.eldoria.shepard.commandmodules.quote.types.QuoteElement;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 
 import javax.sql.DataSource;
@@ -41,7 +42,8 @@ import static java.lang.System.lineSeparator;
 /**
  * Command to add, remove, alter and list quotes.
  */
-public class ManageQuote extends Command implements GuildChannelOnly, Executable, ReqDataSource {
+@CommandUsage(EventContext.GUILD)
+public class ManageQuote extends Command implements Executable, ReqDataSource {
 
     private QuoteData quoteData;
 

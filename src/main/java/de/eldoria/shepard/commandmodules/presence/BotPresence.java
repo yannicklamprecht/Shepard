@@ -4,12 +4,13 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_TEXT;
@@ -28,7 +29,8 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
 /**
  * Command to set the presence for the bot.
  */
-public class BotPresence extends Command implements GuildChannelOnly, Executable {
+@CommandUsage(EventContext.GUILD)
+public class BotPresence extends Command implements Executable {
 
     private final PresenceChanger presenceChanger;
 

@@ -3,8 +3,8 @@ package de.eldoria.shepard.commandmodules.guessgame.commands;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.guessgame.data.GuessGameData;
 import de.eldoria.shepard.commandmodules.guessgame.util.GuessGameEvaluator;
 import de.eldoria.shepard.commandmodules.guessgame.util.GuessGameImage;
@@ -20,6 +20,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.reactions.ShepardEmote;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
@@ -49,7 +50,8 @@ import static java.lang.System.lineSeparator;
  * A started guess game will be manages by a {@link GuessGameEvaluator}.
  * Provides information about user scores.
  */
-public class GuessGame extends Command implements Executable, GuildChannelOnly, ReqShardManager, ReqDataSource, ReqInit {
+@CommandUsage({EventContext.GUILD})
+public class GuessGame extends Command implements Executable, ReqShardManager, ReqDataSource, ReqInit {
 
     private ChannelEvaluator<GuessGameEvaluator> evaluator;
     private ShardManager shardManager;

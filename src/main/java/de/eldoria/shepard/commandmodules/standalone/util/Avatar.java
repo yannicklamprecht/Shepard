@@ -4,8 +4,8 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.util.AvatarLocale;
 import de.eldoria.shepard.localization.util.TextLocalizer;
@@ -13,6 +13,7 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.util.FileHelper;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.User;
 
@@ -21,7 +22,8 @@ import java.io.File;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_USER;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USER;
 
-public class Avatar extends Command implements GuildChannelOnly, ExecutableAsync, ReqParser {
+@CommandUsage(EventContext.GUILD)
+public class Avatar extends Command implements ExecutableAsync, ReqParser {
     private ArgumentParser parser;
 
     /**

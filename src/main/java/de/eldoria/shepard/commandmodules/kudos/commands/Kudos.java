@@ -4,8 +4,8 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.kudos.data.KudoData;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.core.configuration.Config;
@@ -20,6 +20,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.Verifier;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.sharding.ShardManager;
@@ -48,7 +49,8 @@ import static java.lang.System.lineSeparator;
 /**
  * Command to give Kudos and see the top Kudos owner.
  */
-public class Kudos extends Command implements GuildChannelOnly, Executable, ReqShardManager, ReqParser, ReqConfig, ReqDataSource, ReqInit {
+@CommandUsage(EventContext.GUILD)
+public class Kudos extends Command implements Executable, ReqShardManager, ReqParser, ReqConfig, ReqDataSource, ReqInit {
     private ArgumentParser parser;
     private ShardManager shardManager;
     private KudoData kudoData;

@@ -2,15 +2,17 @@ package de.eldoria.shepard.commandmodules;
 
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 
-public class MuteSettings extends Command implements GuildChannelOnly, ExecutableAsync {
+@CommandUsage(EventContext.GUILD)
+public class MuteSettings extends Command implements ExecutableAsync {
 
     public MuteSettings() {
         super("muteConfig",

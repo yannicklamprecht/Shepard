@@ -3,8 +3,8 @@ package de.eldoria.shepard.commandmodules.prefix;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -12,6 +12,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 
 import javax.sql.DataSource;
@@ -26,7 +27,8 @@ import static de.eldoria.shepard.localization.enums.commands.admin.PrefixLocale.
 /**
  * Command to change the bot prefix on a guild.
  */
-public class Prefix extends Command implements GuildChannelOnly, Executable, ReqConfig, ReqDataSource, ReqInit {
+@CommandUsage(EventContext.GUILD)
+public class Prefix extends Command implements Executable, ReqConfig, ReqDataSource, ReqInit {
 
     private Config config;
     private DataSource source;

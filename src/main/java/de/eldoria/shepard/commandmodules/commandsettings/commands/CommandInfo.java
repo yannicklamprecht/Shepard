@@ -4,8 +4,8 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.commandsettings.data.CommandData;
 import de.eldoria.shepard.commandmodules.commandsettings.types.CommandSettings;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
@@ -13,6 +13,7 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 
 import javax.sql.DataSource;
@@ -26,7 +27,8 @@ import static java.lang.System.lineSeparator;
 /**
  * Gives information about the settings of a registered and active {@link Command}.
  */
-public class CommandInfo extends Command implements GuildChannelOnly, Executable, ReqParser, ReqDataSource {
+@CommandUsage(EventContext.GUILD)
+public class CommandInfo extends Command implements Executable, ReqParser, ReqDataSource {
 
     private ArgumentParser parser;
     private CommandData commandData;

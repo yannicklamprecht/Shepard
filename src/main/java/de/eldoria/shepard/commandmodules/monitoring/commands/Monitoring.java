@@ -4,8 +4,8 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.monitoring.data.MonitoringData;
 import de.eldoria.shepard.commandmodules.monitoring.util.Address;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
@@ -19,6 +19,7 @@ import de.eldoria.shepard.util.AddressType;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.Verifier;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.TextChannel;
 
@@ -52,7 +53,8 @@ import static java.lang.System.lineSeparator;
  * Command to modify the logging channel.
  * The monitoring is done in {@link de.eldoria.shepard.commandmodules.monitoring.analyzer.MonitoringCoordinator}
  */
-public class Monitoring extends Command implements GuildChannelOnly, Executable, ReqDataSource {
+@CommandUsage(EventContext.GUILD)
+public class Monitoring extends Command implements Executable, ReqDataSource {
     private MonitoringData monitoringData;
 
     /**

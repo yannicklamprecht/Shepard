@@ -4,12 +4,13 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.SayLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Role;
 
@@ -18,7 +19,8 @@ import java.util.List;
 import static de.eldoria.shepard.localization.enums.commands.fun.SayLocale.A_SAY;
 import static de.eldoria.shepard.localization.enums.commands.fun.SayLocale.DESCRIPTION;
 
-public class Say extends Command implements GuildChannelOnly, Executable {
+@CommandUsage(EventContext.GUILD)
+public class Say extends Command implements Executable {
 
     /**
      * Creates a new Sayd command object.

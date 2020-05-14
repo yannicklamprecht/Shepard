@@ -4,8 +4,8 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.privatemessages.util.PrivateMessageHelper;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.core.util.Normandy;
@@ -15,6 +15,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqNormandy;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.util.Verifier;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.User;
 
@@ -25,7 +26,8 @@ import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessag
 /**
  * Command which makes it possible to send private messages as the bot.
  */
-public class SendPrivateMessage extends Command implements Executable, GuildChannelOnly, ReqParser, ReqNormandy {
+@CommandUsage(EventContext.GUILD)
+public class SendPrivateMessage extends Command implements Executable, ReqParser, ReqNormandy {
     private ArgumentParser parser;
     private Normandy normandy;
 

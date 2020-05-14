@@ -1,12 +1,13 @@
 package de.eldoria.shepard.commandmodules.standalone.fun;
 
 import de.eldoria.shepard.commandmodules.Command;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.Colors;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.GuildChannel;
@@ -24,7 +25,8 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
 /**
  * Command to tag someone in a channel who is online.
  */
-public class Someone extends Command implements GuildChannelOnly, Executable {
+@CommandUsage(EventContext.GUILD)
+public class Someone extends Command implements Executable {
     /**
      * Creates a new someone command object.
      */

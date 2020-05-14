@@ -3,7 +3,6 @@ package de.eldoria.shepard.commandmodules.standalone.botconfig;
 import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.messagehandler.MessageSender;

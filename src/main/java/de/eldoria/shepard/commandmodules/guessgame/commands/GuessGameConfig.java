@@ -4,8 +4,8 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.guessgame.data.GuessGameData;
 import de.eldoria.shepard.commandmodules.guessgame.util.GuessGameImage;
 import de.eldoria.shepard.commandmodules.guessgame.util.ImageRegister;
@@ -16,6 +16,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.util.BooleanState;
 import de.eldoria.shepard.util.FileHelper;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 
@@ -45,7 +46,8 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
  * Allows adding and removal of images.
  * Reflagging of a image is also possible.
  */
-public class GuessGameConfig extends Command implements GuildChannelOnly, ExecutableAsync, ReqDataSource, ReqInit {
+@CommandUsage(EventContext.GUILD)
+public class GuessGameConfig extends Command implements ExecutableAsync, ReqDataSource, ReqInit {
     private final ImageRegister register;
     private DataSource source;
     private GuessGameData guessGameData;

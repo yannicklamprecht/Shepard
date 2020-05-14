@@ -3,14 +3,15 @@ package de.eldoria.shepard.commandmodules.language;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.util.LocaleCode;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.util.TextFormatting;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 
 import javax.sql.DataSource;
@@ -31,7 +32,8 @@ import static de.eldoria.shepard.localization.enums.commands.admin.LanguageLocal
  * Languages are loaded from {@link de.eldoria.shepard.localization.LanguageHandler}
  */
 // TODO: Allow user to set own language to override global or guild settings.
-public class Language extends Command implements GuildChannelOnly, Executable, ReqDataSource {
+@CommandUsage(EventContext.GUILD)
+public class Language extends Command implements Executable, ReqDataSource {
 
     private LocaleData localeData;
 

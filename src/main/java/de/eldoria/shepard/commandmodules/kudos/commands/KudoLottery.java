@@ -4,8 +4,8 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.kudos.data.KudoData;
 import de.eldoria.shepard.commandmodules.kudos.util.KudoLotteryEvaluator;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
@@ -18,6 +18,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.util.reactions.ShepardEmote;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
@@ -36,7 +37,8 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
  * Command to start a new KudoLottery.
  * A started lottery will be handled by {@link KudoLotteryEvaluator}
  */
-public class KudoLottery extends Command implements Executable, GuildChannelOnly, ReqShardManager, ReqDataSource, ReqInit {
+@CommandUsage(EventContext.GUILD)
+public class KudoLottery extends Command implements Executable, ReqShardManager, ReqDataSource, ReqInit {
     private ShardManager jda;
     private ChannelEvaluator<KudoLotteryEvaluator> evaluator;
     private KudoData kudoData;

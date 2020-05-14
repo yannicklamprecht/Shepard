@@ -1,10 +1,11 @@
 package de.eldoria.shepard.commandmodules.changelog;
 
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.core.Statistics;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqStatistics;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
@@ -22,7 +23,8 @@ import java.util.List;
 
 import static java.lang.System.lineSeparator;
 
-public class ChangelogListener extends ListenerAdapter implements GuildChannelOnly, ReqDataSource, ReqStatistics {
+@CommandUsage(EventContext.GUILD)
+public class ChangelogListener extends ListenerAdapter implements ReqDataSource, ReqStatistics {
 
     private ChangelogData changelogData;
     private Statistics statistics;

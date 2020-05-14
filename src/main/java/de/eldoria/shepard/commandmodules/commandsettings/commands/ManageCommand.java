@@ -4,8 +4,8 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.commandsettings.data.CommandData;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.util.TextLocalizer;
@@ -14,6 +14,7 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.util.BooleanState;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 
 import javax.sql.DataSource;
@@ -40,7 +41,8 @@ import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageCon
 /**
  * Manage the basic settings of a registered and active {@link Command}.
  */
-public class ManageCommand extends Command implements GuildChannelOnly, Executable, ReqParser, ReqDataSource {
+@CommandUsage(EventContext.GUILD)
+public class ManageCommand extends Command implements Executable, ReqParser, ReqDataSource {
 
     private ArgumentParser parser;
     private CommandData commandData;

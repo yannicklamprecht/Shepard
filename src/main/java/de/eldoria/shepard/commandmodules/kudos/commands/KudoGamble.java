@@ -4,8 +4,8 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.kudos.data.KudoData;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.fun.KudoGambleLocale;
@@ -13,6 +13,7 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.util.reactions.Emoji;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
@@ -34,7 +35,8 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
  * The result is pseudo random.
  * This command requires asynchronous execution
  */
-public class KudoGamble extends Command implements GuildChannelOnly, ExecutableAsync, ReqDataSource {
+@CommandUsage(EventContext.GUILD)
+public class KudoGamble extends Command implements ExecutableAsync, ReqDataSource {
     private final int bonus = 64;
     private final int tier1 = 16;
     private final int tier2 = 4;

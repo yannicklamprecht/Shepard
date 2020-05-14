@@ -3,8 +3,8 @@ package de.eldoria.shepard.commandmodules.greeting.commands;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.greeting.data.InviteData;
 import de.eldoria.shepard.commandmodules.greeting.types.DatabaseInvite;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
@@ -14,6 +14,7 @@ import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.util.TextFormatting;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 
@@ -41,7 +42,8 @@ import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
-public class Invite extends Command implements GuildChannelOnly, Executable, ReqDataSource {
+@CommandUsage(EventContext.GUILD)
+public class Invite extends Command implements Executable, ReqDataSource {
 
     private static final Pattern INVITE = Pattern.compile("([a-zA-Z0-9]{6,7})$");
 

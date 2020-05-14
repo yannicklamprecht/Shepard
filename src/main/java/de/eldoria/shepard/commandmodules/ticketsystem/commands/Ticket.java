@@ -4,8 +4,8 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
 import de.eldoria.shepard.commandmodules.ticketsystem.data.TicketData;
 import de.eldoria.shepard.commandmodules.ticketsystem.util.TicketHelper;
 import de.eldoria.shepard.commandmodules.ticketsystem.util.TicketType;
@@ -23,6 +23,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.util.Replacer;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.Verifier;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
@@ -58,7 +59,8 @@ import static java.lang.System.lineSeparator;
  * Command to manage tickets.
  * Allows open, close of tickets and ticket category info.
  */
-public class Ticket extends Command implements GuildChannelOnly, Executable, ReqParser, ReqDataSource, ReqInit {
+@CommandUsage(EventContext.GUILD)
+public class Ticket extends Command implements Executable, ReqParser, ReqDataSource, ReqInit {
 
     private ArgumentParser parser;
     private DataSource source;

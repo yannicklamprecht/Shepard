@@ -2,17 +2,15 @@ package de.eldoria.shepard.basemodules.commanddispatching.util;
 
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
-import de.eldoria.shepard.commandmodules.command.GuildChannelOnly;
-import de.eldoria.shepard.commandmodules.command.PrivateChannelOnly;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.commandsettings.data.CommandData;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageReaction;
-import net.dv8tion.jda.api.entities.TextChannel;
 
 import javax.sql.DataSource;
 
@@ -34,11 +32,12 @@ public class ExecutionValidator implements ReqDataSource {
      * @return true if the user can access this command
      */
     public boolean canAccess(Command command, EventWrapper eventWrapper) {
-        if (eventWrapper.isGuildEvent() && command instanceof PrivateChannelOnly) {
+
+        if (eventWrapper.isGuildEvent() && !isGuildCommand(command)) {
             return false;
         }
 
-        if (eventWrapper.isPrivateEvent() && command instanceof GuildChannelOnly) {
+        if (eventWrapper.isPrivateEvent() && !isPrivateCommand(command)) {
             return false;
         }
 
@@ -47,7 +46,34 @@ public class ExecutionValidator implements ReqDataSource {
         } else {
             return commandData.canAccess(command, eventWrapper.getAuthor());
         }
+    }
 
+    private boolean isPrivateCommand(Command command) {
+        if (!command.getClass().isAnnotationPresent(CommandUsage.class)) {
+            return true;
+        }
+
+        EventContext[] value = command.getClass().getAnnotation(CommandUsage.class).value();
+        for (EventContext eventContext : value) {
+            if (eventContext == EventContext.PRIVATE) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isGuildCommand(Command command) {
+        if (!command.getClass().isAnnotationPresent(CommandUsage.class)) {
+            return true;
+        }
+
+        EventContext[] value = command.getClass().getAnnotation(CommandUsage.class).value();
+        for (EventContext eventContext : value) {
+            if (eventContext == EventContext.GUILD) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -145,11 +171,11 @@ public class ExecutionValidator implements ReqDataSource {
      * @return true if a command should be displayed.
      */
     public boolean displayInHelp(Command command, EventWrapper wrapper) {
-        if (wrapper.isGuildEvent() && command instanceof PrivateChannelOnly) {
+        if (wrapper.isGuildEvent() && !isGuildCommand(command)) {
             return false;
         }
 
-        if (wrapper.isPrivateEvent() && command instanceof GuildChannelOnly) {
+        if (wrapper.isPrivateEvent() && !isPrivateCommand(command)) {
             return false;
         }
 
