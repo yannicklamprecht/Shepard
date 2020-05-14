@@ -5,9 +5,9 @@ import java.time.format.DateTimeFormatter;
 
 public class ReminderSimple {
     private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-    private final int reminderId;
+    private final long reminderId;
     private final String text;
-    private final String time;
+    private final String timeString;
 
     /**
      * Creates a new reminder with timestamp.
@@ -16,10 +16,10 @@ public class ReminderSimple {
      * @param text       reminder text
      * @param timestamp  reminder timestamp.
      */
-    public ReminderSimple(int reminderId, String text, Timestamp timestamp) {
+    public ReminderSimple(Long reminderId, String text, Timestamp timestamp) {
         this.reminderId = reminderId;
         this.text = text;
-        this.time = dtf.format(timestamp.toLocalDateTime());
+        this.timeString = dtf.format(timestamp.toLocalDateTime());
     }
 
     /**
@@ -28,18 +28,25 @@ public class ReminderSimple {
      * @param reminderId id of reminder
      * @param text       text of reminder.
      */
-    public ReminderSimple(int reminderId, String text) {
+    public ReminderSimple(long reminderId, String text) {
         this.reminderId = reminderId;
         this.text = text;
-        this.time = "";
+        this.timeString = "";
     }
 
     /**
-     * Get the reminder id.
+     * Get the reminder id as a hex string. This takes precedence.
      *
      * @return reminder id
      */
-    public int getReminderId() {
+    public String getReminderId() {
+        return Long.toString(reminderId, 16);
+    }
+
+    /**
+     * @return
+     */
+    public long getReminderIdLong() {
         return reminderId;
     }
 
@@ -57,7 +64,7 @@ public class ReminderSimple {
      *
      * @return reminder time
      */
-    public String getTime() {
-        return time;
+    public String getTimeString() {
+        return timeString;
     }
 }

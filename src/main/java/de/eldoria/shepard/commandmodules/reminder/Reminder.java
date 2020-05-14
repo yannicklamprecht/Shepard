@@ -8,18 +8,20 @@ import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.reminder.data.ReminderData;
 import de.eldoria.shepard.commandmodules.reminder.types.ReminderSimple;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.util.TextFormatting;
-import de.eldoria.shepard.wrapper.MessageEventDataWrapper;
+import de.eldoria.shepard.wrapper.EventWrapper;
+import net.dv8tion.jda.api.entities.PrivateChannel;
 
 import javax.sql.DataSource;
 import java.util.List;
-import java.util.OptionalInt;
+import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static de.eldoria.shepard.localization.enums.WordsLocale.ID;
 import static de.eldoria.shepard.localization.enums.WordsLocale.MESSAGE;
@@ -27,16 +29,23 @@ import static de.eldoria.shepard.localization.enums.WordsLocale.TIME;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_ID;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_ID;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_MESSAGE;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.AD_INTERVAL;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.AD_TIMESTAMP;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.A_INTERVAL;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.A_TIMESTAMP;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_ADD;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_LIST;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_DELETE;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_LIST;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_RESTORE;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_SNOOZE;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_CURRENT_REMINDERS;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_REMIND_DATE;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_REMIND_DISPLAY;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_REMIND_TIME;
 import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_REMOVED;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_TITLE_CREATED;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_TITLE_SNOOZED;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**
@@ -64,6 +73,13 @@ public class Reminder extends Command implements Executable, ReqDataSource {
                         .addSubcommand(C_DELETE.tag,
                                 Parameter.createCommand("delete"),
                                 Parameter.createInput(A_ID.tag, AD_ID.tag, true))
+                        .addSubcommand(C_SNOOZE.tag,
+                                Parameter.createCommand("snooze"),
+                                Parameter.createInput(A_ID.tag, AD_ID.tag, true),
+                                Parameter.createInput(A_INTERVAL.tag, AD_INTERVAL.tag, true))
+                        .addSubcommand(C_RESTORE.tag,
+                                Parameter.createCommand("restore"),
+                                Parameter.createInput(A_ID.tag, AD_ID.tag, true))
                         .addSubcommand(C_LIST.tag,
                                 Parameter.createCommand("list"))
                         .build(),
@@ -71,83 +87,146 @@ public class Reminder extends Command implements Executable, ReqDataSource {
     }
 
     @Override
-    public void execute(String label, String[] args, MessageEventDataWrapper messageContext) {
+    public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
 
-        if (isSubCommand(cmd, 2)) {
-            list(messageContext);
+        if (isSubCommand(cmd, 4)) {
+            list(wrapper);
             return;
         }
 
         if (args.length < 2) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, wrapper);
             return;
         }
 
         if (isSubCommand(cmd, 1)) {
-            remove(args, messageContext);
+            delete(args, wrapper);
+            return;
+        }
+
+        if (isSubCommand(cmd, 2)) {
+            snooze(args, wrapper);
+            return;
+        }
+
+        if (isSubCommand(cmd, 3)) {
+            restore(args[1], wrapper);
             return;
         }
 
 
-        if (args.length < 4) {
-            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, messageContext.getTextChannel());
+        if (args.length < 3) {
+            MessageSender.sendSimpleError(ErrorType.TOO_FEW_ARGUMENTS, wrapper);
             return;
         }
 
-        add(args, messageContext);
+        add(args, wrapper);
     }
 
-    private void remove(String[] args, MessageEventDataWrapper messageContext) {
-        OptionalInt number = ArgumentParser.parseInt(args[1]);
+    private void restore(String id, EventWrapper wrapper) {
+        OptionalLong number = ArgumentParser.hexToLong(id);
         if (number.isEmpty()) {
-            MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_ID, wrapper);
             return;
         }
 
-        List<ReminderSimple> userReminder = reminderData.getUserReminder(messageContext.getGuild(),
-                messageContext.getAuthor(), messageContext);
-        if (number.getAsInt() > userReminder.size()) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_ID, messageContext.getTextChannel());
+        Optional<ReminderSimple> optionalReminder = reminderData.getReminder(number.getAsLong(), wrapper);
+        if (optionalReminder.isEmpty()) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_ID, wrapper);
             return;
         }
 
-        ReminderSimple reminder = userReminder.stream().filter(reminderSimple ->
-                reminderSimple.getReminderId() == number.getAsInt()).collect(Collectors.toList()).get(0);
+        ReminderSimple reminder = optionalReminder.get();
 
-        if (reminderData.removeUserReminder(messageContext.getGuild(), messageContext.getAuthor(),
-                number.getAsInt(), messageContext)) {
-            MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED.tag,
-                    messageContext.getGuild(), reminder.getReminderId() + "",
-                    TextFormatting.cropText(reminder.getText(), "...", 20, true),
-                    reminder.getTime()), messageContext.getTextChannel());
+        if (reminderData.restoreReminder(number.getAsLong(), wrapper)) {
+            LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
+                    .setTitle(localizeAllAndReplace(M_TITLE_CREATED.tag, wrapper, reminder.getReminderId()))
+                    .setDescription(localizeAllAndReplace("**" + M_REMIND_DISPLAY.tag + "**",
+                            wrapper, reminder.getTimeString()) + System.lineSeparator() + reminder.getText());
+            wrapper.getMessageChannel().sendMessage(builder.build()).queue();
         }
     }
 
-    private void list(MessageEventDataWrapper messageContext) {
-        List<ReminderSimple> reminders = reminderData.getUserReminder(messageContext.getGuild(),
-                messageContext.getAuthor(), messageContext);
+    private void snooze(String[] args, EventWrapper wrapper) {
+        OptionalLong number = ArgumentParser.hexToLong(args[1]);
+        if (number.isEmpty()) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_ID, wrapper);
+            return;
+        }
+
+        Optional<ReminderSimple> optionalReminder = reminderData.getReminder(number.getAsLong(), wrapper);
+        if (optionalReminder.isEmpty()) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_ID, wrapper);
+            return;
+        }
+
+        String timeString = ArgumentParser.getMessage(args, -2);
+        if (!INTERVAL.matcher(timeString).find()) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_TIME, wrapper);
+            return;
+        }
+
+        reminderData.snoozeReminder(number.getAsLong(), timeString, wrapper);
+
+        ReminderSimple reminder = reminderData.getReminder(number.getAsLong(), wrapper).get();
+
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
+                .setTitle(localizeAllAndReplace(M_TITLE_SNOOZED.tag, wrapper, reminder.getReminderId()))
+                .setDescription(localizeAllAndReplace("**" + M_REMIND_TIME.tag + "**",
+                        wrapper, timeString) + System.lineSeparator() + reminder.getText());
+        wrapper.getMessageChannel().sendMessage(builder.build()).queue();
+    }
+
+    private void delete(String[] args, EventWrapper wrapper) {
+        OptionalLong number = ArgumentParser.hexToLong(args[1]);
+        if (number.isEmpty()) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_ID, wrapper);
+            return;
+        }
+
+        Optional<ReminderSimple> optionalReminder = reminderData.getReminder(number.getAsLong(), wrapper);
+        if (optionalReminder.isEmpty()) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_ID, wrapper);
+            return;
+        }
+
+        ReminderSimple reminder = optionalReminder.get();
+
+        if (reminderData.removeUserReminder(number.getAsLong(), wrapper)) {
+            MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED.tag,
+                    wrapper, reminder.getReminderId() + "",
+                    TextFormatting.cropText(reminder.getText(), "...", 20, true),
+                    reminder.getTimeString()), wrapper.getMessageChannel());
+        } else {
+            MessageSender.sendSimpleError(ErrorType.INVALID_ID, wrapper);
+        }
+    }
+
+    private void list(EventWrapper messageContext) {
+        List<ReminderSimple> reminders = reminderData.getUserReminder(messageContext);
+
         TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
                 reminders,
-                TextLocalizer.localizeAll(ID.tag, messageContext.getGuild()),
-                TextLocalizer.localizeAll(MESSAGE.tag, messageContext.getGuild()),
-                TextLocalizer.localizeAll(TIME.tag, messageContext.getGuild()));
+                TextLocalizer.localizeAll(ID.tag, messageContext),
+                TextLocalizer.localizeAll(MESSAGE.tag, messageContext),
+                TextLocalizer.localizeAll(TIME.tag, messageContext));
         for (ReminderSimple reminder : reminders) {
             tableBuilder.next();
             tableBuilder.setRow(
                     reminder.getReminderId() + "",
                     TextFormatting.cropText(reminder.getText(), "...", 30, true),
-                    reminder.getTime());
+                    reminder.getTimeString());
         }
 
         MessageSender.sendMessage(M_CURRENT_REMINDERS + System.lineSeparator() + tableBuilder,
-                messageContext.getTextChannel());
+                messageContext.getMessageChannel());
     }
 
-    private void add(String[] args, MessageEventDataWrapper messageContext) {
+    private void add(String[] args, EventWrapper wrapper) {
         String timeString = ArgumentParser.getMessage(args, 0, 2);
         if (!DATE.matcher(timeString).find() && !INTERVAL.matcher(timeString).find()) {
-            MessageSender.sendSimpleError(ErrorType.INVALID_TIME, messageContext.getTextChannel());
+            MessageSender.sendSimpleError(ErrorType.INVALID_TIME, wrapper);
             return;
         }
 
@@ -157,21 +236,35 @@ public class Reminder extends Command implements Executable, ReqDataSource {
             String date = args[1];
             String time = args[2];
 
-            if (reminderData.addReminderDate(messageContext.getGuild(), messageContext.getAuthor(),
-                    messageContext.getTextChannel(), message, date, time, messageContext)) {
-                MessageSender.sendMessage(localizeAllAndReplace(M_REMIND_DATE.tag,
-                        messageContext.getGuild(), date, time) + System.lineSeparator() + message,
-                        messageContext.getTextChannel());
+            Optional<String> id = reminderData.addReminderDate(message, date, time, wrapper);
+            if (id.isPresent()) {
+                LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
+                        .setTitle(localizeAllAndReplace(M_TITLE_CREATED.tag, wrapper, id.get()))
+                        .setDescription(localizeAllAndReplace("**" + M_REMIND_DATE.tag + "**",
+                                wrapper, date, time) + System.lineSeparator() + message);
+                if (wrapper.isPrivateEvent()) {
+                    Optional<PrivateChannel> privateChannel = wrapper.getPrivateChannel();
+                    privateChannel.ifPresent(channel -> channel.sendMessage(builder.build()).queue());
+                    return;
+                }
+                wrapper.getMessageChannel().sendMessage(builder.build()).queue();
             }
             return;
         }
 
         // Interval reminder
-        if (reminderData.addReminderInterval(messageContext.getGuild(), messageContext.getAuthor(),
-                messageContext.getTextChannel(), message, timeString, messageContext)) {
-            MessageSender.sendMessage(localizeAllAndReplace(M_REMIND_TIME.tag,
-                    messageContext.getGuild(), timeString) + System.lineSeparator() + message,
-                    messageContext.getTextChannel());
+        Optional<String> id = reminderData.addReminderInterval(message, timeString, wrapper);
+        if (id.isPresent()) {
+            LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
+                    .setTitle(localizeAllAndReplace(M_TITLE_CREATED.tag, wrapper, id.get()))
+                    .setDescription(localizeAllAndReplace("**" + M_REMIND_TIME.tag + "**",
+                            wrapper, timeString) + System.lineSeparator() + message);
+            if (wrapper.isPrivateEvent()) {
+                Optional<PrivateChannel> privateChannel = wrapper.getPrivateChannel();
+                privateChannel.ifPresent(channel -> channel.sendMessage(builder.build()).queue());
+                return;
+            }
+            wrapper.getMessageChannel().sendMessage(builder.build()).queue();
         }
     }
 

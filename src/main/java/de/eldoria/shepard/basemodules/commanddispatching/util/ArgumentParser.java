@@ -234,6 +234,20 @@ public class ArgumentParser implements ReqCommands, ReqShardManager {
         }
     }
 
+    /**
+     * Parse a string to long.
+     *
+     * @param number number as string
+     * @return number or null if parse failed
+     */
+    public static OptionalLong hexToLong(String number) {
+        try {
+            return OptionalLong.of(Long.parseLong(number, 16));
+        } catch (NumberFormatException e) {
+            return OptionalLong.empty();
+        }
+    }
+
     private static <T> T byId(String id, Function<String, T> convert) {
         if (isValidId(id)) {
             return convert.apply(getIdRaw(id));

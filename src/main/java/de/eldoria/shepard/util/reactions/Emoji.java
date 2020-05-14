@@ -5,30 +5,30 @@ public enum Emoji {
     /**
      * :white_check_mark: emoji.
      */
-    CHECK_MARK_BUTTON("\u2705"),
+    CHECK_MARK_BUTTON("✅"),
     /**
      * :x: emoji.
      */
-    CROSS_MARK("\u274c"),
+    CROSS_MARK("❌"),
     /**
      * :question: emoji.
      */
-    QUESTION_MARK("\u2753"),
+    QUESTION_MARK("❓"),
 
     /**
      * :moneybag: emoji.
      */
-    MONEY_BAG("\ud83d\udcb0"),
+    MONEY_BAG("💰"),
 
     /**
      * :dollar: emoji.
      */
-    DOLLAR("\ud83d\udcb5"),
+    DOLLAR("💵"),
 
     /**
      * :gem: emoji.
      */
-    GEM("\uD83D\uDC8E"),
+    GEM("💎"),
 
     /**
      * :black_large_square: emoji.
@@ -41,7 +41,8 @@ public enum Emoji {
     /**
      * :diamond_shape_with_a_dot_inside: emoji.
      */
-    DIAMAOND_SHAPE_WITH_DOT("💠");
+    DIAMAOND_SHAPE_WITH_DOT("💠"),
+    ARROWS_COUNTERBLOCKWISE("🔄");
 
     /**
      * Returns the unicode of the emoji.
