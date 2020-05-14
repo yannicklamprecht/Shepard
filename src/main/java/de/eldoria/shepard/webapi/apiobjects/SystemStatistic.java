@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class SystemResponse {
+public class SystemStatistic {
     private final int shardsTotal;
     private final int commands;
     private final double ramUsed;
@@ -13,7 +13,7 @@ public class SystemResponse {
     private final AggregatedShards aggregatedShards;
     private final List<ShardStatistic> shardStatistics;
 
-    public SystemResponse(int shardsTotal, int commands, double ramUsed, int threads, List<ShardStatistic> shardStatistics) {
+    public SystemStatistic(int shardsTotal, int commands, double ramUsed, int threads, List<ShardStatistic> shardStatistics) {
         this.shardsTotal = shardsTotal;
         this.commands = commands;
         this.ramUsed = ramUsed;
