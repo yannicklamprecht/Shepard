@@ -62,6 +62,9 @@ public final class UniqueMessageIdentifier {
      * @return a new unique message identifier for the message
      */
     public static UniqueMessageIdentifier get(Message message) {
+        if (message.getChannel() instanceof TextChannel) {
+            return new UniqueMessageIdentifier(((TextChannel) message.getChannel()), message.getIdLong());
+        }
         return new UniqueMessageIdentifier(message.getChannel(), message.getIdLong());
     }
 
