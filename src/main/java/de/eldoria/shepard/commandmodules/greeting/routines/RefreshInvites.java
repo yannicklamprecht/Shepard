@@ -1,6 +1,8 @@
 package de.eldoria.shepard.commandmodules.greeting.routines;
 
+import de.eldoria.shepard.commandmodules.greeting.data.GreetingData;
 import de.eldoria.shepard.commandmodules.greeting.data.InviteData;
+import de.eldoria.shepard.commandmodules.greeting.types.GreetingSettings;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -15,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 class RefreshInvites implements Runnable {
     private final ShardManager shardManager;
     private final InviteData inviteData;
+    private GreetingData greetingData;
 
     /**
      * Creates a new RefreshInvite object.
@@ -25,6 +28,7 @@ class RefreshInvites implements Runnable {
     public RefreshInvites(ShardManager shardManager, DataSource source) {
         this.shardManager = shardManager;
         inviteData = new InviteData(source);
+        greetingData = new GreetingData(shardManager, source);
     }
 
     @Override
@@ -37,6 +41,10 @@ class RefreshInvites implements Runnable {
         int guildCount = shardManager.getGuilds().size();
         while (iterator.hasNext()) {
             Guild guild = iterator.next();
+
+            GreetingSettings greeting = greetingData.getGreeting(guild);
+            if (greeting.getChannel() == null) continue;
+
             if (!Objects.requireNonNull(guild.getMember(shardManager.getShardById(0).getSelfUser()))
                     .hasPermission(Permission.MANAGE_SERVER)) {
                 continue;
@@ -50,11 +58,6 @@ class RefreshInvites implements Runnable {
                     log.debug("Cleaned up Invites");
                 }
             });
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                return;
-            }
         }
     }
 }
