@@ -1,6 +1,7 @@
 package de.eldoria.shepard.webapi.apiobjects.commandserialization;
 
 import de.eldoria.shepard.commandmodules.Command;
+import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.Data;
@@ -9,6 +10,7 @@ import lombok.Data;
 public class SimpleCommandInfo {
     private final String commandIdentifier;
     private final String commandName;
+    private final CommandCategory category;
     private final String description;
 
     /**
@@ -20,5 +22,6 @@ public class SimpleCommandInfo {
         commandIdentifier = command.getCommandIdentifier();
         commandName = command.getCommandName();
         description = TextLocalizer.localizeAllAndReplace(command.getCommandDesc(), EventWrapper.fakeEmpty());
+        category = command.getCategory();
     }
 }
