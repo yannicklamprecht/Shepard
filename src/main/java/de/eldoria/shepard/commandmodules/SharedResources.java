@@ -55,13 +55,11 @@ public final class SharedResources implements ReqAssigner {
     }
 
     private void init() {
-        // Req JDA
-        statistics = new Statistics();
-        addAndInit(statistics, this);
 
         // Req JDA
         collections = new ShepardCollections();
         addAndInit(collections, this);
+
 
         // Req Config
         connectionPool = new ConnectionPool();
@@ -79,6 +77,10 @@ public final class SharedResources implements ReqAssigner {
         // Req Config, Execution Valid, Cooldown Manager, DataSource
         commandHub = new CommandHub();
         addAndInit(commandHub, this);
+
+        // Req JDA
+        statistics = new Statistics();
+        addAndInit(statistics, this);
 
         addAndInit(this, collections.getPrivateMessages(), collections.getNormandy());
 
