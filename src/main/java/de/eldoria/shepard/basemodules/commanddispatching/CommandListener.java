@@ -27,6 +27,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageUpdateEvent;
+import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -143,15 +144,17 @@ public class CommandListener extends ListenerAdapter
                         .setColor(Color.green)
                         .setDescription(M_SUGGESTION + System.lineSeparator() + "**" + cmd.getCommandName() + "**")
                         .setThumbnail(ShepardReactions.WINK.thumbnail);
-
-                eventWrapper.getMessageChannel().sendMessage(builder.build()).queue(m -> {
-                    if (eventWrapper.isGuildEvent()) {
-                        reactionAction.addReactionAction(
-                                m, new ExecuteCommand(commands, eventWrapper.getAuthor(), cmd, args, eventWrapper),
-                                new SendCommandHelp(cmd, prefix));
-                    }
-                });
-
+                try {
+                    eventWrapper.getMessageChannel().sendMessage(builder.build()).queue(m -> {
+                        if (eventWrapper.isGuildEvent()) {
+                            reactionAction.addReactionAction(
+                                    m, new ExecuteCommand(commands, eventWrapper.getAuthor(), cmd, args, eventWrapper),
+                                    new SendCommandHelp(cmd, prefix));
+                        }
+                    });
+                } catch (InsufficientPermissionException e) {
+                    MessageSender.handlePermissionException(config, e, eventWrapper);
+                }
                 return true;
             }
         }
