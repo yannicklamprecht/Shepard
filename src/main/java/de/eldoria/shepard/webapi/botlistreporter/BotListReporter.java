@@ -75,10 +75,10 @@ public final class BotListReporter implements Runnable, ReqInit, ReqShardManager
     private void sendDiscordBotlistCom(int guildCount, long userCount) {
         queryBotlistApi(
                 "discordbotlist.com",
-                "https://discordbotlist.com/api/bots/512413049894731780/stats",
-                "Bot " + config.getBotlist().getToken().getDiscordBotListCom(),
+                "https://discordbotlist.com/api/v1/bots/512413049894731780/stats",
+                config.getBotlist().getToken().getDiscordBotListCom(),
                 new DiscordBotlistComRequests(0, guildCount, userCount, 0),
-                204);
+                200);
     }
 
     private void sendDiscordBotsgg(int guildCount) {

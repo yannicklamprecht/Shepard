@@ -40,15 +40,10 @@ public class BotListEndpoint {
 
                 return HttpStatusCodes.STATUS_CODE_OK;
             });
+
             post("/discordbotlistcom", (request, response) -> {
                 response.type("application/json");
-                OptionalLong id = OptionalLong.empty();
-                Matcher matcher = Pattern.compile("id=([0-9]{18})").matcher(request.body());
-                if (matcher.find()) {
-                    id = ArgumentParser.parseLong(matcher.group(1));
-                }
-                if (id.isEmpty()) return HttpStatusCodes.STATUS_CODE_OK;
-                DiscordBotListVote vote = new DiscordBotListVote(id.getAsLong());
+                DiscordBotListVote vote = new Gson().fromJson(request.body(), DiscordBotListVote.class);
                 botListReporter.handleVote(new VoteWrapper(vote));
 
                 return HttpStatusCodes.STATUS_CODE_OK;
