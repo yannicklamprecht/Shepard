@@ -12,7 +12,8 @@ public enum SomeoneLocale {
     /**
      * Localization key for message someone.
      */
-    M_SOMEONE("command.someone.message.someone");
+    M_SOMEONE("command.someone.message.someone"),
+    M_BOTTLE("command.someone.message.bottle");
 
     /**
      * Get the escaped locale code for auto translation.

@@ -18,6 +18,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.M_BOTTLE;
 import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.M_NO_ONLINE;
 import static de.eldoria.shepard.localization.enums.commands.fun.SomeoneLocale.M_SOMEONE;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
@@ -31,8 +32,8 @@ public class Someone extends Command implements Executable {
      * Creates a new someone command object.
      */
     public Someone() {
-        super("Someone",
-                null,
+        super("bottlespin",
+                new String[] {"bottle", "someone"},
                 DESCRIPTION.tag,
                 CommandCategory.FUN);
     }
@@ -43,9 +44,7 @@ public class Someone extends Command implements Executable {
                 .getGuildChannelById(wrapper.getMessageChannel().getId());
         if (guildChannelById != null) {
             List<Member> members = guildChannelById.getMembers().stream()
-                    .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE
-                            && member.getIdLong() != wrapper.getAuthor().getIdLong()
-                            && !member.getUser().isBot())
+                    .filter(member -> !member.getUser().isBot())
                     .collect(Collectors.toList());
 
             if (members.size() == 0) {
@@ -56,10 +55,16 @@ public class Someone extends Command implements Executable {
             Random rand = new Random();
 
             Member member = members.get(rand.nextInt(members.size()));
-
             LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
-                    .setDescription(localizeAllAndReplace("**" + M_SOMEONE + "**", wrapper,
-                            member.getAsMention())).setColor(Colors.Pastel.ORANGE);
+                    .setColor(Colors.Pastel.ORANGE);
+            if (label.equalsIgnoreCase("someone")) {
+                builder.setDescription(localizeAllAndReplace("**" + M_SOMEONE + "**", wrapper,
+                        member.getAsMention()));
+            } else {
+                builder.setDescription(localizeAllAndReplace("**" + M_BOTTLE + "**", wrapper,
+                        member.getAsMention()));
+            }
+
             wrapper.getMessageChannel().sendMessage(builder.build()).queue();
         }
     }
