@@ -1,0 +1,270 @@
+# Define active rules for the server
+globalChatRules:
+  # activate, disable or change a rule
+  rule:
+    <rule>
+      <values>
+  # information about the rules active in all channel
+  information:
+
+
+# Define active rules for a specific channel
+channelChatRules:
+  # activate, disable or change a rule
+  rule:
+    channelid:
+      <rule>
+        <values>
+  # information about the rules active in a channel
+  info:
+  # Allows to apply global and channel rules.
+  inherit:
+    <true\false=false>
+
+# This will return whether this message would be blocked or not.
+testrule:
+  global:
+    rule:
+      message
+  channel:
+    rule:
+      message
+
+# Rules work with different Message types.
+# Each Message type is a rule. A Message type can be allowed or denied. The check itself can be disabled
+# Some rules have additional values some have not
+rules:
+  # allow sending of normal messages. a normal message is a message which is not a message of the types below
+  normalMessage:
+    disable\allow\deny
+  # a link message contains a link. you can deliver a optional list of links allowed or blocked. strip to toplevel domains.
+  linkMessage:
+    disable\allow\deny [domains...]
+  # Number of Mentions per Message.
+  # 0 does not allow any mention
+  maxMention:
+    disable\number
+  # Allows or blocks messages with a attachment and a optinal defined list of types.
+  attachmentMessage:
+    <disable\allow\deny> [attachmentTypes...]
+  # Allows or block the sending of caps messages
+  CapsMessages:
+    <allow\deny> [minMessageLength=5]
+  # Allow or block sending of dublicated messages. Define optinal number of min messages of user between duplicates.
+  DoubleMessages:
+    <allow\deny>
+      [messagecountBetweenDuplicates=5. Max 10]
+  # allow or block sending of messages which contain words from the badwords list.
+  badwordMessage:
+    block\allow
+  # Allow or block sending of messages which match a regular expression
+  regexMessage:
+    <disable\match\block> [regex]
+
+# Manage a list of badwords. The usage of these words can be prohibited by a rule.
+badwords:
+  # add a badword
+  add:
+    word
+  # remove a badword
+  remove:
+    word
+  # get a list of bad words
+  list:
+
+
+# Register Prefixes of other bots. Shepard will ignore messages starting with these.
+registerPrefixes:
+  # add a bot prefix
+  add:
+    prefix
+  # remove a bot prefix
+  remove:
+    prefix
+  # list of registered prefixes
+  list:
+
+# mute a user
+# Shepard will not mute users with a higher group than the executor or herself
+# On join shepard will create a role called muted.
+# Shepard will add a user permission override to a channel if a user is muted only for a channel. Shepard will remove this permission on unmute.
+# Shepard will assign the role muted to a user if the user is muted globaly
+mute:
+  # mute a user globaly
+  global:
+    user
+      -t time
+      -r reason
+      -w warnPoints
+  # mute a user in a channel
+  channel:
+    channel
+      user
+        -t time
+        -r reason
+        -w warnPoints
+
+# Manage settings for a mute
+muteSettings:
+  # Enable the muting module. Will check for permissions.
+  # Shepard will add to all existing categores the role muted and deny writing.
+  # Shepard will add to all existing channels which are not synchronized with the category assign the role muted and deny writing.
+  # Shepard will add to every new created category and not synchronized channel the role muted.
+  # Shepard will ensure, that the global group will not be removed from any channel or category by a user.
+  enable:
+  # Disable the mutin module. Will remove the muted groups
+  disable:
+  # Set max duration of a mute. Mutes whithout a time will use this value
+  maxDuration:
+  # Exclude a channel from global mutes
+  excludeChannel:
+    channel...
+  # Include a excluded channel again
+  includeChannel:
+    channel...
+  # Get a list of all excluded channel
+  exludedChannelList:
+
+
+# unmute a user.
+unmute:
+  # unmute a user globaly
+  global:
+    user
+  # unmute a user in a channel
+  channel:
+    user
+
+# ban a user
+# Shepard will not ban users with a higher group then the executor
+ban:
+  # Gives a user a permanent ban
+  perma:
+    user
+      -r reason
+      -p purge day|week
+  # Gives a user a temporary ban
+  temp:
+    user
+      -t time
+      -r reason
+      -p purge day|week
+  # Gives the user a softban. Deletes the messages of the last day or week
+  softban:
+    user
+      -r reason
+      -p purge day|week
+
+banSettings:
+  defaultPurgeScope:
+    day|week
+  # Set the max time for a tempban.
+  maxTempbanTime:
+    time
+  # this value will be used for a tempban without time
+  defaultTempbanTime:
+    time
+# unban a user
+unban:
+  user
+
+# purge messages
+purge:
+  # delete the last <count> messages
+  all:
+    count
+  # delete all messages sent by a bot in the last <count> messages
+  allBots:
+    count
+  # delete all messages sent by a specific bot in the last <count> messages
+  Bot:
+    bot
+    count
+  # delete all messages which contain a link in the last <count> messages
+  links:
+    count
+  # delete all messages which contain a attachment in the last <count> messages
+  attachments:
+    count
+  # delete all messages sent by a user in the last <count> messages
+  allUser:
+    count
+  # delete all messages sent by a specific user in the last <count> messages
+  user:
+    user
+    count
+  # delete all messages which matches a regular expression in the last <count> messages
+  regex:
+    regex
+
+# warn a user
+# Shepard will not warn user with a higher group than the executor or herself
+warn:
+  # warn a user temporary
+  temp:
+    time
+      -r reason
+      -p points=1
+  # warn a user with a permanent warning
+  perma:
+    reason
+    -p points=1
+  # list of warnings of a user
+  list:
+    user
+  # remove a user warning
+  remove:
+    user
+    id
+
+# Create autowarnings when a user violates a rule.
+# Shepard will not warn user with a higher group than herself
+# Violations are counted by server not channel
+autowarning:
+  # set the auto warning for a rule
+  # set points for a warning.
+  # set the amount of rule violations after a user is warned for this rule
+  rule:
+    enable\disable
+      -p points=0
+      -v violations=1
+      -t time=null
+
+# Create a auto penalty if a user exceeds a point limit.
+# Shepard will not add a penalty to user with a higher group than herself
+autoPenalty:
+  # define a auto penalty for a point count. some penaltys require additional arguments like time.
+  add:
+    <points>
+      <penalty>
+        [penalty args]
+  # remove a auto penalty
+  remove:
+    id
+  # Get a list of defined penaltys
+  list:
+
+# entries to choose penalties.
+penalty:
+  kick:
+  ban:
+  tempban:
+    time
+  softban:
+    purgescope day|week
+  globalMute:
+    duration
+  channelMute:
+    duration
+
+# Display warning and penalties of a user
+modinfo:
+  user
+
+# Enable or disable logging of mod actions
+modlog:
+  # Enable modlog in a channel
+  enable:
+    channel
+  # disable modlog
+  disable:
