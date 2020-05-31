@@ -4,6 +4,7 @@ import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
@@ -13,6 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@Slf4j
 public class PresenceChanger implements Runnable, ReqShardManager, ReqConfig, ReqInit {
     private boolean customStatus;
     private List<Presence> presence;
@@ -28,8 +30,10 @@ public class PresenceChanger implements Runnable, ReqShardManager, ReqConfig, Re
     @Override
     public void run() {
         if (customStatus) {
+            log.debug("Presence is locked due to custom status.");
             return;
         }
+        log.debug("Changing random presence");
         randomPresence();
     }
 
@@ -107,8 +111,10 @@ public class PresenceChanger implements Runnable, ReqShardManager, ReqConfig, Re
             presence.add(new Presence(PresenceState.LISTENING, message));
         }
 
+        log.debug("Presence changer initialized.");
+
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(this, 0, 1, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(this, 0, 5, TimeUnit.MINUTES);
     }
 
     private enum PresenceState {

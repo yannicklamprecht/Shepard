@@ -1,11 +1,11 @@
 package de.eldoria.shepard.wrapper;
 
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -20,6 +20,7 @@ import net.dv8tion.jda.api.sharding.ShardManager;
 
 import java.util.Optional;
 
+@Slf4j
 public class EventWrapper {
     private static final EventWrapper empty = new EventWrapper(null, null, null, null).asFaked();
 
@@ -27,6 +28,7 @@ public class EventWrapper {
     private final JDA jda;
     private EventContext context;
     private final MessageChannel messageChannel;
+    private long messageId;
     private final User actor;
     private final Message message;
     private Guild guild;
@@ -82,16 +84,31 @@ public class EventWrapper {
                 event.getGuild());
     }
 
-    public static EventWrapper wrap(GuildMessageReactionAddEvent event) {
-        MessageHistory history = event.getChannel().getHistoryAround(event.getMessageId(), 1).complete();
-        Message messageById = history.getMessageById(event.getMessageId());
+    public static EventWrapper wrap(GuildMessageReactionAddEvent event) throws WrappingException {
+        Message messageById;
+        try {
+            messageById = event.getChannel().retrieveMessageById(event.getMessageId()).complete();
+        } catch (RuntimeException e) {
+            WrappingException wrappingException = new WrappingException(event, e.getCause());
+            wrappingException.getThrowable().initCause(e.getCause());
+            log.error("Error while wrapping a event.", wrappingException);
+            throw wrappingException;
+        }
+
         return new EventWrapper(event.getJDA(), event.getChannel(), event.getUser(), messageById,
                 event.getGuild(), event.getReaction());
     }
 
-    public static EventWrapper wrap(PrivateMessageReactionAddEvent event) {
-        MessageHistory history = event.getChannel().getHistoryAround(event.getMessageId(), 1).complete();
-        Message messageById = history.getMessageById(event.getMessageId());
+    public static EventWrapper wrap(PrivateMessageReactionAddEvent event) throws WrappingException {
+        Message messageById;
+        try {
+            messageById = event.getChannel().retrieveMessageById(event.getMessageId()).complete();
+        } catch (RuntimeException e) {
+            WrappingException wrappingException = new WrappingException(event, e.getCause());
+            wrappingException.getThrowable().initCause(e.getCause());
+            log.error("Error while wrapping a event.", wrappingException);
+            throw wrappingException;
+        }
         return new EventWrapper(event.getJDA(), event.getChannel(), event.getUser(), messageById, event.getReaction());
     }
 

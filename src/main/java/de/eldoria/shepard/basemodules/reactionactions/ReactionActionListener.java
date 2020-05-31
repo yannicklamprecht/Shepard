@@ -20,6 +20,7 @@ public class ReactionActionListener extends ListenerAdapter implements ReqReacti
             return;
         }
         statistics.eventDispatched(event.getJDA());
+
         reactionAction.invokeReactionAction(EventWrapper.wrap(event));
     }
 
@@ -29,6 +30,7 @@ public class ReactionActionListener extends ListenerAdapter implements ReqReacti
             return;
         }
         statistics.eventDispatched(event.getJDA());
+
         reactionAction.invokeReactionAction(EventWrapper.wrap(event));
     }
 

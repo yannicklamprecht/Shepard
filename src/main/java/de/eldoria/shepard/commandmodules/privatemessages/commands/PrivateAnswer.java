@@ -3,6 +3,7 @@ package de.eldoria.shepard.commandmodules.privatemessages.commands;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.privatemessages.PrivateMessageCollection;
 import de.eldoria.shepard.commandmodules.privatemessages.util.PrivateMessageHelper;
@@ -14,7 +15,10 @@ import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqNormandy;
 import de.eldoria.shepard.modulebuilder.requirements.ReqPrivateMessages;
 import de.eldoria.shepard.util.Verifier;
+import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
+import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USER;
@@ -25,6 +29,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessag
  * Command to answer a received message by a bot instance.
  * Only available for user which wrote shepard. otherwise {@link SendPrivateMessage} should be used.
  */
+@CommandUsage(EventContext.GUILD)
 public class PrivateAnswer extends Command implements Executable, ReqPrivateMessages, ReqNormandy {
     private PrivateMessageCollection privateMessages;
     private Normandy normandy;
@@ -46,7 +51,9 @@ public class PrivateAnswer extends Command implements Executable, ReqPrivateMess
 
     @Override
     public void execute(String label, String[] args, EventWrapper wrapper) {
-        if (Verifier.equalSnowflake(wrapper.getMessageChannel(), normandy.getPrivateAnswerChannel())) {
+        TextChannel privateAnswerChannel = normandy.getPrivateAnswerChannel();
+        MessageChannel messageChannel = wrapper.getMessageChannel();
+        if (!Verifier.equalSnowflake(messageChannel, privateAnswerChannel)) {
             MessageSender.sendSimpleError(ErrorType.EXCLUSIVE_CHANNEL, wrapper);
             return;
         }

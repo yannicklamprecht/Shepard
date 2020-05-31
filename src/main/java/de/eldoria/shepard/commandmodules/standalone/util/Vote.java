@@ -28,8 +28,8 @@ public class Vote extends Command implements Executable {
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
                 .setTitle(VoteLocale.M_TITLE.tag)
                 .setDescription(VoteLocale.M_TEXT.tag + System.lineSeparator()
-                        + "[" + VoteLocale.M_CLICK + "](https://top.gg/bot/512413049894731780/vote)\n"
-                        + "[" + VoteLocale.M_CLICK + "](https://discordbotlist.com/bots/512413049894731780)")
+                        + "[" + VoteLocale.M_CLICK + "(top.gg)](https://top.gg/bot/512413049894731780/vote)\n"
+                        + "[" + VoteLocale.M_CLICK + "(discordbotlist.com)](https://discordbotlist.com/bots/512413049894731780)")
                 .setThumbnail(ShepardReactions.WINK.thumbnail);
         wrapper.getMessageChannel().sendMessage(builder.build()).queue();
     }
