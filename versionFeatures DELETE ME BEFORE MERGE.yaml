@@ -61,6 +61,7 @@ rules:
   regexMessage:
     <disable\match\block> [regex]
 
+# Unbekannt
 # Manage a list of badwords. The usage of these words can be prohibited by a rule.
 badwords:
   # add a badword
@@ -72,7 +73,7 @@ badwords:
   # get a list of bad words
   list:
 
-
+# Unbekannt
 # Register Prefixes of other bots. Shepard will ignore messages starting with these.
 registerPrefixes:
   # add a bot prefix
@@ -135,6 +136,7 @@ unmute:
   channel:
     user
 
+# Unbekannt
 # ban a user
 # Shepard will not ban users with a higher group then the executor
 ban:
@@ -168,6 +170,7 @@ banSettings:
 unban:
   user
 
+# Unbekannt
 # purge messages
 purge:
   # delete the last <count> messages
@@ -261,6 +264,7 @@ penalty:
 modinfo:
   user
 
+# Unbekannt
 # Enable or disable logging of mod actions
 modlog:
   # Enable modlog in a channel
