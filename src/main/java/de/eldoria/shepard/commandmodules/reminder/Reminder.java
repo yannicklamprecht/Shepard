@@ -241,8 +241,8 @@ public class Reminder extends Command implements Executable, ReqDataSource {
         String message = ArgumentParser.getMessage(args, 2, 0);
         // Date reminder
         if (DATE.matcher(timeString).find()) {
-            String date = args[1];
-            String time = args[2];
+            String date = args[0];
+            String time = args[1];
 
             Optional<String> id = reminderData.addReminderDate(message, date, time, wrapper);
             if (id.isPresent()) {
