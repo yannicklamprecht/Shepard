@@ -1,6 +1,7 @@
 package de.eldoria.shepard.webapi;
 
 import com.google.api.client.http.HttpStatusCodes;
+import de.eldoria.shepard.C;
 import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 import static spark.Spark.before;
 import static spark.Spark.halt;
+import static spark.Spark.ipAddress;
 import static spark.Spark.options;
 import static spark.Spark.port;
 
@@ -31,6 +33,7 @@ public final class ApiHandler implements ReqConfig, ReqInit {
 
     private void initializeApi() {
         port(config.getApi().getPort());
+        ipAddress("127.0.0.1");
 
         options("/*", (request, response) -> {
             String accessControlRequestHeaders = request
