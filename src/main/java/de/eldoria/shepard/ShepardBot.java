@@ -10,6 +10,7 @@ import de.eldoria.shepard.commandmodules.greeting.GreetingModule;
 import de.eldoria.shepard.commandmodules.guessgame.GuessGameModule;
 import de.eldoria.shepard.commandmodules.kudos.KudoModule;
 import de.eldoria.shepard.commandmodules.language.LanguageModule;
+import de.eldoria.shepard.commandmodules.modlog.ModLogModule;
 import de.eldoria.shepard.commandmodules.monitoring.MonitoringModule;
 import de.eldoria.shepard.commandmodules.prefix.PrefixModule;
 import de.eldoria.shepard.commandmodules.presence.PresenceModule;
@@ -166,7 +167,8 @@ public final class ShepardBot {
         loadModule(new ChangelogModule(), new CommandSettingsModule(), new GreetingModule(), new GuessGameModule(),
                 new KudoModule(), new LanguageModule(), new MonitoringModule(), new PrefixModule(),
                 new PresenceModule(), new PrivateMessagesModule(), new QuoteModule(), new ReminderModule(),
-                new RepeatCommandModule(), new TicketSystemModule(), new StandaloneCommandsModule());
+                new RepeatCommandModule(), new TicketSystemModule(), new StandaloneCommandsModule(),
+                new ModLogModule());
 
         // start api services
         loadModule(new ApiModule());
