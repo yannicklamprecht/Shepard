@@ -14,7 +14,7 @@ public enum CommandCategory {
     /**
      * Context is a command of category bot administration.
      */
-    MODERATION("🔨", HelpLocale.M_ADMIN.tag),
+    MODERATION("🔨", HelpLocale.M_MODERATOR.tag),
     /**
      * Context is a command of category bot configuration.
      */
