@@ -28,7 +28,7 @@ public class Owo extends Command implements Executable {
                 wrapper.getMessageChannel());
 
         if (label.equalsIgnoreCase("owod")) {
-            wrapper.getMessage().delete().queue();
+            wrapper.getMessage().get().delete().queue();
         }
 
     }

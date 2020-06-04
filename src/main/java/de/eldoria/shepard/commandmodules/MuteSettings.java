@@ -1,5 +1,6 @@
 package de.eldoria.shepard.commandmodules;
 
+import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
@@ -10,6 +11,9 @@ import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
+
+import java.util.Optional;
 
 @CommandUsage(EventContext.GUILD)
 public class MuteSettings extends Command implements ExecutableAsync {

@@ -39,7 +39,7 @@ public class LargeEmote extends Command implements ExecutableAsync {
 
     @Override
     public void execute(String label, String[] args, EventWrapper wrapper) {
-        List<Emote> emotes = wrapper.getMessage().getEmotes()
+        List<Emote> emotes = wrapper.getMessage().get().getEmotes()
                 .stream().distinct().collect(Collectors.toList());
 
         if (emotes.size() == 0) {

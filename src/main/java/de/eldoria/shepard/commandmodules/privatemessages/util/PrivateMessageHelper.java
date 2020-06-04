@@ -32,9 +32,9 @@ public final class PrivateMessageHelper {
 
         String text = ArgumentParser.getMessage(args, 1);
 
-        MessageSender.sendAttachment(user, messageContext.getMessage().getAttachments(), text,
+        MessageSender.sendAttachment(user, messageContext.getMessage().get().getAttachments(), text,
                 messageContext.getMessageChannel());
 
-        messageContext.getMessage().addReaction(Emoji.CHECK_MARK_BUTTON.unicode).queue();
+        messageContext.getMessage().get().addReaction(Emoji.CHECK_MARK_BUTTON.unicode).queue();
     }
 }

@@ -39,8 +39,8 @@ public class Say extends Command implements Executable {
     @Override
     public void execute(String label, String[] args, EventWrapper wrapper) {
 
-        List<Role> mentionedRoles = wrapper.getMessage().getMentionedRoles();
-        boolean everyone = wrapper.getMessage().mentionsEveryone();
+        List<Role> mentionedRoles = wrapper.getMessage().get().getMentionedRoles();
+        boolean everyone = wrapper.getMessage().get().mentionsEveryone();
 
         if (!mentionedRoles.isEmpty() || everyone) {
             MessageSender.sendMessage(SayLocale.A_MENTION.tag, wrapper.getMessageChannel());
@@ -50,7 +50,7 @@ public class Say extends Command implements Executable {
         wrapper.getMessageChannel().sendMessage(ArgumentParser.getMessage(args, 0)).queue();
 
         if (label.equalsIgnoreCase("sayd") && wrapper.isGuildEvent()) {
-            wrapper.getMessage().delete().queue();
+            wrapper.getMessage().get().delete().queue();
         }
     }
 }

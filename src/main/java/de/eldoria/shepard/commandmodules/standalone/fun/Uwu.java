@@ -30,7 +30,7 @@ public class Uwu extends Command implements Executable {
                 wrapper.getMessageChannel());
 
         if (label.equalsIgnoreCase("uwud") && wrapper.isGuildEvent()) {
-            wrapper.getMessage().delete().queue();
+            wrapper.getMessage().get().delete().queue();
         }
     }
 }

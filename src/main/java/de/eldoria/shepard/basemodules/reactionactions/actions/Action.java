@@ -3,12 +3,13 @@ package de.eldoria.shepard.basemodules.reactionactions.actions;
 import de.eldoria.shepard.basemodules.reactionactions.util.ReactionType;
 import de.eldoria.shepard.util.reactions.Emoji;
 import de.eldoria.shepard.wrapper.EventWrapper;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.util.Objects;
 
+@Slf4j
 public abstract class Action {
     private final String emoji;
     private final Emote emote;
@@ -43,19 +44,23 @@ public abstract class Action {
      * @param event event for action information.
      */
     public final void execute(EventWrapper event) {
-        if (!event.getReactionEmote().isEmoji()) {
+        if (!event.isReactionEvent()) {
+            log.error("A non reaction event wrapper was passed to a reaction action");
+            return;
+        }
+        if (!event.getReactionEmote().get().isEmoji()) {
             return;
         }
 
         if (!oneTime || !used) {
-            if (event.getReaction().isSelf()) {
+            if (event.getReaction().get().isSelf()) {
                 return;
             }
             if (userId != 0 && event.getActor().getIdLong() != userId) {
                 return;
             }
 
-            if (event.getReactionEmote().getEmoji().equals(emoji)) {
+            if (event.getReactionEmote().get().getEmoji().equals(emoji)) {
                 internalExecute(event);
                 if (oneTime) {
                     used = true;

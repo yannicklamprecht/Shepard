@@ -28,7 +28,8 @@ public class EventWrapper {
     private final JDA jda;
     private EventContext context;
     private final MessageChannel messageChannel;
-    private long messageId;
+    private long messageIdLong;
+    private String messageId;
     private final User actor;
     private final Message message;
     private Guild guild;
@@ -38,6 +39,20 @@ public class EventWrapper {
     private MessageReaction messageReaction;
     private MessageReaction.ReactionEmote reactionEmote;
 
+    public EventWrapper(JDA jda, EventContext context, MessageChannel messageChannel, long messageIdLong,
+                        String messageId, User actor, Message message, Guild guild, MessageReaction messageReaction,
+                        MessageReaction.ReactionEmote reactionEmote) {
+        this.jda = jda;
+        this.context = context;
+        this.messageChannel = messageChannel;
+        this.messageIdLong = messageIdLong;
+        this.messageId = messageId;
+        this.actor = actor;
+        this.message = message;
+        this.guild = guild;
+        this.messageReaction = messageReaction;
+        this.reactionEmote = reactionEmote;
+    }
 
     private EventWrapper(JDA jda, MessageChannel channel, User user, Message message, Guild guild) {
         this(jda, channel, user, message);
@@ -50,6 +65,8 @@ public class EventWrapper {
         this.messageChannel = channel;
         this.actor = user;
         this.message = message;
+        this.messageId = message.getId();
+        this.messageIdLong = message.getIdLong();
         context = EventContext.PRIVATE;
     }
 
@@ -64,7 +81,6 @@ public class EventWrapper {
         this.messageReaction = messageReaction;
         this.reactionEmote = messageReaction.getReactionEmote();
     }
-
 
     public static EventWrapper wrap(PrivateMessageReceivedEvent event) {
         return new EventWrapper(event.getJDA(), event.getChannel(), event.getAuthor(), event.getMessage());
@@ -90,9 +106,10 @@ public class EventWrapper {
             messageById = event.getChannel().retrieveMessageById(event.getMessageId()).complete();
         } catch (RuntimeException e) {
             WrappingException wrappingException = new WrappingException(event, e.getCause());
-            wrappingException.getThrowable().initCause(e.getCause());
             log.error("Error while wrapping a event.", wrappingException);
-            throw wrappingException;
+            log.error("Caused by", e);
+            return new EventWrapper(event.getJDA(), EventContext.GUILD, event.getChannel(), event.getMessageIdLong(),
+                    event.getMessageId(), event.getUser(), null, event.getGuild(), event.getReaction(), event.getReactionEmote());
         }
 
         return new EventWrapper(event.getJDA(), event.getChannel(), event.getUser(), messageById,
@@ -105,9 +122,11 @@ public class EventWrapper {
             messageById = event.getChannel().retrieveMessageById(event.getMessageId()).complete();
         } catch (RuntimeException e) {
             WrappingException wrappingException = new WrappingException(event, e.getCause());
-            wrappingException.getThrowable().initCause(e.getCause());
             log.error("Error while wrapping a event.", wrappingException);
-            throw wrappingException;
+            log.error("Caused by", e);
+            return new EventWrapper(event.getJDA(), EventContext.GUILD, event.getChannel(), event.getMessageIdLong(),
+                    event.getMessageId(), event.getUser(), null, null, event.getReaction(),
+                    event.getReactionEmote());
         }
         return new EventWrapper(event.getJDA(), event.getChannel(), event.getUser(), messageById, event.getReaction());
     }
@@ -138,62 +157,129 @@ public class EventWrapper {
         return this;
     }
 
+    /**
+     * Get if the event was a reaction event.
+     *
+     * @return true if the event was fired in a private channel
+     */
     public boolean isReactionEvent() {
         return reactionEmote != null && messageReaction != null;
     }
 
-    public MessageReaction.ReactionEmote getReactionEmote() {
-        return reactionEmote;
+    /**
+     * Get the message reaction emote.
+     *
+     * @return this is present if {@link #isReactionEvent()} is true.
+     */
+    public Optional<MessageReaction.ReactionEmote> getReactionEmote() {
+        return Optional.ofNullable(reactionEmote);
     }
 
-    public MessageReaction getReaction() {
-        return messageReaction;
+    /**
+     * Get the message Reaction.
+     *
+     * @return this is present if {@link #isReactionEvent()} is true.
+     */
+    public Optional<MessageReaction> getReaction() {
+        return Optional.ofNullable(messageReaction);
     }
 
-    public EventContext getMessageContext() {
-        return context;
-    }
-
+    /**
+     * Get if the event was in a private channel.
+     *
+     * @return true if the event was fired in a private channel
+     */
     public boolean isGuildEvent() {
         return context == EventContext.GUILD && guild != null;
     }
 
+    /**
+     * Get if the event was in a private channel.
+     *
+     * @return true if the event was fired in a private channel
+     */
     public boolean isPrivateEvent() {
         return context == EventContext.PRIVATE;
     }
 
+    /**
+     * Get the jda which received this event.
+     *
+     * @return jda instance
+     */
     public JDA getJDA() {
         return jda;
     }
 
+    /**
+     * Get the user of the event. Equal to {@link #getActor()} ()}
+     *
+     * @return user of the event
+     */
     public User getAuthor() {
         return actor;
     }
 
+    /**
+     * Get the actor of the event. Equal to {@link #getAuthor()}
+     *
+     * @return actor of the event
+     */
     public User getActor() {
         return actor;
     }
 
+    /**
+     * Get the message channel of the event.
+     *
+     * @return message channel where the event was fired.
+     */
     public MessageChannel getMessageChannel() {
         return messageChannel;
     }
 
-    public Message getMessage() {
-        return message;
+    /**
+     * Returns the message.
+     *
+     * @return returns a message. This is only present when the message could be retreived.
+     * This can be empty if the event is a reaction event on a large guild.
+     */
+    public Optional<Message> getMessage() {
+        return Optional.ofNullable(message);
     }
 
+    /**
+     * Returns the message id.
+     *
+     * @return message id as long.
+     */
     public long getMessageIdLong() {
-        return message.getIdLong();
+        return messageIdLong;
     }
 
+    /**
+     * Returns the message id.
+     *
+     * @return message id as string.
+     */
     public String getMessageId() {
-        return message.getId();
+        return messageId;
     }
 
+    /**
+     * Returns a optional guild.
+     *
+     * @return optional with a guild which is always and only present if {@link #isGuildEvent()} is true.
+     */
     public Optional<Guild> getGuild() {
         return Optional.ofNullable(guild);
     }
 
+    /**
+     * Returns a optional text channel.
+     *
+     * @return optional with a text channel which is always and only present if {@link #isGuildEvent()} is true.
+     */
     public Optional<TextChannel> getTextChannel() {
         if (isGuildEvent()) {
             return Optional.ofNullable((TextChannel) messageChannel);
@@ -202,6 +288,11 @@ public class EventWrapper {
         }
     }
 
+    /**
+     * Returns a optional private channel.
+     *
+     * @return optional with a private channel which is always and only present if {@link #isPrivateEvent()} is true.
+     */
     public Optional<PrivateChannel> getPrivateChannel() {
         if (isPrivateEvent()) {
             return Optional.ofNullable(actor.openPrivateChannel().complete());
@@ -210,6 +301,11 @@ public class EventWrapper {
         }
     }
 
+    /**
+     * Returns a optional guild member.
+     *
+     * @return optional with a private channel which is always and only present if {@link #isGuildEvent()} is true.
+     */
     public Optional<Member> getMember() {
         if (guild == null) return Optional.empty();
         return Optional.ofNullable(guild.getMember(actor));

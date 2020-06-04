@@ -228,7 +228,7 @@ public final class MessageSender {
      */
     public static void logCommand(String label, String[] args, EventWrapper wrapper) {
         var mention = wrapper.getAuthor().getAsTag();
-        var cmd = wrapper.getMessage().getContentStripped();
+        var cmd = wrapper.getMessage().get().getContentStripped();
         var guild = "Private message";
         var guildId = "0";
 

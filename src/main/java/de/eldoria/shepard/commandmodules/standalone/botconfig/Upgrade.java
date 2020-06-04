@@ -54,12 +54,12 @@ public class Upgrade extends Command implements ExecutableAsync, ReqConfig, ReqS
                     wrapper.getMessageChannel());
         }
 
-        if (wrapper.getMessage().getAttachments().isEmpty()) {
+        if (wrapper.getMessage().get().getAttachments().isEmpty()) {
             MessageSender.sendMessage("Please provide a upgrade jar!", wrapper.getMessageChannel());
             return;
         }
 
-        Message.Attachment attachment = wrapper.getMessage().getAttachments().get(0);
+        Message.Attachment attachment = wrapper.getMessage().get().getAttachments().get(0);
 
         MessageSender.sendMessage("Checking file!", wrapper.getMessageChannel());
         if (!attachment.getFileExtension().equalsIgnoreCase("jar")) {

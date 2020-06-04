@@ -93,7 +93,7 @@ public class CommandListener extends ListenerAdapter
     private void onCommand(EventWrapper eventWrapper) {
         statistics.eventDispatched(eventWrapper.getJDA());
 
-        String receivedMessage = eventWrapper.getMessage().getContentRaw();
+        String receivedMessage = eventWrapper.getMessage().get().getContentRaw();
         receivedMessage = receivedMessage.replaceAll("\\s\\s+", " ");
         String[] args = receivedMessage.split(" ");
 

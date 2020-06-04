@@ -34,7 +34,7 @@ public class Oha extends Command implements Executable {
         MessageSender.sendMessage(oha, wrapper.getMessageChannel());
 
         if (label.equalsIgnoreCase("ohad")) {
-            wrapper.getMessage().delete().queue();
+            wrapper.getMessage().get().delete().queue();
         }
     }
 }
