@@ -56,10 +56,10 @@ rules:
       [messagecountBetweenDuplicates=5. Max 10]
   # allow or block sending of messages which contain words from the badwords list.
   badwordMessage:
-    block\allow
-  # Allow or block sending of messages which match a regular expression
+    deny\allow
+  # deny or block sending of messages which match a regular expression
   regexMessage:
-    <disable\match\block> [regex]
+    <disable\deny\allow> [regex]
 
 # Unbekannt
 # Manage a list of badwords. The usage of these words can be prohibited by a rule.

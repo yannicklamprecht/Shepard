@@ -55,7 +55,7 @@ public class SystemInfo extends Command implements ExecutableAsync, ReqShardMana
         builder.addField(M_SERVICE_INFO.tag,
                 localizeAllAndReplace(M_SERVICE_INFO_MESSAGE.tag, wrapper,
                         statistic.getAggregatedShards().getGuildCount() + "",
-                        statistic.getAggregatedShards().getUsercount() + ""), false);
+                        statistic.getAggregatedShards().getUserCount() + ""), false);
         wrapper.getMessageChannel().sendMessage(builder.build()).queue();
         category = CommandCategory.UTIL;
     }

@@ -24,14 +24,14 @@ public class SystemStatistic {
 
     @Getter
     public static class AggregatedShards {
-        private final long usercount;
+        private final long userCount;
         private final long guildCount;
         private final long commandsDispatched;
         private final long eventsFired;
 
         public AggregatedShards(List<ShardStatistic> shardStatistics) {
-            usercount = shardStatistics.stream()
-                    .map(ShardStatistic::getUsercount).reduce(0L, Long::sum);
+            userCount = shardStatistics.stream()
+                    .map(ShardStatistic::getUserCount).reduce(0L, Long::sum);
             guildCount = shardStatistics.stream()
                     .map(ShardStatistic::getGuildCount).reduce(0L, Long::sum);
             commandsDispatched = shardStatistics.stream()

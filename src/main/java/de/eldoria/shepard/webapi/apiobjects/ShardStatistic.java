@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.JDA;
 public class ShardStatistic {
     private final int shard;
     private final JDA.Status status;
-    private final long usercount;
+    private final long userCount;
     private final long guildCount;
     private final long commandsDispatched;
     private final long eventsFired;
@@ -15,7 +15,7 @@ public class ShardStatistic {
     public ShardStatistic(int shard, JDA.Status status, long userCount, long guildCount, long commandsDispatched, long eventsFired) {
         this.shard = shard;
         this.status = status;
-        this.usercount = userCount;
+        this.userCount = userCount;
         this.guildCount = guildCount;
         this.commandsDispatched = commandsDispatched;
         this.eventsFired = eventsFired;

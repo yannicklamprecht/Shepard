@@ -96,7 +96,6 @@ public class EventWrapper {
     }
 
     public static EventWrapper wrap(GuildMessageReceivedEvent event) {
-        log.info("received");
         return new EventWrapper(event.getJDA(), event.getChannel(), event.getAuthor(), event.getMessage(),
                 event.getGuild());
     }
