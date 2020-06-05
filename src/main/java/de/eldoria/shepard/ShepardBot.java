@@ -4,6 +4,7 @@ import de.eldoria.shepard.basemodules.commanddispatching.CommandDispatchingModul
 import de.eldoria.shepard.basemodules.reactionactions.ReactionActionModule;
 import de.eldoria.shepard.basemodules.standalone.StandaloneBaseModules;
 import de.eldoria.shepard.commandmodules.SharedResources;
+import de.eldoria.shepard.commandmodules.badwords.BadWordsModule;
 import de.eldoria.shepard.commandmodules.changelog.ChangelogModule;
 import de.eldoria.shepard.commandmodules.commandsettings.CommandSettingsModule;
 import de.eldoria.shepard.commandmodules.greeting.GreetingModule;
@@ -168,7 +169,7 @@ public final class ShepardBot {
                 new KudoModule(), new LanguageModule(), new MonitoringModule(), new PrefixModule(),
                 new PresenceModule(), new PrivateMessagesModule(), new QuoteModule(), new ReminderModule(),
                 new RepeatCommandModule(), new TicketSystemModule(), new StandaloneCommandsModule(),
-                new ModLogModule());
+                new ModLogModule(), new BadWordsModule());
 
         // start api services
         loadModule(new ApiModule());
