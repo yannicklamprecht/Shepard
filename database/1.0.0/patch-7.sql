@@ -78,11 +78,15 @@ CREATE OR REPLACE FUNCTION shepard_func.add_badword(
     _word character varying)
     RETURNS void
     LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE
+
 AS $BODY$
 BEGIN
 
     insert into shepard_data.badwords(guild_id, badwords)
-    VALUES(_guild_id, ARRAY[_word])
+    VALUES(_guild_id, ARRAY[lower(_word)])
     on CONFLICT (guild_id)
         DO
             UPDATE SET badwords =
@@ -92,8 +96,26 @@ BEGIN
                     (SELECT
                          DISTINCT words as dist_words
                      from
-                         unnest(array_append(badwords.badwords, _word)) as words)
-                 a);
+                         unnest(array_append(badwords.badwords, lower(_word)::varchar)) as words
+                 ) a);
+
+END
+$BODY$;
+CREATE OR REPLACE FUNCTION shepard_func.remove_badword(
+	_guild_id bigint,
+	_word character varying)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE
+
+AS $BODY$
+BEGIN
+
+UPDATE shepard_data.badwords
+SET badwords = array_remove(badwords.badwords, lower(_word)::varchar)
+WHERE guild_id = _guild_id;
 
 END
 $BODY$;
