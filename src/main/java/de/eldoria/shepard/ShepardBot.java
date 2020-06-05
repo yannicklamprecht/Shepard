@@ -17,6 +17,7 @@ import de.eldoria.shepard.commandmodules.prefix.PrefixModule;
 import de.eldoria.shepard.commandmodules.presence.PresenceModule;
 import de.eldoria.shepard.commandmodules.privatemessages.PrivateMessagesModule;
 import de.eldoria.shepard.commandmodules.quote.QuoteModule;
+import de.eldoria.shepard.commandmodules.registerPrefix.RegisterPrefixModule;
 import de.eldoria.shepard.commandmodules.reminder.ReminderModule;
 import de.eldoria.shepard.commandmodules.repeatcommand.RepeatCommandModule;
 import de.eldoria.shepard.commandmodules.standalone.StandaloneCommandsModule;
@@ -169,7 +170,7 @@ public final class ShepardBot {
                 new KudoModule(), new LanguageModule(), new MonitoringModule(), new PrefixModule(),
                 new PresenceModule(), new PrivateMessagesModule(), new QuoteModule(), new ReminderModule(),
                 new RepeatCommandModule(), new TicketSystemModule(), new StandaloneCommandsModule(),
-                new ModLogModule(), new BadWordsModule());
+                new ModLogModule(), new BadWordsModule(), new RegisterPrefixModule());
 
         // start api services
         loadModule(new ApiModule());
