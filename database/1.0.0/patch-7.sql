@@ -119,3 +119,76 @@ WHERE guild_id = _guild_id;
 
 END
 $BODY$;
+CREATE TABLE IF NOT EXISTS shepard_data.registert_prefix
+(
+    guild_id bigint NOT NULL,
+    prefixes character varying[] COLLATE pg_catalog."default",
+    CONSTRAINT registert_prefix_pkey PRIMARY KEY (guild_id)
+);
+CREATE OR REPLACE FUNCTION shepard_func.get_registert_prefix(
+	_guild_id bigint)
+    RETURNS varchar[]
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE
+
+AS
+$BODY$
+DECLARE
+	result varchar[];
+BEGIN
+SELECT prefixes
+INTO result
+FROM shepard_data.registert_prefix
+WHERE guild_id = _guild_id;
+
+RETURN result;
+END
+$BODY$;
+CREATE OR REPLACE FUNCTION shepard_func.add_registert_prefix(
+    _guild_id bigint,
+    _word character varying)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE
+
+AS $BODY$
+BEGIN
+
+    insert into shepard_data.registert_prefix(guild_id, prefixes)
+    VALUES(_guild_id, ARRAY[lower(_word)])
+    on CONFLICT (guild_id)
+        DO
+            UPDATE SET prefixes =
+                (select
+                     array_agg(dist_words)
+                 from
+                    (SELECT
+                         DISTINCT words as dist_words
+                     from
+                         unnest(array_append(registert_prefix.prefixes, lower(_word)::varchar)) as words
+                 ) a);
+
+END
+$BODY$;
+CREATE OR REPLACE FUNCTION shepard_func.remove_registert_prefix(
+	_guild_id bigint,
+	_word character varying)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE
+
+AS $BODY$
+BEGIN
+
+UPDATE shepard_data.registert_prefix
+SET prefixes = array_remove(registert_prefix.prefixes, lower(_word)::varchar)
+WHERE guild_id = _guild_id;
+
+END
+$BODY$;
