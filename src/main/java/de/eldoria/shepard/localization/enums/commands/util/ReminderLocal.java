@@ -28,9 +28,7 @@ public enum ReminderLocal {
      * Localization key for message format.
      */
     A_TIMESTAMP("command.reminder.argument.timestamp"),
-    A_INTERVAL("command.reminder.argument.interval"),
     AD_TIMESTAMP("command.reminder.argumentDescription.timestamp"),
-    AD_INTERVAL("command.reminder.argumentDescription.interval"),
     /**
      * Localization key for message current reminders.
      */
