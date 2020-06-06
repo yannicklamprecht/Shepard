@@ -82,9 +82,10 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
         if(channel_id > 0 ){
             //TODO: Add ModLog
         }
-        int purge;
+        Integer purge;
         try {
-             purge = FlagParser.getFlagValue(Integer::parseInt, 'p', args, 0);
+             purge = FlagParser.getFlagValue(Integer::parseInt, 'p', args, "0");
+             if(purge == null) return; //Should not happen because of the Integer Function
         }catch (NumberFormatException e){
             MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, wrapper);
             return;
