@@ -10,13 +10,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public final class CommandData extends QueryObject {
+public final class MoodLogData extends QueryObject {
     /**
      * Default constructor for data object.
      *
      * @param source data source for information retrieval
      */
-    public CommandData(DataSource source) {
+    public MoodLogData(DataSource source) {
         super(source);
     }
 

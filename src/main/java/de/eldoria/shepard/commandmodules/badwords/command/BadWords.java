@@ -4,7 +4,7 @@ import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
-import de.eldoria.shepard.commandmodules.badwords.data.CommandData;
+import de.eldoria.shepard.commandmodules.badwords.data.BadWordData;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
@@ -13,7 +13,6 @@ import de.eldoria.shepard.localization.enums.commands.moderation.BadWordsLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.minigameutil.BaseEvaluator;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.util.Colors;
@@ -28,7 +27,7 @@ import java.util.stream.Collectors;
 public class BadWords extends Command implements ExecutableAsync, ReqInit, ReqDataSource {
 
     private DataSource source;
-    private CommandData commandData;
+    private BadWordData commandData;
 
     public BadWords(){
         super("badwords",
@@ -109,6 +108,6 @@ public class BadWords extends Command implements ExecutableAsync, ReqInit, ReqDa
 
     @Override
     public void init() {
-        this.commandData = new CommandData(source);
+        this.commandData = new BadWordData(source);
     }
 }
