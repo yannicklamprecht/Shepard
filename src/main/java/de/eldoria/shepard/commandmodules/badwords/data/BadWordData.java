@@ -11,13 +11,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class CommandData extends QueryObject {
+public class BadWordData extends QueryObject {
     /**
      * Default constructor for data object.
      *
      * @param source data source for information retrieval
      */
-    public CommandData(DataSource source) {
+    public BadWordData(DataSource source) {
         super(source);
     }
 
