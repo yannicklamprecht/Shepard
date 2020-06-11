@@ -77,10 +77,13 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
     @Override
     public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
-        String reason = FlagParser.getFlagValue('r', args);
         long channel_id = modLogData.getChannel(wrapper.getGuild().get(), wrapper);
         if(channel_id > 0 ){
             //TODO: Add ModLog
+        }
+        String reason = FlagParser.getFlagValue('r', args);
+        if(reason == null){
+            reason = "";
         }
         Integer purge;
         try {
@@ -90,15 +93,26 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
             MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, wrapper);
             return;
         }
+        // TODO: Get default Value from DB
+        String interval = FlagParser.getFlagValue('t', args, "7 days");
+
+        if(!ArgumentParser.getIntervall(interval)){
+            MessageSender.sendSimpleError(ErrorType.INVALID_TIME, wrapper);
+            return;
+        }
 
         Member user = paser.getGuildMember(wrapper.getGuild().get(), args[1]);
+        if(user == null){
+            MessageSender.sendSimpleError(ErrorType.INVALID_USER, wrapper);
+            return;
+        }
 
         if(isSubCommand(cmd, 0)){
             perma(user, purge, reason, wrapper);
         }
         
         if(isSubCommand(cmd, 1)){
-            temp(user, purge, reason, wrapper);
+            temp(user, purge, reason, interval, wrapper);
         }
         
         if(isSubCommand(cmd, 2)){
@@ -127,7 +141,7 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
         });
     }
 
-    private void temp(Member user, int purge, String reason, EventWrapper wrapper) {
+    private void temp(Member user, int purge, String reason, String intervall, EventWrapper wrapper) {
 
     }
 
