@@ -56,8 +56,7 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
  * Reminder command which reminds user on a specific time and date or at a interval.
  */
 public class Reminder extends Command implements Executable, ReqDataSource {
-    private static final Pattern INTERVAL = Pattern.compile("([0-9])+\\s(((min|hour|day|week)s?)|month)",
-            Pattern.MULTILINE);
+
     private static final Pattern DATE = Pattern.compile("[0-9]{1,2}\\.[0-9]{1,2}\\.\\s[0-9]{1,2}:[0-9]{1,2}",
             Pattern.MULTILINE);
 
@@ -167,7 +166,7 @@ public class Reminder extends Command implements Executable, ReqDataSource {
         }
 
         String timeString = ArgumentParser.getMessage(args, -2);
-        if (!INTERVAL.matcher(timeString).find()) {
+        if (!ArgumentParser.getIntervall(timeString)) {
             MessageSender.sendSimpleError(ErrorType.INVALID_TIME, wrapper);
             return;
         }
@@ -233,7 +232,7 @@ public class Reminder extends Command implements Executable, ReqDataSource {
 
     private void add(String[] args, EventWrapper wrapper) {
         String timeString = ArgumentParser.getMessage(args, 0, 2);
-        if (!DATE.matcher(timeString).find() && !INTERVAL.matcher(timeString).find()) {
+        if (!DATE.matcher(timeString).find() && !ArgumentParser.getIntervall(timeString)) {
             MessageSender.sendSimpleError(ErrorType.INVALID_TIME, wrapper);
             return;
         }

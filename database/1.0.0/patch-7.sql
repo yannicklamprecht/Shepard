@@ -192,3 +192,42 @@ WHERE guild_id = _guild_id;
 
 END
 $BODY$;
+CREATE TABLE IF NOT EXISTS shepard_data.temp_ban
+(
+    guild_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    unban_date timestamp without time zone,
+    CONSTRAINT temp_bans_pkey PRIMARY KEY (guild_id, user_id)
+);
+CREATE OR REPLACE FUNCTION shepard_func.set_temp_ban(
+	_guild_id bigint,
+	_user_id bigint,
+	_time character varying)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE
+
+AS $BODY$
+INSERT INTO shepard_data.temp_ban(guild_id, user_id, unban_date)
+VALUES (_guild_id, _user_id, now() + _time::intervall)
+$BODY$;
+CREATE OR REPLACE FUNCTION shepard_func.get_temp_ban()
+    RETURNS TABLE(guild_id bigint, user_id bigint)
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE
+
+AS $BODY$
+BEGIN
+
+RETURN QUERY SELECT guild_id, user_id
+FROM shepard_data.temp_ban
+WHERE
+unban_date <= NOW();
+
+END
+$BODY$;
+

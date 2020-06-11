@@ -37,6 +37,8 @@ import static de.eldoria.shepard.util.Verifier.isValidId;
  */
 public class ArgumentParser implements ReqCommands, ReqShardManager {
     private static final Pattern DISCORD_TAG = Pattern.compile(".+?#[0-9]{4}");
+    private static final Pattern INTERVALL = Pattern.compile("([0-9])+\\s(((min|hour|day|week)s?)|month)",
+            Pattern.MULTILINE);
     private CommandHub commandHub;
     private ShardManager shardManager;
 
@@ -261,6 +263,14 @@ public class ArgumentParser implements ReqCommands, ReqShardManager {
             return null;
         }
         return nameMatches.get(0);
+    }
+
+    /**
+     * @param timeStampString
+     * @return if the String is a Intervall
+     */
+    public static boolean getIntervall(String timeStampString) {
+        return INTERVALL.matcher(timeStampString).matches();
     }
 
     /**
