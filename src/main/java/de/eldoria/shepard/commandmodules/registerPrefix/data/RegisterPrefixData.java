@@ -10,13 +10,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CommandData extends QueryObject {
+public class RegisterPrefixData extends QueryObject {
     /**
      * Default constructor for data object.
      *
      * @param source data source for information retrieval
      */
-    public CommandData(DataSource source) {
+    public RegisterPrefixData(DataSource source) {
         super(source);
     }
 

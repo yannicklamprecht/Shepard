@@ -1,13 +1,12 @@
 package de.eldoria.shepard.commandmodules.registerPrefix.command;
 
 import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
-import de.eldoria.shepard.basemodules.commanddispatching.util.FlagParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
-import de.eldoria.shepard.commandmodules.registerPrefix.data.CommandData;
+import de.eldoria.shepard.commandmodules.registerPrefix.data.RegisterPrefixData;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.moderation.RegisterPrefixLocale;
@@ -28,7 +27,7 @@ import java.util.stream.Collectors;
 public class RegisterPrefix extends Command implements ExecutableAsync, ReqInit, ReqDataSource {
 
     private DataSource source;
-    private CommandData commandData;
+    private RegisterPrefixData commandData;
 
     public RegisterPrefix(){
         super("externalPrefix",
@@ -52,7 +51,7 @@ public class RegisterPrefix extends Command implements ExecutableAsync, ReqInit,
 
     @Override
     public void init() {
-        this.commandData = new CommandData(source);
+        this.commandData = new RegisterPrefixData(source);
     }
 
     @Override
