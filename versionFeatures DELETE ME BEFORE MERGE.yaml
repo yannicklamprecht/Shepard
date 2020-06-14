@@ -279,3 +279,6 @@ modlog:
 
 #check command
 # checks if the bot has all required permissions.
+
+# Add annotations to commands with required permissions for this module part.
+# Check for command execution if the bot has the required permissions.
