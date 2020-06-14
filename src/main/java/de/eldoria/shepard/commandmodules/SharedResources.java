@@ -1,6 +1,7 @@
 package de.eldoria.shepard.commandmodules;
 
 import de.eldoria.shepard.ShepardBot;
+import de.eldoria.shepard.basemodules.MessageListener;
 import de.eldoria.shepard.basemodules.commanddispatching.CommandHub;
 import de.eldoria.shepard.basemodules.commanddispatching.CooldownManager;
 import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
@@ -32,6 +33,7 @@ public final class SharedResources implements ReqAssigner {
     private Statistics statistics;
     private final List<ListenerAdapter> listeners = new ArrayList<>();
     private CommandHub commandHub;
+    private MessageListener messageListener;
 
     private SharedResources(ShepardBot shepardBot, ShardManager shardManager, Config config) {
         this.shepardBot = shepardBot;
@@ -65,6 +67,10 @@ public final class SharedResources implements ReqAssigner {
         connectionPool = new ConnectionPool();
         addAndInit(connectionPool, this);
         dataSource = connectionPool.getSource();
+
+        // Req DataSource
+        messageListener = new MessageListener();
+        addAndInit(connectionPool, this);
 
         // Req DataSource
         validator = new ExecutionValidator();

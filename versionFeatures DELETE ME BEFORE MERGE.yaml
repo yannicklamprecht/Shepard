@@ -3,7 +3,7 @@ globalChatRules:
   # activate, disable or change a rule
   rule:
     <rule>
-      <values>
+    <values>
   # information about the rules active in all channel
   information:
 
@@ -14,7 +14,7 @@ channelChatRules:
   rule:
     channelid:
       <rule>
-        <values>
+      <values>
   # information about the rules active in a channel
   info:
   # Allows to apply global and channel rules.
@@ -49,11 +49,11 @@ rules:
     <disable\allow\deny> [attachmentTypes...]
   # Allows or block the sending of caps messages
   CapsMessages:
-    <allow\deny> [minMessageLength=5]
-  # Allow or block sending of dublicated messages. Define optinal number of min messages of user between duplicates.
+    <allow\deny> [minMessageLength=10] [ratio=95]
+  # Allow or block sending of dublicated messages. Define optinal number of min messages of user or time between duplicates.
   DoubleMessages:
-    <allow\deny>
-      [messagecountBetweenDuplicates=5. Max 10]
+    <disabled\deny>
+      [messagecountBetweenDuplicates=5. Max 10] [seconds = 30]
   # allow or block sending of messages which contain words from the badwords list.
   badwordMessage:
     deny\allow
@@ -94,16 +94,16 @@ mute:
   # mute a user globaly
   global:
     user
-      -t time
-      -r reason
-      -w warnPoints
+    -t time
+    -r reason
+    -w warnPoints
   # mute a user in a channel
   channel:
     channel
-      user
-        -t time
-        -r reason
-        -w warnPoints
+    user
+    -t time
+    -r reason
+    -w warnPoints
 
 # Manage settings for a mute
 muteSettings:
@@ -143,19 +143,19 @@ ban:
   # Gives a user a permanent ban
   perma:
     user
-      -r reason
-      -p purge day|week
+    -r reason
+    -p purge day|week
   # Gives a user a temporary ban
   temp:
     user
-      -t time
-      -r reason
-      -p purge day|week
+    -t time
+    -r reason
+    -p purge day|week
   # Gives the user a softban. Deletes the messages of the last day or week
   softban:
     user
-      -r reason
-      -p purge day|week
+    -r reason
+    -p purge day|week
 
 banSettings:
   defaultPurgeScope:
@@ -206,8 +206,8 @@ warn:
   # warn a user temporary
   temp:
     time
-      -r reason
-      -p points=1
+    -r reason
+    -p points=1
   # warn a user with a permanent warning
   perma:
     reason
@@ -229,9 +229,9 @@ autowarning:
   # set the amount of rule violations after a user is warned for this rule
   rule:
     enable\disable
-      -p points=0
-      -v violations=1
-      -t time=null
+    -p points=0
+    -v violations=1
+    -t time=null
 
 # Create a auto penalty if a user exceeds a point limit.
 # Shepard will not add a penalty to user with a higher group than herself
@@ -239,8 +239,8 @@ autoPenalty:
   # define a auto penalty for a point count. some penaltys require additional arguments like time.
   add:
     <points>
-      <penalty>
-        [penalty args]
+    <penalty>
+    [penalty args]
   # remove a auto penalty
   remove:
     id
@@ -272,3 +272,10 @@ modlog:
     channel
   # disable modlog
   disable:
+
+
+#lmgtfy command
+#Uses last command for a lmgtfy query or the paramater added
+
+#check command
+# checks if the bot has all required permissions.
