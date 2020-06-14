@@ -142,7 +142,29 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
     }
 
     private void temp(Member user, int purge, String reason, String intervall, EventWrapper wrapper) {
-
+        if(!commandData.addBan(user, intervall, wrapper)){
+            MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, wrapper);
+            return;
+        }
+        String locReason = TextLocalizer.localizeAllAndReplace(
+                BanLocale.TEMP_BANNED.tag,
+                wrapper,
+                wrapper.getGuild().get().getName(),
+                intervall,
+                reason
+        );
+        sendBannedUserInfo(user, locReason);
+        user.ban(purge, reason).queue(s ->{
+            MessageSender.sendMessage(
+                    TextLocalizer.localizeAllAndReplace(
+                            BanLocale.SUCCESS_TEMP.tag,
+                            wrapper,
+                            user.getEffectiveName(),
+                            intervall
+                    ),
+                    wrapper.getMessageChannel()
+            );
+        });
     }
 
     private void perma(Member user, int purge, String reason, EventWrapper wrapper) {
