@@ -185,6 +185,13 @@ public class TicketSettings extends Command implements Executable, ReqParser, Re
         List<Role> validRoles = parser.getRoles(wrapper.getGuild().get(),
                 ArgumentParser.getRangeAsList(args, 2));
 
+        for (Role role : validRoles) {
+            if (!wrapper.getGuild().get().getSelfMember().canInteract(role)) {
+                MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, role.getAsMention());
+                return;
+            }
+        }
+
         String roleMentions = validRoles.stream().map(IMentionable::getAsMention)
                 .collect(Collectors.joining(lineSeparator()));
 
@@ -230,7 +237,11 @@ public class TicketSettings extends Command implements Executable, ReqParser, Re
         }
 
         for (Member member : members) {
-            TicketHelper.removeAndUpdateTicketRoles(ticketData, parser, wrapper, member, typeOwnerRoles);
+            Role role = TicketHelper.removeAndUpdateTicketRoles(ticketData, parser, wrapper, member, typeOwnerRoles);
+            if (role != null) {
+                MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, role.getAsMention());
+                return;
+            }
         }
 
         if (ticketData.removeTypeByKeyword(wrapper.getGuild().get(), scopeTicket.getKeyword(), wrapper)) {

@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllByChannel;
 import static java.lang.System.lineSeparator;
 
@@ -138,7 +139,23 @@ public final class MessageSender {
 
             sendMessage(type.taggedMessage, wrapper.getMessageChannel());
         }
+    }
 
+    /**
+     * Sends a simple error with predefined error messages. Can also replace placeholders in the error message.
+     *
+     * @param type         error type
+     * @param wrapper      channel
+     * @param replacements String replacements for localization
+     */
+    public static void sendSimpleError(ErrorType type, EventWrapper wrapper, String... replacements) {
+        if (type.isEmbed && wrapper.getGuild().isPresent()) {
+            sendSimpleErrorEmbed(localizeAllAndReplace(type.taggedMessage, wrapper, replacements), wrapper.getMessageChannel());
+        } else if (type.isEmbed) {
+            sendSimpleErrorEmbed(localizeAllAndReplace(type.taggedMessage, wrapper, replacements), wrapper.getMessageChannel());
+        } else {
+            sendMessage(localizeAllAndReplace(type.taggedMessage, wrapper, replacements), wrapper.getMessageChannel());
+        }
     }
 
     /**
@@ -285,7 +302,8 @@ public final class MessageSender {
 
     /**
      * Sends a message to a user.
-     *  @param user           User to send
+     *
+     * @param user           User to send
      * @param attachments    Attachments to send
      * @param text           Text to send
      * @param messageContext message informations.

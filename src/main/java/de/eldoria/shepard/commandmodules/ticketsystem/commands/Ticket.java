@@ -126,20 +126,23 @@ public class Ticket extends Command implements Executable, ReqParser, ReqDataSou
         TicketType type = ticketData.getTypeByChannel(wrapper.getGuild().get(), channel, wrapper);
 
         //Removes channel from database. needed for further role checking.
-        if (ticketData.removeChannel(wrapper.getGuild().get(), channel, wrapper)) {
 
+        //Get the ticket owner member object
+        Member member = parser.getGuildMember(wrapper.getGuild().get(), channelOwnerId);
 
-            //Get the ticket owner member object
-            Member member = parser.getGuildMember(wrapper.getGuild().get(), channelOwnerId);
-
-            //If Member is present remove roles for this ticket.
-            if (member != null && type != null) {
-                //Get the owner roles of the current ticket. They should be removed.
-                List<Role> roles = parser.getRoles(wrapper.getGuild().get(),
-                        ticketData.getTypeOwnerRoles(wrapper.getGuild().get(), type.getKeyword(), wrapper));
-                TicketHelper.removeAndUpdateTicketRoles(ticketData, parser, wrapper, member, roles);
+        //If Member is present remove roles for this ticket.
+        if (member != null && type != null) {
+            //Get the owner roles of the current ticket. They should be removed.
+            List<Role> roles = parser.getRoles(wrapper.getGuild().get(),
+                    ticketData.getTypeOwnerRoles(wrapper.getGuild().get(), type.getKeyword(), wrapper));
+            Role role = TicketHelper.removeAndUpdateTicketRoles(ticketData, parser, wrapper, member, roles);
+            if (role != null) {
+                MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, role.getAsMention());
+                return;
             }
+        }
 
+        if (ticketData.removeChannel(wrapper.getGuild().get(), channel, wrapper)) {
             //Finally delete the channel.
             channel.delete().queue();
         }
@@ -272,10 +275,18 @@ public class Ticket extends Command implements Executable, ReqParser, ReqDataSou
                                     ticket.getKeyword(), wrapper));
                     //Assign ticket support and owner roles
                     for (Role role : ownerRoles) {
+                        if (!wrapper.getGuild().get().getSelfMember().canInteract(role)) {
+                            MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, role.getAsMention());
+                            return;
+                        }
                         wrapper.getGuild().get().addRoleToMember(member, role).queue();
                     }
 
                     for (Role role : supportRoles) {
+                        if (!wrapper.getGuild().get().getSelfMember().canInteract(role)) {
+                            MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, role.getAsMention());
+                            return;
+                        }
                         manager.getChannel().upsertPermissionOverride(role)
                                 .setAllow(Permission.MESSAGE_READ).queue();
                     }

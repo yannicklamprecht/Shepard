@@ -157,7 +157,12 @@ public enum ErrorType {
     /**
      * Used when a ticket type is not found.
      */
-    TYPE_NOT_FOUND("error.typeNotFound");
+    TYPE_NOT_FOUND("error.typeNotFound"),
+    /**
+     * Used when the bot tries to modify a role which is above its own highest role.
+     * %0% role name
+     */
+    HIERARCHY_EXCEPTION("error.hierarchyException", true);
 
 
     /**
