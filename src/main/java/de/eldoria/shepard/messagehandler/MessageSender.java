@@ -110,17 +110,22 @@ public final class MessageSender {
     /**
      * Sends a error with text box.
      *
+     * @param config
      * @param fields  List of fields.
      * @param wrapper wrapper for channel determination
      */
-    public static void sendError(LocalizedField[] fields, EventWrapper wrapper) {
+    public static void sendError(Config config, LocalizedField[] fields, EventWrapper wrapper) {
         EmbedBuilder builder = new EmbedBuilder()
                 .setTitle("ERROR!")
                 .setThumbnail(ShepardReactions.CONFUSED.thumbnail);
         for (LocalizedField field : fields) {
             builder.addField(field.getField())
                     .setColor(Color.red);
-            wrapper.getMessageChannel().sendMessage(builder.build()).queue();
+            try {
+                wrapper.getMessageChannel().sendMessage(builder.build()).queue();
+            } catch (InsufficientPermissionException e) {
+                handlePermissionException(config, e, wrapper);
+            }
         }
     }
 
@@ -195,7 +200,7 @@ public final class MessageSender {
         try {
             wrapper.getMessageChannel().sendMessage(builder.build()).queue();
         } catch (InsufficientPermissionException e) {
-            if (Arrays.stream(config.getBotlist().getGuildIds())
+            if (config == null || Arrays.stream(config.getBotlist().getGuildIds())
                     .noneMatch(id -> id == wrapper.getGuild().get().getIdLong())) {
                 wrapper.getGuild().get().getOwner().getUser().openPrivateChannel().queue(a -> {
                     EmbedBuilder privateBuilder = new EmbedBuilder()

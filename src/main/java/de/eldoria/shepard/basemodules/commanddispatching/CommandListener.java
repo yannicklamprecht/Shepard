@@ -126,7 +126,7 @@ public class CommandListener extends ListenerAdapter
 
         if (searchAndSendSuggestion(eventWrapper, args, label, prefix)) return;
 
-        MessageSender.sendError(
+        MessageSender.sendError(config,
                 new LocalizedField[] {
                         new LocalizedField(M_COMMAND_NOT_FOUND.tag, TextLocalizer.localizeAllAndReplace(M_HELP_COMMAND.tag,
                                 eventWrapper, "`" + prefix + "help`"), false, eventWrapper)},
