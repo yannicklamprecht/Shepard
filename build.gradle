@@ -19,6 +19,7 @@ repositories {
     maven {
         url = uri('https://jitpack.io')
     }
+
 }
 
 dependencies {
@@ -41,7 +42,14 @@ dependencies {
     implementation 'info.debatty:java-string-similarity:1.2.1'
     implementation 'org.discordbots:DBL-Java-Library:2.0.1'
     implementation 'com.google.guava:guava:28.2-jre'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.5.2'
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.2")
+    testImplementation "org.mockito:mockito-core:3.+"
+    testImplementation "org.mockito:mockito-junit-jupiter:3.+"
+    testImplementation "org.powermock:powermock-module-junit4:2.+"
+    testImplementation "org.powermock:powermock-api-mockito2:2.+"
 }
 
 group = 'ShepardBot'
@@ -50,6 +58,10 @@ sourceCompatibility = '11'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 jar {

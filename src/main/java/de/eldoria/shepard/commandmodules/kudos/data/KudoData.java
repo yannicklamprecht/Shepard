@@ -17,7 +17,7 @@ import java.util.List;
 import static de.eldoria.shepard.database.DbUtil.getScoreListFromResult;
 import static de.eldoria.shepard.database.DbUtil.handleException;
 
-public final class KudoData extends QueryObject {
+public class KudoData extends QueryObject {
     /**
      * Create a new kudo data object.
      *
