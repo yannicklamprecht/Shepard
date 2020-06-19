@@ -40,24 +40,24 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
                 new String[] {"b"},
                 BanLocale.DESCRIPTION.tag,
                 SubCommand.builder("ban")
-                        .addSubcommand(BanLocale.PERMA.tag,
+                        .addSubcommand(BanLocale.C_PERMA.tag,
                                 Parameter.createCommand("perma"),
                                 Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true),
-                                Parameter.createInput(BanLocale.A_PARAMETER_REASON.tag, BanLocale.AD_PARAMETER_REASON.tag, false),
-                                Parameter.createInput(BanLocale.A_PARAMETER_PURGE.tag, BanLocale.AD_PARAMETER_PURGE.tag, false)
+                                Parameter.createInput(BanLocale.A_REASON.tag, BanLocale.AD_REASON.tag, false),
+                                Parameter.createInput(BanLocale.A_PURGE.tag, BanLocale.AD_PURGE.tag, false)
                         )
-                        .addSubcommand(BanLocale.TEMP.tag,
+                        .addSubcommand(BanLocale.C_TEMP.tag,
                                 Parameter.createCommand("temp"),
                                 Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true),
-                                Parameter.createInput(BanLocale.A_PARAMETER_REASON.tag, BanLocale.AD_PARAMETER_REASON.tag, false),
-                                Parameter.createInput(BanLocale.A_PARAMETER_PURGE.tag, BanLocale.AD_PARAMETER_PURGE.tag, false),
-                                Parameter.createInput(BanLocale.A_PARAMETER_TIME.tag, GeneralLocale.AD_INTERVAL.tag, false)
+                                Parameter.createInput(BanLocale.A_REASON.tag, BanLocale.AD_REASON.tag, false),
+                                Parameter.createInput(BanLocale.A_PURGE.tag, BanLocale.AD_PURGE.tag, false),
+                                Parameter.createInput(BanLocale.A_TIME.tag, GeneralLocale.AD_INTERVAL.tag, false)
                         )
-                        .addSubcommand(BanLocale.SOFT.tag,
+                        .addSubcommand(BanLocale.C_SOFT.tag,
                                 Parameter.createCommand("soft"),
                                 Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true),
-                                Parameter.createInput(BanLocale.A_PARAMETER_REASON.tag, BanLocale.AD_PARAMETER_REASON.tag, false),
-                                Parameter.createInput(BanLocale.A_PARAMETER_PURGE.tag, BanLocale.AD_PARAMETER_PURGE.tag, false)
+                                Parameter.createInput(BanLocale.A_REASON.tag, BanLocale.AD_REASON.tag, false),
+                                Parameter.createInput(BanLocale.A_PURGE.tag, BanLocale.AD_PURGE.tag, false)
                         )
                         .build(),
                 CommandCategory.MODERATION);
@@ -96,7 +96,7 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
         // TODO: Get default Value from DB
         String interval = FlagParser.getFlagValue('t', args, "7 days");
 
-        if (!ArgumentParser.getIntervall(interval)) {
+        if (!ArgumentParser.getInterval(interval)) {
             MessageSender.sendSimpleError(ErrorType.INVALID_TIME, wrapper);
             return;
         }
@@ -126,7 +126,7 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
 
     private void soft(Member user, int purge, String reason, EventWrapper wrapper) {
         String locReason = TextLocalizer.localizeAllAndReplace(
-                BanLocale.SOFT_BANNED.tag,
+                BanLocale.M_SOFT_BANNED.tag,
                 wrapper,
                 wrapper.getGuild().get().getName(),
                 reason
@@ -136,15 +136,13 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
         wrapper.getGuild().get().unban(user.getUser()).queue(s -> {
             MessageSender.sendMessage(
                     TextLocalizer.localizeAllAndReplace(
-                            BanLocale.SUCCESS_SOFT.tag,
+                            BanLocale.M_SOFT.tag,
                             wrapper,
                             wrapper.getGuild().get().getName()
                     ),
                     wrapper.getMessageChannel()
             );
-        }, throwable -> {
-            MessageSender.sendSimpleError(ErrorType.FAILED_UNBAN, wrapper);
-        });
+        }, throwable -> MessageSender.sendSimpleError(ErrorType.FAILED_UNBAN, wrapper));
     }
 
     private void temp(Member user, int purge, String reason, String intervall, EventWrapper wrapper) {
@@ -153,46 +151,38 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
             return;
         }
         String locReason = TextLocalizer.localizeAllAndReplace(
-                BanLocale.TEMP_BANNED.tag,
+                BanLocale.M_TEMP_BANNED.tag,
                 wrapper,
                 wrapper.getGuild().get().getName(),
                 intervall,
                 reason
         );
         sendBannedUserInfo(user, locReason);
-        user.ban(purge, reason).queue(s -> {
-            MessageSender.sendMessage(
-                    TextLocalizer.localizeAllAndReplace(
-                            BanLocale.SUCCESS_TEMP.tag,
-                            wrapper,
-                            user.getEffectiveName(),
-                            intervall
-                    ),
-                    wrapper.getMessageChannel()
-            );
-        }, throwable -> {
-            MessageSender.sendSimpleError(ErrorType.FAILED_BAN, wrapper);
-        });
+        user.ban(purge, reason).queue(s -> MessageSender.sendMessage(
+                TextLocalizer.localizeAllAndReplace(
+                        BanLocale.M_TEMP.tag,
+                        wrapper,
+                        user.getEffectiveName(),
+                        intervall
+                ),
+                wrapper.getMessageChannel()
+        ), throwable -> MessageSender.sendSimpleError(ErrorType.FAILED_BAN, wrapper));
     }
 
     private void perma(Member user, int purge, String reason, EventWrapper wrapper) {
         String locReason = TextLocalizer.localizeAllAndReplace(
-                BanLocale.PERM_BANNED.tag,
+                BanLocale.M_PERM_BANNED.tag,
                 wrapper,
                 wrapper.getGuild().get().getName(),
                 reason
         );
         sendBannedUserInfo(user, locReason);
-        user.ban(purge, reason).queue(s -> {
-            MessageSender.sendMessage(
-                    TextLocalizer.localizeAllAndReplace(BanLocale.SUCCESS_PERM.tag,
-                            wrapper,
-                            user.getEffectiveName()),
-                    wrapper.getMessageChannel()
-            );
-        }, throwable -> {
-            MessageSender.sendSimpleError(ErrorType.FAILED_BAN, wrapper);
-        });
+        user.ban(purge, reason).queue(s -> MessageSender.sendMessage(
+                TextLocalizer.localizeAllAndReplace(BanLocale.M_PERM.tag,
+                        wrapper,
+                        user.getEffectiveName()),
+                wrapper.getMessageChannel()
+        ), throwable -> MessageSender.sendSimpleError(ErrorType.FAILED_BAN, wrapper));
     }
 
     private void sendBannedUserInfo(Member user, String reason) {

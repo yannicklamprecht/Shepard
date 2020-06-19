@@ -3,11 +3,11 @@ package de.eldoria.shepard.localization.enums.commands.moderation;
 public enum ModLogLocale {
 
     DESCRIPTION("command.modLog.description"),
-    ENABLE("command.modLog.subcommand.enable"),
-    DISABLE("command.modLog.subcommand.disable"),
+    C_ENABLE("command.modLog.subcommand.enable"),
+    C_DISABLE("command.modLog.subcommand.disable"),
     SHOW("command.modLog.subcommand.show"),
-    SUCCESS_ENABLED("command.modLog.message.success.enabled"),
-    SUCCESS_DISABLED("command.modLog.message.success.disabled");
+    M_ENABLED("command.modLog.message.enabled"),
+    M_DISABLED("command.modLog.message.disabled");
 
 
     /**

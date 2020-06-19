@@ -23,12 +23,12 @@ public class BanScheduler implements Runnable, ReqDataSource, ReqInit, ReqShardM
 
         List<BanDataType> returnData = dataSource.getExpiredBans(null);
 
-        for (BanDataType bdt : returnData){
+        for (BanDataType bdt : returnData) {
             Guild guild = manager.getGuildById(bdt.getGuild_id());
-            if(guild == null) continue;
+            if (guild == null) continue;
             guild.unban(bdt.getUser_id()).queue();
         }
-        
+
     }
 
     @Override

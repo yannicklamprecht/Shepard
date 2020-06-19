@@ -2,12 +2,12 @@ package de.eldoria.shepard.localization.enums.commands.moderation;
 
 public enum BadWordsLocale {
     DESCRIPTION("command.badword.description"),
-    ADD("command.badword.subcommand.add"),
-    REMOVE("command.badword.subcommand.remove"),
-    LIST("command.badword.subcommand.list"),
-    SUCCESS_ADD("command.badword.message.success.add"),
-    SUCCESS_REMOVE("command.badword.message.success.remove"),
-    LIST_TITLE("command.badword.message.list.title");
+    C_ADD("command.badword.subcommand.add"),
+    C_REMOVE("command.badword.subcommand.remove"),
+    C_LIST("command.badword.subcommand.list"),
+    M_ADD("command.badword.message.add"),
+    M_REMOVE("command.badword.message.remove"),
+    M_LIST_TITLE("command.badword.message.listTitle");
 
     /**
      * Get the escaped locale code for auto translation.
