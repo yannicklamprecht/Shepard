@@ -39,7 +39,7 @@ public class BanScheduler implements Runnable, ReqDataSource, ReqInit, ReqShardM
     @Override
     public void init() {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(this, 10, 20, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(this, 10, 20, TimeUnit.SECONDS);
     }
 
     @Override

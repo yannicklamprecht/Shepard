@@ -46,7 +46,7 @@ BEGIN
 	RETURN result;
 END
 $BODY$;
-CREATE TABLE shepard_data.badwords
+CREATE TABLE IF NOT EXISTS shepard_data.badwords
 (
     guild_id bigint NOT NULL,
     badwords character varying[] COLLATE pg_catalog."default",
@@ -199,7 +199,7 @@ CREATE TABLE IF NOT EXISTS shepard_data.temp_ban
     unban_date timestamp without time zone,
     CONSTRAINT temp_bans_pkey PRIMARY KEY (guild_id, user_id)
 );
-CREATE OR REPLACE FUNCTION shepard_func.set_temp_ban(
+CREATE OR REPLACE FUNCTION shepard_func.add_temp_ban(
 	_guild_id bigint,
 	_user_id bigint,
 	_time character varying)

@@ -157,7 +157,23 @@ public enum ErrorType {
     /**
      * Used when a ticket type is not found.
      */
-    TYPE_NOT_FOUND("error.typeNotFound");
+    TYPE_NOT_FOUND("error.typeNotFound"),
+    /**
+     * Used when User can not be banned
+     */
+    CAN_NOT_BE_BANNED("error.canNotBeBanned"),
+    /**
+     * Used when User can not be kicked
+     */
+    CAN_NOT_BE_KICKED("error.canNotBeKicked"),
+    /**
+     * Used when the ban fails
+     */
+    FAILED_BAN("error.failedBan"),
+    /**
+     * Used when the unban fails
+     */
+    FAILED_UNBAN("error.failedUnban");
 
 
     /**

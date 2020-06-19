@@ -170,8 +170,7 @@ public final class ShepardBot {
         loadModule(new ChangelogModule(), new CommandSettingsModule(), new GreetingModule(), new GuessGameModule(),
                 new KudoModule(), new LanguageModule(), new MonitoringModule(), new PrefixModule(),
                 new PresenceModule(), new PrivateMessagesModule(), new QuoteModule(), new ReminderModule(),
-                new RepeatCommandModule(), new TicketSystemModule(), new StandaloneCommandsModule(),
-                new ModLogModule(), new BadWordsModule(), new RegisterPrefixModule(), new BanModule());
+                new RepeatCommandModule(), new TicketSystemModule(), new StandaloneCommandsModule());
 
         // start api services
         loadModule(new ApiModule());

@@ -1,7 +1,7 @@
 package de.eldoria.shepard.localization.enums.commands.moderation;
 
 public enum  BanLocale {
-    DESCRIPTION("command.ban.subcommand.description"),
+    DESCRIPTION("command.ban.description"),
     PERMA("command.ban.subcommand.perm"),
     TEMP("command.ban.subcommand.temp"),
     SOFT("command.ban.subcommand.soft"),
@@ -10,12 +10,12 @@ public enum  BanLocale {
     A_PARAMETER_PURGE("command.ban.subcommand.parameter.argument.purge"),
     AD_PARAMETER_PURGE("command.ban.subcommand.parameter.argumentDescription.purge"),
     A_PARAMETER_TIME("command.ban.subcommand.parameter.argument.time"),
-    SUCCESS_PERM("command.ban.subcommand.message.banned.success.perm"),
-    SUCCESS_TEMP("command.ban.subcommand.message.banned.success.temp"),
-    SUCCESS_SOFT("command.ban.subcommand.message.banned.success.soft"),
-    PERM_BANNED("command.ban.subcommand.message.banned.perm"),
-    TEMP_BANNED("command.ban.subcommand.message.banned.temp"),
-    SOFT_BANNED("command.ban.subcommand.message.banned.soft");
+    SUCCESS_PERM("command.ban.message.perm.success"),
+    SUCCESS_TEMP("command.ban.message.temp.success"),
+    SUCCESS_SOFT("command.ban.message.soft.success"),
+    PERM_BANNED("command.ban.message.perm"),
+    TEMP_BANNED("command.ban.message.temp"),
+    SOFT_BANNED("command.ban.message.soft");
 
     /**
      * Get the escaped locale code for auto translation.

@@ -3,6 +3,7 @@ package de.eldoria.shepard.commandmodules.registerPrefix.data;
 import de.eldoria.shepard.database.DbUtil;
 import de.eldoria.shepard.database.QueryObject;
 import de.eldoria.shepard.wrapper.EventWrapper;
+import net.dv8tion.jda.api.entities.Guild;
 
 import javax.sql.DataSource;
 import java.sql.Array;
@@ -20,10 +21,10 @@ public class RegisterPrefixData extends QueryObject {
         super(source);
     }
 
-    public String[] getList(long guildId, EventWrapper wrapper) {
+    public String[] getList(Guild guild, EventWrapper wrapper) {
         try(var conn = source.getConnection(); PreparedStatement stmt =
                 conn.prepareStatement("SELECT shepard_func.get_registert_prefix(?)")){
-            stmt.setLong(1, guildId);
+            stmt.setLong(1, guild.getIdLong());
             ResultSet rs = stmt.executeQuery();
             if(rs.next()){
                 Array resultarray = rs.getArray(1);

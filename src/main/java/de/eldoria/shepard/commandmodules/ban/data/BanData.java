@@ -25,7 +25,7 @@ public class BanData extends QueryObject {
 
     public boolean addBan(Member user, String intervall, EventWrapper wrapper) {
         try(var conn = source.getConnection(); PreparedStatement stmt =
-                conn.prepareStatement("SELECT shepard_func.shepard_func.set_temp_ban(?, ?, ?)")){
+                conn.prepareStatement("SELECT shepard_func.shepard_func.add_temp_ban(?, ?, ?)")){
             stmt.setLong(1, wrapper.getGuild().get().getIdLong());
             stmt.setLong(2, user.getIdLong());
             stmt.setString(3, intervall);
@@ -39,7 +39,7 @@ public class BanData extends QueryObject {
 
     public List<BanDataType> getExpiredBans(EventWrapper wrapper) {
         try(var conn = source.getConnection(); PreparedStatement stmt =
-                conn.prepareStatement("shepard_func.get_temp_ban()")) {
+                conn.prepareStatement("SELECT * FROM shepard_func.get_temp_ban()")) {
             List<BanDataType> result = new ArrayList<>();
             ResultSet rs = stmt.executeQuery();
             while (rs.next()){

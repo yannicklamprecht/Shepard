@@ -24,9 +24,8 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @CommandUsage(EventContext.GUILD)
-public class BadWords extends Command implements ExecutableAsync, ReqInit, ReqDataSource {
+public class BadWords extends Command implements ExecutableAsync, ReqDataSource {
 
-    private DataSource source;
     private BadWordData commandData;
 
     public BadWords(){
@@ -103,11 +102,7 @@ public class BadWords extends Command implements ExecutableAsync, ReqInit, ReqDa
 
     @Override
     public void addDataSource(DataSource source) {
-        this.source = source;
-    }
-
-    @Override
-    public void init() {
         this.commandData = new BadWordData(source);
     }
+
 }
