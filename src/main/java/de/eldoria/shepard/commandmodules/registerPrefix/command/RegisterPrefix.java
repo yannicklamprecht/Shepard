@@ -71,7 +71,7 @@ public class RegisterPrefix extends Command implements ExecutableAsync, ReqInit,
     }
 
     private void list(EventWrapper wrapper) {
-        String[] list = commandData.getList(wrapper.getGuild().get().getIdLong(), wrapper);
+        String[] list = commandData.getList(wrapper.getGuild().get(), wrapper);
         if(list != null){
             LocalizedEmbedBuilder leb = new LocalizedEmbedBuilder();
             leb.setTitle(RegisterPrefixLocale.LIST_TITLE.tag);

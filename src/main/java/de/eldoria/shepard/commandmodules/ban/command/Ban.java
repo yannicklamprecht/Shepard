@@ -24,7 +24,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 
 import javax.sql.DataSource;
-import java.sql.Timestamp;
+import java.util.Optional;
 
 
 @CommandUsage(EventContext.GUILD)
@@ -32,7 +32,7 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
 
     private DataSource source;
     private BanData commandData;
-    private ArgumentParser paser;
+    private ArgumentParser parser;
     private MoodLogData modLogData;
 
     public Ban(){
@@ -77,7 +77,9 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
     @Override
     public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
-        long channel_id = modLogData.getChannel(wrapper.getGuild().get(), wrapper);
+        Optional<Long> opt_channel_id = modLogData.getChannel(wrapper.getGuild().get(), wrapper);
+        if(!opt_channel_id.isPresent()) return;
+        long channel_id = opt_channel_id.get();
         if(channel_id > 0 ){
             //TODO: Add ModLog
         }
@@ -85,10 +87,9 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
         if(reason == null){
             reason = "";
         }
-        Integer purge;
+        int purge;
         try {
              purge = FlagParser.getFlagValue(Integer::parseInt, 'p', args, "0");
-             if(purge == null) return; //Should not happen because of the Integer Function
         }catch (NumberFormatException e){
             MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, wrapper);
             return;
@@ -101,10 +102,14 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
             return;
         }
 
-        Member user = paser.getGuildMember(wrapper.getGuild().get(), args[1]);
+        Member user = parser.getGuildMember(wrapper.getGuild().get(), args[1]);
         if(user == null){
             MessageSender.sendSimpleError(ErrorType.INVALID_USER, wrapper);
             return;
+        }
+
+        if(!wrapper.getGuild().get().getSelfMember().canInteract(user)){
+            MessageSender.sendSimpleError(ErrorType.CAN_NOT_BE_BANNED, wrapper);
         }
 
         if(isSubCommand(cmd, 0)){
@@ -138,6 +143,8 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
                     ),
                     wrapper.getMessageChannel()
             );
+        }, throwable -> {
+            MessageSender.sendSimpleError(ErrorType.FAILED_UNBAN, wrapper);
         });
     }
 
@@ -164,6 +171,8 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
                     ),
                     wrapper.getMessageChannel()
             );
+        }, throwable -> {
+            MessageSender.sendSimpleError(ErrorType.FAILED_BAN, wrapper);
         });
     }
 
@@ -182,6 +191,8 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
                     user.getEffectiveName()),
                     wrapper.getMessageChannel()
             );
+        }, throwable -> {
+            MessageSender.sendSimpleError(ErrorType.FAILED_BAN, wrapper);
         });
     }
 
@@ -192,6 +203,6 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
 
     @Override
     public void addParser(ArgumentParser parser) {
-        this.paser = parser;
+        this.parser = parser;
     }
 }
