@@ -9,18 +9,16 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-<<<<<<<<< Temporary merge branch 1
-=========
-import java.util.Optional;
->>>>>>>>> Temporary merge branch 2
+import java.util.OptionalLong;
 
-public final class MoodLogData extends QueryObject {
+
+public final class ModLogData extends QueryObject {
     /**
      * Default constructor for data object.
      *
      * @param source data source for information retrieval
      */
-    public MoodLogData(DataSource source) {
+    public ModLogData(DataSource source) {
         super(source);
     }
 
