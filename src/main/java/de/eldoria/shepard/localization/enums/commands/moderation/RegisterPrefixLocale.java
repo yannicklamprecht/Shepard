@@ -5,9 +5,9 @@ public enum RegisterPrefixLocale {
     ADD("command.prefix.subcommand.add"),
     REMOVE("command.prefix.subcommand.remove"),
     LIST("command.prefix.subcommand.list"),
-    SUCCESS_ADD("command.prefix.message.success.add"),
-    SUCCESS_REMOVE("command.prefix.message.success.remove"),
-    LIST_TITLE("command.prefix.message.list.title");
+    SUCCESS_ADD("command.prefix.message.add"),
+    SUCCESS_REMOVE("command.prefix.message.remove"),
+    LIST_TITLE("command.prefix.message.listTitle");
 
     /**
      * Get the escaped locale code for auto translation.

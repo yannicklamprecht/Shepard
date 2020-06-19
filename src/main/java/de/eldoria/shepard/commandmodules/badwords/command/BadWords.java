@@ -14,7 +14,6 @@ import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
-import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.util.Colors;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
@@ -28,17 +27,17 @@ public class BadWords extends Command implements ExecutableAsync, ReqDataSource 
 
     private BadWordData commandData;
 
-    public BadWords(){
+    public BadWords() {
         super("badwords",
-                new String[]{"bw"},
+                new String[] {"bw"},
                 BadWordsLocale.DESCRIPTION.tag,
                 SubCommand.builder("badwords")
-                    .addSubcommand(BadWordsLocale.ADD.tag, Parameter.createCommand("add"),
-                            Parameter.createInput(GeneralLocale.A_TEXT.tag, null, true))
-                    .addSubcommand(BadWordsLocale.REMOVE.tag, Parameter.createCommand("remove"),
-                            Parameter.createInput(GeneralLocale.A_TEXT.tag, null, true))
-                    .addSubcommand(BadWordsLocale.LIST.tag, Parameter.createCommand("list"))
-                    .build(),
+                        .addSubcommand(BadWordsLocale.C_ADD.tag, Parameter.createCommand("add"),
+                                Parameter.createInput(GeneralLocale.A_TEXT.tag, null, true))
+                        .addSubcommand(BadWordsLocale.C_REMOVE.tag, Parameter.createCommand("remove"),
+                                Parameter.createInput(GeneralLocale.A_TEXT.tag, null, true))
+                        .addSubcommand(BadWordsLocale.C_LIST.tag, Parameter.createCommand("list"))
+                        .build(),
                 CommandCategory.MODERATION
         );
     }
@@ -47,15 +46,15 @@ public class BadWords extends Command implements ExecutableAsync, ReqDataSource 
     public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
 
-        if(isSubCommand(cmd, 0)){
+        if (isSubCommand(cmd, 0)) {
             add(args, wrapper);
         }
 
-        if(isSubCommand(cmd, 1)){
+        if (isSubCommand(cmd, 1)) {
             remove(args, wrapper);
         }
 
-        if(isSubCommand(cmd, 2)){
+        if (isSubCommand(cmd, 2)) {
             list(wrapper);
         }
 
@@ -63,9 +62,9 @@ public class BadWords extends Command implements ExecutableAsync, ReqDataSource 
 
     private void list(EventWrapper wrapper) {
         String[] list = commandData.getList(wrapper.getGuild().get().getIdLong(), wrapper);
-        if(list != null){
+        if (list != null) {
             LocalizedEmbedBuilder leb = new LocalizedEmbedBuilder();
-            leb.setTitle(BadWordsLocale.LIST_TITLE.tag);
+            leb.setTitle(BadWordsLocale.M_LIST_TITLE.tag);
             String badwords = Arrays.stream(list).map(s -> "`" + s + "`").collect(Collectors.joining(","));
             leb.setDescription(badwords);
             leb.setColor(Colors.Pastel.RED);
@@ -76,10 +75,10 @@ public class BadWords extends Command implements ExecutableAsync, ReqDataSource 
 
     private void remove(String[] args, EventWrapper wrapper) {
         String message = ArgumentParser.getMessage(args, 1);
-        if(commandData.removeBadword(wrapper.getGuild().get().getIdLong(), message, wrapper)){
+        if (commandData.removeBadword(wrapper.getGuild().get().getIdLong(), message, wrapper)) {
             MessageSender.sendMessage(
                     TextLocalizer.localizeAllAndReplace(
-                            BadWordsLocale.SUCCESS_REMOVE.tag,
+                            BadWordsLocale.M_REMOVE.tag,
                             wrapper.getGuild().get(),
                             message),
                     wrapper.getMessageChannel()
@@ -89,10 +88,10 @@ public class BadWords extends Command implements ExecutableAsync, ReqDataSource 
 
     private void add(String[] args, EventWrapper wrapper) {
         String message = ArgumentParser.getMessage(args, 1);
-        if(commandData.addBadword(wrapper.getGuild().get().getIdLong(), message, wrapper)){
+        if (commandData.addBadword(wrapper.getGuild().get().getIdLong(), message, wrapper)) {
             MessageSender.sendMessage(
                     TextLocalizer.localizeAllAndReplace(
-                            BadWordsLocale.SUCCESS_ADD.tag,
+                            BadWordsLocale.M_ADD.tag,
                             wrapper.getGuild().get(),
                             message),
                     wrapper.getMessageChannel()

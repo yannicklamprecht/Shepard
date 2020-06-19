@@ -6,7 +6,7 @@ import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
-import de.eldoria.shepard.commandmodules.modlog.data.MoodLogData;
+import de.eldoria.shepard.commandmodules.modlog.data.ModLogData;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.moderation.ModLogLocale;
@@ -25,19 +25,19 @@ import java.util.Optional;
 
 @CommandUsage(EventContext.GUILD)
 public class ModLog extends Command implements ExecutableAsync, ReqDataSource, ReqInit {
-    private MoodLogData commandData;
+    private ModLogData commandData;
     private DataSource source;
 
-    public ModLog(){
+    public ModLog() {
         super("modlog",
                 new String[] {"ml"},
                 ModLogLocale.DESCRIPTION.tag,
                 SubCommand.builder("modlog")
-        .addSubcommand(ModLogLocale.ENABLE.tag, Parameter.createCommand("enabled"),
-                Parameter.createInput(GeneralLocale.A_CHANNEL.tag, GeneralLocale.AD_CHANNEL_MENTION_OR_EXECUTE.tag, false))
-        .addSubcommand(ModLogLocale.DISABLE.tag, Parameter.createCommand("disable"))
-        .build(),
-        CommandCategory.MODERATION);
+                        .addSubcommand(ModLogLocale.C_ENABLE.tag, Parameter.createCommand("enabled"),
+                                Parameter.createInput(GeneralLocale.A_CHANNEL.tag, GeneralLocale.AD_CHANNEL_MENTION_OR_EXECUTE.tag, false))
+                        .addSubcommand(ModLogLocale.C_DISABLE.tag, Parameter.createCommand("disable"))
+                        .build(),
+                CommandCategory.MODERATION);
     }
 
 
@@ -45,39 +45,37 @@ public class ModLog extends Command implements ExecutableAsync, ReqDataSource, R
     public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
 
-        if(isSubCommand(cmd, 0)){
+        if (isSubCommand(cmd, 0)) {
             enable(wrapper, args);
         }
-        if(isSubCommand(cmd, 1)){
+        if (isSubCommand(cmd, 1)) {
             disable(wrapper);
         }
     }
 
     private void disable(@NotNull EventWrapper wrapper) {
-        if(commandData.deleteModChannel(wrapper.getGuild().get().getIdLong(), wrapper)){
-            MessageSender.sendMessage(ModLogLocale.SUCCESS_DISABLED.tag, wrapper.getMessageChannel());
+        if (commandData.deleteModChannel(wrapper.getGuild().get().getIdLong(), wrapper)) {
+            MessageSender.sendMessage(ModLogLocale.M_DISABLED.tag, wrapper.getMessageChannel());
         }
     }
 
     private void enable(EventWrapper wrapper, String @NotNull [] args) {
         TextChannel channel;
-        if(args.length > 1) {
+        if (args.length > 1) {
             Optional<TextChannel> optChannel = ArgumentParser.getTextChannel(wrapper.getGuild().get(), args[1]);
-            if(optChannel.isPresent()){
+            if (optChannel.isPresent()) {
                 channel = optChannel.get();
-            }
-            else {
+            } else {
                 MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, wrapper);
                 return;
             }
-        }
-        else {
+        } else {
             channel = wrapper.getTextChannel().get();
         }
-        if(commandData.updateOrSetModChannel(wrapper.getGuild().get().getIdLong(), channel.getIdLong(), wrapper)){
+        if (commandData.updateOrSetModChannel(wrapper.getGuild().get().getIdLong(), channel.getIdLong(), wrapper)) {
             MessageSender.sendMessage(
                     TextLocalizer.localizeAllAndReplace(
-                            ModLogLocale.SUCCESS_ENABLED.tag,
+                            ModLogLocale.M_ENABLED.tag,
                             wrapper,
                             channel.getAsMention()
                     ),
@@ -92,6 +90,6 @@ public class ModLog extends Command implements ExecutableAsync, ReqDataSource, R
 
     @Override
     public void init() {
-        this.commandData = new MoodLogData(source);
+        this.commandData = new ModLogData(source);
     }
 }

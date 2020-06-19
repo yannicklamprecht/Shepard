@@ -166,7 +166,7 @@ public class Reminder extends Command implements Executable, ReqDataSource {
         }
 
         String timeString = ArgumentParser.getMessage(args, -2);
-        if (!ArgumentParser.getIntervall(timeString)) {
+        if (!ArgumentParser.getInterval(timeString)) {
             MessageSender.sendSimpleError(ErrorType.INVALID_TIME, wrapper);
             return;
         }
@@ -232,7 +232,7 @@ public class Reminder extends Command implements Executable, ReqDataSource {
 
     private void add(String[] args, EventWrapper wrapper) {
         String timeString = ArgumentParser.getMessage(args, 0, 2);
-        if (!DATE.matcher(timeString).find() && !ArgumentParser.getIntervall(timeString)) {
+        if (!DATE.matcher(timeString).find() && !ArgumentParser.getInterval(timeString)) {
             MessageSender.sendSimpleError(ErrorType.INVALID_TIME, wrapper);
             return;
         }

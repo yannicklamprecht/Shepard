@@ -37,7 +37,7 @@ import static de.eldoria.shepard.util.Verifier.isValidId;
  */
 public class ArgumentParser implements ReqCommands, ReqShardManager {
     private static final Pattern DISCORD_TAG = Pattern.compile(".+?#[0-9]{4}");
-    private static final Pattern INTERVALL = Pattern.compile("([0-9])+\\s(((min|hour|day|week)s?)|month)",
+    private static final Pattern INTERVAL = Pattern.compile("([0-9])+\\s(((min|hour|day|week)s?)|month)",
             Pattern.MULTILINE);
     private CommandHub commandHub;
     private ShardManager shardManager;
@@ -266,11 +266,13 @@ public class ArgumentParser implements ReqCommands, ReqShardManager {
     }
 
     /**
-     * @param timeStampString
-     * @return if the String is a Intervall
+     * Check if a string contains a interval.
+     *
+     * @param timeStampString interval as string
+     * @return true if the String is a Intervall
      */
-    public static boolean getIntervall(String timeStampString) {
-        return INTERVALL.matcher(timeStampString).matches();
+    public static boolean getInterval(String timeStampString) {
+        return INTERVAL.matcher(timeStampString).matches();
     }
 
     /**
@@ -492,7 +494,7 @@ public class ArgumentParser implements ReqCommands, ReqShardManager {
      *
      * @param identifier identifier of the command
      * @return a {@link CommandSearchResult} which contains a optional command
-     *   and a optional subcommand if a command was found.
+     * and a optional subcommand if a command was found.
      */
     public CommandSearchResult searchCommand(String identifier) {
         Optional<Command> command = getCommand(identifier);
@@ -592,7 +594,7 @@ public class ArgumentParser implements ReqCommands, ReqShardManager {
      * @param userString user string to search
      * @param guildId    guild if to search
      * @return a list of users. if a direct match was found only 1 user.
-     *   if guild id is invalid a empty list is returned.
+     * if guild id is invalid a empty list is returned.
      */
 
     public List<User> fuzzyGuildUserSearch(long guildId, String userString) {

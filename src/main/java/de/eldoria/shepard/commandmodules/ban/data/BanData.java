@@ -24,25 +24,24 @@ public class BanData extends QueryObject {
     }
 
     public boolean addBan(Member user, String intervall, EventWrapper wrapper) {
-        try(var conn = source.getConnection(); PreparedStatement stmt =
-                conn.prepareStatement("SELECT shepard_func.shepard_func.add_temp_ban(?, ?, ?)")){
+        try (var conn = source.getConnection(); PreparedStatement stmt =
+                conn.prepareStatement("SELECT shepard_func.shepard_func.add_temp_ban(?, ?, ?)")) {
             stmt.setLong(1, wrapper.getGuild().get().getIdLong());
             stmt.setLong(2, user.getIdLong());
             stmt.setString(3, intervall);
             return stmt.execute();
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             DbUtil.handleException(e, wrapper);
         }
         return false;
     }
 
     public List<BanDataType> getExpiredBans(EventWrapper wrapper) {
-        try(var conn = source.getConnection(); PreparedStatement stmt =
+        try (var conn = source.getConnection(); PreparedStatement stmt =
                 conn.prepareStatement("SELECT * FROM shepard_func.get_temp_ban()")) {
             List<BanDataType> result = new ArrayList<>();
             ResultSet rs = stmt.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 result.add(new BanDataType(
                         rs.getString("guild_id"),
                         rs.getString("user_id")
@@ -50,8 +49,7 @@ public class BanData extends QueryObject {
             }
             return result;
 
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             DbUtil.handleException(e, wrapper);
         }
         return null;

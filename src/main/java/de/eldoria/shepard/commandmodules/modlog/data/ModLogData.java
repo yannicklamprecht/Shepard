@@ -9,7 +9,10 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+<<<<<<<<< Temporary merge branch 1
+=========
 import java.util.Optional;
+>>>>>>>>> Temporary merge branch 2
 
 public final class MoodLogData extends QueryObject {
     /**
@@ -53,20 +56,20 @@ public final class MoodLogData extends QueryObject {
         return true;
     }
 
-    public Optional<Long> getChannel(Guild guild, EventWrapper wrapper) {
-        try(var conn= source.getConnection(); PreparedStatement stmt = conn.prepareStatement(
+    public OptionalLong getChannel(Guild guild, EventWrapper wrapper) {
+        try (var conn = source.getConnection(); PreparedStatement stmt = conn.prepareStatement(
                 "SELECT shepard_func.get_modlog(?)"
-        )){
+        )) {
             stmt.setLong(1, guild.getIdLong());
             ResultSet rs = stmt.executeQuery();
-            if(rs.next()){
-                return Optional.of(rs.getLong(1));
+            if (rs.next()) {
+                return OptionalLong.of(rs.getLong(1));
+            } else {
+                return OptionalLong.empty();
             }
-            else return Optional.of(0L);
-        }
-        catch (SQLException e){
+        } catch (SQLException e) {
             DbUtil.handleException(e, wrapper);
-            return Optional.empty();
+            return OptionalLong.empty();
         }
     }
 }
