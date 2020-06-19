@@ -6,7 +6,7 @@ import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
-import de.eldoria.shepard.commandmodules.modlog.data.MoodLogData;
+import de.eldoria.shepard.commandmodules.modlog.data.ModLogData;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.moderation.ModLogLocale;
@@ -25,7 +25,7 @@ import java.util.Optional;
 
 @CommandUsage(EventContext.GUILD)
 public class ModLog extends Command implements ExecutableAsync, ReqDataSource, ReqInit {
-    private MoodLogData commandData;
+    private ModLogData commandData;
     private DataSource source;
 
     public ModLog(){
@@ -92,6 +92,6 @@ public class ModLog extends Command implements ExecutableAsync, ReqDataSource, R
 
     @Override
     public void init() {
-        this.commandData = new MoodLogData(source);
+        this.commandData = new ModLogData(source);
     }
 }

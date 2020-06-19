@@ -10,14 +10,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.OptionalLong;
 
-public final class MoodLogData extends QueryObject {
+public final class ModLogData extends QueryObject {
     /**
      * Default constructor for data object.
      *
      * @param source data source for information retrieval
      */
-    public MoodLogData(DataSource source) {
+    public ModLogData(DataSource source) {
         super(source);
     }
 
@@ -53,14 +54,14 @@ public final class MoodLogData extends QueryObject {
         return true;
     }
 
-    public Optional<Long> getChannel(Guild guild, EventWrapper wrapper) {
+    public OptionalLong getChannel(Guild guild, EventWrapper wrapper) {
         try(var conn= source.getConnection(); PreparedStatement stmt = conn.prepareStatement(
                 "SELECT shepard_func.get_modlog(?)"
         )){
             stmt.setLong(1, guild.getIdLong());
             ResultSet rs = stmt.executeQuery();
             if(rs.next()){
-                return Optional.of(rs.getLong(1));
+                return OptionalLong.of(rs.getLong(1));
             }
             else return Optional.of(0L);
         }

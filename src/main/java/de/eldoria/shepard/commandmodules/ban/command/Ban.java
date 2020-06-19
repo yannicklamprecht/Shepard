@@ -8,7 +8,7 @@ import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.ban.data.BanData;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
-import de.eldoria.shepard.commandmodules.modlog.data.MoodLogData;
+import de.eldoria.shepard.commandmodules.modlog.data.ModLogData;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.moderation.BanLocale;
@@ -24,7 +24,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 
 import javax.sql.DataSource;
-import java.util.Optional;
+import java.util.OptionalLong;
 
 
 @CommandUsage(EventContext.GUILD)
@@ -33,32 +33,32 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
     private DataSource source;
     private BanData commandData;
     private ArgumentParser parser;
-    private MoodLogData modLogData;
+    private ModLogData modLogData;
 
-    public Ban(){
+    public Ban() {
         super("ban",
-                new String []{"b"},
+                new String[] {"b"},
                 BanLocale.DESCRIPTION.tag,
                 SubCommand.builder("ban")
-                    .addSubcommand(BanLocale.PERMA.tag,
-                            Parameter.createCommand("perma"),
-                            Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true),
-                            Parameter.createInput(BanLocale.A_PARAMETER_REASON.tag, BanLocale.AD_PARAMETER_REASON.tag, false),
-                            Parameter.createInput(BanLocale.A_PARAMETER_PURGE.tag, BanLocale.AD_PARAMETER_PURGE.tag, false)
-                            )
-                    .addSubcommand(BanLocale.TEMP.tag,
-                            Parameter.createCommand("temp"),
-                            Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true),
-                            Parameter.createInput(BanLocale.A_PARAMETER_REASON.tag, BanLocale.AD_PARAMETER_REASON.tag, false),
-                            Parameter.createInput(BanLocale.A_PARAMETER_PURGE.tag, BanLocale.AD_PARAMETER_PURGE.tag, false),
-                            Parameter.createInput(BanLocale.A_PARAMETER_TIME.tag, GeneralLocale.AD_INTERVAL.tag, false)
-                            )
-                    .addSubcommand(BanLocale.SOFT.tag,
-                            Parameter.createCommand("soft"),
-                            Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true),
-                            Parameter.createInput(BanLocale.A_PARAMETER_REASON.tag, BanLocale.AD_PARAMETER_REASON.tag, false),
-                            Parameter.createInput(BanLocale.A_PARAMETER_PURGE.tag, BanLocale.AD_PARAMETER_PURGE.tag, false)
-                            )
+                        .addSubcommand(BanLocale.PERMA.tag,
+                                Parameter.createCommand("perma"),
+                                Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true),
+                                Parameter.createInput(BanLocale.A_PARAMETER_REASON.tag, BanLocale.AD_PARAMETER_REASON.tag, false),
+                                Parameter.createInput(BanLocale.A_PARAMETER_PURGE.tag, BanLocale.AD_PARAMETER_PURGE.tag, false)
+                        )
+                        .addSubcommand(BanLocale.TEMP.tag,
+                                Parameter.createCommand("temp"),
+                                Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true),
+                                Parameter.createInput(BanLocale.A_PARAMETER_REASON.tag, BanLocale.AD_PARAMETER_REASON.tag, false),
+                                Parameter.createInput(BanLocale.A_PARAMETER_PURGE.tag, BanLocale.AD_PARAMETER_PURGE.tag, false),
+                                Parameter.createInput(BanLocale.A_PARAMETER_TIME.tag, GeneralLocale.AD_INTERVAL.tag, false)
+                        )
+                        .addSubcommand(BanLocale.SOFT.tag,
+                                Parameter.createCommand("soft"),
+                                Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true),
+                                Parameter.createInput(BanLocale.A_PARAMETER_REASON.tag, BanLocale.AD_PARAMETER_REASON.tag, false),
+                                Parameter.createInput(BanLocale.A_PARAMETER_PURGE.tag, BanLocale.AD_PARAMETER_PURGE.tag, false)
+                        )
                         .build(),
                 CommandCategory.MODERATION);
     }
@@ -71,56 +71,55 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
     @Override
     public void init() {
         this.commandData = new BanData(source);
-        this.modLogData = new MoodLogData(source);
+        this.modLogData = new ModLogData(source);
     }
 
     @Override
     public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
-        Optional<Long> opt_channel_id = modLogData.getChannel(wrapper.getGuild().get(), wrapper);
-        if(!opt_channel_id.isPresent()) return;
-        long channel_id = opt_channel_id.get();
-        if(channel_id > 0 ){
+        OptionalLong optChannelId = modLogData.getChannel(wrapper.getGuild().get(), wrapper);
+
+        if (optChannelId.isPresent()) {
             //TODO: Add ModLog
         }
         String reason = FlagParser.getFlagValue('r', args);
-        if(reason == null){
+        if (reason == null) {
             reason = "";
         }
         int purge;
         try {
-             purge = FlagParser.getFlagValue(Integer::parseInt, 'p', args, "0");
-        }catch (NumberFormatException e){
+            purge = FlagParser.getFlagValue(Integer::parseInt, 'p', args, "0");
+        } catch (NumberFormatException e) {
             MessageSender.sendSimpleError(ErrorType.NOT_A_NUMBER, wrapper);
             return;
         }
         // TODO: Get default Value from DB
         String interval = FlagParser.getFlagValue('t', args, "7 days");
 
-        if(!ArgumentParser.getIntervall(interval)){
+        if (!ArgumentParser.getIntervall(interval)) {
             MessageSender.sendSimpleError(ErrorType.INVALID_TIME, wrapper);
             return;
         }
 
         Member user = parser.getGuildMember(wrapper.getGuild().get(), args[1]);
-        if(user == null){
+        if (user == null) {
             MessageSender.sendSimpleError(ErrorType.INVALID_USER, wrapper);
             return;
         }
 
-        if(!wrapper.getGuild().get().getSelfMember().canInteract(user)){
+        if (!wrapper.getGuild().get().getSelfMember().canInteract(user)) {
             MessageSender.sendSimpleError(ErrorType.CAN_NOT_BE_BANNED, wrapper);
         }
 
-        if(isSubCommand(cmd, 0)){
+        if (isSubCommand(cmd, 0)) {
             perma(user, purge, reason, wrapper);
         }
-        
-        if(isSubCommand(cmd, 1)){
+
+        if (isSubCommand(cmd, 1)) {
             temp(user, purge, reason, interval, wrapper);
         }
-        
-        if(isSubCommand(cmd, 2)){
+
+        if (isSubCommand(cmd, 2)) {
             soft(user, purge, reason, wrapper);
         }
     }
@@ -134,12 +133,12 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
         );
         sendBannedUserInfo(user, locReason);
         user.ban(purge, reason).complete();
-        wrapper.getGuild().get().unban(user.getUser()).queue(s->{
+        wrapper.getGuild().get().unban(user.getUser()).queue(s -> {
             MessageSender.sendMessage(
                     TextLocalizer.localizeAllAndReplace(
-                           BanLocale.SUCCESS_SOFT.tag,
-                           wrapper,
-                           wrapper.getGuild().get().getName()
+                            BanLocale.SUCCESS_SOFT.tag,
+                            wrapper,
+                            wrapper.getGuild().get().getName()
                     ),
                     wrapper.getMessageChannel()
             );
@@ -149,7 +148,7 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
     }
 
     private void temp(Member user, int purge, String reason, String intervall, EventWrapper wrapper) {
-        if(!commandData.addBan(user, intervall, wrapper)){
+        if (!commandData.addBan(user, intervall, wrapper)) {
             MessageSender.sendSimpleError(ErrorType.DATABASE_ERROR, wrapper);
             return;
         }
@@ -161,7 +160,7 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
                 reason
         );
         sendBannedUserInfo(user, locReason);
-        user.ban(purge, reason).queue(s ->{
+        user.ban(purge, reason).queue(s -> {
             MessageSender.sendMessage(
                     TextLocalizer.localizeAllAndReplace(
                             BanLocale.SUCCESS_TEMP.tag,
@@ -187,8 +186,8 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
         user.ban(purge, reason).queue(s -> {
             MessageSender.sendMessage(
                     TextLocalizer.localizeAllAndReplace(BanLocale.SUCCESS_PERM.tag,
-                    wrapper,
-                    user.getEffectiveName()),
+                            wrapper,
+                            user.getEffectiveName()),
                     wrapper.getMessageChannel()
             );
         }, throwable -> {
