@@ -1,7 +1,7 @@
 package de.eldoria.shepard.localization.enums.commands.moderation;
 
 public enum BadWordsLocale {
-    DESCRIPTION("command.badword.subcommand.description"),
+    DESCRIPTION("command.badword.description"),
     ADD("command.badword.subcommand.add"),
     REMOVE("command.badword.subcommand.remove"),
     LIST("command.badword.subcommand.list"),

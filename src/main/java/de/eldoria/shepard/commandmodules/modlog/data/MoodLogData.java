@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 public final class MoodLogData extends QueryObject {
     /**
@@ -52,20 +53,20 @@ public final class MoodLogData extends QueryObject {
         return true;
     }
 
-    public long getChannel(Guild guild, EventWrapper wrapper) {
+    public Optional<Long> getChannel(Guild guild, EventWrapper wrapper) {
         try(var conn= source.getConnection(); PreparedStatement stmt = conn.prepareStatement(
                 "SELECT shepard_func.get_modlog(?)"
         )){
             stmt.setLong(1, guild.getIdLong());
             ResultSet rs = stmt.executeQuery();
             if(rs.next()){
-                return rs.getLong(1);
+                return Optional.of(rs.getLong(1));
             }
-            else return 0;
+            else return Optional.of(0L);
         }
         catch (SQLException e){
             DbUtil.handleException(e, wrapper);
-            return -1;
+            return Optional.empty();
         }
     }
 }
