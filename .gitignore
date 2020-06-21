@@ -109,6 +109,9 @@ target/
 .iml
 *.iml
 
+# Gradle
+.gradle
+
 .idea/checkstyleidea-libs/
 
 /config/

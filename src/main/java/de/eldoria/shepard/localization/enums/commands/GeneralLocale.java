@@ -93,7 +93,13 @@ public enum GeneralLocale {
      * Localization key for argument [yes|no].
      */
     A_BOOLEAN_YES_NO("command.general.argument.booleanYesNo"),
-    M_COOLDOWN("command.general.message.cooldown");
+    M_COOLDOWN("command.general.message.cooldown"),
+
+    /**
+     * Localization key for Intervalls
+     */
+    A_INTERVAL("command.reminder.argument.interval"),
+    AD_INTERVAL("command.reminder.argumentDescription.interval");
 
     /**
      * Get the escaped locale code for auto translation.
