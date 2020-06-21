@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class SaucenaoApiWrapperTest {
+public class SaucenaoConfigApiWrapperTest {
     static SaucenaoApiWrapper wrapper;
 
     @BeforeAll

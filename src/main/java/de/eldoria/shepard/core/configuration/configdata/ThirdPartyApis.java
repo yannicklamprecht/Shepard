@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class ThirdPartyApis {
-    private String saucenao;
+    private SaucenaoConfig saucenaoConfig;
 }

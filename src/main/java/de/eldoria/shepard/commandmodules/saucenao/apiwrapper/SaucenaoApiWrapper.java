@@ -303,7 +303,7 @@ public final class SaucenaoApiWrapper {
                 return new SaucenaoApiWrapper(okHttpClient, httpClient, builder.toString());
 
             }
-            
+
             return new SaucenaoApiWrapper(builder.toString());
         }
     }
