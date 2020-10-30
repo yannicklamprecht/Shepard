@@ -4,21 +4,18 @@ import de.eldoria.shepard.basemodules.commanddispatching.CommandDispatchingModul
 import de.eldoria.shepard.basemodules.reactionactions.ReactionActionModule;
 import de.eldoria.shepard.basemodules.standalone.StandaloneBaseModules;
 import de.eldoria.shepard.commandmodules.SharedResources;
-import de.eldoria.shepard.commandmodules.badwords.BadWordsModule;
-import de.eldoria.shepard.commandmodules.ban.BanModule;
 import de.eldoria.shepard.commandmodules.changelog.ChangelogModule;
 import de.eldoria.shepard.commandmodules.commandsettings.CommandSettingsModule;
 import de.eldoria.shepard.commandmodules.greeting.GreetingModule;
 import de.eldoria.shepard.commandmodules.guessgame.GuessGameModule;
 import de.eldoria.shepard.commandmodules.kudos.KudoModule;
 import de.eldoria.shepard.commandmodules.language.LanguageModule;
-import de.eldoria.shepard.commandmodules.modlog.ModLogModule;
 import de.eldoria.shepard.commandmodules.monitoring.MonitoringModule;
 import de.eldoria.shepard.commandmodules.prefix.PrefixModule;
 import de.eldoria.shepard.commandmodules.presence.PresenceModule;
 import de.eldoria.shepard.commandmodules.privatemessages.PrivateMessagesModule;
 import de.eldoria.shepard.commandmodules.quote.QuoteModule;
-import de.eldoria.shepard.commandmodules.registerPrefix.RegisterPrefixModule;
+import de.eldoria.shepard.commandmodules.reactions.ReactionModule;
 import de.eldoria.shepard.commandmodules.reminder.ReminderModule;
 import de.eldoria.shepard.commandmodules.repeatcommand.RepeatCommandModule;
 import de.eldoria.shepard.commandmodules.saucenao.SaucenaoModule;
@@ -72,8 +69,8 @@ public final class ShepardBot {
     /**
      * Checks if the bot is fully loaded.
      *
-     * @return true if the bot instance is not null and {@link ShepardBot#loaded} is true.
-     * False if the bot is starting or going to shut down.
+     * @return true if the bot instance is not null and {@link ShepardBot#loaded} is true. False if the bot is starting
+     * or going to shut down.
      */
     public static boolean isLoaded() {
         if (instance == null) {
@@ -136,9 +133,7 @@ public final class ShepardBot {
     /**
      * Close the shepard application.
      *
-     * @param exitCode exit code do determine what should happen after shutdown
-     *                 0 = shutdown
-     *                 10 = restart
+     * @param exitCode exit code do determine what should happen after shutdown 0 = shutdown 10 = restart
      */
     public void shutdown(ExitCode exitCode) {
         loaded = false;
@@ -172,7 +167,7 @@ public final class ShepardBot {
                 new KudoModule(), new LanguageModule(), new MonitoringModule(), new PrefixModule(),
                 new PresenceModule(), new PrivateMessagesModule(), new QuoteModule(), new ReminderModule(),
                 new RepeatCommandModule(), new TicketSystemModule(), new StandaloneCommandsModule(),
-                new SaucenaoModule());
+                new SaucenaoModule(), new ReactionModule());
 
         // start api services
         loadModule(new ApiModule());

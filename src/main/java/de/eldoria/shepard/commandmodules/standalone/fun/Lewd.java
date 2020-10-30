@@ -10,8 +10,8 @@ import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
-import de.eldoria.shepard.localization.enums.commands.fun.LoveLocale;
-import de.eldoria.shepard.localization.enums.commands.fun.SimpLocale;
+import de.eldoria.shepard.localization.enums.commands.fun.LewdLocale;
+import de.eldoria.shepard.localization.enums.commands.fun.TailpatLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.util.TextLocalizer;
@@ -24,10 +24,8 @@ import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
 
 import java.util.Collections;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +34,7 @@ import java.util.concurrent.TimeUnit;
  * Command which provides magic conch sentences.
  */
 @CommandUsage(EventContext.GUILD)
-public class Simp extends Command implements Executable, ReqParser {
+public class Lewd extends Command implements Executable, ReqParser {
     private ArgumentParser parser;
 
     private final Cache<Long, Integer> cache = CacheBuilder.newBuilder().expireAfterWrite(60, TimeUnit.MINUTES).build();
@@ -44,46 +42,56 @@ public class Simp extends Command implements Executable, ReqParser {
     /**
      * Creates a new MagicConch command object.
      */
-    public Simp() {
-        super("simp",
-                null,
-                SimpLocale.DESCRIPTION.tag,
-                SubCommand.builder("simp").addSubcommand(
-                        SimpLocale.C_OTHER.tag,
+    public Lewd() {
+        super("lewd",
+                new String[] {"pure"},
+                LewdLocale.DESCRIPTION.tag,
+                SubCommand.builder("lewd").addSubcommand(
+                        LewdLocale.C_OTHER.tag,
                         Parameter.createInput(GeneralLocale.A_USER.tag,
                                 GeneralLocale.AD_USER.tag, false))
                         .build(),
-                SimpLocale.C_EMPTY.tag,
+                LewdLocale.C_EMPTY.tag,
                 CommandCategory.FUN);
     }
 
     @SneakyThrows
     @Override
     public void execute(String label, String[] args, EventWrapper event) {
-        Member user = event.getMember().orElseThrow();
+        Member member = event.getMember().orElseThrow();
 
         if (args.length != 0) {
-            user = parser.getGuildMember(event.getGuild().get(), args[0]);
-            if (user == null) {
+            member = parser.getGuildMember(event.getGuild().orElseThrow(), args[0]);
+            if (member == null) {
                 MessageSender.sendSimpleError(ErrorType.INVALID_USER, event);
                 return;
             }
         }
 
-        Member finalUser = user;
-        int simp = cache.get(user.getIdLong(), () -> {
-            if (finalUser.getIdLong() == 473173419056300032L) {
-                return 100;
+        Member finalMember = member;
+        int lewd = cache.get(member.getIdLong(), () -> {
+            if (finalMember.getUser().getIdLong() == 295377713009524746L) {
+                return ThreadLocalRandom.current().nextInt(50);
             }
             return ThreadLocalRandom.current().nextInt(101);
         });
 
-        MessageEmbed build = new LocalizedEmbedBuilder(event)
-                .setDescription(
-                        TextLocalizer.localizeAllAndReplace(SimpLocale.OTHER.tag, event,
-                                "**"+ simp + "**", "**" + user.getEffectiveName() + "**"))
-                .setColor(Colors.Pastel.ORANGE)
-                .build();
+        MessageEmbed build;
+        if ("lewd".equalsIgnoreCase(label)) {
+            build = new LocalizedEmbedBuilder(event)
+                    .setDescription(
+                            TextLocalizer.localizeAllAndReplace(LewdLocale.LEWD.tag, event,
+                                    "**"+ lewd + "**", "**" + member.getEffectiveName() + "**"))
+                    .setColor(Colors.Pastel.ORANGE)
+                    .build();
+        } else {
+            build = new LocalizedEmbedBuilder(event)
+                    .setDescription(
+                            TextLocalizer.localizeAllAndReplace(LewdLocale.PURE.tag, event,
+                                    "**"+ (100 - lewd) + "**", "**" + member.getEffectiveName() + "**"))
+                    .setColor(Colors.Pastel.ORANGE)
+                    .build();
+        }
         event.getMessageChannel().sendMessage(build).queue();
     }
 

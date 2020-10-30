@@ -11,18 +11,18 @@ import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.CuteLocale;
-import de.eldoria.shepard.localization.util.LocalizedField;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
+import de.eldoria.shepard.util.Colors;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
-import java.util.Collections;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
@@ -70,16 +70,16 @@ public class Cute extends Command implements Executable, ReqParser {
             if (finalMember.getUser().getName().toLowerCase().startsWith("ch")) {
                 return 100;
             }
-            return ThreadLocalRandom.current().nextInt(101);
+            return ThreadLocalRandom.current().nextInt(71) + 30;
         });
 
-
-        MessageSender.sendTextBox(null,
-                Collections.singletonList(new LocalizedField("",
+        MessageEmbed build = new LocalizedEmbedBuilder(event)
+                .setDescription(
                         TextLocalizer.localizeAllAndReplace(CuteLocale.OTHER.tag, event,
-                                String.valueOf(cute), "**" + member.getEffectiveName() + "**"), false, event)),
-                event);
-
+                                "**"+ cute + "**", "**" + member.getEffectiveName() + "**"))
+                .setColor(Colors.Pastel.ORANGE)
+                .build();
+        event.getMessageChannel().sendMessage(build).queue();
     }
 
     @Override

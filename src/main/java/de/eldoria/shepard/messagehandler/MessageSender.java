@@ -54,7 +54,7 @@ public final class MessageSender {
     public static void sendTextBox(String title, List<LocalizedField> fields, Color color,
                                    EventWrapper wrapper) {
         EmbedBuilder builder = new EmbedBuilder()
-                .setTitle(TextLocalizer.localizeAll(title, wrapper))
+                .setTitle(title != null ? TextLocalizer.localizeAll(title, wrapper) : null)
                 .setColor(color);
         for (LocalizedField field : fields) {
             builder.addField(field.getField());

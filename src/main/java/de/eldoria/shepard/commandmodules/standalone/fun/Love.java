@@ -10,16 +10,20 @@ import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
+import de.eldoria.shepard.localization.enums.commands.fun.CuteLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.LoveLocale;
+import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
+import de.eldoria.shepard.util.Colors;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
@@ -82,14 +86,15 @@ public class Love extends Command implements Executable, ReqParser {
         long key = first.getIdLong() ^ second.getIdLong();
         int simp = cache.get(key, () -> key == 0 ? 100 : ThreadLocalRandom.current().nextInt(101));
 
-        MessageSender.sendTextBox(null,
-                Collections.singletonList(new LocalizedField("",
+        MessageEmbed build = new LocalizedEmbedBuilder(event)
+                .setDescription(
                         TextLocalizer.localizeAllAndReplace(LoveLocale.OTHER.tag, event,
                                 String.valueOf(simp),
                                 "**" + first.getEffectiveName() + "**",
-                                "**" + second.getEffectiveName() + "**"), false, event)),
-                event);
-
+                                "**" + second.getEffectiveName() + "**"))
+                .setColor(Colors.Pastel.ORANGE)
+                .build();
+        event.getMessageChannel().sendMessage(build).queue();
     }
 
     @Override
