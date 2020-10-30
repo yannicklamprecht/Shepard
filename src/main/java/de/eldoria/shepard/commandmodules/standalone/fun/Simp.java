@@ -57,7 +57,7 @@ public class Simp extends Command implements Executable, ReqParser {
     @SneakyThrows
     @Override
     public void execute(String label, String[] args, EventWrapper event) {
-        Member user = event.getMember().get();
+        Member user = event.getMember().orElseThrow();
 
         if (args.length != 0) {
             user = parser.getGuildMember(event.getGuild().get(), args[0]);

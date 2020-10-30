@@ -56,10 +56,10 @@ public class Cute extends Command implements Executable, ReqParser {
     @SneakyThrows
     @Override
     public void execute(String label, String[] args, EventWrapper event) {
-        Member member = event.getMember().get();
+        Member member = event.getMember().orElseThrow();
 
         if (args.length != 0) {
-            member = parser.getGuildMember(event.getGuild().get(), args[0]);
+            member = parser.getGuildMember(event.getGuild().orElseThrow(), args[0]);
             if (member == null) {
                 MessageSender.sendSimpleError(ErrorType.INVALID_USER, event);
                 return;
