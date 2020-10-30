@@ -3,6 +3,7 @@ package de.eldoria.shepard.commandmodules.standalone;
 import de.eldoria.shepard.commandmodules.SharedResources;
 import de.eldoria.shepard.commandmodules.standalone.botconfig.Restart;
 import de.eldoria.shepard.commandmodules.standalone.botconfig.Upgrade;
+import de.eldoria.shepard.commandmodules.standalone.fun.Cute;
 import de.eldoria.shepard.commandmodules.standalone.fun.LargeEmote;
 import de.eldoria.shepard.commandmodules.standalone.fun.MagicConch;
 import de.eldoria.shepard.commandmodules.standalone.fun.MassEffect;
@@ -34,7 +35,7 @@ public class StandaloneCommandsModule implements ModuleBuilder {
         addAndInit(resources, new Restart(), new Upgrade());
 
         addAndInit(resources, new LargeEmote(), new MagicConch(), new MassEffect(), new MockingSpongebob(),
-                new Oha(), new Owo(), new Uwu(), new RandomJoke(), new Say(), new Someone(), new Simp());
+                new Oha(), new Owo(), new Uwu(), new RandomJoke(), new Say(), new Someone(), new Simp(), new Cute());
 
         addAndInit(resources, new Avatar(), new Feedback(), new GetRaw(), new Help(), new HireMe(),
                 new Home(), new SystemInfo(), new UserInfo(), new Vote(), new Repo(), new Google());
