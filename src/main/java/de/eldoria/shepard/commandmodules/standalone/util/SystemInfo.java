@@ -72,7 +72,7 @@ public class SystemInfo extends Command implements ExecutableAsync, ReqShardMana
                 localizeAllAndReplace(M_SERVICE_INFO_MESSAGE.tag, wrapper,
                         String.valueOf(statistic.getAggregatedShards().getGuildCount()),
                         String.valueOf(statistic.getAggregatedShards().getUserCount()),
-                        days + ":" + hours + ":" + minutes + ":" + seconds), false);
+                        String.format("%02d:%02d:%02d:%02d", days, hours, minutes, seconds)), false);
         wrapper.getMessageChannel().sendMessage(builder.build()).queue();
         category = CommandCategory.UTIL;
     }
