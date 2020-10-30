@@ -6,42 +6,31 @@ import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
-import de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.WiseFoxLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
-import de.eldoria.shepard.localization.util.LocalizedField;
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.Colors;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
-import java.util.Collections;
 import java.util.Random;
-
-import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.ANSWER_NEGATIVE;
-import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.ANSWER_NEUTRAL;
-import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.ANSWER_POSITIVE;
-import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.M_ANSWER;
-import static de.eldoria.shepard.localization.enums.commands.fun.SayLocale.A_SAY;
 
 
 /**
  * Command which provides magic conch sentences.
  */
-public class MagicConch extends Command implements Executable {
+public class WiseFox extends Command implements Executable {
     /**
      * Creates a new MagicConch command object.
      */
-    public MagicConch() {
-        super("magicConch",
-                new String[] {"conch"},
-                DESCRIPTION.tag,
-                SubCommand.builder("conch")
+    public WiseFox() {
+        super("wiseFox",
+                new String[] {"omniscientFox", "foxadvisor", "askFox"},
+                WiseFoxLocale.DESCRIPTION.tag,
+                SubCommand.builder("wiseFox")
                         .addSubcommand(null,
                                 Parameter.createInput(GeneralLocale.A_TEXT.tag, GeneralLocale.A_TEXT.tag, false))
                         .build(),
-                DESCRIPTION.tag,
+                WiseFoxLocale.DESCRIPTION.tag,
                 CommandCategory.FUN);
     }
 
@@ -52,16 +41,16 @@ public class MagicConch extends Command implements Executable {
         int type = rand.nextInt(3);
 
 
-        MagicConchLocale answer;
+        WiseFoxLocale answer;
         switch (type) {
             case 0:
-                answer = ANSWER_POSITIVE;
+                answer = WiseFoxLocale.ANSWER_POSITIVE;
                 break;
             case 1:
-                answer = ANSWER_NEGATIVE;
+                answer = WiseFoxLocale.ANSWER_NEGATIVE;
                 break;
             case 2:
-                answer = ANSWER_NEUTRAL;
+                answer = WiseFoxLocale.ANSWER_NEUTRAL;
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
@@ -75,11 +64,11 @@ public class MagicConch extends Command implements Executable {
         }
         word = decisions[rand.nextInt(decisions.length)];
 
-        MessageEmbed build = new LocalizedEmbedBuilder(wrapper).setTitle(M_ANSWER.tag)
+        MessageEmbed build = new LocalizedEmbedBuilder(wrapper).setTitle(WiseFoxLocale.M_ANSWER.tag)
                 .setDescription(word)
-                .setColor(Colors.Pastel.LIGHT_BLUE)
+                .setColor(Colors.Pastel.ORANGE)
+                .setThumbnail("https://chojos.lewds.de/Serene_KrillSpadefoot_is_Short.png")
                 .build();
-
         wrapper.getMessageChannel().sendMessage(build).queue();
     }
 }
