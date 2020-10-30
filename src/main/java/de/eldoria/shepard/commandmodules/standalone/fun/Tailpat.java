@@ -34,10 +34,10 @@ public class Tailpat extends Command implements Executable, ReqParser {
      * Creates a new MagicConch command object.
      */
     public Tailpat() {
-        super("Tailpat",
+        super("tailpat",
                 null,
                 TailpatLocale.DESCRIPTION.tag,
-                SubCommand.builder("Tailpat")
+                SubCommand.builder("tailpat")
                         .addSubcommand(TailpatLocale.C_SOMEONE.tag,
                                 Parameter.createInput(GeneralLocale.A_USER.tag,
                                         GeneralLocale.AD_USER.tag, true))
