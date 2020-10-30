@@ -128,4 +128,9 @@ public class Statistics implements Runnable, ReqShardManager, ReqCommands, ReqIn
     public void addCommands(CommandHub commandHub) {
         this.commandHub = commandHub;
     }
+
+    public void refresh() {
+        guildCache.invalidateAll();
+        userCache.invalidateAll();
+    }
 }

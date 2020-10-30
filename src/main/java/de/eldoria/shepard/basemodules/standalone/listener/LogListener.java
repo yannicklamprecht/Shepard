@@ -1,6 +1,8 @@
 package de.eldoria.shepard.basemodules.standalone.listener;
 
 import de.eldoria.shepard.C;
+import de.eldoria.shepard.core.Statistics;
+import de.eldoria.shepard.modulebuilder.requirements.ReqStatistics;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.DisconnectEvent;
@@ -21,8 +23,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class LogListener extends ListenerAdapter implements Runnable {
+public class LogListener extends ListenerAdapter implements Runnable, ReqStatistics {
     private final Map<Integer, Instant> disconnected = new HashMap<>();
+    private Statistics statistics;
 
     public LogListener() {
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(this, 60, 60, TimeUnit.SECONDS);
@@ -74,6 +77,7 @@ public class LogListener extends ListenerAdapter implements Runnable {
         } else {
             log.debug("Shard {} reconnected", jda.getShardInfo().getShardId());
         }
+        statistics.refresh();
     }
 
     @Override
@@ -83,6 +87,7 @@ public class LogListener extends ListenerAdapter implements Runnable {
                 event.getJDA().getShardInfo().getShardId() + 1,
                 event.getJDA().getShardManager().getShardsTotal(),
                 event.getGuildTotalCount());
+        statistics.refresh();
     }
 
     @Override
@@ -95,5 +100,10 @@ public class LogListener extends ListenerAdapter implements Runnable {
         }).collect(Collectors.joining("\n"));
 
         log.warn(C.NOTIFY_ADMIN, message);
+    }
+
+    @Override
+    public void addStatistics(Statistics statistics) {
+        this.statistics = statistics;
     }
 }
