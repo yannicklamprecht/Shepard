@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 public class Statistics implements Runnable, ReqShardManager, ReqCommands, ReqInit {
     private final Map<Integer, long[]> commandsDispatched = new HashMap<>();
     private final Map<Integer, long[]> eventsFired = new HashMap<>();
-    private Cache<Integer, Integer> userCache;
-    private Cache<Integer, Integer> guildCache;
+    private Cache<Integer, Long> userCache;
+    private Cache<Integer, Long> guildCache;
     private int currentMin = 0;
     private ShardManager shardManager;
     private CommandHub commandHub;
@@ -71,8 +71,8 @@ public class Statistics implements Runnable, ReqShardManager, ReqCommands, ReqIn
 
         return new ShardStatistic(shardId + 1,
                 jda.getStatus(),
-                userCache.get(shardId, () -> jda.getUsers().size()),
-                guildCache.get(shardId, () -> jda.getGuilds().size()),
+                userCache.get(shardId, () -> jda.getUserCache().size()),
+                guildCache.get(shardId, () -> jda.getGuildCache().size()),
                 commandsDispatched,
                 eventsFired);
     }
