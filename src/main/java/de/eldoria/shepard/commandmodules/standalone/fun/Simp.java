@@ -33,7 +33,6 @@ import java.util.concurrent.TimeUnit;
  */
 @CommandUsage(EventContext.GUILD)
 public class Simp extends Command implements Executable, ReqParser {
-    private final Random rand = ThreadLocalRandom.current();
     private ArgumentParser parser;
 
     private final Cache<Long, Integer> cache = CacheBuilder.newBuilder().expireAfterWrite(60, TimeUnit.MINUTES).build();
@@ -68,11 +67,11 @@ public class Simp extends Command implements Executable, ReqParser {
         }
 
         Member finalUser = user;
-        Integer simp = cache.get(user.getIdLong(), () -> {
+        int simp = cache.get(user.getIdLong(), () -> {
             if (finalUser.getIdLong() == 473173419056300032L) {
                 return 100;
             }
-            return rand.nextInt(101);
+            return ThreadLocalRandom.current().nextInt(101);
         });
 
 

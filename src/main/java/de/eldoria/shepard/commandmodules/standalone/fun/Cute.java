@@ -32,7 +32,6 @@ import java.util.concurrent.TimeUnit;
  */
 @CommandUsage(EventContext.GUILD)
 public class Cute extends Command implements Executable, ReqParser {
-    private final Random rand = ThreadLocalRandom.current();
     private ArgumentParser parser;
 
     private final Cache<Long, Integer> cache = CacheBuilder.newBuilder().expireAfterWrite(60, TimeUnit.MINUTES).build();
@@ -67,18 +66,18 @@ public class Cute extends Command implements Executable, ReqParser {
         }
 
         Member finalMember = member;
-        Integer simp = cache.get(member.getIdLong(), () -> {
+        int cute = cache.get(member.getIdLong(), () -> {
             if (finalMember.getUser().getName().toLowerCase().startsWith("ch")) {
                 return 100;
             }
-            return rand.nextInt(101);
+            return ThreadLocalRandom.current().nextInt(101);
         });
 
 
         MessageSender.sendTextBox(null,
                 Collections.singletonList(new LocalizedField("",
                         TextLocalizer.localizeAllAndReplace(CuteLocale.OTHER.tag, event,
-                                String.valueOf(simp), "**" + member.getEffectiveName() + "**"), false, event)),
+                                String.valueOf(cute), "**" + member.getEffectiveName() + "**"), false, event)),
                 event);
 
     }
