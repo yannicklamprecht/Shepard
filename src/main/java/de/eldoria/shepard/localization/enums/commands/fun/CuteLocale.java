@@ -1,16 +1,16 @@
 package de.eldoria.shepard.localization.enums.commands.fun;
 
-public enum SimpLocale {
+public enum CuteLocale {
     /**
      * Localization key for description.
      */
-    DESCRIPTION("command.simp.description"),
+    DESCRIPTION("command.cute.description"),
     /**
      * Localization key for argument say message.
      */
-    OTHER("command.simp.outputOther"),
-    C_EMPTY("command.simp.empty"),
-    C_OTHER("command.simp.other")
+    OTHER("command.cute.outputOther"),
+    C_EMPTY("command.cute.empty"),
+    C_OTHER("command.cute.other")
     ;
 
     /**
@@ -23,7 +23,7 @@ public enum SimpLocale {
      *
      * @param localeCode locale code
      */
-    SimpLocale(String localeCode) {
+    CuteLocale(String localeCode) {
         this.tag = "$" + localeCode + "$";
     }
 
