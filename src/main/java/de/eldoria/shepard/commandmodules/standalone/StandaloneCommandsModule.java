@@ -21,7 +21,7 @@ import de.eldoria.shepard.commandmodules.standalone.util.Feedback;
 import de.eldoria.shepard.commandmodules.standalone.util.GetRaw;
 import de.eldoria.shepard.commandmodules.standalone.util.Google;
 import de.eldoria.shepard.commandmodules.standalone.util.Help;
-import de.eldoria.shepard.commandmodules.standalone.util.HireMe;
+import de.eldoria.shepard.commandmodules.standalone.util.Invite;
 import de.eldoria.shepard.commandmodules.standalone.util.Home;
 import de.eldoria.shepard.commandmodules.standalone.util.Repo;
 import de.eldoria.shepard.commandmodules.standalone.util.SystemInfo;
@@ -39,7 +39,7 @@ public class StandaloneCommandsModule implements ModuleBuilder {
                 new Oha(), new Owo(), new Uwu(), new RandomJoke(), new Say(), new Someone(), new Simp(),
                 new Cute(), new Love());
 
-        addAndInit(resources, new Avatar(), new Feedback(), new GetRaw(), new Help(), new HireMe(),
+        addAndInit(resources, new Avatar(), new Feedback(), new GetRaw(), new Help(), new Invite(),
                 new Home(), new SystemInfo(), new UserInfo(), new Vote(), new Repo(), new Google());
         if (resources.getConfig().getGeneralSettings().isBeta()) {
             addAndInit(new Test(), resources);

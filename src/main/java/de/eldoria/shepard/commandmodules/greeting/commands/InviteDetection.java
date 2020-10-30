@@ -43,7 +43,7 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
 import static java.lang.System.lineSeparator;
 
 @CommandUsage(EventContext.GUILD)
-public class Invite extends Command implements Executable, ReqDataSource {
+public class InviteDetection extends Command implements Executable, ReqDataSource {
 
     private static final Pattern INVITE = Pattern.compile("([a-zA-Z0-9]{6,7})$");
 
@@ -52,7 +52,7 @@ public class Invite extends Command implements Executable, ReqDataSource {
     /**
      * Creates a new Invite command object.
      */
-    public Invite() {
+    public InviteDetection() {
         super("inviteDetection",
                 new String[]{"registerInvites", "id"},
                 DESCRIPTION.tag,

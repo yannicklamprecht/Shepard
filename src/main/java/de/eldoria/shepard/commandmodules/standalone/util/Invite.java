@@ -19,12 +19,12 @@ import static de.eldoria.shepard.localization.enums.commands.util.HireMeLocale.M
 /**
  * A command for retrieving a invite link for this bot.
  */
-public class HireMe extends Command implements Executable {
+public class Invite extends Command implements Executable {
 
     /**
      * Creates new Hire me object.
      */
-    public HireMe() {
+    public Invite() {
         super("invite",
                 new String[] {"Iwantyou", "hireMe"},
                 DESCRIPTION.tag,
