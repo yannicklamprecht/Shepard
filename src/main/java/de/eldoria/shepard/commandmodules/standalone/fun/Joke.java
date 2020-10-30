@@ -21,12 +21,12 @@ import static de.eldoria.shepard.localization.enums.commands.fun.RandomJokeLocal
 /**
  * Receives a rancom joke from a web api.
  */
-public class RandomJoke extends Command implements ExecutableAsync {
+public class Joke extends Command implements ExecutableAsync {
 
     /**
      * Creates a new random joke command object.
      */
-    public RandomJoke() {
+    public Joke() {
         super("joke",
                 null,
                 DESCRIPTION.tag,

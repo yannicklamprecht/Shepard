@@ -131,7 +131,7 @@ public class Help extends Command implements Executable, ReqCommands, ReqExecuti
                 false, wrapper));
         fields.add(new LocalizedField(HelpLocale.M_MAYBE_USEFUL.tag,
                 "**[" + HelpLocale.M_INVITE_ME + "]"
-                        + "(https://discordapp.com/oauth2/authorize?client_id=512413049894731780&scope=bot&permissions=1544027254), "
+                        + "(https://invite.shepardbot.de/), "
                         + "[" + HelpLocale.M_SUPPORT_SERVER + "](https://discord.gg/AJyFGAj), "
                         + "[" + HelpLocale.M_FULL_COMMAND_LIST + "](https://www.shepardbot.de/commands), "
                         + "[" + HelpLocale.M_PERMISSION_HELP + "]"

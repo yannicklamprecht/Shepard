@@ -33,13 +33,13 @@ public class Invite extends Command implements Executable {
 
     @Override
     public void execute(String label, String[] args, EventWrapper wrapper) {
-        if (label.equalsIgnoreCase(commandName) || label.equalsIgnoreCase("invite")) {
+        if (commandName.equalsIgnoreCase(label) || "hireMe".equalsIgnoreCase(label)) {
             MessageSender.sendTextBox(null, Collections.singletonList(new LocalizedField(M_HIRE_ME.tag,
-                    "[" + M_TAKE_ME + "](http://bit.ly/shepardbot)",
+                    "[" + M_TAKE_ME + "](https://invite.shepardbot.de)",
                     false, wrapper)), wrapper);
         } else {
             MessageSender.sendTextBox(null, Collections.singletonList(new LocalizedField(M_I_WANT_YOU.tag,
-                    "[" + M_TAKE_ME + "](http://bit.ly/shepardbot)",
+                    "[" + M_TAKE_ME + "](https://invite.shepardbot.de)",
                     false, wrapper)), wrapper);
         }
     }

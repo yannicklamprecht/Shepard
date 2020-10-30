@@ -51,8 +51,8 @@ public class ManageQuote extends Command implements Executable, ReqDataSource {
      * Create a new manage quote command object.
      */
     public ManageQuote() {
-        super("manageQuotes",
-                new String[] {"mq"},
+        super("manageQuote",
+                new String[] {"mq", "manageQuotes"},
                 DESCRIPTION.tag,
                 SubCommand.builder("manageQuotes")
                         .addSubcommand(C_ADD.tag,
