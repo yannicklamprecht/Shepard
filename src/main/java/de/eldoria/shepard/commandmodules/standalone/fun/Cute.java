@@ -21,6 +21,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.SneakyThrows;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.Collections;
@@ -58,19 +59,19 @@ public class Cute extends Command implements Executable, ReqParser {
     @SneakyThrows
     @Override
     public void execute(String label, String[] args, EventWrapper event) {
-        User user = event.getAuthor();
+        Member member = event.getMember().get();
 
         if (args.length != 0) {
-            user = parser.getGuildUser(event.getGuild().get(), args[0]);
-            if (user == null) {
+            member = parser.getGuildMember(event.getGuild().get(), args[0]);
+            if (member == null) {
                 MessageSender.sendSimpleError(ErrorType.INVALID_USER, event);
                 return;
             }
         }
 
-        User finalUser = user;
-        Integer simp = cache.get(user.getIdLong(), () -> {
-            if (finalUser.getName().toLowerCase().startsWith("ch")) {
+        Member finalMember = member;
+        Integer simp = cache.get(member.getIdLong(), () -> {
+            if (finalMember.getUser().getName().toLowerCase().startsWith("ch")) {
                 return 100;
             }
             return rand.nextInt(101);
@@ -80,7 +81,7 @@ public class Cute extends Command implements Executable, ReqParser {
         MessageSender.sendTextBox(null,
                 Collections.singletonList(new LocalizedField("",
                         TextLocalizer.localizeAllAndReplace(CuteLocale.OTHER.tag, event,
-                                String.valueOf(simp), "**" + user.getName() + "**"), false, event)),
+                                String.valueOf(simp), "**" + member.getEffectiveName() + "**"), false, event)),
                 event);
 
     }

@@ -19,6 +19,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.SneakyThrows;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.Collections;
@@ -56,17 +57,17 @@ public class Simp extends Command implements Executable, ReqParser {
     @SneakyThrows
     @Override
     public void execute(String label, String[] args, EventWrapper event) {
-        User user = event.getAuthor();
+        Member user = event.getMember().get();
 
         if (args.length != 0) {
-            user = parser.getGuildUser(event.getGuild().get(), args[0]);
+            user = parser.getGuildMember(event.getGuild().get(), args[0]);
             if (user == null) {
                 MessageSender.sendSimpleError(ErrorType.INVALID_USER, event);
                 return;
             }
         }
 
-        User finalUser = user;
+        Member finalUser = user;
         Integer simp = cache.get(user.getIdLong(), () -> {
             if (finalUser.getIdLong() == 473173419056300032L) {
                 return 100;
@@ -78,7 +79,7 @@ public class Simp extends Command implements Executable, ReqParser {
         MessageSender.sendTextBox(null,
                 Collections.singletonList(new LocalizedField("",
                         TextLocalizer.localizeAllAndReplace(SimpLocale.OTHER.tag, event,
-                                String.valueOf(simp), "**" + user.getName() + "**"), false, event)),
+                                String.valueOf(simp), "**" + user.getEffectiveName() + "**"), false, event)),
                 event);
 
     }
