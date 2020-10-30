@@ -2,7 +2,6 @@ package de.eldoria.shepard.commandmodules.standalone.fun;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.hash.Hashing;
 import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
@@ -12,7 +11,6 @@ import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.CuteLocale;
-import de.eldoria.shepard.localization.enums.commands.fun.SimpLocale;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -22,7 +20,6 @@ import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.User;
 
 import java.util.Collections;
 import java.util.Random;
@@ -46,7 +43,7 @@ public class Cute extends Command implements Executable, ReqParser {
     public Cute() {
         super("cute",
                 null,
-                SimpLocale.DESCRIPTION.tag,
+                CuteLocale.DESCRIPTION.tag,
                 SubCommand.builder("cute").addSubcommand(
                         CuteLocale.C_OTHER.tag,
                         Parameter.createInput(GeneralLocale.A_USER.tag,

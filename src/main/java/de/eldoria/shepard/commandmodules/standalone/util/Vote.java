@@ -20,7 +20,7 @@ public class Vote extends Command implements Executable {
         super("vote",
                 null,
                 VoteLocale.DESCRIPTION.tag,
-                CommandCategory.FUN);
+                CommandCategory.UTIL);
     }
 
     @Override

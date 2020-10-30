@@ -23,7 +23,7 @@ public class Home extends Command implements Executable {
         super("home",
                 new String[] {"normandy", "support"},
                 DESCRIPTION.tag,
-                CommandCategory.FUN);
+                CommandCategory.UTIL);
     }
 
     @Override

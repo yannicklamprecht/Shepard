@@ -34,7 +34,7 @@ public class SystemInfo extends Command implements ExecutableAsync, ReqShardMana
         super("systemInfo",
                 new String[] {"system"},
                 DESCRIPTION.tag,
-                CommandCategory.FUN);
+                CommandCategory.UTIL);
     }
 
     @Override
