@@ -67,7 +67,7 @@ public class WiseFox extends Command implements Executable {
         MessageEmbed build = new LocalizedEmbedBuilder(wrapper).setTitle(WiseFoxLocale.M_ANSWER.tag)
                 .setDescription(word)
                 .setColor(Colors.Pastel.ORANGE)
-                .setThumbnail("https://chojos.lewds.de/Serene_KrillSpadefoot_is_Short.png")
+                .setThumbnail("https://chojos.lewds.de/Darkslategrey_GoldeneyeWhooper_is_Shoddy.png")
                 .build();
         wrapper.getMessageChannel().sendMessage(build).queue();
     }
