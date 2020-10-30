@@ -1,11 +1,13 @@
 package de.eldoria.shepard.commandmodules.standalone.util;
 
 import de.eldoria.shepard.commandmodules.Command;
+import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.EventWrapper;
+import org.apache.logging.log4j.core.tools.picocli.CommandLine;
 
 import java.util.Collections;
 

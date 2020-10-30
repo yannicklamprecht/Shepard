@@ -139,7 +139,7 @@ public abstract class Command {
      * @return {@code true} if the command matched, {@code false} otherwise.
      */
     public boolean isCommand(String command) {
-        if (command.equalsIgnoreCase(this.commandName) || command.equalsIgnoreCase(getClass().getSimpleName())) {
+        if (command.equalsIgnoreCase(this.commandName)) {
             return true;
         }
 

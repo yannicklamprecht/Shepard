@@ -54,9 +54,9 @@ public class Invite extends Command implements Executable, ReqDataSource {
      */
     public Invite() {
         super("inviteDetection",
-                new String[]{"registerInvites"},
+                new String[]{"registerInvites", "id"},
                 DESCRIPTION.tag,
-                SubCommand.builder("invite")
+                SubCommand.builder("inviteDetection")
                         .addSubcommand(C_ADD_INVITE.tag,
                                 Parameter.createCommand("add"),
                                 Parameter.createInput(A_CODE.tag, AD_CODE.tag, true),
