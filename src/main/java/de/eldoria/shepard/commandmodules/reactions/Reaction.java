@@ -87,5 +87,6 @@ public abstract class Reaction extends Command implements Executable, ReqParser 
         private String[] cry = null;
         private String[] blush = null;
         private String[] lick = null;
+        private String[] pat = null;
     }
 }

@@ -11,6 +11,7 @@ public enum ReactionLocale {
     DESCRIPTION_CRY("command.reaction.description.cry"),
     DESCRIPTION_BLUSH("command.reaction.description.blush"),
     DESCRIPTION_LICK("command.reaction.description.lick"),
+    DESCRIPTION_HEADPAT("command.reaction.description.headpat"),
     C_HUG("command.reaction.command.hug"),
     C_HUG_OTHER("command.reaction.command.otherHug"),
     C_KISS("command.reaction.command.kiss"),
@@ -25,6 +26,8 @@ public enum ReactionLocale {
     C_BLUSH_OTHER("command.reaction.command.otherBlush"),
     C_LICK("command.reaction.command.lick"),
     C_LICK_OTHER("command.reaction.command.otherLick"),
+    C_HEADPAT("command.reaction.command.headpat"),
+    C_HEADPAT_OTHER("command.reaction.command.otherHeadpat"),
     M_HUG("command.reaction.message.hug"),
     M_HUG_SELF("command.reaction.message.selfHug"),
     M_KISS("command.reaction.message.kiss"),
@@ -39,6 +42,8 @@ public enum ReactionLocale {
     M_BLUSH_SELF("command.reaction.message.selfBlush"),
     M_LICK("command.reaction.message.lick"),
     M_LICK_SELF("command.reaction.message.selfLick"),
+    M_HEADPAT("command.reaction.message.headpat"),
+    M_HEADPAT_SELF("command.reaction.message.selfHeadpat"),
 
     /**
      * Localization key for argument say message.
