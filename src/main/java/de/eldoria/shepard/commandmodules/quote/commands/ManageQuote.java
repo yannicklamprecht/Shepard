@@ -5,7 +5,7 @@ import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
-import de.eldoria.shepard.commandmodules.command.Executable;
+import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
 import de.eldoria.shepard.commandmodules.quote.data.QuoteData;
 import de.eldoria.shepard.commandmodules.quote.types.QuoteElement;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
@@ -18,6 +18,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
+import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.requests.restaction.pagination.PaginationAction;
@@ -52,7 +53,7 @@ import static java.lang.System.lineSeparator;
  * Command to add, remove, alter and list quotes.
  */
 @CommandUsage(EventContext.GUILD)
-public class ManageQuote extends Command implements Executable, ReqDataSource, ReqParser {
+public class ManageQuote extends Command implements ExecutableAsync, ReqDataSource, ReqParser {
 
     private QuoteData quoteData;
     private ArgumentParser parser;
@@ -128,7 +129,7 @@ public class ManageQuote extends Command implements Executable, ReqDataSource, R
             total++;
             Message next = iterator.next();
             if (!Verifier.equalSnowflake(user, next.getAuthor())) continue;
-            if(Verifier.equalSnowflake(next, wrapper.getMessage().get())) continue;
+            if (Verifier.equalSnowflake(next, wrapper.getMessage().get())) continue;
             messages.add(next.getContentRaw());
             i++;
         }
@@ -159,6 +160,7 @@ public class ManageQuote extends Command implements Executable, ReqDataSource, R
         }
     }
 
+    @SneakyThrows
     private void list(String[] args, EventWrapper messageContext) {
         List<QuoteElement> quotes;
         if (args.length > 1) {
@@ -172,11 +174,12 @@ public class ManageQuote extends Command implements Executable, ReqDataSource, R
         if (quotes.size() == 0) {
             MessageSender.sendMessage(M_NO_QUOTES.tag, messageContext.getMessageChannel());
         }
-
-        String message = quotes.stream()
-                .map(quote -> "**" + quote.getQuoteId() + "** -> " + quote.getQuote() + lineSeparator())
-                .collect(Collectors.joining());
-        MessageSender.sendMessage(message, messageContext.getMessageChannel());
+        for (QuoteElement quote : quotes) {
+            String message = "**" + quote.getQuoteId() + "** -> " + quote.getQuote() + lineSeparator();
+            MessageSender.sendMessage(message, messageContext.getMessageChannel());
+            // wait a bit
+            Thread.sleep(1000);
+        }
     }
 
     private void remove(String[] args, EventWrapper messageContext) {
