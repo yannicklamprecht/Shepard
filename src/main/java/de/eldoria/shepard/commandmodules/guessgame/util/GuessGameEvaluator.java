@@ -2,6 +2,7 @@ package de.eldoria.shepard.commandmodules.guessgame.util;
 
 import de.eldoria.shepard.commandmodules.guessgame.data.GuessGameData;
 import de.eldoria.shepard.localization.enums.WordsLocale;
+import de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -9,6 +10,7 @@ import de.eldoria.shepard.minigameutil.BaseEvaluator;
 import de.eldoria.shepard.minigameutil.ChannelEvaluator;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.util.reactions.ShepardEmote;
+import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Message;
@@ -62,6 +64,7 @@ public class GuessGameEvaluator extends BaseEvaluator {
         this.channel = channel;
     }
 
+    @SneakyThrows
     @Override
     public void run() {
         TextChannel guildChannel = shardManager.getTextChannelById(channelId);
@@ -126,9 +129,14 @@ public class GuessGameEvaluator extends BaseEvaluator {
 
         guildChannel.sendMessage(builder.build()).complete();
 
-        evaluator.evaluationDone(guildChannel);
+        if (votes.isEmpty()) {
+            evaluator.evaluationDone(guildChannel);
+        }
 
         if (!votes.isEmpty()) {
+            channel.sendMessage(localizeAllAndReplace(GuessGameLocale.M_NEXT_ROUND.tag,  guild, "**"+5+"**")).queue();
+            Thread.sleep(5000);
+            evaluator.evaluationDone(guildChannel);
             evaluator.scheduleEvaluation(30,
                     new GuessGameEvaluator(guessGameData, evaluator, shardManager, guild, channel));
         }

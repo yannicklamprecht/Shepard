@@ -60,7 +60,8 @@ public enum GuessGameLocale {
     /**
      * Localization key for message game footer.
      */
-    M_GAME_FOOTER("command.guessGame.message.embed.gameFooter");
+    M_GAME_FOOTER("command.guessGame.message.embed.gameFooter"),
+    M_NEXT_ROUND("command.guessGame.message.nextRound");
 
     /**
      * Get the escaped locale code for auto translation.

@@ -106,7 +106,7 @@ public class GuessGame extends Command implements Executable, ReqShardManager, R
 
         if (isSubCommand(cmd, 1)) {
             int userScore = guessGameData.getGlobalUserScore(wrapper.getAuthor(), wrapper);
-            MessageSender.sendMessage(M_SCORE_GLOBAL + " **" + userScore, wrapper.getMessageChannel());
+            MessageSender.sendMessage(M_SCORE_GLOBAL + " **" + userScore + "**", wrapper.getMessageChannel());
             return;
         }
 
