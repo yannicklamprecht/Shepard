@@ -1,14 +1,22 @@
 package de.eldoria.shepard.minigameutil;
 
+import net.dv8tion.jda.api.entities.Message;
+
+import java.util.Optional;
+
 public abstract class BaseEvaluator implements Runnable {
     /**
      * Message id of evaluation message.
      */
-    protected final long messageId;
+    protected long messageId;
     /**
      * Channel id for evaluation.
      */
     protected final long channelId;
+
+    public BaseEvaluator(long channelId) {
+        this.channelId = channelId;
+    }
 
     /**
      * Creates a new base evaluator.
@@ -20,4 +28,11 @@ public abstract class BaseEvaluator implements Runnable {
         this.messageId = messageId;
         this.channelId = channelId;
     }
+
+    /**
+     * Starts a evaluation process
+     *
+     * @return id of message
+     */
+    public abstract Optional<Message> start();
 }

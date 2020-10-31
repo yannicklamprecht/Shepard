@@ -72,7 +72,7 @@ public final class GuessGameData extends QueryObject {
             }
 
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, null);
         }
         return null;
     }

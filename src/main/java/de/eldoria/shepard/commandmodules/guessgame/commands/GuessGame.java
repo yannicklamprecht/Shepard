@@ -46,11 +46,10 @@ import static de.eldoria.shepard.util.Verifier.isArgument;
 import static java.lang.System.lineSeparator;
 
 /**
- * Command to start a guess game.
- * A started guess game will be manages by a {@link GuessGameEvaluator}.
- * Provides information about user scores.
+ * Command to start a guess game. A started guess game will be manages by a {@link GuessGameEvaluator}. Provides
+ * information about user scores.
  */
-@CommandUsage({EventContext.GUILD})
+@CommandUsage( {EventContext.GUILD})
 public class GuessGame extends Command implements Executable, ReqShardManager, ReqDataSource, ReqInit {
 
     private ChannelEvaluator<GuessGameEvaluator> evaluator;
@@ -131,33 +130,9 @@ public class GuessGame extends Command implements Executable, ReqShardManager, R
         MessageSender.sendMessage("**" + ranking + "**" + lineSeparator() + rankTable, messageContext.getTextChannel().get());
     }
 
-    private void startGame(EventWrapper messageContext) {
-        if (evaluator.isEvaluationActive(messageContext.getTextChannel().get())) {
-            MessageSender.sendMessage(M_ROUND_IN_PROGRESS.tag, messageContext.getMessageChannel());
-            return;
-        }
-
-        GuessGameImage image = guessGameData.getImage(messageContext);
-        if (image == null) {
-            return;
-        }
-
-        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(messageContext)
-                .setTitle(M_TITLE.tag)
-                .setDescription(localizeAllAndReplace(M_GAME_DESCRIPTION.tag, messageContext,
-                        ShepardEmote.ANIM_CHECKMARK.getEmote(shardManager).getAsMention(),
-                        ShepardEmote.ANIM_CROSS.getEmote(shardManager).getAsMention(),
-                        "30"))
-                .setImage(image.getCroppedImage())
-                .setFooter(M_GAME_FOOTER.tag);
-
-        messageContext.getMessageChannel().sendMessage(builder.build())
-                .queue(message -> {
-                    message.addReaction(ShepardEmote.ANIM_CHECKMARK.getEmote(shardManager)).queue();
-                    message.addReaction(ShepardEmote.ANIM_CROSS.getEmote(shardManager)).queue();
-                    evaluator.scheduleEvaluation(message, 30,
-                            new GuessGameEvaluator(guessGameData, evaluator, shardManager, message, image));
-                });
+    private void startGame(EventWrapper event) {
+        evaluator.scheduleEvaluation(30,
+                new GuessGameEvaluator(guessGameData, evaluator, shardManager, event.getGuild().get(), event.getTextChannel().get()));
     }
 
     @Override

@@ -10,27 +10,23 @@ import de.eldoria.shepard.commandmodules.kudos.data.KudoData;
 import de.eldoria.shepard.commandmodules.kudos.util.KudoLotteryEvaluator;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale;
-import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigameutil.ChannelEvaluator;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
-import de.eldoria.shepard.util.reactions.ShepardEmote;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
-import java.awt.Color;
 import java.util.OptionalInt;
 
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_AMOUNT;
 import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_AMOUNT;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.C_MAX_BET;
 import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_LOTTERY_RUNNING;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**
@@ -39,7 +35,7 @@ import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndR
  */
 @CommandUsage(EventContext.GUILD)
 public class KudoLottery extends Command implements Executable, ReqShardManager, ReqDataSource, ReqInit {
-    private ShardManager jda;
+    private ShardManager shardManager;
     private ChannelEvaluator<KudoLotteryEvaluator> evaluator;
     private KudoData kudoData;
 
@@ -80,38 +76,14 @@ public class KudoLottery extends Command implements Executable, ReqShardManager,
             return;
         }
 
-
-        if (evaluator.isEvaluationActive(wrapper.getTextChannel().get())) {
-            MessageSender.sendMessage(M_LOTTERY_RUNNING.tag, wrapper.getMessageChannel());
-            return;
-        }
-
-        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
-                .setTitle(KudoLotteryLocale.M_EMBED_TITLE.tag)
-                .setDescription(localizeAllAndReplace(KudoLotteryLocale.M_EMBED_DESCRIPTION.tag, wrapper, "3"))
-                .addField(localizeAllAndReplace(KudoLotteryLocale.M_EMBED_KUDOS_IN_POT.tag, wrapper,
-                        "**1**", "**" + maxBet + "**"),
-                        localizeAllAndReplace(KudoLotteryLocale.M_EMBED_EXPLANATION.tag, wrapper,
-                                ShepardEmote.INFINITY.getEmote(jda).getAsMention(),
-                                ShepardEmote.PLUS_X.getEmote(jda).getAsMention(),
-                                ShepardEmote.PLUS_I.getEmote(jda).getAsMention()),
-                        true)
-                .setColor(Color.orange);
-
-        int finalMaxBet = maxBet;
-        wrapper.getMessageChannel().sendMessage(builder.build()).queue(message -> {
-            message.addReaction(ShepardEmote.INFINITY.getEmote(jda)).queue();
-            message.addReaction(ShepardEmote.PLUS_X.getEmote(jda)).queue();
-            message.addReaction(ShepardEmote.PLUS_I.getEmote(jda)).queue();
-            evaluator.scheduleEvaluation(message, 180,
-                    new KudoLotteryEvaluator(kudoData, evaluator, jda, message,
-                            wrapper.getAuthor(), finalMaxBet));
-        });
+        evaluator.scheduleEvaluation(180,
+                new KudoLotteryEvaluator(kudoData, evaluator, shardManager, wrapper.getActor(),
+                        maxBet, wrapper.getGuild().get(), wrapper.getTextChannel().get()));
     }
 
     @Override
     public void addShardManager(ShardManager shardManager) {
-        this.jda = shardManager;
+        this.shardManager = shardManager;
     }
 
     @Override

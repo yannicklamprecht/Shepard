@@ -19,17 +19,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
+import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.M_LOTTERY_RUNNING;
 import static de.eldoria.shepard.localization.enums.minigames.KudoLotteryEvaluatorLocale.M_CONGRATULATION;
 import static de.eldoria.shepard.localization.enums.minigames.KudoLotteryEvaluatorLocale.M_NO_WINNER;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**
- * Creates a new Kudo lottery evaluator.
- * The evaluator has a {@link KudoLotteryEvaluator#maxBet} which defines the max amount a single user can bet.
- * via the {@link KudoLotteryEvaluator#addBet(Guild, User, int)} a user can add a bet.
- * At least every user can set a amount of 1.
+ * Creates a new Kudo lottery evaluator. The evaluator has a {@link KudoLotteryEvaluator#maxBet} which defines the max
+ * amount a single user can bet. via the {@link KudoLotteryEvaluator#addBet(Guild, User, int)} a user can add a bet. At
+ * least every user can set a amount of 1.
  */
 public class KudoLotteryEvaluator extends BaseEvaluator {
     private final Map<Long, Integer> bet = new HashMap<>();
@@ -37,23 +38,27 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
     private final int maxBet;
     private final ChannelEvaluator<KudoLotteryEvaluator> evaluator;
     private final ShardManager shardManager;
+    private final Guild guild;
+    private final TextChannel channel;
     private final KudoData kudoData;
 
     /**
      * Creates a new Kudo lottery evaluator.
-     *  @param kudoData  data object
-     * @param evaluator evaluator for lottery
-     * @param shardManager       shardManager instance
-     * @param message   message for evaluation
-     * @param user      user for first bet.
-     * @param maxBet    the max amount a single user can bet
+     *
+     * @param kudoData     data object
+     * @param evaluator    evaluator for lottery
+     * @param shardManager shardManager instance
+     * @param user         user for first bet.
+     * @param maxBet       the max amount a single user can bet
      */
     public KudoLotteryEvaluator(KudoData kudoData, ChannelEvaluator<KudoLotteryEvaluator> evaluator, ShardManager shardManager,
-                                Message message, User user, int maxBet) {
-        super(message.getIdLong(), message.getChannel().getIdLong());
+                                User user, int maxBet, Guild guild, TextChannel channel) {
+        super(channel.getIdLong());
         this.kudoData = kudoData;
         this.evaluator = evaluator;
         this.shardManager = shardManager;
+        this.guild = guild;
+        this.channel = channel;
         bet.put(user.getIdLong(), 1);
         this.maxBet = maxBet;
     }
@@ -202,5 +207,32 @@ public class KudoLotteryEvaluator extends BaseEvaluator {
         textChannel.retrieveMessageById(messageId)
                 .queue(a -> a.editMessage(builder.build()).queue());
 
+    }
+
+    @Override
+    public Optional<Message> start() {
+        if (evaluator.isEvaluationActive(channel)) {
+            MessageSender.sendMessage(M_LOTTERY_RUNNING.tag, channel);
+            return Optional.empty();
+        }
+
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder()
+                .setTitle(KudoLotteryLocale.M_EMBED_TITLE.tag)
+                .setDescription(localizeAllAndReplace(KudoLotteryLocale.M_EMBED_DESCRIPTION.tag, guild, "3"))
+                .addField(localizeAllAndReplace(KudoLotteryLocale.M_EMBED_KUDOS_IN_POT.tag, guild,
+                        "**1**", "**" + maxBet + "**"),
+                        localizeAllAndReplace(KudoLotteryLocale.M_EMBED_EXPLANATION.tag, guild,
+                                ShepardEmote.INFINITY.getEmote(shardManager).getAsMention(),
+                                ShepardEmote.PLUS_X.getEmote(shardManager).getAsMention(),
+                                ShepardEmote.PLUS_I.getEmote(shardManager).getAsMention()),
+                        true)
+                .setColor(Color.orange);
+
+        int finalMaxBet = maxBet;
+        Message complete = channel.sendMessage(builder.build()).complete();
+        complete.addReaction(ShepardEmote.INFINITY.getEmote(shardManager)).queue();
+        complete.addReaction(ShepardEmote.PLUS_X.getEmote(shardManager)).queue();
+        complete.addReaction(ShepardEmote.PLUS_I.getEmote(shardManager)).queue();
+        return Optional.of(complete);
     }
 }

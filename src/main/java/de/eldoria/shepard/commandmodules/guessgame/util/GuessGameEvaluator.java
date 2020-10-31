@@ -4,9 +4,12 @@ import de.eldoria.shepard.commandmodules.guessgame.data.GuessGameData;
 import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
+import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigameutil.BaseEvaluator;
 import de.eldoria.shepard.minigameutil.ChannelEvaluator;
 import de.eldoria.shepard.util.Verifier;
+import de.eldoria.shepard.util.reactions.ShepardEmote;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -16,8 +19,13 @@ import net.dv8tion.jda.api.sharding.ShardManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_GAME_DESCRIPTION;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_GAME_FOOTER;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_ROUND_IN_PROGRESS;
+import static de.eldoria.shepard.localization.enums.commands.fun.GuessGameLocale.M_TITLE;
 import static de.eldoria.shepard.localization.enums.minigames.GuessGameEvaluatorLocale.M_CONGRATULATION;
 import static de.eldoria.shepard.localization.enums.minigames.GuessGameEvaluatorLocale.M_EARN;
 import static de.eldoria.shepard.localization.enums.minigames.GuessGameEvaluatorLocale.M_IMAGE_NOT_DISPLAYED;
@@ -25,10 +33,13 @@ import static de.eldoria.shepard.localization.enums.minigames.GuessGameEvaluator
 import static de.eldoria.shepard.localization.enums.minigames.GuessGameEvaluatorLocale.M_NO_WINNER;
 import static de.eldoria.shepard.localization.enums.minigames.GuessGameEvaluatorLocale.M_TITLE_NSFW;
 import static de.eldoria.shepard.localization.enums.minigames.GuessGameEvaluatorLocale.M_TITLE_SFW;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
 public class GuessGameEvaluator extends BaseEvaluator {
-    private final GuessGameImage image;
+    private GuessGameImage image;
+    private final Guild guild;
+    private TextChannel channel;
     private final Map<Long, Boolean> votes = new HashMap<>();
     private final GuessGameData guessGameData;
     private final ChannelEvaluator<GuessGameEvaluator> evaluator;
@@ -36,19 +47,19 @@ public class GuessGameEvaluator extends BaseEvaluator {
 
     /**
      * Creates a new guess game evaluator.
-     *  @param guessGameData guess game data
+     *
+     * @param guessGameData guess game data
      * @param evaluator     evaluator for guess games
-     * @param shardManager           shardManager instance
-     * @param message       message for evaluation
-     * @param image         image for evaluation.
+     * @param shardManager  shardManager instance
      */
     public GuessGameEvaluator(GuessGameData guessGameData, ChannelEvaluator<GuessGameEvaluator> evaluator, ShardManager shardManager,
-                              Message message, GuessGameImage image) {
-        super(message.getIdLong(), message.getChannel().getIdLong());
+                              Guild guild, TextChannel channel) {
+        super(channel.getIdLong());
         this.guessGameData = guessGameData;
         this.evaluator = evaluator;
         this.shardManager = shardManager;
-        this.image = image;
+        this.guild = guild;
+        this.channel = channel;
     }
 
     @Override
@@ -113,9 +124,42 @@ public class GuessGameEvaluator extends BaseEvaluator {
             builder.setImage(image.getFullImage());
         }
 
-        guildChannel.sendMessage(builder.build()).queue();
+        guildChannel.sendMessage(builder.build()).complete();
 
         evaluator.evaluationDone(guildChannel);
+
+        if (!votes.isEmpty()) {
+            evaluator.scheduleEvaluation(30,
+                    new GuessGameEvaluator(guessGameData, evaluator, shardManager, guild, channel));
+        }
+    }
+
+    @Override
+    public Optional<Message> start() {
+        if (evaluator.isEvaluationActive(channel)) {
+            MessageSender.sendMessage(M_ROUND_IN_PROGRESS.tag, channel);
+            return Optional.empty();
+        }
+
+        image = guessGameData.getImage(null);
+        if (image == null) {
+            return Optional.empty();
+        }
+
+        LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder()
+                .setTitle(M_TITLE.tag)
+                .setDescription(localizeAllAndReplace(M_GAME_DESCRIPTION.tag, guild,
+                        ShepardEmote.ANIM_CHECKMARK.getEmote(shardManager).getAsMention(),
+                        ShepardEmote.ANIM_CROSS.getEmote(shardManager).getAsMention(),
+                        "30"))
+                .setImage(image.getCroppedImage())
+                .setFooter(M_GAME_FOOTER.tag);
+
+        Message complete = channel.sendMessage(builder.build()).complete();
+
+        complete.addReaction(ShepardEmote.ANIM_CHECKMARK.getEmote(shardManager)).queue();
+        complete.addReaction(ShepardEmote.ANIM_CROSS.getEmote(shardManager)).queue();
+        return Optional.of(complete);
     }
 
     /**

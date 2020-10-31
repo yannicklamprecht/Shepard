@@ -32,6 +32,7 @@ public class ChannelEvaluator<T extends BaseEvaluator> {
      * Get the channel evaluator for the channel.
      *
      * @param channel channel for lookup
+     *
      * @return evaluator of null if no evaluation is in progress
      */
     @Nullable
@@ -44,13 +45,15 @@ public class ChannelEvaluator<T extends BaseEvaluator> {
     /**
      * Schedules a evaluation.
      *
-     * @param message   message to evaluate
      * @param seconds   seconds till evaluation.
      * @param evaluator evaluator for evaluation
      */
-    public void scheduleEvaluation(Message message, int seconds, T evaluator) {
+    public void scheduleEvaluation(int seconds, T evaluator) {
+        Optional<Message> start = evaluator.start();
+        if (start.isEmpty()) return;
+        evaluator.messageId = start.get().getIdLong();
         executor.schedule(evaluator, seconds, TimeUnit.SECONDS);
-        evaluationChannel.put(UniqueMessageIdentifier.get(message), evaluator);
+        evaluationChannel.put(UniqueMessageIdentifier.get(start.get()), evaluator);
     }
 
 
@@ -58,6 +61,7 @@ public class ChannelEvaluator<T extends BaseEvaluator> {
      * Check if a message is used for voting.
      *
      * @param uniqueMessageIdentifier identifier for message.
+     *
      * @return true if it is a voting message.
      */
     public boolean isReactionMessage(UniqueMessageIdentifier uniqueMessageIdentifier) {
@@ -68,6 +72,7 @@ public class ChannelEvaluator<T extends BaseEvaluator> {
      * Check if a channel is in a evaluation process.
      *
      * @param channel channel for lookup
+     *
      * @return true if a evaluation is in progress in this channel
      */
     public boolean isEvaluationActive(TextChannel channel) {

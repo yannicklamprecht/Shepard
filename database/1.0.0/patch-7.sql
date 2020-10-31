@@ -1,4 +1,4 @@
-CREATE TABLE shepard_data.sauce_request_limit
+CREATE TABLE if not exists shepard_data.sauce_request_limit
 (
     guild_id    bigint                      NOT NULL,
     user_id     bigint                      NOT NULL,
@@ -7,7 +7,7 @@ CREATE TABLE shepard_data.sauce_request_limit
 
 DROP INDEX IF EXISTS shepard_data.date_order;
 
-CREATE INDEX date_order
+CREATE INDEX if not exists date_order
     ON shepard_data.sauce_request_limit USING btree
         ("timestamp" DESC NULLS FIRST)
     TABLESPACE pg_default;
