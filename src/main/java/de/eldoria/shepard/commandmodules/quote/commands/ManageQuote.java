@@ -122,8 +122,10 @@ public class ManageQuote extends Command implements Executable, ReqDataSource, R
 
         PaginationAction.PaginationIterator<Message> iterator = wrapper.getMessageChannel().getIterableHistory().iterator();
         List<String> messages = new ArrayList<>();
+        int total = 0;
         int i = 0;
-        while (iterator.hasNext() && i < 1000) {
+        while (iterator.hasNext() && i < 1000 && total < 5000) {
+            total++;
             Message next = iterator.next();
             if (!Verifier.equalSnowflake(user, next.getAuthor())) continue;
             if(Verifier.equalSnowflake(next, wrapper.getMessage().get())) continue;
