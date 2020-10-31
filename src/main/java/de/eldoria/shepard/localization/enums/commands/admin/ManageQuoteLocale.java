@@ -18,6 +18,10 @@ public enum ManageQuoteLocale {
      */
     C_REMOVE("command.manageQuote.subcommand.remove"),
     /**
+     * Localization key for subcommand remove.
+     */
+    C_IMPORT("command.manageQuote.subcommand.import"),
+    /**
      * Localization key for subcommand list.
      */
     C_LIST("command.manageQuote.subcommand.list"),
@@ -41,8 +45,8 @@ public enum ManageQuoteLocale {
     /**
      * Localization key for message no quotes.
      */
-    M_NO_QUOTES("command.manageQuote.message.noQuotes");
-
+    M_NO_QUOTES("command.manageQuote.message.noQuotes"),
+    M_IMPORTED("command.manageQuote.message.imported");
     /**
      * Get the escaped locale code for auto translation.
      */

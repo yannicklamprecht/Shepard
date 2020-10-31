@@ -9,14 +9,22 @@ import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.quote.data.QuoteData;
 import de.eldoria.shepard.commandmodules.quote.types.QuoteElement;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
+import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
+import de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
+import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
+import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.requests.restaction.pagination.PaginationAction;
 
 import javax.sql.DataSource;
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalInt;
@@ -29,6 +37,7 @@ import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLo
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.A_KEYWORD;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_ADD;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_ALTER;
+import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_IMPORT;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_LIST;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_REMOVE;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.DESCRIPTION;
@@ -43,9 +52,10 @@ import static java.lang.System.lineSeparator;
  * Command to add, remove, alter and list quotes.
  */
 @CommandUsage(EventContext.GUILD)
-public class ManageQuote extends Command implements Executable, ReqDataSource {
+public class ManageQuote extends Command implements Executable, ReqDataSource, ReqParser {
 
     private QuoteData quoteData;
+    private ArgumentParser parser;
 
     /**
      * Create a new manage quote command object.
@@ -68,6 +78,9 @@ public class ManageQuote extends Command implements Executable, ReqDataSource {
                         .addSubcommand(C_LIST.tag,
                                 Parameter.createCommand("list"),
                                 Parameter.createInput(A_KEYWORD.tag, AD_KEYWORD.tag, false))
+                        .addSubcommand(C_IMPORT.tag,
+                                Parameter.createCommand("import"),
+                                Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true))
                         .build(),
                 CommandCategory.ADMIN);
     }
@@ -94,6 +107,35 @@ public class ManageQuote extends Command implements Executable, ReqDataSource {
             list(args, wrapper);
             return;
         }
+        if (isSubCommand(cmd, 4)) {
+            importQuotes(args, wrapper);
+            return;
+        }
+    }
+
+    private void importQuotes(String[] args, EventWrapper wrapper) {
+        User user = parser.getUser(args[1]);
+        if (user == null) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_USER, wrapper);
+            return;
+        }
+
+        PaginationAction.PaginationIterator<Message> iterator = wrapper.getMessageChannel().getIterableHistory().iterator();
+        List<String> messages = new ArrayList<>();
+        int i = 0;
+        while (iterator.hasNext() && i < 1000) {
+            Message next = iterator.next();
+            if (!Verifier.equalSnowflake(user, next.getAuthor())) continue;
+            if(Verifier.equalSnowflake(next, wrapper.getMessage().get())) continue;
+            messages.add(next.getContentRaw());
+            i++;
+        }
+        for (String message : messages) {
+            quoteData.addQuote(wrapper.getGuild().get(), message, wrapper);
+        }
+
+        MessageSender.sendMessage(localizeAllAndReplace(ManageQuoteLocale.M_IMPORTED.tag, wrapper,
+                "**" + messages.size() + "**"), wrapper.getMessageChannel());
     }
 
     private void alter(String[] args, EventWrapper messageContext) {
@@ -170,6 +212,7 @@ public class ManageQuote extends Command implements Executable, ReqDataSource {
      *
      * @param number         string to parse
      * @param messageContext message context for error logging
+     *
      * @return -1 when the string is not a number or the number is <0 or larger than the amount of quotes.
      */
     private int verifyId(String number, EventWrapper messageContext) {
@@ -190,5 +233,10 @@ public class ManageQuote extends Command implements Executable, ReqDataSource {
     @Override
     public void addDataSource(DataSource source) {
         quoteData = new QuoteData(source);
+    }
+
+    @Override
+    public void addParser(ArgumentParser parser) {
+        this.parser = parser;
     }
 }

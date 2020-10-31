@@ -34,6 +34,7 @@ public enum GeneralLocale {
      * Localization key for argument [message].
      */
     A_MESSAGE("command.general.argument.message"),
+    A_MESSAGE_ID("command.general.argument.messageId"),
     /**
      * Localization key for argument [text].
      */
@@ -65,6 +66,7 @@ public enum GeneralLocale {
      * Localization key for argument listType.
      */
     A_LIST_TYPE("command.general.argument.listType"),
+    AD_MESSAGE_ID("command.general.argumentDescription.messageId"),
     AD_LIST_TYPE("command.general.argumentDescription.listType"),
     AD_CHANNEL("command.general.argumentDescription.channel"),
     AD_CHANNELS("command.general.argumentDescription.channels"),
