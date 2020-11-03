@@ -27,9 +27,14 @@ public class QuoteElement {
     /**
      * Get the Quote id.
      *
-     * @return String not null. -1 if not set
+     * @return int not null. -1 if not set
      */
     public int getQuoteId() {
         return quoteId;
+    }
+
+    @Override
+    public String toString() {
+        return quoteId + "->" + quote;
     }
 }

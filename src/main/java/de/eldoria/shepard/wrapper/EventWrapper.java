@@ -242,7 +242,7 @@ public class EventWrapper {
      * Returns the message.
      *
      * @return returns a message. This is only present when the message could be retreived.
-     * This can be empty if the event is a reaction event on a large guild.
+     * This can be empty if the event is a reaction event and the bot does not have history access.
      */
     public Optional<Message> getMessage() {
         return Optional.ofNullable(message);

@@ -16,8 +16,10 @@ import de.eldoria.shepard.commandmodules.standalone.fun.Joke;
 import de.eldoria.shepard.commandmodules.standalone.fun.Say;
 import de.eldoria.shepard.commandmodules.standalone.fun.Simp;
 import de.eldoria.shepard.commandmodules.standalone.fun.Someone;
+import de.eldoria.shepard.commandmodules.standalone.fun.Sport;
 import de.eldoria.shepard.commandmodules.standalone.fun.Tailpat;
 import de.eldoria.shepard.commandmodules.standalone.fun.Uwu;
+import de.eldoria.shepard.commandmodules.standalone.fun.Waifu;
 import de.eldoria.shepard.commandmodules.standalone.fun.WiseFox;
 import de.eldoria.shepard.commandmodules.standalone.util.Avatar;
 import de.eldoria.shepard.commandmodules.standalone.util.Feedback;
@@ -40,7 +42,7 @@ public class StandaloneCommandsModule implements ModuleBuilder {
 
         addAndInit(resources, new LargeEmote(), new MagicConch(), new WiseFox(), new MassEffect(), new MockingSpongebob(),
                 new Oha(), new Owo(), new Uwu(), new Joke(), new Say(), new Someone(), new Simp(),
-                new Cute(), new Love(), new Lewd(), new Tailpat());
+                new Cute(), new Love(), new Lewd(), new Tailpat(), new Waifu(), new Sport());
 
         addAndInit(resources, new Avatar(), new Feedback(), new GetRaw(), new Help(), new Invite(),
                 new Home(), new SystemInfo(), new UserInfo(), new Vote(), new Repo(), new Google());

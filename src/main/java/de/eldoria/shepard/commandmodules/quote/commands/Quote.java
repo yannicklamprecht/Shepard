@@ -70,7 +70,7 @@ public class Quote extends Command implements Executable, ReqDataSource {
         Random rand = new Random();
         int i = rand.nextInt(quotes.size());
 
-        MessageSender.sendMessage(quotes.get(i).getQuote(), wrapper.getMessageChannel());
+        MessageSender.sendMessage(quotes.get(i).toString(), wrapper.getMessageChannel());
     }
 
     @Override
