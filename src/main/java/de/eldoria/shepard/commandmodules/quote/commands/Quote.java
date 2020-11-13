@@ -8,27 +8,25 @@ import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.quote.data.QuoteData;
 import de.eldoria.shepard.commandmodules.quote.types.QuoteElement;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.A_EMPTY_OR_WORD;
-import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.M_NO_QUOTE_DEFINED;
-import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.M_NO_QUOTE_FOUND;
+import static de.eldoria.shepard.localization.enums.commands.fun.QuoteLocale.*;
 
 /**
  * Command which draws a random quote from database or a quote containing a keyword.
  */
 @CommandUsage(EventContext.GUILD)
-public class Quote extends Command implements Executable, ReqDataSource {
+public class Quote extends QuoteCommand implements Executable, ReqDataSource {
 
     private QuoteData quoteData;
 
@@ -41,7 +39,7 @@ public class Quote extends Command implements Executable, ReqDataSource {
                 DESCRIPTION.tag,
                 SubCommand.builder("quote")
                         .addSubcommand(null,
-                                Parameter.createInput(GeneralLocale.A_KEYWORD.tag, A_EMPTY_OR_WORD.tag, false))
+                                Parameter.createInput("command.general.argument.keyword", A_EMPTY_OR_WORD.tag, false))
                         .build(),
                 DESCRIPTION.tag,
                 CommandCategory.FUN);
@@ -62,15 +60,16 @@ public class Quote extends Command implements Executable, ReqDataSource {
             }
         }
 
-        if (quotes.size() == 0) {
+        if (quotes.isEmpty()) {
             MessageSender.sendMessage(M_NO_QUOTE_FOUND.tag, wrapper.getMessageChannel());
             return;
         }
 
         Random rand = new Random();
         int i = rand.nextInt(quotes.size());
+        QuoteElement quote = quotes.get(i);
 
-        MessageSender.sendMessage(quotes.get(i).toString(), wrapper.getMessageChannel());
+        sendQuote(wrapper.getMessageChannel(), quote);
     }
 
     @Override

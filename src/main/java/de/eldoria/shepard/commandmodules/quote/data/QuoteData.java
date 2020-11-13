@@ -4,11 +4,14 @@ import de.eldoria.shepard.commandmodules.quote.types.QuoteElement;
 import de.eldoria.shepard.database.QueryObject;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
+import org.jetbrains.annotations.Nullable;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,19 +34,23 @@ public final class QuoteData extends QueryObject {
      * @param guild          Guild for which the quote should be added.
      * @param quote          quote to add
      * @param messageContext messageContext from command sending for error handling. Can be null.
-     * @return true if the query execution was successful
+     * @return returns the global quote id or -1 if transaction failed
      */
-    public boolean addQuote(Guild guild, String quote, EventWrapper messageContext) {
+    public int addQuote(Guild guild, String quote, String quoteSource, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_func.add_quote(?,?)")) {
-            statement.setString(1, guild.getId());
+                .prepareStatement("SELECT * FROM shepard_func.add_quote(?,?,?)")) {
+            statement.setLong(1, guild.getIdLong());
             statement.setString(2, quote);
-            statement.execute();
+            statement.setString(3, quoteSource);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            }
         } catch (SQLException e) {
             handleException(e, messageContext);
-            return false;
+            return -1;
         }
-        return true;
+        return -1;
     }
 
     /**
@@ -55,12 +62,21 @@ public final class QuoteData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean alterQuote(Guild guild, int quoteId, String quote, EventWrapper messageContext) {
+    public boolean alterQuote(Guild guild, int quoteId, @Nullable String quote, @Nullable String quoteSource, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_func.alter_quote(?,?,?)")) {
-            statement.setString(1, guild.getId());
+                .prepareStatement("SELECT shepard_func.alter_quote(?,?,?,?)")) {
+            statement.setLong(1, guild.getIdLong());
             statement.setInt(2, quoteId);
-            statement.setString(3, quote);
+            if (quote == null) {
+                statement.setNull(3, Types.VARCHAR);
+            } else {
+                statement.setString(3, quote);
+            }
+            if (quoteSource == null) {
+                statement.setNull(4, Types.VARCHAR);
+            } else {
+                statement.setString(4, quoteSource);
+            }
             statement.execute();
         } catch (SQLException e) {
             handleException(e, messageContext);
@@ -80,7 +96,7 @@ public final class QuoteData extends QueryObject {
     public boolean removeQuote(Guild guild, int quoteId, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_quote(?,?)")) {
-            statement.setString(1, guild.getId());
+            statement.setLong(1, guild.getIdLong());
             statement.setInt(2, quoteId);
             statement.execute();
         } catch (SQLException e) {
@@ -100,16 +116,59 @@ public final class QuoteData extends QueryObject {
     public List<QuoteElement> getQuotes(Guild guild, EventWrapper messageContext) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT * from shepard_func.get_quotes(?)")) {
-            statement.setString(1, guild.getId());
+                .prepareStatement("SELECT * FROM shepard_func.get_quotes(?)")) {
+            statement.setLong(1, guild.getIdLong());
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                quotes.add(new QuoteElement(result.getString("quote"), result.getInt("quote_id")));
+                quotes.add(toQuote(result));
             }
         } catch (SQLException e) {
             handleException(e, messageContext);
         }
         return quotes;
+    }
+
+    /**
+     * Gets a quote..
+     *
+     * @param id             global quote id
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return List of Quote objects
+     */
+    public QuoteElement getQuote(int id, EventWrapper messageContext) {
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT * FROM shepard_func.get_quote(?)")) {
+            statement.setInt(1, id);
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return (toQuote(result));
+            }
+        } catch (SQLException e) {
+            handleException(e, messageContext);
+        }
+        return null;
+    }
+
+    /**
+     * Gets a quote from guild.
+     *
+     * @param id             guild quote id
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return List of Quote objects
+     */
+    public QuoteElement getQuote(Guild guild, int id, EventWrapper messageContext) {
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT * FROM shepard_func.get_quote(?,?)")) {
+            statement.setLong(1, guild.getIdLong());
+            statement.setInt(2, id);
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return (toQuote(result));
+            }
+        } catch (SQLException e) {
+            handleException(e, messageContext);
+        }
+        return null;
     }
 
     /**
@@ -124,12 +183,12 @@ public final class QuoteData extends QueryObject {
                                                  EventWrapper messageContext) {
         List<QuoteElement> quotes = new ArrayList<>();
         try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT * from shepard_func.get_quotes_by_keyword(?,?)")) {
-            statement.setString(1, guild.getId());
+                .prepareStatement("SELECT * FROM shepard_func.get_quotes_by_keyword(?,?)")) {
+            statement.setLong(1, guild.getIdLong());
             statement.setString(2, keyword);
             ResultSet result = statement.executeQuery();
             while (result.next()) {
-                quotes.add(new QuoteElement(result.getString("quote"), result.getInt("quote_id")));
+                quotes.add(toQuote(result));
             }
         } catch (SQLException e) {
             handleException(e, messageContext);
@@ -147,7 +206,7 @@ public final class QuoteData extends QueryObject {
     public int getQuotesCount(Guild guild, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.get_quote_count(?)")) {
-            statement.setString(1, guild.getId());
+            statement.setLong(1, guild.getIdLong());
             ResultSet result = statement.executeQuery();
             if (result.next()) {
                 return result.getInt(1);
@@ -169,7 +228,7 @@ public final class QuoteData extends QueryObject {
     public int getQuotesCountByKeyword(Guild guild, String keyword, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.get_quote_count_by_keyword(?,?)")) {
-            statement.setString(1, guild.getId());
+            statement.setLong(1, guild.getIdLong());
             statement.setString(2, keyword);
             ResultSet result = statement.executeQuery();
             if (result.next()) {
@@ -179,5 +238,46 @@ public final class QuoteData extends QueryObject {
             handleException(e, messageContext);
         }
         return 0;
+    }
+
+    public long getQuoteChannel(Guild guild, EventWrapper messageContext) {
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_func.get_quote_channel(?)")) {
+            statement.setLong(1, guild.getIdLong());
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                return result.getLong(1);
+            }
+        } catch (SQLException e) {
+            handleException(e, messageContext);
+        }
+        return 0;
+    }
+
+    public boolean setQuoteChannel(Guild guild, TextChannel channel, EventWrapper messageContext) {
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_func.set_quote_channel(?,?)")) {
+            statement.setLong(1, guild.getIdLong());
+            if (channel == null) {
+                statement.setNull(2, Types.BIGINT);
+            } else {
+                statement.setLong(2, channel.getIdLong());
+            }
+            statement.execute();
+            return true;
+        } catch (SQLException e) {
+            handleException(e, messageContext);
+        }
+        return false;
+    }
+
+
+    private QuoteElement toQuote(ResultSet result) throws SQLException {
+        return new QuoteElement(
+                result.getString("quote"),
+                result.getInt("quote_id"),
+                result.getString("source"),
+                result.getTimestamp("created").toLocalDateTime(),
+                result.getTimestamp("edited").toLocalDateTime());
     }
 }

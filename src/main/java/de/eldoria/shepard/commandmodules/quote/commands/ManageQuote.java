@@ -1,7 +1,8 @@
 package de.eldoria.shepard.commandmodules.quote.commands;
 
+import de.eldoria.shepard.basemodules.commanddispatching.dialogue.Dialog;
+import de.eldoria.shepard.basemodules.commanddispatching.dialogue.DialogHandler;
 import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
-import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
@@ -9,79 +10,69 @@ import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
 import de.eldoria.shepard.commandmodules.quote.data.QuoteData;
 import de.eldoria.shepard.commandmodules.quote.types.QuoteElement;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale;
+import de.eldoria.shepard.localization.util.Format;
+import de.eldoria.shepard.localization.util.Replacement;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
+import de.eldoria.shepard.modulebuilder.requirements.ReqDialogHandler;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.requests.restaction.pagination.PaginationAction;
 
 import javax.sql.DataSource;
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.OptionalInt;
-import java.util.stream.Collectors;
+import java.util.*;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_ID;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_ID;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_TEXT;
-import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.AD_KEYWORD;
-import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.A_KEYWORD;
-import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_ADD;
-import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_ALTER;
-import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_IMPORT;
-import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_LIST;
-import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.C_REMOVE;
-import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_CHANGED_QUOTE;
 import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_NO_QUOTES;
-import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_REMOVED_QUOTE;
-import static de.eldoria.shepard.localization.enums.commands.admin.ManageQuoteLocale.M_SAVED_QUOTE;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeByWrapper;
 import static java.lang.System.lineSeparator;
+
 
 /**
  * Command to add, remove, alter and list quotes.
  */
 @CommandUsage(EventContext.GUILD)
-public class ManageQuote extends Command implements ExecutableAsync, ReqDataSource, ReqParser {
+public class ManageQuote extends QuoteCommand implements ExecutableAsync, ReqDataSource, ReqParser, ReqDialogHandler {
 
     private QuoteData quoteData;
     private ArgumentParser parser;
+    private DialogHandler dialogHandler;
 
     /**
      * Create a new manage quote command object.
      */
     public ManageQuote() {
         super("manageQuote",
-                new String[] {"mq", "manageQuotes"},
-                DESCRIPTION.tag,
+                new String[]{"mq", "manageQuotes"},
+                "command.manageQuote.description",
                 SubCommand.builder("manageQuotes")
-                        .addSubcommand(C_ADD.tag,
-                                Parameter.createCommand("create"),
-                                Parameter.createInput(A_TEXT.tag, null, true))
-                        .addSubcommand(C_ALTER.tag,
+                        .addSubcommand("command.manageQuote.subcommand.add",
+                                Parameter.createCommand("create"))
+                        .addSubcommand("command.manageQuote.subcommand.add",
+                                Parameter.createCommand("add"))
+                        .addSubcommand("command.manageQuote.subcommand.alter",
                                 Parameter.createCommand("edit"),
-                                Parameter.createInput(A_ID.tag, AD_ID.tag, true),
-                                Parameter.createInput(A_TEXT.tag, null, true))
-                        .addSubcommand(C_REMOVE.tag,
+                                Parameter.createInput("command.general.argument.id", "command.general.argumentDescription.id", true))
+                        .addSubcommand("command.manageQuote.subcommand.remove",
                                 Parameter.createCommand("remove"),
-                                Parameter.createInput(A_ID.tag, AD_ID.tag, true))
-                        .addSubcommand(C_LIST.tag,
+                                Parameter.createInput("command.general.argument.id", "command.general.argumentDescription.id", true))
+                        .addSubcommand("command.manageQuote.subcommand.list",
                                 Parameter.createCommand("list"),
-                                Parameter.createInput(A_KEYWORD.tag, AD_KEYWORD.tag, false))
-                        .addSubcommand(C_IMPORT.tag,
+                                Parameter.createInput("command.general.argument.keyword", "command.general.argumentDescription.keyword", false))
+                        .addSubcommand("command.manageQuote.subcommand.import",
                                 Parameter.createCommand("import"),
-                                Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true))
+                                Parameter.createInput("command.general.argument.user", "command.general.argumentDescription.user", true))
+                        .addSubcommand("command.manageQuote.subcommand.setChannel",
+                                Parameter.createCommand("setChannel"),
+                                Parameter.createInput("command.general.argument.channel", "command.general.argumentDescription.channelMentionOrExecution", true))
                         .build(),
                 CommandCategory.ADMIN);
     }
@@ -89,28 +80,56 @@ public class ManageQuote extends Command implements ExecutableAsync, ReqDataSour
     @Override
     public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
-        if (isSubCommand(cmd, 0)) {
+        if (isSubCommand(cmd, 0) || isSubCommand(cmd, 1)) {
             create(args, wrapper);
             return;
         }
 
-        if (isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, 2)) {
             alter(args, wrapper);
             return;
         }
 
-        if (isSubCommand(cmd, 2)) {
+        if (isSubCommand(cmd, 3)) {
             remove(args, wrapper);
             return;
         }
 
-        if (isSubCommand(cmd, 3)) {
+        if (isSubCommand(cmd, 4)) {
             list(args, wrapper);
             return;
         }
-        if (isSubCommand(cmd, 4)) {
+        if (isSubCommand(cmd, 5)) {
             importQuotes(args, wrapper);
             return;
+        }
+        if (isSubCommand(cmd, 6)) {
+            setChannel(args, wrapper);
+            return;
+        }
+    }
+
+    private void setChannel(String[] args, EventWrapper wrapper) {
+        if (args.length == 1) {
+            quoteData.setQuoteChannel(wrapper.getGuild().get(), wrapper.getTextChannel().get(), wrapper);
+            wrapper.getMessageChannel().sendMessage(localizeByWrapper("command.manageQuote.message.setChannel", wrapper,
+                    Replacement.create("channel", wrapper.getTextChannel().get().getAsMention()))).queue();
+            return;
+        }
+        if ("none".equalsIgnoreCase(args[1])) {
+            if (quoteData.setQuoteChannel(wrapper.getGuild().get(), null, wrapper)) {
+                MessageSender.sendLocalized("command.manageQuote.message.removedChannel", wrapper);
+            }
+            return;
+        }
+        Optional<TextChannel> textChannel = ArgumentParser.getTextChannel(wrapper.getGuild().get(), args[1]);
+        if (textChannel.isEmpty()) {
+            MessageSender.sendSimpleError(ErrorType.INVALID_CHANNEL, wrapper);
+            return;
+        }
+        if (quoteData.setQuoteChannel(wrapper.getGuild().get(), textChannel.get(), wrapper)) {
+            wrapper.getMessageChannel().sendMessage(localizeByWrapper("command.manageQuote.message.setChannel", wrapper,
+                    Replacement.create("channel", textChannel.get().getAsMention()))).queue();
         }
     }
 
@@ -134,7 +153,7 @@ public class ManageQuote extends Command implements ExecutableAsync, ReqDataSour
             i++;
         }
         for (String message : messages) {
-            quoteData.addQuote(wrapper.getGuild().get(), message, wrapper);
+            quoteData.addQuote(wrapper.getGuild().get(), message, null, wrapper);
         }
 
         MessageSender.sendMessage(localizeAllAndReplace(ManageQuoteLocale.M_IMPORTED.tag, wrapper,
@@ -142,7 +161,7 @@ public class ManageQuote extends Command implements ExecutableAsync, ReqDataSour
     }
 
     private void alter(String[] args, EventWrapper messageContext) {
-        if (args.length < 3) {
+        if (args.length < 2) {
             MessageSender.sendSimpleError(ErrorType.INVALID_ARGUMENT, messageContext);
         }
 
@@ -152,12 +171,33 @@ public class ManageQuote extends Command implements ExecutableAsync, ReqDataSour
             return;
         }
 
-        String quote = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
+        dialogHandler.startDialog(messageContext, "command.manageQuote.dialog.edit.start",
+                new Dialog() {
+                    private String quote = null;
+                    private String source = null;
 
-        if (quoteData.alterQuote(messageContext.getGuild().get(), quoteId, quote, messageContext)) {
-            MessageSender.sendSimpleTextBox(localizeAllAndReplace(M_CHANGED_QUOTE.tag,
-                    messageContext, "**" + quoteId + "**"), quote, Color.blue, messageContext);
-        }
+                    @Override
+                    public boolean invoke(EventWrapper wrapper, Message message) {
+                        String content = message.getContentRaw();
+                        if (quote == null) {
+                            if ("none".equalsIgnoreCase(content)) {
+                                quote = "";
+                            }
+                            MessageSender.sendLocalized("command.manageQuote.dialog.edit.source", messageContext);
+                            return false;
+                        }
+
+                        if (!"none".equalsIgnoreCase(content)) {
+                            source = content;
+                        }
+                        quoteData.alterQuote(wrapper.getGuild().get(), quoteId, quote.isBlank() ? null : quote, source, messageContext);
+                        QuoteElement quote = quoteData.getQuote(wrapper.getGuild().get(), quoteId, wrapper);
+                        sendQuote(messageContext.getMessageChannel(), quote);
+                        return true;
+                    }
+                });
+
+        String quote = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
     }
 
     @SneakyThrows
@@ -194,22 +234,41 @@ public class ManageQuote extends Command implements ExecutableAsync, ReqDataSour
         }
 
         if (quoteData.removeQuote(messageContext.getGuild().get(), quoteId, messageContext)) {
-            MessageSender.sendMessage(localizeAllAndReplace(M_REMOVED_QUOTE.tag,
-                    messageContext, "**" + quoteId + "**"), messageContext.getMessageChannel());
+            MessageSender.sendMessage(localizeByWrapper("command.manageQuote.message.removedQuote",
+                    messageContext, Replacement.create("ID", quoteId, Format.BOLD)),
+                    messageContext.getMessageChannel());
         }
     }
 
-    private void create(String[] args, EventWrapper messageContext) {
-        if (args.length == 1) {
-            MessageSender.sendSimpleError(ErrorType.NO_QUOTE_FOUND, messageContext);
-            return;
-        }
+    private void create(String[] args, EventWrapper event) {
 
-        String quote = ArgumentParser.getMessage(args, 1);
+        dialogHandler.startDialog(event, "command.manageQuote.dialog.create.start",
+                new Dialog() {
+                    private String quote = null;
 
-        if (quoteData.addQuote(messageContext.getGuild().get(), quote, messageContext)) {
-            MessageSender.sendSimpleTextBox(M_SAVED_QUOTE.tag, quote, Color.green, messageContext);
-        }
+                    @Override
+                    public boolean invoke(EventWrapper wrapper, Message message) {
+                        String content = message.getContentRaw();
+                        if (quote == null) {
+                            quote = content;
+                            MessageSender.sendLocalized("command.manageQuote.dialog.create.author", wrapper);
+                            return false;
+                        }
+                        int i = quoteData.addQuote(wrapper.getGuild().get(), quote, message.getContentRaw(), wrapper);
+                        if (i == -1) return true;
+
+                        QuoteElement quote = quoteData.getQuote(i, wrapper);
+                        if (quote == null) return true;
+                        sendQuote(wrapper.getMessageChannel(), quote);
+
+                        long quoteChannel = quoteData.getQuoteChannel(wrapper.getGuild().get(), null);
+                        TextChannel textChannelById = wrapper.getGuild().get().getTextChannelById(quoteChannel);
+                        if (textChannelById != null) {
+                            sendQuote(textChannelById, quote);
+                        }
+                        return true;
+                    }
+                });
     }
 
     /**
@@ -217,7 +276,6 @@ public class ManageQuote extends Command implements ExecutableAsync, ReqDataSour
      *
      * @param number         string to parse
      * @param messageContext message context for error logging
-     *
      * @return -1 when the string is not a number or the number is <0 or larger than the amount of quotes.
      */
     private int verifyId(String number, EventWrapper messageContext) {
@@ -243,5 +301,10 @@ public class ManageQuote extends Command implements ExecutableAsync, ReqDataSour
     @Override
     public void addParser(ArgumentParser parser) {
         this.parser = parser;
+    }
+
+    @Override
+    public void addDialogHandler(DialogHandler dialogHandler) {
+        this.dialogHandler = dialogHandler;
     }
 }
