@@ -31,7 +31,7 @@ BEGIN
                       ) x
                  WHERE x.quote ILIKE '%' || _keyword || '%'
                     OR x.source ILIKE '%' || _keyword || '%'
-                    OR (isnumeric(_keyword) AND x.quote_id = _keyword::INTEGER);
+                    OR (isnumeric(_keyword) AND x.quote_id = _keyword::NUMERIC::INTEGER);
 
 END
 $$;

@@ -3,24 +3,12 @@ package de.eldoria.shepard.commandmodules.standalone;
 import de.eldoria.shepard.commandmodules.SharedResources;
 import de.eldoria.shepard.commandmodules.standalone.botconfig.Restart;
 import de.eldoria.shepard.commandmodules.standalone.botconfig.Upgrade;
+import de.eldoria.shepard.commandmodules.standalone.fun.*;
 import de.eldoria.shepard.commandmodules.standalone.fun.percentcommands.Cute;
-import de.eldoria.shepard.commandmodules.standalone.fun.LargeEmote;
 import de.eldoria.shepard.commandmodules.standalone.fun.percentcommands.Lewd;
 import de.eldoria.shepard.commandmodules.standalone.fun.percentcommands.Love;
-import de.eldoria.shepard.commandmodules.standalone.fun.MagicConch;
-import de.eldoria.shepard.commandmodules.standalone.fun.MassEffect;
-import de.eldoria.shepard.commandmodules.standalone.fun.MockingSpongebob;
-import de.eldoria.shepard.commandmodules.standalone.fun.Oha;
-import de.eldoria.shepard.commandmodules.standalone.fun.Owo;
-import de.eldoria.shepard.commandmodules.standalone.fun.Joke;
-import de.eldoria.shepard.commandmodules.standalone.fun.Say;
 import de.eldoria.shepard.commandmodules.standalone.fun.percentcommands.Simp;
-import de.eldoria.shepard.commandmodules.standalone.fun.Someone;
-import de.eldoria.shepard.commandmodules.standalone.fun.Sport;
-import de.eldoria.shepard.commandmodules.standalone.fun.Tailpat;
-import de.eldoria.shepard.commandmodules.standalone.fun.Uwu;
 import de.eldoria.shepard.commandmodules.standalone.fun.percentcommands.Waifu;
-import de.eldoria.shepard.commandmodules.standalone.fun.WiseFox;
 import de.eldoria.shepard.commandmodules.standalone.util.Avatar;
 import de.eldoria.shepard.commandmodules.standalone.util.Feedback;
 import de.eldoria.shepard.commandmodules.standalone.util.GetRaw;
@@ -40,7 +28,7 @@ public class StandaloneCommandsModule implements ModuleBuilder {
     public void buildModule(SharedResources resources) {
         addAndInit(resources, new Restart(), new Upgrade());
 
-        addAndInit(resources, new LargeEmote(), new MagicConch(), new WiseFox(), new MassEffect(), new MockingSpongebob(),
+        addAndInit(resources, new Conversation(), new LargeEmote(), new MagicConch(), new WiseFox(), new MassEffect(), new MockingSpongebob(),
                 new Oha(), new Owo(), new Uwu(), new Joke(), new Say(), new Someone(), new Simp(),
                 new Cute(), new Love(), new Lewd(), new Tailpat(), new Waifu(), new Sport());
 

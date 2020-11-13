@@ -8,13 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 
 @Slf4j
@@ -46,12 +40,7 @@ public class LanguageHandler implements ReqDataSource, ReqInit {
      * @return message in the local code or the default language if key is missing.
      */
     public String getLanguageString(Guild guild, String localetag) {
-        LocaleCode language;
-        if (guild == null) {
-            language = LocaleCode.EN_US;
-        } else {
-            language = localeData.getLanguage(guild);
-        }
+        LocaleCode language = getGuildLocale(guild);
         if (getLanguageResource(language).containsKey(localetag)) {
             return getLanguageResource(language).getString(localetag);
         } else {
@@ -65,6 +54,16 @@ public class LanguageHandler implements ReqDataSource, ReqInit {
 
             return bundle.containsKey(localetag) ? bundle.getString(localetag) : localetag;
         }
+    }
+
+    public LocaleCode getGuildLocale(Guild guild) {
+        LocaleCode language;
+        if (guild == null) {
+            language = LocaleCode.EN_US;
+        } else {
+            language = localeData.getLanguage(guild);
+        }
+        return language;
     }
 
     /**

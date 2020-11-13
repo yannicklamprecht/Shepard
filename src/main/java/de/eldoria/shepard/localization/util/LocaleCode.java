@@ -1,5 +1,7 @@
 package de.eldoria.shepard.localization.util;
 
+import java.util.Locale;
+
 public enum LocaleCode {
     /**
      * English language code.
@@ -46,5 +48,14 @@ public enum LocaleCode {
             }
         }
         return null;
+    }
+
+    public Locale toLocale() {
+        String[] s = this.code.split("_");
+
+        if (s.length == 1) {
+            return new Locale(s[0]);
+        }
+        return new Locale(s[0], s[1]);
     }
 }

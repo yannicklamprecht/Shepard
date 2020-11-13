@@ -214,6 +214,15 @@ public abstract class Command {
         return subCommands[i].isSubCommand(cmd);
     }
 
+    protected boolean isSubCommand(String cmd, String subCmd) {
+        for (SubCommand subCommand : subCommands) {
+            if (subCommand.isSubCommand(cmd)) {
+                return subCommand.isSubCommand(subCmd);
+            }
+        }
+        return false;
+    }
+
     /**
      * Get the context name.
      *

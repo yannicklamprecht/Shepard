@@ -196,8 +196,6 @@ public class ManageQuote extends QuoteCommand implements ExecutableAsync, ReqDat
                         return true;
                     }
                 });
-
-        String quote = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
     }
 
     @SneakyThrows
