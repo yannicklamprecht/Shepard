@@ -1,5 +1,8 @@
 package de.eldoria.shepard.localization.util;
 
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 
 public final class Replacement {
@@ -48,6 +51,45 @@ public final class Replacement {
     public static Replacement create(String key, User value, Format... formats) {
         return create(key, value.getName(), formats);
     }
+
+    /**
+     * Creates a new replacement.
+     *
+     * @param value   value which provides the name of the player
+     * @return replacement with registered replacement
+     */
+    public static Replacement createMention(Role value) {
+        return create("ROLE", value.getAsMention());
+    }
+    /**
+     * Creates a new replacement.
+     *
+     * @param value   value which provides the name of the player
+     * @return replacement with registered replacement
+     */
+    public static Replacement createMention(User value) {
+        return create("USER", value.getAsMention());
+    }
+    /**
+     * Creates a new replacement.
+     *
+     * @param value   value which provides the name of the player
+     * @return replacement with registered replacement
+     */
+    public static Replacement createMention(Member value) {
+        return create("USER", value.getAsMention());
+    }
+    /**
+     * Creates a new replacement.
+     *
+     * @param value   value which provides the name of the player
+     * @return replacement with registered replacement
+     */
+    public static Replacement createMention(TextChannel value) {
+        return create("CHANNEL", value.getAsMention());
+    }
+
+
 
     /**
      * Add formatting codes to the replacement. A §r will be appended after the replacement. Only provide the formatting

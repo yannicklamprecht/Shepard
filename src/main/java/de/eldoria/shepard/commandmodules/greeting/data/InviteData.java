@@ -5,12 +5,10 @@ import de.eldoria.shepard.database.QueryObject;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
+import net.dv8tion.jda.api.entities.Role;
 
 import javax.sql.DataSource;
-import java.sql.Array;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +40,7 @@ public class InviteData extends QueryObject {
                              EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.add_invite(?,?,?,?)")) {
-            statement.setString(1, guild.getId());
+            statement.setLong(1, guild.getIdLong());
             statement.setString(2, code);
             statement.setString(3, name);
             statement.setInt(4, count);
@@ -58,26 +56,27 @@ public class InviteData extends QueryObject {
      * Gets the invites of a guild.
      *
      * @param guild          Guild object for lookup
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param wrapper messageContext from command sending for error handling. Can be null.
      * @return list of invite objects
      */
-    public List<DatabaseInvite> getInvites(Guild guild, EventWrapper messageContext) {
+    public List<DatabaseInvite> getInvites(Guild guild, EventWrapper wrapper) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT * from shepard_func.get_invites(?)")) {
+                .prepareStatement("SELECT * FROM shepard_func.get_invites(?)")) {
             List<DatabaseInvite> invites = new ArrayList<>();
-            statement.setString(1, guild.getId());
+            statement.setLong(1, guild.getIdLong());
             ResultSet result = statement.executeQuery();
 
             while (result.next()) {
                 String code = result.getString("inv_code");
                 int used = result.getInt("inv_used");
                 String name = result.getString("inv_source");
-
-                invites.add(new DatabaseInvite(code, used, name));
+                long roleId = result.getLong("role_id");
+                Role role = guild.getRoleById(roleId);
+                invites.add(new DatabaseInvite(code, used, name, role));
             }
             return invites;
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, wrapper);
         }
         return Collections.emptyList();
     }
@@ -93,7 +92,7 @@ public class InviteData extends QueryObject {
     public boolean removeInvite(Guild guild, String code, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.remove_invite(?,?)")) {
-            statement.setString(1, guild.getId());
+            statement.setLong(1, guild.getIdLong());
             statement.setString(2, code);
             statement.execute();
         } catch (SQLException e) {
@@ -113,13 +112,65 @@ public class InviteData extends QueryObject {
     public void upCountInvite(Guild guild, String code, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.upcount_invite(?,?)")) {
-            statement.setString(1, guild.getId());
+            statement.setLong(1, guild.getIdLong());
             statement.setString(2, code);
             statement.execute();
         } catch (SQLException e) {
             handleException(e, messageContext);
         }
     }
+
+    /**
+     * Sets the counter of a invite +1.
+     *
+     * @param guild          Guild object for lookup
+     * @param code           Code of the invite for upcount
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     */
+    public boolean inviteRegistered(Guild guild, String code, EventWrapper messageContext) {
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_func.upcount_invite(?,?)")) {
+            statement.setLong(1, guild.getIdLong());
+            statement.setString(2, code);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getBoolean(1);
+            }
+        } catch (SQLException e) {
+            handleException(e, messageContext);
+        }
+        return false;
+    }
+
+    /**
+     * Set the invite role for an invite.
+     *
+     * @param guild          Guild object for lookup
+     * @param code           Code of the invite for upcount
+     * @param role           role to receive when using the invite. null to remove
+     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @return true if the transaction was successful.
+     */
+    public boolean setInviteRole(Guild guild, String code, Role role, EventWrapper messageContext) {
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_func.add_invite_role(?,?,?)")) {
+            statement.setLong(1, guild.getIdLong());
+            statement.setString(2, code);
+            if (role == null) {
+                statement.setNull(3, Types.BIGINT);
+            } else {
+                statement.setLong(3, role.getIdLong());
+
+            }
+            statement.execute();
+        } catch (SQLException e) {
+            handleException(e, messageContext);
+            return false;
+        }
+        return true;
+
+    }
+
 
     /**
      * Deletes all invites which are not present anymore.
@@ -132,7 +183,7 @@ public class InviteData extends QueryObject {
     public boolean updateInvite(Guild guild, List<Invite> invites, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.update_invites(?,?)")) {
-            statement.setString(1, guild.getId());
+            statement.setLong(1, guild.getIdLong());
 
             String[] codeStrings = new String[invites.size()];
             for (int i = 0; i < invites.size(); i++) {

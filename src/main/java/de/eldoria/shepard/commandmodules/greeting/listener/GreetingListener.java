@@ -2,7 +2,6 @@ package de.eldoria.shepard.commandmodules.greeting.listener;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.greeting.data.GreetingData;
 import de.eldoria.shepard.commandmodules.greeting.data.InviteData;
 import de.eldoria.shepard.commandmodules.greeting.types.DatabaseInvite;
@@ -13,20 +12,21 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.modulebuilder.requirements.ReqStatistics;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Invite;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+@Slf4j
 public class GreetingListener extends ListenerAdapter implements ReqShardManager, ReqDataSource, ReqStatistics, ReqInit {
 
     private GreetingData greetingData;
@@ -42,14 +42,7 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
     }
 
     private void handleGreeting(GuildMemberJoinEvent event) {
-        GreetingSettings greeting = greetingData.getGreeting(event.getGuild());
-
-        if (greeting == null) return;
-        if (greeting.getChannel() == null) return;
-        Optional<TextChannel> textChannel = ArgumentParser.getTextChannel(event.getGuild(),
-                greeting.getChannel().getId());
-
-        if (textChannel.isEmpty()) return;
+        @Nullable GreetingSettings greeting = greetingData.getGreeting(event.getGuild());
 
         ImmutableMap<String, Invite> serverInvites = Maps.uniqueIndex(
                 event.getGuild().retrieveInvites().complete(), Invite::getCode);
@@ -71,15 +64,32 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
             diffInvites.add(entry.getValue());
         }
 
-        if (diffInvites.isEmpty()){
+        if (greeting != null && greeting.getPrivateMessage() != null) {
+            event.getUser().openPrivateChannel().queue(c -> c.sendMessage(greeting.getPrivateMessage()).queue(), e -> log.error("Could not send greeting message.", e));
+        }
+
+        if (greeting != null && greeting.getRole() != null) {
+            if (event.getGuild().getSelfMember().canInteract(greeting.getRole())) {
+                event.getGuild().addRoleToMember(event.getMember(), greeting.getRole()).queue();
+            }
+        }
+
+        if (diffInvites.isEmpty() && greeting != null) {
             //If no invite was found.
-            MessageSender.sendGreeting(event, greeting, null, textChannel.get());
+            MessageSender.sendGreeting(event, greeting, null);
             return;
         }
 
         DatabaseInvite databaseInvite = diffInvites.get(0);
+        if (greeting != null) {
+            MessageSender.sendGreeting(event, greeting, databaseInvite.getSource());
+        }
 
-        MessageSender.sendGreeting(event, greeting, databaseInvite.getSource(), textChannel.get());
+        if (databaseInvite.getRole() != null) {
+            if (event.getGuild().getSelfMember().canInteract(databaseInvite.getRole())) {
+                event.getGuild().addRoleToMember(event.getMember(), databaseInvite.getRole()).queue();
+            }
+        }
 
         // Update all invited which differ. Because why not. Better safe than sorry.
         for (DatabaseInvite invite : diffInvites) {

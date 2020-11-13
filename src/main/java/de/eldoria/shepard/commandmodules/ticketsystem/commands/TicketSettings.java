@@ -10,6 +10,7 @@ import de.eldoria.shepard.commandmodules.ticketsystem.data.TicketData;
 import de.eldoria.shepard.commandmodules.ticketsystem.util.TicketHelper;
 import de.eldoria.shepard.commandmodules.ticketsystem.util.TicketType;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
+import de.eldoria.shepard.localization.util.Replacement;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
@@ -165,7 +166,7 @@ public class TicketSettings extends Command implements Executable, ReqParser, Re
 
         for (Role role : validRoles) {
             if (!wrapper.getGuild().get().getSelfMember().canInteract(role)) {
-                MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, role.getAsMention());
+                MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, Replacement.createMention(role));
                 return;
             }
         }
@@ -217,7 +218,7 @@ public class TicketSettings extends Command implements Executable, ReqParser, Re
         for (Member member : members) {
             Role role = TicketHelper.removeAndUpdateTicketRoles(ticketData, parser, wrapper, member, typeOwnerRoles);
             if (role != null) {
-                MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, role.getAsMention());
+                MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, Replacement.createMention(role));
                 return;
             }
         }

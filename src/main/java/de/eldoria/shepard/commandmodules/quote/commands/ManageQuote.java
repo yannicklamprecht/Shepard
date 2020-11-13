@@ -180,14 +180,14 @@ public class ManageQuote extends QuoteCommand implements ExecutableAsync, ReqDat
                     public boolean invoke(EventWrapper wrapper, Message message) {
                         String content = message.getContentRaw();
                         if (quote == null) {
-                            if ("none".equalsIgnoreCase(content)) {
+                            if ("skip".equalsIgnoreCase(content)) {
                                 quote = "";
                             }
                             MessageSender.sendLocalized("command.manageQuote.dialog.edit.source", messageContext);
                             return false;
                         }
 
-                        if (!"none".equalsIgnoreCase(content)) {
+                        if (!"skip".equalsIgnoreCase(content)) {
                             source = content;
                         }
                         quoteData.alterQuote(wrapper.getGuild().get(), quoteId, quote.isBlank() ? null : quote, source, messageContext);

@@ -1,5 +1,6 @@
 package de.eldoria.shepard.commandmodules.greeting.commands;
 
+import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
@@ -8,45 +9,37 @@ import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.greeting.data.InviteData;
 import de.eldoria.shepard.commandmodules.greeting.types.DatabaseInvite;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
+import de.eldoria.shepard.localization.util.Replacement;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
+import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
 
 import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.AD_CODE;
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.A_CODE;
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.A_INVITE_NAME;
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.C_ADD_INVITE;
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.C_REFRESH_INVITES;
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.C_REMOVE_INVITE;
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.C_SHOW_INVITES;
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_ADDED_INVITE;
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_CODE;
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_INVITE_NAME;
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_REGISTERED_INVITES;
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_REMOVED_INVITE;
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_REMOVED_NON_EXISTENT_INVITES;
-import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.M_USAGE_COUNT;
+import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeByWrapper;
 import static java.lang.System.lineSeparator;
 
 @CommandUsage(EventContext.GUILD)
-public class InviteDetection extends Command implements Executable, ReqDataSource {
+public class InviteDetection extends Command implements Executable, ReqDataSource, ReqParser {
 
-    private static final Pattern INVITE = Pattern.compile("([a-zA-Z0-9]{6,7})$");
+    private static final Pattern INVITE = Pattern.compile("([a-zA-Z0-9]{4,10})$");
 
     private InviteData inviteData;
+    private ArgumentParser parser;
 
     /**
      * Creates a new Invite command object.
@@ -67,6 +60,10 @@ public class InviteDetection extends Command implements Executable, ReqDataSourc
                                 Parameter.createCommand("refresh"))
                         .addSubcommand("command.invite.subcommand.showInvites",
                                 Parameter.createCommand("list"))
+                        .addSubcommand("command.invite.subcommand.setInviteRole",
+                                Parameter.createCommand("setInviteRole"),
+                                Parameter.createInput("command.invite.argument.codeOfInvite", "command.invite.argumentDescription.codeOfInvite", true),
+                                Parameter.createInput("command.general.argument.role", "command.general.argumentDescription.role", true))
                         .build(),
                 CommandCategory.ADMIN);
     }
@@ -75,22 +72,59 @@ public class InviteDetection extends Command implements Executable, ReqDataSourc
     @Override
     public void execute(String label, String[] args, EventWrapper wrapper) {
         String cmd = args[0];
-        if (isSubCommand(cmd, 0)) {
+        if (isSubCommand(cmd, "add")) {
             addInvite(args, wrapper);
             return;
         }
-        if (isSubCommand(cmd, 1)) {
+        if (isSubCommand(cmd, "remove")) {
             removeInvite(args, wrapper);
             return;
         }
-        if (isSubCommand(cmd, 2)) {
+        if (isSubCommand(cmd, "refresh")) {
             refreshInvites(wrapper);
             return;
         }
-        if (isSubCommand(cmd, 3)) {
+        if (isSubCommand(cmd, "list")) {
             listInvites(wrapper);
             return;
         }
+        if (isSubCommand(cmd, "setInviteRole")) {
+            setInviteRole(args, wrapper);
+            return;
+        }
+    }
+
+    private void setInviteRole(String[] args, EventWrapper wrapper) {
+        String code = getCode(args[1]);
+        if (code == null) {
+            MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, wrapper);
+            return;
+        }
+
+        if ("none".equalsIgnoreCase(args[2])) {
+            if (inviteData.setInviteRole(wrapper.getGuild().get(), code, null, wrapper)) {
+                MessageSender.sendLocalized("command.invite.messages.removedInviteRole",
+                        wrapper, Replacement.create("CODE", code));
+            }
+            return;
+        }
+
+        Optional<Role> role = parser.getRole(wrapper.getGuild().get(), args[2]);
+
+        if (role.isPresent()) {
+            if (!wrapper.getSelfMember().get().canInteract(role.get())) {
+                MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, Replacement.createMention(role.get()));
+                return;
+            }
+
+            if (inviteData.setInviteRole(wrapper.getGuild().get(), code, role.get(), wrapper)) {
+                MessageSender.sendLocalized("command.invite.messages.setInviteRole",
+                        wrapper, Replacement.createMention(role.get()), Replacement.create("CODE", code));
+            }
+        } else {
+            MessageSender.sendSimpleError(ErrorType.INVALID_ROLE, wrapper);
+        }
+
     }
 
     private void listInvites(EventWrapper wrapper) {
@@ -103,10 +137,15 @@ public class InviteDetection extends Command implements Executable, ReqDataSourc
         TextFormatting.TableBuilder tableBuilder = TextFormatting.getTableBuilder(
                 invites, TextLocalizer.localizeAll(M_CODE.tag, wrapper),
                 TextLocalizer.localizeAll(M_USAGE_COUNT.tag, wrapper),
-                TextLocalizer.localizeAll(M_INVITE_NAME.tag, wrapper));
+                TextLocalizer.localizeAll(M_INVITE_NAME.tag, wrapper),
+                TextLocalizer.localizeByWrapper("command.general.argument.role", wrapper));
         for (DatabaseInvite invite : invites) {
             tableBuilder.next();
-            tableBuilder.setRow(invite.getCode(), invite.getUses() + "", invite.getSource());
+            tableBuilder.setRow(
+                    invite.getCode(),
+                    String.valueOf(invite.getUses()),
+                    invite.getSource(),
+                    invite.getRole() != null ? invite.getRole().getName() : localizeByWrapper("words.disabled", wrapper));
         }
         message.append(tableBuilder);
         MessageSender.sendMessage(message.toString(), wrapper.getMessageChannel());
@@ -145,11 +184,11 @@ public class InviteDetection extends Command implements Executable, ReqDataSourc
             return;
         }
 
-        Matcher matcher = INVITE.matcher(args[1]);
-        if (!matcher.find()) {
+        String code = getCode(args[1]);
+        if (code == null) {
             MessageSender.sendSimpleError(ErrorType.NO_INVITE_FOUND, wrapper);
+            return;
         }
-        String code = matcher.group(1);
 
 
         wrapper.getGuild().get().retrieveInvites().queue(invites -> {
@@ -171,8 +210,22 @@ public class InviteDetection extends Command implements Executable, ReqDataSourc
         });
     }
 
+    private String getCode(String code) {
+        Matcher matcher = INVITE.matcher(code);
+        if (!matcher.find()) {
+            return null;
+        }
+        return matcher.group(1);
+
+    }
+
     @Override
     public void addDataSource(DataSource source) {
         inviteData = new InviteData(source);
+    }
+
+    @Override
+    public void addParser(ArgumentParser parser) {
+        this.parser = parser;
     }
 }

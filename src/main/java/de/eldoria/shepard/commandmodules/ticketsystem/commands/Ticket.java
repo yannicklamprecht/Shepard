@@ -13,6 +13,7 @@ import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.localization.enums.commands.admin.TicketLocale;
 import de.eldoria.shepard.localization.util.LocalizedField;
+import de.eldoria.shepard.localization.util.Replacement;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -136,7 +137,7 @@ public class Ticket extends Command implements Executable, ReqParser, ReqDataSou
                     ticketData.getTypeOwnerRoles(wrapper.getGuild().get(), type.getKeyword(), wrapper));
             Role role = TicketHelper.removeAndUpdateTicketRoles(ticketData, parser, wrapper, member, roles);
             if (role != null) {
-                MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, role.getAsMention());
+                MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, Replacement.createMention(role));
                 return;
             }
         }
@@ -275,7 +276,7 @@ public class Ticket extends Command implements Executable, ReqParser, ReqDataSou
                     //Assign ticket support and owner roles
                     for (Role role : ownerRoles) {
                         if (!wrapper.getGuild().get().getSelfMember().canInteract(role)) {
-                            MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, role.getAsMention());
+                            MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, Replacement.createMention(role));
                             return;
                         }
                         wrapper.getGuild().get().addRoleToMember(member, role).queue();
@@ -283,7 +284,7 @@ public class Ticket extends Command implements Executable, ReqParser, ReqDataSou
 
                     for (Role role : supportRoles) {
                         if (!wrapper.getGuild().get().getSelfMember().canInteract(role)) {
-                            MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, role.getAsMention());
+                            MessageSender.sendSimpleError(ErrorType.HIERARCHY_EXCEPTION, wrapper, Replacement.createMention(role));
                             return;
                         }
                         manager.getChannel().upsertPermissionOverride(role)

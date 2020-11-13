@@ -17,27 +17,28 @@ public class DialogHandler {
     /**
      * Invoke a dialog in this context.
      *
-     * @param event   message event
+     * @param wrapper   message event
      * @param message message of member
      * @return true if a dialog was invoked.
      */
-    public boolean invoke(EventWrapper event, Message message) {
+    public boolean invoke(EventWrapper wrapper, Message message) {
         String content = message.getContentRaw();
-        ISnowflake guild = event.getGuild().isPresent() ? event.getGuild().get() : FAKE;
-        MessageChannel channel = event.getMessageChannel();
-        User actor = event.getActor();
+        ISnowflake guild = wrapper.getGuild().isPresent() ? wrapper.getGuild().get() : FAKE;
+        MessageChannel channel = wrapper.getMessageChannel();
+        User actor = wrapper.getActor();
         if ("exit".equalsIgnoreCase(content) || "cancel".equalsIgnoreCase(content)) {
             if (removeDialog(guild, channel, actor)) {
-                MessageSender.sendLocalized("dialog.canceled", event);
+                MessageSender.sendLocalized("dialog.canceled", wrapper);
                 return true;
             }
             return false;
         }
 
-        Dialog dialog = getDialog(event);
+        Dialog dialog = getDialog(wrapper);
         if (dialog != null) {
-            if (dialog.invoke(event, message)) {
+            if (dialog.invoke(wrapper, message)) {
                 removeDialog(guild, channel, actor);
+                MessageSender.sendLocalized("dialog.done", wrapper);
             }
             return true;
         }

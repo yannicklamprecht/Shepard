@@ -1,9 +1,14 @@
 package de.eldoria.shepard.commandmodules.greeting.types;
 
+import lombok.Getter;
+import net.dv8tion.jda.api.entities.Role;
+
+@Getter
 public class DatabaseInvite {
     private final String code;
     private final int usedCount;
     private final String source;
+    private final Role role;
 
     /**
      * Creates a new database invite object.
@@ -11,11 +16,13 @@ public class DatabaseInvite {
      * @param code      Code of the invite.
      * @param usedCount Count of usage of invite
      * @param source    source or name of the invite
+     * @param role      role which should be assigned for this invite if present.
      */
-    public DatabaseInvite(String code, int usedCount, String source) {
+    public DatabaseInvite(String code, int usedCount, String source, Role role) {
         this.code = code;
         this.usedCount = usedCount;
         this.source = source;
+        this.role = role;
     }
 
     /**

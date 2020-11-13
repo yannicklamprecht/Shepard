@@ -182,7 +182,9 @@ public enum ErrorType {
     /**
      * Used when the unban fails.
      */
-    FAILED_UNBAN("error.failedUnban");
+    FAILED_UNBAN("error.failedUnban"),
+    TEXT_TOO_LONG("error.textTooLong"),
+    LOW_ROLE_RANK("error.lowRoleRank");
 
 
     /**

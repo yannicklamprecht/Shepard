@@ -5,6 +5,7 @@ import de.eldoria.shepard.commandmodules.greeting.types.GreetingSettings;
 import de.eldoria.shepard.core.configuration.Config;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
+import de.eldoria.shepard.localization.util.Replacement;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.util.FileHelper;
 import de.eldoria.shepard.util.Replacer;
@@ -18,13 +19,15 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.File;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
-import static de.eldoria.shepard.localization.util.TextLocalizer.*;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeByWrapper;
 import static java.lang.System.lineSeparator;
 
 @Slf4j
@@ -128,36 +131,19 @@ public final class MessageSender {
     }
 
     /**
-     * Sends a simple error with predefined error messages.
-     *
-     * @param type    error type
-     * @param wrapper channel
-     */
-    public static void sendSimpleError(ErrorType type, EventWrapper wrapper) {
-        if (type.isEmbed && wrapper.getGuild().isPresent()) {
-            sendSimpleErrorEmbed(localizeAll(type.taggedMessage, wrapper), wrapper.getMessageChannel());
-        } else if (type.isEmbed) {
-            sendSimpleErrorEmbed(localizeAllByChannel(type.taggedMessage, wrapper.getMessageChannel()), wrapper.getMessageChannel());
-        } else {
-
-            sendMessage(type.taggedMessage, wrapper.getMessageChannel());
-        }
-    }
-
-    /**
      * Sends a simple error with predefined error messages. Can also replace placeholders in the error message.
      *
      * @param type         error type
      * @param wrapper      channel
      * @param replacements String replacements for localization
      */
-    public static void sendSimpleError(ErrorType type, EventWrapper wrapper, String... replacements) {
+    public static void sendSimpleError(ErrorType type, EventWrapper wrapper, Replacement... replacements) {
         if (type.isEmbed && wrapper.getGuild().isPresent()) {
-            sendSimpleErrorEmbed(localizeAllAndReplace(type.taggedMessage, wrapper, replacements), wrapper.getMessageChannel());
+            sendSimpleErrorEmbed(localizeByWrapper(type.taggedMessage, wrapper, replacements), wrapper.getMessageChannel());
         } else if (type.isEmbed) {
-            sendSimpleErrorEmbed(localizeAllAndReplace(type.taggedMessage, wrapper, replacements), wrapper.getMessageChannel());
+            sendSimpleErrorEmbed(localizeByWrapper(type.taggedMessage, wrapper, replacements), wrapper.getMessageChannel());
         } else {
-            sendMessage(localizeAllAndReplace(type.taggedMessage, wrapper, replacements), wrapper.getMessageChannel());
+            sendMessage(localizeByWrapper(type.taggedMessage, wrapper, replacements), wrapper.getMessageChannel());
         }
     }
 
@@ -218,26 +204,39 @@ public final class MessageSender {
      * Sends a greeting text.
      *
      * @param event    event to log
-     * @param channel  channel to log
      * @param source   invite source
      * @param greeting Greeting object
      */
     public static void sendGreeting(GuildMemberJoinEvent event, GreetingSettings greeting,
-                                    String source, TextChannel channel) {
+                                    String source) {
+        if (greeting.getChannel() == null) return;
+        sendGreeting(event.getUser(), greeting, source, greeting.getChannel());
+    }
+
+    /**
+     * Sends a greeting text.
+     *
+     * @param channel  channel to log
+     * @param source   invite source
+     * @param greeting Greeting object
+     */
+    public static void sendGreeting(User user, GreetingSettings greeting,
+                                    String source, @NotNull TextChannel channel) {
         EmbedBuilder builder = new EmbedBuilder();
         if (source != null) {
             builder.setFooter("Joined via " + source);
         }
-        User user = event.getUser();
-        String message = Replacer.applyUserPlaceholder(user, greeting.getText());
-        builder.addField(event.getUser().getAsTag(),
+            builder.setTimestamp(Instant.now());
+        String message = Replacer.applyUserPlaceholder(user, greeting.getMessage());
+        builder.addField(user.getAsTag(),
                 message, true)
                 .setColor(Color.green)
-                .setThumbnail(event.getUser().getAvatarUrl() == null
+                .setThumbnail(user.getAvatarUrl() == null
                         ? ShepardReactions.EXCITED.thumbnail
-                        : event.getUser().getAvatarUrl());
+                        : user.getAvatarUrl());
         channel.sendMessage(builder.build()).queue();
     }
+
 
     /**
      * Log a command to the command log channel.
@@ -329,7 +328,7 @@ public final class MessageSender {
         });
     }
 
-    public static void sendLocalized(String message, EventWrapper wrapper) {
-        wrapper.getMessageChannel().sendMessage(TextLocalizer.localizeByWrapper(message, wrapper)).queue();
+    public static void sendLocalized(String message, EventWrapper wrapper, Replacement... replacements) {
+        wrapper.getMessageChannel().sendMessage(TextLocalizer.localizeByWrapper(message, wrapper, replacements)).queue();
     }
 }

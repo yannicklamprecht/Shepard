@@ -2,14 +2,7 @@ package de.eldoria.shepard.wrapper;
 
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.MessageReaction;
-import net.dv8tion.jda.api.entities.PrivateChannel;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -309,6 +302,13 @@ public class EventWrapper {
     public Optional<Member> getMember() {
         if (guild == null) return Optional.empty();
         return Optional.ofNullable(guild.getMember(actor));
+    }
+
+    public Optional<Member> getSelfMember() {
+        if (isGuildEvent()) {
+            return Optional.ofNullable(getGuild().get().getMember(getJDA().getSelfUser()));
+        }
+        return Optional.empty();
     }
 
 }
