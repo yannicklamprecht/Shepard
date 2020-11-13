@@ -211,12 +211,11 @@ public class ManageQuote extends QuoteCommand implements ExecutableAsync, ReqDat
             quotes = quoteData.getQuotes(messageContext.getGuild().get(), messageContext);
         }
 
-        if (quotes.size() == 0) {
+        if (quotes.isEmpty()) {
             MessageSender.sendMessage(M_NO_QUOTES.tag, messageContext.getMessageChannel());
         }
         for (QuoteElement quote : quotes) {
-            String message = "**" + quote.getQuoteId() + "** -> " + quote.getQuote() + lineSeparator();
-            MessageSender.sendMessage(message, messageContext.getMessageChannel());
+            sendQuote(messageContext.getMessageChannel(), quote);
             // wait a bit
             Thread.sleep(1000);
         }

@@ -239,7 +239,7 @@ BEGIN
                         q.created,
                         q.edited
                  FROM shepard_func.get_quotes((SELECT guild_id FROM shepard_data.quotes WHERE quote_id = _quote_id)) q
-                 WHERE orig_id = _quote_id;
+                 WHERE q.orig_id = _quote_id;
 
 END
 $$;

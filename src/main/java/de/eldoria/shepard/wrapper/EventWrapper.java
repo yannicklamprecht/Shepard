@@ -106,8 +106,8 @@ public class EventWrapper {
             messageById = event.getChannel().retrieveMessageById(event.getMessageId()).complete();
         } catch (RuntimeException e) {
             WrappingException wrappingException = new WrappingException(event, e.getCause());
-            log.error("Error while wrapping a event.", wrappingException);
-            log.error("Caused by", e);
+            // log.error("Error while wrapping a event.", wrappingException);
+            // log.error("Caused by", e);
             return new EventWrapper(event.getJDA(), EventContext.GUILD, event.getChannel(), event.getMessageIdLong(),
                     event.getMessageId(), event.getUser(), null, event.getGuild(), event.getReaction(), event.getReactionEmote());
         }
@@ -122,8 +122,8 @@ public class EventWrapper {
             messageById = event.getChannel().retrieveMessageById(event.getMessageId()).complete();
         } catch (RuntimeException e) {
             WrappingException wrappingException = new WrappingException(event, e.getCause());
-            log.error("Error while wrapping a event.", wrappingException);
-            log.error("Caused by", e);
+            //log.error("Error while wrapping a event.", wrappingException);
+            //log.error("Caused by", e);
             return new EventWrapper(event.getJDA(), EventContext.GUILD, event.getChannel(), event.getMessageIdLong(),
                     event.getMessageId(), event.getUser(), null, null, event.getReaction(),
                     event.getReactionEmote());
