@@ -7,7 +7,6 @@ import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.TailpatLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
@@ -36,11 +35,11 @@ public class Tailpat extends Command implements Executable, ReqParser {
     public Tailpat() {
         super("tailpat",
                 null,
-                TailpatLocale.DESCRIPTION.tag,
+                "command.tailpat.description",
                 SubCommand.builder("tailpat")
-                        .addSubcommand(TailpatLocale.C_SOMEONE.tag,
-                                Parameter.createInput(GeneralLocale.A_USER.tag,
-                                        GeneralLocale.AD_USER.tag, true))
+                        .addSubcommand("command.tailpat.command.someone",
+                                Parameter.createInput("command.general.argument.user",
+                                        "command.general.argumentDescription.user", true))
                         .build(),
                 CommandCategory.FUN);
     }

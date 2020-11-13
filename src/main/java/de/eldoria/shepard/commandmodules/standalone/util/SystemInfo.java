@@ -39,7 +39,7 @@ public class SystemInfo extends Command implements ExecutableAsync, ReqShardMana
     public SystemInfo() {
         super("systemInfo",
                 new String[] {"system"},
-                DESCRIPTION.tag,
+                "command.systemInfo.description",
                 CommandCategory.UTIL);
     }
 

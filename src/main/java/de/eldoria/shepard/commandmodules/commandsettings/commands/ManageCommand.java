@@ -21,22 +21,7 @@ import javax.sql.DataSource;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_COMMAND_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_SECONDS;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_COMMAND_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_SECONDS;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_ADMIN;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_GUILD_COOLDOWN;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_NSFW;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.C_USER_COOLDOWN;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_ACTIVATED_ADMIN;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_ACTIVATED_NSFW;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_DEACTIVATED_ADMIN;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_DEACTIVATED_NSFW;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_SET_GUILD_COOLDOWN;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.M_SET_USER_COOLDOWN;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextLocale.*;
 
 /**
  * Manage the basic settings of a registered and active {@link Command}.
@@ -52,25 +37,25 @@ public class ManageCommand extends Command implements Executable, ReqParser, Req
      */
     public ManageCommand() {
         super("manageCommand",
-                new String[] {"mc"},
-                DESCRIPTION.tag,
+                new String[]{"mc"},
+                "command.manageContext.description",
                 SubCommand.builder("manageCommand")
-                        .addSubcommand(C_NSFW.tag,
+                        .addSubcommand("command.manageContext.subcommand.setNsfw",
                                 Parameter.createCommand("setNsfw"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
-                                Parameter.createInput(A_BOOLEAN.tag, null, true))
-                        .addSubcommand(C_ADMIN.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true),
+                                Parameter.createInput("command.general.argument.boolean", null, true))
+                        .addSubcommand("command.manageContext.subcommand.setAdminOnly",
                                 Parameter.createCommand("setAdminOnly"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
-                                Parameter.createInput(A_BOOLEAN.tag, null, true))
-                        .addSubcommand(C_USER_COOLDOWN.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true),
+                                Parameter.createInput("command.general.argument.boolean", null, true))
+                        .addSubcommand("command.manageContext.subcommand.setUserCooldown",
                                 Parameter.createCommand("setUserCooldown"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
-                                Parameter.createInput(A_SECONDS.tag, AD_SECONDS.tag, true))
-                        .addSubcommand(C_GUILD_COOLDOWN.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true),
+                                Parameter.createInput("command.general.argument.seconds", "command.general.argumentDescription.seconds", true))
+                        .addSubcommand("command.manageContext.subcommand.setGuildCooldown",
                                 Parameter.createCommand("setGuildCooldown"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
-                                Parameter.createInput(A_SECONDS.tag, AD_SECONDS.tag, true))
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true),
+                                Parameter.createInput("command.general.argument.seconds", "command.general.argumentDescription.seconds", true))
                         .build(),
                 CommandCategory.BOT_CONFIG);
     }

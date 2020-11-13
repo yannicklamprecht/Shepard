@@ -7,7 +7,6 @@ import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.SayLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.EventContext;
@@ -28,10 +27,10 @@ public class Say extends Command implements Executable {
     public Say() {
         super("say",
                 new String[] {"sayd"},
-                DESCRIPTION.tag,
+                "command.say.description",
                 SubCommand.builder("say")
                         .addSubcommand(null,
-                                Parameter.createInput(GeneralLocale.A_MESSAGE.tag, A_SAY.tag, true))
+                                Parameter.createInput("command.general.argument.message", "command.say.argument.say", true))
                         .build(),
                 CommandCategory.FUN);
     }

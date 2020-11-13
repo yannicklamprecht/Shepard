@@ -14,8 +14,8 @@ public class LocalizedField {
      * @param eventWrapper message context for language detection
      */
     public LocalizedField(String title, String description, boolean inline, EventWrapper eventWrapper) {
-        field = new MessageEmbed.Field(TextLocalizer.localizeAll(title, eventWrapper),
-                TextLocalizer.localizeAll(description, eventWrapper),
+        field = new MessageEmbed.Field(TextLocalizer.localizeByWrapper(title, eventWrapper),
+                TextLocalizer.localizeByWrapper(description, eventWrapper),
                 inline);
     }
 

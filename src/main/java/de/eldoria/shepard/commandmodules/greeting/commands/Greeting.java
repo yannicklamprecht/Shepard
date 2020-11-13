@@ -19,20 +19,9 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
-
 import java.util.Optional;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CHANNEL_MENTION_OR_EXECUTE;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_MESSAGE_MENTION;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_MESSAGE;
-import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.C_REMOVE_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.C_SET_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.C_SET_MESSAGE;
-import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.M_REMOVED_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.M_SET_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.M_SET_MESSAGE;
+import static de.eldoria.shepard.localization.enums.commands.admin.GreetingsLocale.*;
 
 /**
  * Command to configure the greeting message and channel.
@@ -50,16 +39,16 @@ public class Greeting extends Command implements Executable, ReqShardManager, Re
     public Greeting() {
         super("greeting",
                 null,
-                DESCRIPTION.tag,
+                "command.greeting.description",
                 SubCommand.builder("greeting")
-                        .addSubcommand(C_SET_CHANNEL.tag,
+                        .addSubcommand("command.greeting.subcommand.setChannel",
                                 Parameter.createCommand("setChannel"),
-                                Parameter.createInput(A_CHANNEL.tag, AD_CHANNEL_MENTION_OR_EXECUTE.tag, false))
-                        .addSubcommand(C_REMOVE_CHANNEL.tag,
+                                Parameter.createInput("command.general.argument.channel", "command.general.argumentDescription.channelMentionOrExecution", false))
+                        .addSubcommand("command.greeting.subcommand.removeChannel",
                                 Parameter.createCommand("removeChannel"))
-                        .addSubcommand(C_SET_MESSAGE.tag,
+                        .addSubcommand("command.greeting.subcommand.setMessage",
                                 Parameter.createCommand("setMessage"),
-                                Parameter.createInput(A_MESSAGE.tag, AD_MESSAGE_MENTION.tag, true))
+                                Parameter.createInput("command.general.argument.message", "command.general.argumentDescription.messageMention", true))
                         .build(),
                 CommandCategory.ADMIN);
     }

@@ -22,7 +22,7 @@ public class Home extends Command implements Executable {
     public Home() {
         super("home",
                 new String[] {"normandy", "support"},
-                DESCRIPTION.tag,
+                "command.home.description",
                 CommandCategory.UTIL);
     }
 

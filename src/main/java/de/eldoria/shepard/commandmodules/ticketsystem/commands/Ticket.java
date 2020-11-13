@@ -11,7 +11,6 @@ import de.eldoria.shepard.commandmodules.ticketsystem.util.TicketHelper;
 import de.eldoria.shepard.commandmodules.ticketsystem.util.TicketType;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.WordsLocale;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.admin.TicketLocale;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.util.TextLocalizer;
@@ -72,17 +71,17 @@ public class Ticket extends Command implements Executable, ReqParser, ReqDataSou
     public Ticket() {
         super("ticket",
                 new String[] {"t"},
-                DESCRIPTION.tag,
+                "command.ticket.description",
                 SubCommand.builder("ticket")
                         .addSubcommand(C_OPEN.tag,
                                 Parameter.createCommand("open"),
-                                Parameter.createInput(A_TICKET_TYPE.tag, AD_TICKET_TYPE.tag, true),
-                                Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true))
+                                Parameter.createInput("command.ticket.argument.ticketType", "command.ticket.argumentDescription.ticketType", true),
+                                Parameter.createInput("command.general.argument.user", "command.general.argumentDescription.user", true))
                         .addSubcommand(C_CLOSE.tag,
                                 Parameter.createCommand("close"))
                         .addSubcommand(C_INFO.tag,
                                 Parameter.createCommand("info"),
-                                Parameter.createInput(A_TICKET_TYPE.tag, A_INFO.tag, false))
+                                Parameter.createInput("command.ticket.argument.ticketType", "command.ticket.argument.info", false))
                         .build(),
                 CommandCategory.ADMIN);
     }

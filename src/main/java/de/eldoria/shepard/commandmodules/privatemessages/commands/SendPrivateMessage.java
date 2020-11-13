@@ -9,7 +9,6 @@ import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.privatemessages.util.PrivateMessageHelper;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.core.util.Normandy;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqNormandy;
@@ -18,10 +17,6 @@ import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.User;
-
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_USER;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USER;
-import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.MESSAGE_DESCRIPTION;
 
 /**
  * Command which makes it possible to send private messages as the bot.
@@ -37,11 +32,11 @@ public class SendPrivateMessage extends Command implements Executable, ReqParser
     public SendPrivateMessage() {
         super("privateMessage",
                 new String[] {"pm", "sendMessage"},
-                MESSAGE_DESCRIPTION.tag,
+                "command.privateMessage.description",
                 SubCommand.builder("privateMessage")
                         .addSubcommand(null,
-                                Parameter.createInput(GeneralLocale.A_MESSAGE.tag, null, true),
-                                Parameter.createInput(A_USER.tag, AD_USER.tag, true))
+                                Parameter.createInput("command.general.argument.message", null, true),
+                                Parameter.createInput("command.general.argument.user", "command.general.argumentDescription.user", true))
                         .build(),
                 CommandCategory.EXCLUSIVE
         );

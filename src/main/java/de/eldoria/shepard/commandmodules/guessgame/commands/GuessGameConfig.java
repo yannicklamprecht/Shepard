@@ -21,24 +21,10 @@ import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.EmbedBuilder;
 
 import javax.sql.DataSource;
-import java.awt.Color;
+import java.awt.*;
 import java.io.File;
 
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.AD_FLAG;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.AD_URL;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.A_FLAG;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.A_URL;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.C_ADD_IMAGE;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.C_CANCEL_REGISTRATION;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.C_CHANGE_FLAG;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.C_REMOVE_IMAGE;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.C_SHOW_IMAGE_SET;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_CHANGED_FLAG;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_DISPLAY_IMAGE;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_REGISTRATION_CANCELED;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_REMOVED_IMAGE;
-import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.M_STARTED_REGISTRATION;
+import static de.eldoria.shepard.localization.enums.commands.admin.GuessGameConfigLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**
@@ -59,23 +45,23 @@ public class GuessGameConfig extends Command implements ExecutableAsync, ReqData
      */
     public GuessGameConfig(ImageRegister register) {
         super("guessGameConfig",
-                new String[] {"ggconfig"},
-                DESCRIPTION.tag,
+                new String[]{"ggconfig"},
+                "command.guessGameConfig.description",
                 SubCommand.builder("guessGameConfig")
-                        .addSubcommand(C_ADD_IMAGE.tag,
+                        .addSubcommand("command.guessGameConfig.subcommand.addImage",
                                 Parameter.createCommand("addImage"),
-                                Parameter.createInput(A_FLAG.tag, AD_FLAG.tag, true))
-                        .addSubcommand(C_REMOVE_IMAGE.tag,
+                                Parameter.createInput("command.guessGameConfig.argument.flag", "command.guessGameConfig.argumentDescription.flag", true))
+                        .addSubcommand("command.guessGameConfig.subcommand.removeImage",
                                 Parameter.createCommand("removeImage"),
-                                Parameter.createInput(A_URL.tag, AD_URL.tag, true))
-                        .addSubcommand(C_CHANGE_FLAG.tag,
+                                Parameter.createInput("command.general.argument.url", "command.guessGameConfig.argumentDescription.url", true))
+                        .addSubcommand("command.guessGameConfig.subcommand.changeFlag",
                                 Parameter.createCommand("changeFlag"),
-                                Parameter.createInput(A_URL.tag, AD_URL.tag, true),
-                                Parameter.createInput(A_FLAG.tag, AD_FLAG.tag, true))
-                        .addSubcommand(C_SHOW_IMAGE_SET.tag,
+                                Parameter.createInput("command.general.argument.url", "command.guessGameConfig.argumentDescription.url", true),
+                                Parameter.createInput("command.guessGameConfig.argument.flag", "command.guessGameConfig.argumentDescription.flag", true))
+                        .addSubcommand("command.guessGameConfig.subcommand.showImageSet",
                                 Parameter.createCommand("showImageSet"),
-                                Parameter.createInput(A_URL.tag, AD_URL.tag, true))
-                        .addSubcommand(C_CANCEL_REGISTRATION.tag,
+                                Parameter.createInput("command.general.argument.url", "command.guessGameConfig.argumentDescription.url", true))
+                        .addSubcommand("command.guessGameConfig.subcommand.cancelRegistration",
                                 Parameter.createCommand("cancelRegistration"))
                         .build(),
                 CommandCategory.ADMIN);

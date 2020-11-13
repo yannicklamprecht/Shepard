@@ -6,10 +6,10 @@ public class Slap extends Reaction {
 
     public Slap() {
         super("slap",
-                null, 
-                ReactionLocale.DESCRIPTION_SLAP.tag, 
-                ReactionLocale.C_SLAP_OTHER.tag,
-                ReactionLocale.C_SLAP.tag);
+                null,
+                "command.reaction.description.slap",
+                "command.reaction.command.otherSlap",
+                "command.reaction.command.slap");
     }
 
     @Override

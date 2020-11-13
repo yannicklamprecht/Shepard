@@ -13,11 +13,7 @@ import de.eldoria.shepard.database.types.Rank;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
-import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
-import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
-import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
+import de.eldoria.shepard.modulebuilder.requirements.*;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.EventContext;
@@ -29,20 +25,7 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.OptionalInt;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_AMOUNT;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_USER;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USER;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.A_POINTS;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.C_EMPTY;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.C_GIVE;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.C_TOP;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.C_TOP_GLOBAL;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_DESCRIPTION_EXTENDED;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_DESCRIPTION_GENERAL;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_GLOBAL_RANKING;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_RECEIVED_KUDOS;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.M_SERVER_RANKING;
+import static de.eldoria.shepard.localization.enums.commands.fun.KudosLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
@@ -61,19 +44,19 @@ public class Kudos extends Command implements Executable, ReqShardManager, ReqPa
      */
     public Kudos() {
         super("kudo",
-                new String[] {"kudos"},
-                DESCRIPTION.tag,
+                new String[]{"kudos"},
+                "command.kudos.description",
                 SubCommand.builder("kudo")
-                        .addSubcommand(C_GIVE.tag,
+                        .addSubcommand("command.kudos.subcommand.give",
                                 Parameter.createCommand("give"),
-                                Parameter.createInput(A_USER.tag, AD_USER.tag, true),
-                                Parameter.createInput(A_POINTS.tag, AD_AMOUNT.tag, true))
-                        .addSubcommand(C_TOP.tag,
+                                Parameter.createInput("command.general.argument.user", "command.general.argumentDescription.user", true),
+                                Parameter.createInput("command.kudos.argument.points", "command.general.argumentDescription.amount", true))
+                        .addSubcommand("command.kudos.subcommand.top",
                                 Parameter.createCommand("top"))
-                        .addSubcommand(C_TOP_GLOBAL.tag,
+                        .addSubcommand("command.kudos.subcommand.topGlobal",
                                 Parameter.createCommand("topGlobal"))
                         .build(),
-                C_EMPTY.tag,
+                "command.kudos.subcommand.empty",
                 CommandCategory.FUN);
     }
 

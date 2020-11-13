@@ -8,7 +8,6 @@ import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
 import de.eldoria.shepard.commandmodules.registerPrefix.data.RegisterPrefixData;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.moderation.RegisterPrefixLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
@@ -32,13 +31,13 @@ public class RegisterPrefix extends Command implements ExecutableAsync, ReqInit,
     public RegisterPrefix(){
         super("externalPrefix",
                 new String[] {"ep", "prefix"},
-                RegisterPrefixLocale.DESCRIPTION.tag,
+                "command.prefix.subcommand.description",
                 SubCommand.builder("externalPrefix")
-                        .addSubcommand(RegisterPrefixLocale.ADD.tag, Parameter.createCommand("add"),
-                                Parameter.createInput(GeneralLocale.A_TEXT.tag, null, true))
-                        .addSubcommand(RegisterPrefixLocale.REMOVE.tag, Parameter.createCommand("remove"),
-                                Parameter.createInput(GeneralLocale.A_TEXT.tag, null, true))
-                        .addSubcommand(RegisterPrefixLocale.LIST.tag, Parameter.createCommand("list"))
+                        .addSubcommand("command.prefix.subcommand.add", Parameter.createCommand("add"),
+                                Parameter.createInput("command.general.argument.message", null, true))
+                        .addSubcommand("command.prefix.subcommand.remove", Parameter.createCommand("remove"),
+                                Parameter.createInput("command.general.argument.message", null, true))
+                        .addSubcommand("command.prefix.subcommand.list", Parameter.createCommand("list"))
                     .build(),
                 CommandCategory.MODERATION
         );

@@ -1,7 +1,6 @@
-package de.eldoria.shepard.commandmodules.standalone.fun;
+package de.eldoria.shepard.commandmodules.standalone.fun.percentcommands;
 
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
-import de.eldoria.shepard.localization.enums.commands.fun.CuteLocale;
 import de.eldoria.shepard.wrapper.EventContext;
 import net.dv8tion.jda.api.entities.Member;
 
@@ -20,10 +19,10 @@ public class Cute extends AbstractPercentCommand {
     public Cute() {
         super("cute",
                 null,
-                CuteLocale.DESCRIPTION.tag,
-                CuteLocale.C_OTHER.tag,
-                CuteLocale.C_EMPTY.tag,
-                CuteLocale.OTHER.tag);
+                "command.cute.description",
+                "command.cute.other",
+                "command.cute.empty",
+                "command.cute.outputOther");
     }
 
     @Override

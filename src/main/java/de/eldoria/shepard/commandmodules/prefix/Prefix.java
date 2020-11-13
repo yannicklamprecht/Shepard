@@ -40,12 +40,12 @@ public class Prefix extends Command implements Executable, ReqConfig, ReqDataSou
     public Prefix() {
         super("prefix",
                 null,
-                DESCRIPTION.tag,
+                "command.prefix.description",
                 SubCommand.builder("prefix")
-                        .addSubcommand(C_SET.tag,
+                        .addSubcommand("command.prefix.subcommand.set",
                                 Parameter.createCommand("set"),
-                                Parameter.createInput(A_PREFIX.tag, AD_PREFIX.tag, true))
-                        .addSubcommand(C_RESET.tag,
+                                Parameter.createInput("command.prefix.argument.prefix", "command.prefix.argumentDescription.prefix", true))
+                        .addSubcommand("command.prefix.subcommand.reset",
                                 Parameter.createCommand("reset")).build(),
                 CommandCategory.ADMIN);
     }

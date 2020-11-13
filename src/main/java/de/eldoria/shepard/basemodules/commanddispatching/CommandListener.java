@@ -1,5 +1,6 @@
 package de.eldoria.shepard.basemodules.commanddispatching;
 
+import de.eldoria.shepard.basemodules.commanddispatching.dialogue.DialogHandler;
 import de.eldoria.shepard.basemodules.commanddispatching.util.ExecutionValidator;
 import de.eldoria.shepard.basemodules.reactionactions.ReactionActionCollection;
 import de.eldoria.shepard.basemodules.reactionactions.actions.ExecuteCommand;
@@ -14,12 +15,7 @@ import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.messagehandler.ShepardReactions;
-import de.eldoria.shepard.modulebuilder.requirements.ReqCommands;
-import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
-import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
-import de.eldoria.shepard.modulebuilder.requirements.ReqExecutionValidator;
-import de.eldoria.shepard.modulebuilder.requirements.ReqReactionAction;
-import de.eldoria.shepard.modulebuilder.requirements.ReqStatistics;
+import de.eldoria.shepard.modulebuilder.requirements.*;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -33,25 +29,24 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.sql.DataSource;
-import java.awt.Color;
+import java.awt.*;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_COMMAND_NOT_FOUND;
-import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_HELP_COMMAND;
-import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_SUGGESTION;
+import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.*;
 
 @Slf4j
 public class CommandListener extends ListenerAdapter
-        implements ReqCommands, ReqExecutionValidator, ReqReactionAction, ReqDataSource, ReqConfig, ReqStatistics {
+        implements ReqCommands, ReqExecutionValidator, ReqReactionAction, ReqDataSource, ReqConfig, ReqStatistics, ReqDialogHandler {
     private CommandHub commands;
     private ExecutionValidator executionValidator;
     private ReactionActionCollection reactionAction;
     private PrefixData prefixData;
     private Config config;
     private Statistics statistics;
+    private DialogHandler dialogHandler;
 
     /**
      * Create a new command listener.
@@ -98,7 +93,12 @@ public class CommandListener extends ListenerAdapter
         String[] args = receivedMessage.split(" ");
 
         // Check if message is command
-        if (!isCommand(receivedMessage, args, eventWrapper)) return;
+        if (!isCommand(receivedMessage, args, eventWrapper)) {
+            if (eventWrapper.getMessage().isPresent()) {
+                dialogHandler.invoke(eventWrapper, eventWrapper.getMessage().get());
+            }
+            return;
+        }
 
         statistics.commandDispatched(eventWrapper.getJDA());
 
@@ -127,7 +127,7 @@ public class CommandListener extends ListenerAdapter
         if (searchAndSendSuggestion(eventWrapper, args, label, prefix)) return;
 
         MessageSender.sendError(config,
-                new LocalizedField[] {
+                new LocalizedField[]{
                         new LocalizedField(M_COMMAND_NOT_FOUND.tag, TextLocalizer.localizeAllAndReplace(M_HELP_COMMAND.tag,
                                 eventWrapper, "`" + prefix + "help`"), false, eventWrapper)},
                 eventWrapper);
@@ -229,6 +229,11 @@ public class CommandListener extends ListenerAdapter
     @Override
     public void addStatistics(Statistics statistics) {
         this.statistics = statistics;
+    }
+
+    @Override
+    public void addDialogHandler(DialogHandler dialogHandler) {
+        this.dialogHandler = dialogHandler;
     }
 }
 

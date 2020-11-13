@@ -63,15 +63,15 @@ public class GuessGame extends Command implements Executable, ReqShardManager, R
     public GuessGame(ChannelEvaluator<GuessGameEvaluator> evaluator) {
         super("guessGame",
                 new String[] {"gg", "nsfwornot"},
-                GuessGameLocale.DESCRIPTION.tag,
+                "command.guessGame.description",
                 SubCommand.builder("guessGame")
-                        .addSubcommand(C_SCORE.tag,
+                        .addSubcommand("command.guessGame.subcommand.score",
                                 Parameter.createCommand("score"))
-                        .addSubcommand(C_SCORE_GLOBAL.tag,
+                        .addSubcommand("command.guessGame.subcommand.globalScore",
                                 Parameter.createCommand("scoreGlobal"))
-                        .addSubcommand(C_TOP.tag,
+                        .addSubcommand("command.guessGame.subcommand.top",
                                 Parameter.createCommand("top"))
-                        .addSubcommand(C_TOP_GLOBAL.tag,
+                        .addSubcommand("command.guessGame.subcommand.topGlobal",
                                 Parameter.createCommand("topGlobal"))
                         .build(),
                 C_START.tag,

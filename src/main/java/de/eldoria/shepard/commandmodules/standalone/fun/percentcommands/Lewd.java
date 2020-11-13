@@ -1,27 +1,16 @@
-package de.eldoria.shepard.commandmodules.standalone.fun;
+package de.eldoria.shepard.commandmodules.standalone.fun.percentcommands;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
-import de.eldoria.shepard.commandmodules.argument.Parameter;
-import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
-import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.LewdLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
-import de.eldoria.shepard.messagehandler.ErrorType;
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.Colors;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
-import lombok.SneakyThrows;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -36,9 +25,9 @@ public class Lewd extends AbstractPercentCommand {
     public Lewd() {
         super("lewd",
                 new String[] {"pure"},
-                LewdLocale.DESCRIPTION.tag,
-                LewdLocale.C_OTHER.tag,
-                LewdLocale.C_EMPTY.tag,
+                "command.pure.description",
+                "command.pure.other",
+                "command.pure.empty",
                 null);
     }
 

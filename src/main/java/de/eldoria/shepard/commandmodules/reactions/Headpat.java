@@ -7,9 +7,9 @@ public class Headpat extends Reaction {
     public Headpat() {
         super("headpat",
                 new String[] {"pat"},
-                ReactionLocale.DESCRIPTION_HEADPAT.tag,
-                ReactionLocale.C_HEADPAT_OTHER.tag,
-                ReactionLocale.C_HEADPAT.tag);
+                "command.reaction.description.headpat",
+                "command.reaction.command.otherHeadpat",
+                "command.reaction.command.headpat");
     }
 
     @Override

@@ -4,6 +4,7 @@ import de.eldoria.shepard.ShepardBot;
 import de.eldoria.shepard.basemodules.MessageListener;
 import de.eldoria.shepard.basemodules.commanddispatching.CommandHub;
 import de.eldoria.shepard.basemodules.commanddispatching.CooldownManager;
+import de.eldoria.shepard.basemodules.commanddispatching.dialogue.DialogHandler;
 import de.eldoria.shepard.basemodules.commanddispatching.util.ArgumentParser;
 import de.eldoria.shepard.basemodules.commanddispatching.util.ExecutionValidator;
 import de.eldoria.shepard.core.ShepardCollections;
@@ -34,11 +35,13 @@ public final class SharedResources implements ReqAssigner {
     private final List<ListenerAdapter> listeners = new ArrayList<>();
     private CommandHub commandHub;
     private MessageListener messageListener;
+    private DialogHandler dialogHandler;
 
     private SharedResources(ShepardBot shepardBot, ShardManager shardManager, Config config) {
         this.shepardBot = shepardBot;
         this.shardManager = shardManager;
         this.config = config;
+        this.dialogHandler = new DialogHandler();
     }
 
     /**

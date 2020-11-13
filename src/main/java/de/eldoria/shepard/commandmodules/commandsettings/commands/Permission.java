@@ -11,7 +11,6 @@ import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.commandsettings.data.CommandData;
 import de.eldoria.shepard.commandmodules.commandsettings.types.ModifyType;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
@@ -34,29 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_PERMISSION;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_PERMISSION;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.AD_ROLE_AND_OR_USER;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.A_ROLE_AND_OR_USER;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_ACCESS_LIST;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_GRANT;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_INFO;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_REVOKE;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.C_SET_PERMISSION_OVERRIDE;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ACCESS_GRANTED;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ACCESS_REVOKED;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_INFO_TITLE;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_PERMISSION_REQUIRED;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ROLES_WITH_PERMISSION;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ROLE_ACCESS;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ROLE_ACCESS_GRANTED;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_ROLE_ACCESS_REVOKED;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_ACCESS;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_ACCESS_GRANTED;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_ACCESS_REVOKED;
-import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.M_USER_WITH_PERMISSION;
+import static de.eldoria.shepard.localization.enums.commands.admin.PermissionLocale.*;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_INSUFFICIENT_PERMISSION;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
@@ -72,27 +49,27 @@ public class Permission extends Command implements Executable, ReqParser, ReqExe
      */
     public Permission() {
         super("permission",
-                new String[] {"perm"},
-                DESCRIPTION.tag,
+                new String[]{"perm"},
+                "command.permission.description",
                 SubCommand.builder("permission")
-                        .addSubcommand(C_GRANT.tag,
+                        .addSubcommand("command.permission.subcommand.grant",
                                 Parameter.createCommand("grant"),
-                                Parameter.createInput(A_PERMISSION.tag, AD_PERMISSION.tag, true),
-                                Parameter.createInput(A_ROLE_AND_OR_USER.tag, AD_ROLE_AND_OR_USER.tag, true))
-                        .addSubcommand(C_REVOKE.tag,
+                                Parameter.createInput("command.general.argument.permission", "command.general.argumentDescription.permission", true),
+                                Parameter.createInput("command.permission.argument.userAndOrRole", "command.permission.argumentDescription.userAndOrRole", true))
+                        .addSubcommand("command.permission.subcommand.revoke",
                                 Parameter.createCommand("revoke"),
-                                Parameter.createInput(A_PERMISSION.tag, AD_PERMISSION.tag, true),
-                                Parameter.createInput(A_ROLE_AND_OR_USER.tag, AD_ROLE_AND_OR_USER.tag, true))
-                        .addSubcommand(C_ACCESS_LIST.tag,
+                                Parameter.createInput("command.general.argument.permission", "command.general.argumentDescription.permission", true),
+                                Parameter.createInput("command.permission.argument.userAndOrRole", "command.permission.argumentDescription.userAndOrRole", true))
+                        .addSubcommand("command.permission.subcommand.accessList",
                                 Parameter.createCommand("accessList"),
-                                Parameter.createInput(A_PERMISSION.tag, AD_PERMISSION.tag, true))
-                        .addSubcommand(C_SET_PERMISSION_OVERRIDE.tag,
+                                Parameter.createInput("command.general.argument.permission", "command.general.argumentDescription.permission", true))
+                        .addSubcommand("command.permission.subcommand.setPermissionOverride",
                                 Parameter.createCommand("setPermissionOverride"),
-                                Parameter.createInput(A_PERMISSION.tag, AD_PERMISSION.tag, true),
-                                Parameter.createInput(A_BOOLEAN.tag, null, true))
-                        .addSubcommand(C_INFO.tag,
+                                Parameter.createInput("command.general.argument.permission", "command.general.argumentDescription.permission", true),
+                                Parameter.createInput("command.general.argument.boolean", null, true))
+                        .addSubcommand("command.permission.subcommand.info",
                                 Parameter.createCommand("info"),
-                                Parameter.createInput(A_PERMISSION.tag, AD_PERMISSION.tag, true))
+                                Parameter.createInput("command.general.argument.permission", "command.general.argumentDescription.permission", true))
                         .build(),
                 CommandCategory.ADMIN);
     }
@@ -155,7 +132,7 @@ public class Permission extends Command implements Executable, ReqParser, ReqExe
         Guild guild = wrapper.getGuild().get();
 
         // Command
-        addCommandInfo(GeneralLocale.A_COMMAND_NAME.tag, false, command.getCommandIdentifier(), guild, embedBuilder);
+        addCommandInfo("command.general.argument.contextName", false, command.getCommandIdentifier(), guild, embedBuilder);
 
         // Full Access Permission
         addCommandInfo(PermissionLocale.M_FULL_ACCESS.tag, false, command.getCommandIdentifier()
@@ -190,7 +167,7 @@ public class Permission extends Command implements Executable, ReqParser, ReqExe
         if (!permission.endsWith("*")) {
             builder.append("> *").append(M_PERMISSION_REQUIRED).append("* `").append(requirePermission).append("`\n");
         }
-        builder.append("> *").append(GeneralLocale.A_PERMISSION).append("*: `").append(permission).append("`\n");
+        builder.append("> *$").append("command.general.argument.permission").append("$*: `").append(permission).append("`\n");
 
 
         if (requirePermission) {

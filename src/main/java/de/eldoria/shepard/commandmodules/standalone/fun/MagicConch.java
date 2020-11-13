@@ -5,17 +5,12 @@ import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale;
-import de.eldoria.shepard.localization.enums.commands.fun.WiseFoxLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
-import de.eldoria.shepard.localization.util.LocalizedField;
-import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.util.Colors;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
-import java.util.Collections;
 import java.util.Random;
 
 import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.ANSWER_NEGATIVE;
@@ -23,7 +18,6 @@ import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocal
 import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.ANSWER_POSITIVE;
 import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.DESCRIPTION;
 import static de.eldoria.shepard.localization.enums.commands.fun.MagicConchLocale.M_ANSWER;
-import static de.eldoria.shepard.localization.enums.commands.fun.SayLocale.A_SAY;
 
 
 /**
@@ -36,12 +30,12 @@ public class MagicConch extends Command implements Executable {
     public MagicConch() {
         super("magicConch",
                 new String[] {"conch"},
-                DESCRIPTION.tag,
+                "command.magicConch.description",
                 SubCommand.builder("conch")
                         .addSubcommand(null,
-                                Parameter.createInput(GeneralLocale.A_TEXT.tag, GeneralLocale.A_TEXT.tag, false))
+                                Parameter.createInput("command.general.argument.message", "command.general.argument.message", false))
                         .build(),
-                DESCRIPTION.tag,
+                "command.magicConch.description",
                 CommandCategory.FUN);
     }
 

@@ -15,27 +15,15 @@ import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.modulebuilder.requirements.ReqCommands;
-import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
-import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
-import de.eldoria.shepard.modulebuilder.requirements.ReqExecutionValidator;
-import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
+import de.eldoria.shepard.modulebuilder.requirements.*;
 import de.eldoria.shepard.util.Colors;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_COMMAND_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_COMMAND_NAME;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_INSUFFICIENT_PERMISSION;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
@@ -57,13 +45,13 @@ public class Help extends Command implements Executable, ReqCommands, ReqExecuti
      */
     public Help() {
         super("help",
-                new String[] {"sendhelp"},
-                HelpLocale.DESCRIPTION.tag,
+                new String[]{"sendhelp"},
+                "command.help.description",
                 SubCommand.builder("help")
-                        .addSubcommand(HelpLocale.A_COMMAND.tag,
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, false))
+                        .addSubcommand("command.help.subcommand.command",
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", false))
                         .build(),
-                HelpLocale.DESCRIPTION.tag,
+                "command.help.description",
                 CommandCategory.UTIL);
     }
 

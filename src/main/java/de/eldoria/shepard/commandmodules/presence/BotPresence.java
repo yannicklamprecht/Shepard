@@ -7,23 +7,12 @@ import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_TEXT;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_URL;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.A_TWITCH_URL;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.C_CLEAR;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.C_LISTENING;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.C_PLAYING;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.C_STREAMING;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.M_CLEAR;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.M_LISTENING;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.M_PLAYING;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.M_STREAMING;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.BotPresenceLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**
@@ -42,19 +31,19 @@ public class BotPresence extends Command implements Executable {
     public BotPresence(PresenceChanger presenceChanger) {
         super("presence",
                 null,
-                BotPresenceLocale.DESCRIPTION.tag,
+                "command.botPresence.description",
                 SubCommand.builder("presence")
-                        .addSubcommand(C_PLAYING.tag,
+                        .addSubcommand("command.botPresence.subcommand.playing",
                                 Parameter.createCommand("playing"),
-                                Parameter.createInput(A_TEXT.tag, null, true))
-                        .addSubcommand(C_STREAMING.tag,
+                                Parameter.createInput("command.general.argument.message", null, true))
+                        .addSubcommand("command.botPresence.subcommand.streaming",
                                 Parameter.createCommand("streaming"),
-                                Parameter.createInput(A_TEXT.tag, null, true),
-                                Parameter.createInput(A_URL.tag, A_TWITCH_URL.tag, true))
-                        .addSubcommand(C_LISTENING.tag,
+                                Parameter.createInput("command.general.argument.message", null, true),
+                                Parameter.createInput("command.general.argument.url", "command.botPresence.argument.twitchUrl", true))
+                        .addSubcommand("command.botPresence.subcommand.listening",
                                 Parameter.createCommand("listening"),
-                                Parameter.createInput(A_TEXT.tag, null, true))
-                        .addSubcommand(C_CLEAR.tag,
+                                Parameter.createInput("command.general.argument.message", null, true))
+                        .addSubcommand("command.botPresence.subcommand.clear",
                                 Parameter.createCommand("clear"))
                         .build(),
                 CommandCategory.BOT_CONFIG);

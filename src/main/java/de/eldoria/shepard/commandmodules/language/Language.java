@@ -43,14 +43,14 @@ public class Language extends Command implements Executable, ReqDataSource {
     public Language() {
         super("language",
                 null,
-                DESCRIPTION.tag,
+                "command.language.description",
                 SubCommand.builder("language")
-                        .addSubcommand(C_SET.tag,
+                        .addSubcommand("command.language.subcommand.set",
                                 Parameter.createCommand("set"),
-                                Parameter.createInput(A_LANGUAGE_CODE_FORMAT.tag, AD_LANGUAGE_CODE_FORMAT.tag, true))
-                        .addSubcommand(C_RESET.tag,
+                                Parameter.createInput("command.language.argument.languageCodeFormat", "command.language.argumentDescription.languageCodeFormat", true))
+                        .addSubcommand("command.language.subcommand.reset",
                                 Parameter.createCommand("reset"))
-                        .addSubcommand(C_LIST.tag,
+                        .addSubcommand("command.language.subcommand.list",
                                 Parameter.createCommand("list"))
                         .build(),
                 CommandCategory.ADMIN);

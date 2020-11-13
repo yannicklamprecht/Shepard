@@ -3,20 +3,7 @@ package de.eldoria.shepard.modulebuilder;
 import de.eldoria.shepard.basemodules.commanddispatching.CommandHub;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.SharedResources;
-import de.eldoria.shepard.modulebuilder.requirements.ReqCommands;
-import de.eldoria.shepard.modulebuilder.requirements.ReqConfig;
-import de.eldoria.shepard.modulebuilder.requirements.ReqCooldownManager;
-import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
-import de.eldoria.shepard.modulebuilder.requirements.ReqExecutionValidator;
-import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
-import de.eldoria.shepard.modulebuilder.requirements.ReqLatestCommands;
-import de.eldoria.shepard.modulebuilder.requirements.ReqNormandy;
-import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
-import de.eldoria.shepard.modulebuilder.requirements.ReqPrivateMessages;
-import de.eldoria.shepard.modulebuilder.requirements.ReqReactionAction;
-import de.eldoria.shepard.modulebuilder.requirements.ReqShepard;
-import de.eldoria.shepard.modulebuilder.requirements.ReqStatistics;
+import de.eldoria.shepard.modulebuilder.requirements.*;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public interface ReqAssigner {
@@ -93,6 +80,9 @@ public interface ReqAssigner {
         }
         if (object instanceof ReqStatistics) {
             ((ReqStatistics) object).addStatistics(resources.getStatistics());
+        }
+        if (object instanceof ReqDialogHandler) {
+            ((ReqDialogHandler) object).addDialogHandler(resources.getDialogHandler());
         }
         if (object instanceof ReqInit) {
             ((ReqInit) object).init();

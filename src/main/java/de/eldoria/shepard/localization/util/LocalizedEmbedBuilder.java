@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.time.temporal.TemporalAccessor;
 
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
+import static de.eldoria.shepard.localization.util.TextLocalizer.localizeByWrapper;
 
 /**
  * Wrapper for auto localization of embeds.
@@ -44,7 +45,7 @@ public class LocalizedEmbedBuilder extends EmbedBuilder {
     @Nonnull
     @Override
     public LocalizedEmbedBuilder addField(@Nullable String name, @Nullable String value, boolean inline) {
-        super.addField(localizeAll(name, messageContext), localizeAll(value, messageContext), inline);
+        super.addField(localizeByWrapper(name, messageContext), localizeByWrapper(value, messageContext), inline);
         return this;
     }
 
@@ -69,28 +70,28 @@ public class LocalizedEmbedBuilder extends EmbedBuilder {
     @Nonnull
     @Override
     public LocalizedEmbedBuilder setTitle(@Nullable String title) {
-        super.setTitle(localizeAll(title, messageContext));
+        super.setTitle(localizeByWrapper(title, messageContext));
         return this;
     }
 
     @Nonnull
     @Override
     public LocalizedEmbedBuilder setTitle(@Nullable String title, @Nullable String url) {
-        super.setTitle(localizeAll(title, messageContext), url);
+        super.setTitle(localizeByWrapper(title, messageContext), url);
         return this;
     }
 
     @Nonnull
     @Override
     public LocalizedEmbedBuilder setFooter(@Nullable String text) {
-        super.setFooter(localizeAll(text, messageContext));
+        super.setFooter(localizeByWrapper(text, messageContext));
         return this;
     }
 
     @Nonnull
     @Override
     public LocalizedEmbedBuilder setFooter(@Nullable String text, @Nullable String iconUrl) {
-        super.setFooter(localizeAll(text, messageContext), iconUrl);
+        super.setFooter(localizeByWrapper(text, messageContext), iconUrl);
         return this;
     }
 
@@ -101,14 +102,14 @@ public class LocalizedEmbedBuilder extends EmbedBuilder {
      * @return the builder after the description has been set
      */
     public LocalizedEmbedBuilder setDescription(String text) {
-        super.setDescription(localizeAll(text, messageContext));
+        super.setDescription(localizeByWrapper(text, messageContext));
         return this;
     }
 
     @Nonnull
     @Override
     public LocalizedEmbedBuilder appendDescription(@Nonnull CharSequence description) {
-        super.appendDescription(localizeAll(description.toString(), messageContext));
+        super.appendDescription(localizeByWrapper(description.toString(), messageContext));
         return this;
     }
 
@@ -157,21 +158,21 @@ public class LocalizedEmbedBuilder extends EmbedBuilder {
     @Nonnull
     @Override
     public LocalizedEmbedBuilder setAuthor(@Nullable String name) {
-        super.setAuthor(localizeAll(name, messageContext));
+        super.setAuthor(localizeByWrapper(name, messageContext));
         return this;
     }
 
     @Nonnull
     @Override
     public LocalizedEmbedBuilder setAuthor(@Nullable String name, @Nullable String url) {
-        super.setAuthor(localizeAll(name, messageContext), url);
+        super.setAuthor(localizeByWrapper(name, messageContext), url);
         return this;
     }
 
     @Nonnull
     @Override
     public LocalizedEmbedBuilder setAuthor(@Nullable String name, @Nullable String url, @Nullable String iconUrl) {
-        super.setAuthor(localizeAll(name, messageContext), url, iconUrl);
+        super.setAuthor(localizeByWrapper(name, messageContext), url, iconUrl);
         return this;
     }
 

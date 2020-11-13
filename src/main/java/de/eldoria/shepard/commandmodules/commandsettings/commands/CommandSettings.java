@@ -17,11 +17,7 @@ import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
-import de.eldoria.shepard.modulebuilder.requirements.ReqCommands;
-import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
-import de.eldoria.shepard.modulebuilder.requirements.ReqExecutionValidator;
-import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
-import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
+import de.eldoria.shepard.modulebuilder.requirements.*;
 import de.eldoria.shepard.util.TextFormatting;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
@@ -33,39 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CHANNELS;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_COMMAND_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_LIST_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CHANNELS;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_COMMAND_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_LIST_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.C_ADD_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.C_CHANNEL_LIST;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.C_DISABLE_CHANNEL_CHECK;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.C_DISABLE_COMMAND;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.C_ENABLE_CHANNEL_CHECK;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.C_ENABLE_COMMAND;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.C_REMOVE_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.C_SET_LIST_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.C_STATE_LIST;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_ADD_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_BLACKLIST;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_CAN_BE_USED_EVERYWHERE;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_CAN_BE_USED_IN_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_CAN_BE_USED_NOW;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_CAN_NOT_BE_USED_IN_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_CAN_NOT_BE_USED_NOW;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_CAN_NOT_DISABLE_COMMAND;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_CAN_NOT_ENABLE_CHANNEL_CHECK;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_CHANNEL_SETTINGS;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_CHECK_NOT_ACTIVE;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_DISABLED_CHANNEL_CHECK;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_DISABLED_COMMAND;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_ENABLED_CHANNEL_CHECK;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_ENABLED_COMMAND;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_REMOVED_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.M_WHITELIST;
+import static de.eldoria.shepard.localization.enums.commands.admin.CommandSettingsLocale.*;
 import static de.eldoria.shepard.localization.enums.listener.CommandListenerLocale.M_INSUFFICIENT_PERMISSION;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
@@ -84,38 +48,38 @@ public class CommandSettings extends Command implements ExecutableAsync, ReqPars
      */
     public CommandSettings() {
         super("commandSettings",
-                new String[] {"cSettings"},
-                DESCRIPTION.tag,
+                new String[]{"cSettings"},
+                "command.commandSettings.description",
                 SubCommand.builder("commandSettings")
-                        .addSubcommand(C_ENABLE_COMMAND.tag,
+                        .addSubcommand("command.commandSettings.subcommand.enableCommand",
                                 Parameter.createCommand("enable"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true))
-                        .addSubcommand(C_DISABLE_COMMAND.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true))
+                        .addSubcommand("command.commandSettings.subcommand.disableCommand",
                                 Parameter.createCommand("disable"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true))
-                        .addSubcommand(C_STATE_LIST.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true))
+                        .addSubcommand("command.commandSettings.subcommand.stateList",
                                 Parameter.createCommand("stateList"))
-                        .addSubcommand(C_ENABLE_CHANNEL_CHECK.tag,
+                        .addSubcommand("command.commandSettings.subcommand.enableChannelCheck",
                                 Parameter.createCommand("enableCheck"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true))
-                        .addSubcommand(C_DISABLE_CHANNEL_CHECK.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true))
+                        .addSubcommand("command.commandSettings.subcommand.disableChannelCheck",
                                 Parameter.createCommand("disableCheck"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true))
-                        .addSubcommand(C_SET_LIST_TYPE.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true))
+                        .addSubcommand("command.commandSettings.subcommand.setListType",
                                 Parameter.createCommand("setListType"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
-                                Parameter.createInput(A_LIST_TYPE.tag, AD_LIST_TYPE.tag, true))
-                        .addSubcommand(C_ADD_CHANNEL.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true),
+                                Parameter.createInput("command.general.argument.listType", "command.general.argumentDescription.listType", true))
+                        .addSubcommand("command.commandSettings.subcommand.addChannel",
                                 Parameter.createCommand("addChannel"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
-                                Parameter.createInput(A_CHANNELS.tag, AD_CHANNELS.tag, true))
-                        .addSubcommand(C_REMOVE_CHANNEL.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true),
+                                Parameter.createInput("command.general.argument.channels", "command.general.argumentDescription.channels", true))
+                        .addSubcommand("command.commandSettings.subcommand.removeChannel",
                                 Parameter.createCommand("removeChannel"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
-                                Parameter.createInput(A_CHANNELS.tag, AD_CHANNELS.tag, true))
-                        .addSubcommand(C_CHANNEL_LIST.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true),
+                                Parameter.createInput("command.general.argument.channels", "command.general.argumentDescription.channels", true))
+                        .addSubcommand("command.commandSettings.subcommand.channelList",
                                 Parameter.createCommand("channelList"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true))
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true))
                         .build(),
                 CommandCategory.ADMIN);
     }

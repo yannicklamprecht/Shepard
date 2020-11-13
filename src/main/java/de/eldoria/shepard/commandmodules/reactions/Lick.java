@@ -7,9 +7,9 @@ public class Lick extends Reaction {
     public Lick() {
         super("lick",
                 null,
-                ReactionLocale.DESCRIPTION_LICK.tag,
-                ReactionLocale.C_LICK_OTHER.tag,
-                ReactionLocale.C_LICK.tag);
+                "command.reaction.description.lick",
+                "command.reaction.command.otherLick",
+                "command.reaction.command.lick");
     }
 
     @Override

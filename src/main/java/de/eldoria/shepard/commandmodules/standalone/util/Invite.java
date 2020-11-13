@@ -27,7 +27,7 @@ public class Invite extends Command implements Executable {
     public Invite() {
         super("invite",
                 new String[] {"Iwantyou", "hireMe"},
-                DESCRIPTION.tag,
+                "command.hireMe.description",
                 CommandCategory.UTIL);
     }
 

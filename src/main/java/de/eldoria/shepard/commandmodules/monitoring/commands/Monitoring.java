@@ -10,7 +10,6 @@ import de.eldoria.shepard.commandmodules.monitoring.data.MonitoringData;
 import de.eldoria.shepard.commandmodules.monitoring.util.Address;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.WordsLocale;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -28,24 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CHANNEL_MENTION_OR_EXECUTE;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_NAME;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.AD_ADDRESS;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.A_ADDRESS;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.A_ADD_TEXT;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.C_ADD;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.C_DISABLE;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.C_ENABLE;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.C_LIST;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.C_REMOVE;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REGISTERED_ADDRESS;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REGISTERED_ADDRESSES;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REGISTERED_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REMOVED_ADDRESS;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.M_REMOVED_CHANNEL;
+import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
@@ -62,23 +44,23 @@ public class Monitoring extends Command implements Executable, ReqDataSource {
      */
     public Monitoring() {
         super("monitoring",
-                new String[] {"monitor"},
-                DESCRIPTION.tag,
+                new String[]{"monitor"},
+                "command.monitoring.description",
                 SubCommand.builder("monitoring")
-                        .addSubcommand(C_ADD.tag,
+                        .addSubcommand("command.monitoring.subcommand.add",
                                 Parameter.createCommand("add"),
-                                Parameter.createInput(A_ADDRESS.tag, AD_ADDRESS.tag, true),
-                                Parameter.createInput(A_NAME.tag, null, true),
-                                Parameter.createInput(A_BOOLEAN.tag, A_ADD_TEXT.tag, true))
-                        .addSubcommand(C_REMOVE.tag,
+                                Parameter.createInput("command.monitoring.argument.address", "command.monitoring.argumentDescription.address", true),
+                                Parameter.createInput("command.general.argument.name", null, true),
+                                Parameter.createInput("command.general.argument.boolean", "command.monitoring.argument.addText", true))
+                        .addSubcommand("command.monitoring.subcommand.remove",
                                 Parameter.createCommand("remove"),
-                                Parameter.createInput(GeneralLocale.A_ID.tag, GeneralLocale.AD_ID.tag, true))
-                        .addSubcommand(C_LIST.tag,
+                                Parameter.createInput("command.general.argument.id", "command.general.argumentDescription.id", true))
+                        .addSubcommand("command.monitoring.subcommand.list",
                                 Parameter.createCommand("list"))
-                        .addSubcommand(C_ENABLE.tag,
+                        .addSubcommand("command.monitoring.subcommand.enable",
                                 Parameter.createCommand("enable"),
-                                Parameter.createInput(A_CHANNEL.tag, AD_CHANNEL_MENTION_OR_EXECUTE.tag, false))
-                        .addSubcommand(C_DISABLE.tag,
+                                Parameter.createInput("command.general.argument.channel", "command.general.argumentDescription.channelMentionOrExecution", false))
+                        .addSubcommand("command.monitoring.subcommand.disable",
                                 Parameter.createCommand("disable"))
                         .build(),
                 CommandCategory.ADMIN);

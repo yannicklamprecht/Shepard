@@ -92,12 +92,12 @@ public class Saucenao extends Command implements ExecutableAsync, ReqConfig, Req
     public Saucenao() {
         super("sauce",
                 new String[] {"saucenao", "saucepls", "source", "sourcepls"},
-                DESCRIPTION.tag,
+                "command.sauce.description",
                 SubCommand.builder("sauce")
-                        .addSubcommand(C_BASE.tag,
-                                Parameter.createInput(A_LINK.tag, AD_LINK.tag, false))
+                        .addSubcommand("command.sauce.subCommand.base",
+                                Parameter.createInput("command.sauce.argument", "command.sauce.argumentDescription", false))
                         .build(),
-                C_STANDALONE.tag,
+                "command.sauce.subCommand.standalone",
                 CommandCategory.UTIL);
     }
 

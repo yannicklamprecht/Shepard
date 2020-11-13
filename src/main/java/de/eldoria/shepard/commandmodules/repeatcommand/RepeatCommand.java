@@ -10,8 +10,6 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqCommands;
 import de.eldoria.shepard.modulebuilder.requirements.ReqLatestCommands;
 import de.eldoria.shepard.wrapper.EventWrapper;
 
-import static de.eldoria.shepard.localization.enums.commands.admin.RepeatCommandLocale.DESCRIPTION;
-
 /**
  * Command to execute the last executed command.
  * Uses the {@link LatestCommandsCollection} to find the last used command.
@@ -25,8 +23,8 @@ public class RepeatCommand extends Command implements Executable, ReqLatestComma
      */
     public RepeatCommand() {
         super("repeatCommand",
-                new String[] {"repeat", "rc"},
-                DESCRIPTION.tag,
+                new String[]{"repeat", "rc"},
+                "command.repeatCommand.description",
                 null,
                 "",
                 CommandCategory.UTIL);

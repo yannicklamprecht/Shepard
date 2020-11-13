@@ -23,24 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_COMMAND_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_GUILDS;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_LIST_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_COMMAND_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_GUILDS;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_LIST_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.C_ADD_GUILD;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.C_REMOVE_GUILD;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.C_SET_ACTIVE;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.C_SET_LIST_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.M_ACTIVATED_CHECK;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.M_ADDED_GUILDS;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.M_CHANGED_LIST_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.M_DEACTIVATED_CHECK;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.M_REMOVED_GUILDS;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextGuildLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
+
 
 /**
  * Manage the guild settings of a registered and active {@link Command}.
@@ -55,25 +40,25 @@ public class ManageCommandGuild extends Command implements Executable, ReqParser
      */
     public ManageCommandGuild() {
         super("manageCommandGuild",
-                new String[] {"mcg"},
-                DESCRIPTION.tag,
+                new String[]{"mcg"},
+                "command.manageContextGuild.description",
                 SubCommand.builder("manageCommandGuild")
-                        .addSubcommand(C_SET_ACTIVE.tag,
+                        .addSubcommand("command.manageContextGuild.subcommand.setActive",
                                 Parameter.createCommand("setActive"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
-                                Parameter.createInput(A_BOOLEAN.tag, null, true))
-                        .addSubcommand(C_SET_LIST_TYPE.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true),
+                                Parameter.createInput("command.general.argument.boolean", null, true))
+                        .addSubcommand("command.manageContextGuild.subcommand.setListType",
                                 Parameter.createCommand("setListType"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
-                                Parameter.createInput(A_LIST_TYPE.tag, AD_LIST_TYPE.tag, true))
-                        .addSubcommand(C_ADD_GUILD.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true),
+                                Parameter.createInput("command.general.argument.listType", "command.general.argumentDescription.listType", true))
+                        .addSubcommand("command.manageContextGuild.subcommand.addGuild",
                                 Parameter.createCommand("addGuild"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
-                                Parameter.createInput(A_GUILDS.tag, AD_GUILDS.tag, true))
-                        .addSubcommand(C_REMOVE_GUILD.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true),
+                                Parameter.createInput("command.general.argument.guilds", "command.general.argumentDescription.guilds", true))
+                        .addSubcommand("command.manageContextGuild.subcommand.removeGuild",
                                 Parameter.createCommand("removeGuild"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
-                                Parameter.createInput(A_GUILDS.tag, AD_GUILDS.tag, true))
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true),
+                                Parameter.createInput("command.general.argument.guilds", "command.general.argumentDescription.guilds", true))
                         .build(),
                 CommandCategory.BOT_CONFIG);
     }

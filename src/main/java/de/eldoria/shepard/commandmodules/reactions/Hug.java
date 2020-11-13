@@ -7,9 +7,9 @@ public class Hug extends Reaction {
     public Hug() {
         super("hug",
                 null,
-                ReactionLocale.DESCRIPTION_HUG.tag,
-                ReactionLocale.C_HUG_OTHER.tag,
-                ReactionLocale.C_HUG.tag);
+                "command.reaction.description.hug",
+                "command.reaction.command.otherHug",
+                "command.reaction.command.hug");
     }
 
     @Override

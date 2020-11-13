@@ -15,10 +15,6 @@ import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.commands.fun.LargeEmoteLocale.AD_EMOTE;
-import static de.eldoria.shepard.localization.enums.commands.fun.LargeEmoteLocale.A_EMOTE;
-import static de.eldoria.shepard.localization.enums.commands.fun.LargeEmoteLocale.DESCRIPTION;
-
 /**
  * Command to get up to five emotes as the possible largest image.
  */
@@ -28,11 +24,11 @@ public class LargeEmote extends Command implements ExecutableAsync {
      */
     public LargeEmote() {
         super("largeEmote",
-                new String[] {"lemote"},
-                DESCRIPTION.tag,
+                new String[]{"lemote"},
+                "command.largeEmote.description",
                 SubCommand.builder("largeEmote")
                         .addSubcommand(null,
-                                Parameter.createInput(A_EMOTE.tag, AD_EMOTE.tag, true))
+                                Parameter.createInput("command.largeEmote.argument.emote", "command.largeEmote.argumentDescription.emote", true))
                         .build(),
                 CommandCategory.FUN);
     }

@@ -22,10 +22,10 @@ public class Google extends Command implements Executable {
                 new String[] {"ask", "yahoo", "bing", "startpage",
                         "aol", "duckduckgo", "duck", "quant",
                         "wikipedia", "lmgtfy", "mcseu", "reddit"},
-                GoogleLocale.DESCRIPTION.tag,
+                "command.google.description",
                 SubCommand.builder("query")
-                        .addSubcommand(GoogleLocale.C_SEARCH.tag,
-                                Parameter.createInput(GoogleLocale.A_SEARCH.tag, GoogleLocale.AD_SEARCH.tag, true))
+                        .addSubcommand("command.google.subCommand.search",
+                                Parameter.createInput("command.google.argument.search", "command.google.argumentDescription.search", true))
                         .build(),
                 CommandCategory.UTIL);
     }

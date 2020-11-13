@@ -13,7 +13,8 @@ import de.eldoria.shepard.commandmodules.prefix.PrefixData;
 import de.eldoria.shepard.commandmodules.repeatcommand.LatestCommandsCollection;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.core.configuration.Config;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
+import de.eldoria.shepard.localization.util.Format;
+import de.eldoria.shepard.localization.util.Replacement;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -175,8 +176,8 @@ public final class CommandHub implements ReqConfig, ReqLatestCommands, ReqExecut
         int currentCooldown = cooldownManager.getCurrentCooldown(command, wrapper);
         if (currentCooldown != 0) {
             try {
-                wrapper.getMessageChannel().sendMessage(TextLocalizer.localizeAllAndReplace(GeneralLocale.M_COOLDOWN.tag,
-                        wrapper, currentCooldown + "")).queue();
+                wrapper.getMessageChannel().sendMessage(TextLocalizer.localizeByWrapper("command.general.message.cooldown",
+                        wrapper, Replacement.create("cooldown", currentCooldown, Format.BOLD))).queue();
             } catch (InsufficientPermissionException ex) {
                 MessageSender.handlePermissionException(config, ex, wrapper);
             }
@@ -191,20 +192,6 @@ public final class CommandHub implements ReqConfig, ReqLatestCommands, ReqExecut
         MessageEmbed commandHelpEmbed = CommandUtil.getCommandHelpEmbed(command, wrapper, prefix);
 
         wrapper.getMessageChannel().sendMessage(commandHelpEmbed).queue();
-    }
-
-    /**
-     * Get the subcommand help.
-     *
-     * @param subCommands subcommand to process.
-     * @return subcommand help as preformatted string.
-     */
-    public List<String> getSubcommandHelp(SubCommand[] subCommands) {
-        List<String> subCommandsHelp = new ArrayList<>();
-        for (SubCommand subCommand : subCommands) {
-            subCommandsHelp.add(subCommand.getCommandPattern());
-        }
-        return subCommandsHelp;
     }
 
 

@@ -8,7 +8,6 @@ import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.WordsLocale;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.util.UserInfoLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.LocalizedField;
@@ -45,12 +44,12 @@ public class UserInfo extends Command implements Executable, ReqParser {
     public UserInfo() {
         super("userInfo",
                 new String[] {"aboutuser"},
-                UserInfoLocale.DESCRIPTION.tag,
+                "command.userInfo.description",
                 SubCommand.builder("userInfo")
                         .addSubcommand(null,
-                                Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true))
+                                Parameter.createInput("command.general.argument.user", "command.general.argumentDescription.user", true))
                         .build(),
-                UserInfoLocale.C_DEFAULT.tag,
+                "command.userInfo.command.default",
                 CommandCategory.UTIL);
     }
 

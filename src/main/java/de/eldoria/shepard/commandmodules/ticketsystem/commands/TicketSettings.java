@@ -16,11 +16,7 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.wrapper.EventContext;
 import de.eldoria.shepard.wrapper.EventWrapper;
-import net.dv8tion.jda.api.entities.Category;
-import net.dv8tion.jda.api.entities.IMentionable;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.*;
 
 import javax.sql.DataSource;
 import java.util.HashSet;
@@ -29,26 +25,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CATEGORY;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_MESSAGE_MENTION;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_ROLES;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CATEGORY;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_MESSAGE;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_ROLES;
 import static de.eldoria.shepard.localization.enums.commands.admin.TicketLocale.A_TICKET_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.C_CREATE_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.C_REMOVE_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.C_SET_CATEGORY;
-import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.C_SET_CREATION_MESSAGE;
-import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.C_SET_OWNER_ROLES;
-import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.C_SET_SUPPORT_ROLES;
-import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.M_CREATE_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.M_REMOVE_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.M_SET_CATEGORY;
-import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.M_SET_CREATION_MESSAGE;
-import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.M_SET_OWNER_ROLES;
-import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.M_SET_SUPPORT_ROLES;
+import static de.eldoria.shepard.localization.enums.commands.admin.TicketSettingsLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
@@ -65,32 +43,32 @@ public class TicketSettings extends Command implements Executable, ReqParser, Re
      */
     public TicketSettings() {
         super("ticketSettings",
-                new String[] {"ts"},
+                new String[]{"ts"},
                 DESCRIPTION.tag,
                 SubCommand.builder("ticketSettings")
                         .addSubcommand(C_CREATE_TYPE.tag,
                                 Parameter.createCommand("createType"),
                                 Parameter.createInput(A_TICKET_TYPE.tag, null, true),
-                                Parameter.createInput(A_CATEGORY.tag, AD_CATEGORY.tag, true))
+                                Parameter.createInput("command.general.argument.category", "command.general.argumentDescription.category", true))
                         .addSubcommand(C_REMOVE_TYPE.tag,
                                 Parameter.createCommand("removeType"),
                                 Parameter.createInput(A_TICKET_TYPE.tag, null, true))
                         .addSubcommand(C_SET_OWNER_ROLES.tag,
                                 Parameter.createCommand("setOwnerRoles"),
                                 Parameter.createInput(A_TICKET_TYPE.tag, null, true),
-                                Parameter.createInput(A_ROLES.tag, AD_ROLES.tag, true))
+                                Parameter.createInput("command.general.argument.roles", "command.general.argumentDescription.roles", true))
                         .addSubcommand(C_SET_SUPPORT_ROLES.tag,
                                 Parameter.createCommand("setSupportRoles"),
                                 Parameter.createInput(A_TICKET_TYPE.tag, null, true),
-                                Parameter.createInput(A_ROLES.tag, AD_ROLES.tag, true))
+                                Parameter.createInput("command.general.argument.roles", "command.general.argumentDescription.roles", true))
                         .addSubcommand(C_SET_CATEGORY.tag,
                                 Parameter.createCommand("setChannelCategory"),
                                 Parameter.createInput(A_TICKET_TYPE.tag, null, true),
-                                Parameter.createInput(A_CATEGORY.tag, AD_CATEGORY.tag, true))
+                                Parameter.createInput("command.general.argument.category", "command.general.argumentDescription.category", true))
                         .addSubcommand(C_SET_CREATION_MESSAGE.tag,
                                 Parameter.createCommand("setCreationMessage"),
                                 Parameter.createInput(A_TICKET_TYPE.tag, null, true),
-                                Parameter.createInput(A_MESSAGE.tag, AD_MESSAGE_MENTION.tag, true))
+                                Parameter.createInput("command.general.argument.message", "command.general.argumentDescription.messageMention", true))
                         .build(),
                 CommandCategory.ADMIN);
     }

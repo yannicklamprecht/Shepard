@@ -19,7 +19,7 @@ public class Vote extends Command implements Executable {
     public Vote() {
         super("vote",
                 null,
-                VoteLocale.DESCRIPTION.tag,
+                "command.vote.description",
                 CommandCategory.UTIL);
     }
 

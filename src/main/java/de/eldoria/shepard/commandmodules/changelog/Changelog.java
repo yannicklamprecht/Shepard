@@ -7,13 +7,12 @@ import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.WordsLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqDataSource;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
-import de.eldoria.shepard.wrapper.EventWrapper;
 import de.eldoria.shepard.wrapper.EventContext;
+import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -23,20 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_CHANNEL_MENTION_OR_EXECUTE;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_ROLE;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_CHANNEL;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.C_ACTIVATE;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.C_ADD_ROLE;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.C_DEACTIVATE;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.C_REMOVE_ROLE;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.C_ROLES;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_ACTIVATED;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_ADDED_ROLE;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_DEACTIVATED;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_LOGGED_ROLES;
-import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.M_REMOVED_ROLE;
+import static de.eldoria.shepard.localization.enums.commands.admin.ChangelogLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 import static java.lang.System.lineSeparator;
 
@@ -56,21 +42,21 @@ public class Changelog extends Command implements Executable, ReqParser, ReqData
      */
     public Changelog() {
         super("changelog",
-                new String[] {"log"},
-                DESCRIPTION.tag,
+                new String[]{"log"},
+                "command.changelog.description",
                 SubCommand.builder("changelog")
-                        .addSubcommand(C_ADD_ROLE.tag,
+                        .addSubcommand("command.changelog.subcommand.addRole",
                                 Parameter.createCommand("addRole"),
-                                Parameter.createInput(WordsLocale.ROLE.tag, AD_ROLE.tag, true))
-                        .addSubcommand(C_REMOVE_ROLE.tag,
+                                Parameter.createInput("words.role", "command.general.argumentDescription.role", true))
+                        .addSubcommand("command.changelog.subcommand.removeRole",
                                 Parameter.createCommand("removeRole"),
-                                Parameter.createInput(WordsLocale.ROLE.tag, AD_ROLE.tag, true))
-                        .addSubcommand(C_ACTIVATE.tag,
+                                Parameter.createInput("words.role", "command.general.argumentDescription.role", true))
+                        .addSubcommand("command.changelog.subcommand.activate",
                                 Parameter.createCommand("activate"),
-                                Parameter.createInput(A_CHANNEL.tag, AD_CHANNEL_MENTION_OR_EXECUTE.tag, false))
-                        .addSubcommand(C_DEACTIVATE.tag,
+                                Parameter.createInput("command.general.argument.channel", "command.general.argumentDescription.channelMentionOrExecution", false))
+                        .addSubcommand("command.changelog.subcommand.deactivate",
                                 Parameter.createCommand("deactivate"))
-                        .addSubcommand(C_ROLES.tag,
+                        .addSubcommand("command.changelog.subcommand.roles",
                                 Parameter.createCommand("roles"))
                         .build(),
                 CommandCategory.ADMIN

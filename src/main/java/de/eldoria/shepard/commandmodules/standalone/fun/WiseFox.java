@@ -5,7 +5,6 @@ import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.WiseFoxLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.util.Colors;
@@ -25,12 +24,12 @@ public class WiseFox extends Command implements Executable {
     public WiseFox() {
         super("wiseFox",
                 new String[] {"omniscientFox", "foxadvisor", "askFox"},
-                WiseFoxLocale.DESCRIPTION.tag,
+                "command.wiseFox.description",
                 SubCommand.builder("wiseFox")
                         .addSubcommand(null,
-                                Parameter.createInput(GeneralLocale.A_TEXT.tag, GeneralLocale.A_TEXT.tag, false))
+                                Parameter.createInput("command.general.argument.message", "command.general.argument.message", false))
                         .build(),
-                WiseFoxLocale.DESCRIPTION.tag,
+                "command.wiseFox.description",
                 CommandCategory.FUN);
     }
 

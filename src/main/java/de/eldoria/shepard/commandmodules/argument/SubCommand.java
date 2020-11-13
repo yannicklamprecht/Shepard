@@ -54,13 +54,13 @@ public final class SubCommand {
             if (p.isCommand()) {
                 params.add(p.getCommandName() + "|" + p.getShortCommand());
             } else {
-                params.add(p.isRequired() ? "<" + p.getInputName() + ">" : "[" + p.getInputName() + "]");
+                params.add(p.isRequired() ? "<$" + p.getInputName() + "$>" : "[$" + p.getInputName() + "$]");
                 if (p.getInputDescription() != null) {
                     paramsDescription.add(p.getInputDesc());
                 }
             }
         }
-        return (commandDescription != null ? "*__" + (commandDescription) + "__*\n" : "")
+        return (commandDescription != null ? "*__$" + (commandDescription) + "$__*\n" : "")
                 + "`{prefix}" + commandName + " " + String.join(" ", params) + "`"
                 + (paramsDescription.isEmpty() ? "" : "\n" + String.join("\n", paramsDescription));
     }

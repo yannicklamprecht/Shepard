@@ -7,9 +7,10 @@ import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
+import de.eldoria.shepard.messagehandler.ErrorType;
+import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqParser;
 import de.eldoria.shepard.util.Colors;
 import de.eldoria.shepard.util.Verifier;
@@ -35,8 +36,8 @@ public abstract class Reaction extends Command implements Executable, ReqParser 
         super(commandName, commandAliases, commandDesc,
                 SubCommand.builder(commandName).addSubcommand(
                         otherCommandTag,
-                        Parameter.createInput(GeneralLocale.A_USER.tag,
-                                GeneralLocale.AD_USER.tag, false))
+                        Parameter.createInput("command.general.argument.user",
+                                "command.general.argumentDescription.user", false))
                         .build(),
                 standaloneDescription, CommandCategory.FUN);
 
@@ -51,6 +52,10 @@ public abstract class Reaction extends Command implements Executable, ReqParser 
         String message = "";
         if (args.length != 0) {
             target = parser.getGuildMember(wrapper.getGuild().get(), args[0]);
+            if (target == null) {
+                MessageSender.sendSimpleError(ErrorType.INVALID_USER, wrapper);
+                return;
+            }
             message = TextLocalizer.localizeAllAndReplace(getOtherMessageLocaleCode(), wrapper,
                     wrapper.getActor().getAsMention(), target.getAsMention());
         }

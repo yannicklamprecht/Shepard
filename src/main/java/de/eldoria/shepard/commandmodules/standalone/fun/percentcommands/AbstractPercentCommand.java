@@ -1,4 +1,4 @@
-package de.eldoria.shepard.commandmodules.standalone.fun;
+package de.eldoria.shepard.commandmodules.standalone.fun.percentcommands;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -9,7 +9,6 @@ import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -46,8 +45,8 @@ public class AbstractPercentCommand extends Command implements Executable, ReqPa
                 commandDesc,
                 SubCommand.builder(commandName).addSubcommand(
                         commandLocale,
-                        Parameter.createInput(GeneralLocale.A_USER.tag,
-                                GeneralLocale.AD_USER.tag, false))
+                        Parameter.createInput("command.general.argument.user",
+                                "command.general.argumentDescription.user", false))
                         .build(),
                 standaloneDescription,
                 CommandCategory.FUN);

@@ -6,7 +6,6 @@ import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.MassEffectLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -33,12 +32,12 @@ public class MassEffect extends Command implements Executable {
     public MassEffect() {
         super("massEffect",
                 new String[] {"shepQuote"},
-                MassEffectLocale.DESCRIPTION.tag,
+                "command.massEffect.description",
                 SubCommand.builder("massEffect")
                         .addSubcommand(null,
-                                Parameter.createInput(GeneralLocale.A_KEYWORD.tag, GeneralLocale.AD_KEYWORD.tag, false))
+                                Parameter.createInput("command.general.argument.keyword", "command.general.argumentDescription.keyword", false))
                         .build(),
-                MassEffectLocale.DESCRIPTION.tag,
+                "command.massEffect.description",
                 CommandCategory.FUN);
 
         Yaml yaml = new Yaml(new Constructor(QuoteList.class));

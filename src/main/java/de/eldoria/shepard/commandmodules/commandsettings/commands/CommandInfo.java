@@ -19,9 +19,6 @@ import de.eldoria.shepard.wrapper.EventWrapper;
 import javax.sql.DataSource;
 import java.util.Optional;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_COMMAND_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_COMMAND_NAME;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ContextInfoLocale.DESCRIPTION;
 import static java.lang.System.lineSeparator;
 
 /**
@@ -38,11 +35,11 @@ public class CommandInfo extends Command implements Executable, ReqParser, ReqDa
      */
     public CommandInfo() {
         super("commandInfo",
-                new String[] {"cinfo"},
-                DESCRIPTION.tag,
+                new String[]{"cinfo"},
+                "command.contextInfo.description",
                 SubCommand.builder("commandInfo")
                         .addSubcommand(null,
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true))
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true))
                         .build(),
                 CommandCategory.BOT_CONFIG);
     }

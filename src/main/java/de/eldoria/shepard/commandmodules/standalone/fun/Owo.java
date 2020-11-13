@@ -18,7 +18,7 @@ public class Owo extends Command implements Executable {
     public Owo() {
         super("owo",
                 new String[] {"owod"},
-                OwoLocale.DESCRIPTION.tag,
+                "command.owo.description",
                 CommandCategory.FUN);
     }
 

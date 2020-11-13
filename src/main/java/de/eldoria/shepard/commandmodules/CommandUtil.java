@@ -5,7 +5,9 @@ import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
+import de.eldoria.shepard.util.Colors;
 import de.eldoria.shepard.wrapper.EventWrapper;
+import lombok.experimental.UtilityClass;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.awt.Color;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 import static de.eldoria.shepard.localization.enums.commands.CommandLocale.BASE_COMMAND;
 import static java.lang.System.lineSeparator;
 
+@UtilityClass
 public class CommandUtil {
     /**
      * Get the command help as a localized embed.
@@ -30,27 +33,27 @@ public class CommandUtil {
     public static MessageEmbed getCommandHelpEmbed(Command command, EventWrapper wrapper, String prefix) {
         LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper);
 
-        builder.setTitle("__**" + HelpLocale.M_HELP_FOR_COMMAND + " " + command.getCommandName() + "**__")
-                .setColor(Color.green);
+        builder.setTitle("__**$command.help.message.helpForCommand$ " + command.getCommandName() + "**__")
+                .setColor(Colors.Pastel.DARK_GREEN);
 
         builder.setDescription(command.getCommandDesc());
 
         // Build alias field
         if (command.getCommandAliases() != null && command.getCommandAliases().length != 0) {
-            builder.appendDescription(lineSeparator() + "__**" + HelpLocale.W_ALIASES + ":**__ "
+            builder.appendDescription(lineSeparator() + "__**$command.help.word.aliases$:**__ "
                     + String.join(", ", command.getCommandAliases()));
         }
 
         // Build main command field. Only present when command has a standalone function and subcommands.
         if (command.isStandalone() && command.getSubCommands().length != 0) {
             builder.addField("**__" + BASE_COMMAND.tag + "__**:",
-                    "**" + prefix + command.getCommandName() + "**\n" + command.getStandaloneDescription(), false);
+                    "**" + prefix + command.getCommandName() + "**\n$" + command.getStandaloneDescription() + "$", false);
         }
 
         // Build subcommand field.
         if (command.getSubCommands().length != 0) {
             List<String> subcommandHelp = getSubcommandHelp(command.getSubCommands()).stream()
-                    .map(s -> TextLocalizer.localizeAll(s, wrapper).replace("\n", "\n> "))
+                    .map(s -> TextLocalizer.localizeByWrapper(s, wrapper).replace("\n", "\n> "))
                     .collect(Collectors.toList());
             List<String> chunks = new ArrayList<>();
 

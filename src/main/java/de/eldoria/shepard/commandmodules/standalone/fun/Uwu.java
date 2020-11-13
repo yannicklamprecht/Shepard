@@ -19,7 +19,7 @@ public class Uwu extends Command implements Executable {
     public Uwu() {
         super("uwu",
                 new String[] {"uwud"},
-                DESCRIPTION.tag,
+                "command.uwu.description",
                 CommandCategory.FUN);
     }
 

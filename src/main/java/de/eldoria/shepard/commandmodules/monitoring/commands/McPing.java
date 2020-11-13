@@ -6,7 +6,6 @@ import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.monitoring.util.PingMinecraftServer;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.admin.McPingLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -15,14 +14,9 @@ import de.eldoria.shepard.util.AddressType;
 import de.eldoria.shepard.util.Verifier;
 import de.eldoria.shepard.wrapper.EventWrapper;
 
-import java.awt.Color;
+import java.awt.*;
 
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.AD_ADDRESS;
-import static de.eldoria.shepard.localization.enums.commands.admin.MonitoringLocale.A_ADDRESS;
-import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_PLAYER_COUNT;
-import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_SERVER_DOWN;
-import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_STATUS_OF;
-import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.M_VERSION;
+import static de.eldoria.shepard.localization.enums.scheduler.AnalyzerLocale.*;
 
 /**
  * the McPing command uses the {@link PingMinecraftServer.MinecraftPing}
@@ -36,10 +30,10 @@ public class McPing extends Command implements Executable {
     public McPing() {
         super("mcping",
                 null,
-                McPingLocale.DESCRIPTION.tag,
+                "command.mcping.description",
                 SubCommand.builder("mcping")
                         .addSubcommand(null,
-                                Parameter.createInput(A_ADDRESS.tag, AD_ADDRESS.tag, true))
+                                Parameter.createInput("command.monitoring.argument.address", "command.monitoring.argumentDescription.address", true))
                         .build(),
                 CommandCategory.ADMIN);
     }

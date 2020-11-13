@@ -6,11 +6,8 @@ import de.eldoria.shepard.commandmodules.argument.Parameter;
 import de.eldoria.shepard.commandmodules.argument.SubCommand;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.EventWrapper;
-
-import static de.eldoria.shepard.localization.enums.commands.util.GetRawLocale.DESCRIPTION;
 
 /**
  * A command for echoing messages in a raw format.
@@ -22,10 +19,10 @@ public class GetRaw extends Command implements Executable {
      */
     public GetRaw() {
         super("getRaw",
-                new String[] {"raw"},
-                DESCRIPTION.tag,
-                SubCommand.builder("getRaw").addSubcommand(DESCRIPTION.tag,
-                        Parameter.createInput(GeneralLocale.A_TEXT.tag, null, true))
+                new String[]{"raw"},
+                "command.getRaw.description",
+                SubCommand.builder("getRaw").addSubcommand("command.getRaw.description",
+                        Parameter.createInput("command.general.argument.message", null, true))
                         .build(),
                 CommandCategory.UTIL);
     }

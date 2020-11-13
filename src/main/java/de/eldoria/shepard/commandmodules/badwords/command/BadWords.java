@@ -8,7 +8,6 @@ import de.eldoria.shepard.commandmodules.badwords.data.BadWordData;
 import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.moderation.BadWordsLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.localization.util.TextLocalizer;
@@ -30,13 +29,13 @@ public class BadWords extends Command implements ExecutableAsync, ReqDataSource 
     public BadWords() {
         super("badwords",
                 new String[] {"bw"},
-                BadWordsLocale.DESCRIPTION.tag,
+                "command.badword.description",
                 SubCommand.builder("badwords")
-                        .addSubcommand(BadWordsLocale.C_ADD.tag, Parameter.createCommand("add"),
-                                Parameter.createInput(GeneralLocale.A_TEXT.tag, null, true))
-                        .addSubcommand(BadWordsLocale.C_REMOVE.tag, Parameter.createCommand("remove"),
-                                Parameter.createInput(GeneralLocale.A_TEXT.tag, null, true))
-                        .addSubcommand(BadWordsLocale.C_LIST.tag, Parameter.createCommand("list"))
+                        .addSubcommand("command.badword.subcommand.add", Parameter.createCommand("add"),
+                                Parameter.createInput("command.general.argument.message", null, true))
+                        .addSubcommand("command.badword.subcommand.remove", Parameter.createCommand("remove"),
+                                Parameter.createInput("command.general.argument.message", null, true))
+                        .addSubcommand("command.badword.subcommand.list", Parameter.createCommand("list"))
                         .build(),
                 CommandCategory.MODERATION
         );

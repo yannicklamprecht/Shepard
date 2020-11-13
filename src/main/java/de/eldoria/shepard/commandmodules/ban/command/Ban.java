@@ -10,7 +10,6 @@ import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
 import de.eldoria.shepard.commandmodules.modlog.data.ModLogData;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.moderation.BanLocale;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -37,27 +36,28 @@ public class Ban extends Command implements ExecutableAsync, ReqInit, ReqDataSou
 
     public Ban() {
         super("ban",
-                new String[] {"b"},
-                BanLocale.DESCRIPTION.tag,
-                SubCommand.builder("ban")
-                        .addSubcommand(BanLocale.C_PERMA.tag,
+                new String[]{"b"},
+                "command.ban.description",
+                SubCommand
+                        .builder("ban")
+                        .addSubcommand("command.ban.subcommand.perm",
                                 Parameter.createCommand("perma"),
-                                Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true),
-                                Parameter.createInput(BanLocale.A_REASON.tag, BanLocale.AD_REASON.tag, false),
-                                Parameter.createInput(BanLocale.A_PURGE.tag, BanLocale.AD_PURGE.tag, false)
+                                Parameter.createInput("command.general.argument.user", "command.general.argumentDescription.user", true),
+                                Parameter.createInput("command.ban.subcommand.argument.reason", "command.ban.subcommand.argumentDescription.reason", false),
+                                Parameter.createInput("command.ban.subcommand.argument.purge", "command.ban.subcommand.argumentDescription.purge", false)
                         )
-                        .addSubcommand(BanLocale.C_TEMP.tag,
+                        .addSubcommand("command.ban.subcommand.temp",
                                 Parameter.createCommand("temp"),
-                                Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true),
-                                Parameter.createInput(BanLocale.A_REASON.tag, BanLocale.AD_REASON.tag, false),
-                                Parameter.createInput(BanLocale.A_PURGE.tag, BanLocale.AD_PURGE.tag, false),
-                                Parameter.createInput(BanLocale.A_TIME.tag, GeneralLocale.AD_INTERVAL.tag, false)
+                                Parameter.createInput("command.general.argument.user", "command.general.argumentDescription.user", true),
+                                Parameter.createInput("command.ban.subcommand.argument.reason", "command.ban.subcommand.argumentDescription.reason", false),
+                                Parameter.createInput("command.ban.subcommand.argument.purge", "command.ban.subcommand.argumentDescription.purge", false),
+                                Parameter.createInput("command.ban.subcommand.argument.time", "command.reminder.argumentDescription.interval", false)
                         )
-                        .addSubcommand(BanLocale.C_SOFT.tag,
+                        .addSubcommand("command.ban.subcommand.soft",
                                 Parameter.createCommand("soft"),
-                                Parameter.createInput(GeneralLocale.A_USER.tag, GeneralLocale.AD_USER.tag, true),
-                                Parameter.createInput(BanLocale.A_REASON.tag, BanLocale.AD_REASON.tag, false),
-                                Parameter.createInput(BanLocale.A_PURGE.tag, BanLocale.AD_PURGE.tag, false)
+                                Parameter.createInput("command.general.argument.user", "command.general.argumentDescription.user", true),
+                                Parameter.createInput("command.ban.subcommand.argument.reason", "command.ban.subcommand.argumentDescription.reason", false),
+                                Parameter.createInput("command.ban.subcommand.argument.purge", "command.ban.subcommand.argumentDescription.purge", false)
                         )
                         .build(),
                 CommandCategory.MODERATION);

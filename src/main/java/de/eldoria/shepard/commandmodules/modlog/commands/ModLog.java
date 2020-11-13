@@ -8,7 +8,6 @@ import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.ExecutableAsync;
 import de.eldoria.shepard.commandmodules.modlog.data.ModLogData;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.moderation.ModLogLocale;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
@@ -31,11 +30,11 @@ public class ModLog extends Command implements ExecutableAsync, ReqDataSource, R
     public ModLog() {
         super("modlog",
                 new String[] {"ml"},
-                ModLogLocale.DESCRIPTION.tag,
+                "command.modLog.description",
                 SubCommand.builder("modlog")
-                        .addSubcommand(ModLogLocale.C_ENABLE.tag, Parameter.createCommand("enabled"),
-                                Parameter.createInput(GeneralLocale.A_CHANNEL.tag, GeneralLocale.AD_CHANNEL_MENTION_OR_EXECUTE.tag, false))
-                        .addSubcommand(ModLogLocale.C_DISABLE.tag, Parameter.createCommand("disable"))
+                        .addSubcommand("command.modLog.subcommand.enable", Parameter.createCommand("enabled"),
+                                Parameter.createInput("command.general.argument.channel", "command.general.argumentDescription.channelMentionOrExecution", false))
+                        .addSubcommand("command.modLog.subcommand.disable", Parameter.createCommand("disable"))
                         .build(),
                 CommandCategory.MODERATION);
     }

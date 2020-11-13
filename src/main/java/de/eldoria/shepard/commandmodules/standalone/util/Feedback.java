@@ -20,8 +20,6 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqLatestCommands;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import okhttp3.OkHttpClient;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_MESSAGE;
-
 public class Feedback extends Command implements ExecutableAsync, ReqLatestCommands, ReqConfig, ReqInit {
     private static final OkHttpClient OK_HTTP_CLIENT = new OkHttpClient.Builder().build();
     private WebhookClient webhookClient;
@@ -33,11 +31,11 @@ public class Feedback extends Command implements ExecutableAsync, ReqLatestComma
      */
     public Feedback() {
         super("feedback",
-                new String[] {"bugreport"},
-                FeedbackLocale.DESCRIPTION.tag,
+                new String[]{"bugreport"},
+                "command.feedback.description",
                 SubCommand.builder("feedback")
                         .addSubcommand(null,
-                                Parameter.createInput(A_MESSAGE.tag, null, true))
+                                Parameter.createInput("command.general.argument.message", null, true))
                         .build(),
                 CommandCategory.UTIL);
     }

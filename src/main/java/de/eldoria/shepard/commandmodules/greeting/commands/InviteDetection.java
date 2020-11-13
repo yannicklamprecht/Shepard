@@ -8,7 +8,6 @@ import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.greeting.data.InviteData;
 import de.eldoria.shepard.commandmodules.greeting.types.DatabaseInvite;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -55,18 +54,18 @@ public class InviteDetection extends Command implements Executable, ReqDataSourc
     public InviteDetection() {
         super("inviteDetection",
                 new String[]{"registerInvites", "id"},
-                DESCRIPTION.tag,
+                "command.invite.description",
                 SubCommand.builder("inviteDetection")
-                        .addSubcommand(C_ADD_INVITE.tag,
+                        .addSubcommand("command.invite.subcommand.addInvite",
                                 Parameter.createCommand("add"),
-                                Parameter.createInput(A_CODE.tag, AD_CODE.tag, true),
-                                Parameter.createInput(GeneralLocale.A_NAME.tag, A_INVITE_NAME.tag, true))
-                        .addSubcommand(C_REMOVE_INVITE.tag,
+                                Parameter.createInput("command.invite.argument.codeOfInvite", "command.invite.argumentDescription.codeOfInvite", true),
+                                Parameter.createInput("command.general.argument.name", "command.invite.argument.inviteName", true))
+                        .addSubcommand("command.invite.subcommand.removeInvite",
                                 Parameter.createCommand("remove"),
-                                Parameter.createInput(A_CODE.tag, AD_CODE.tag, true))
-                        .addSubcommand(C_REFRESH_INVITES.tag,
+                                Parameter.createInput("command.invite.argument.codeOfInvite", "command.invite.argumentDescription.codeOfInvite", true))
+                        .addSubcommand("command.invite.subcommand.refreshInvites",
                                 Parameter.createCommand("refresh"))
-                        .addSubcommand(C_SHOW_INVITES.tag,
+                        .addSubcommand("command.invite.subcommand.showInvites",
                                 Parameter.createCommand("list"))
                         .build(),
                 CommandCategory.ADMIN);

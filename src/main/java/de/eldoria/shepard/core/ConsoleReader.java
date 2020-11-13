@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Scanner;
 
 @Slf4j
-public final class ConsoleReader implements Runnable, ReqInit, ReqShepard {
+public final class  ConsoleReader implements Runnable, ReqInit, ReqShepard {
     private static Thread thread;
 
     private final Scanner inputReader = new Scanner(System.in);

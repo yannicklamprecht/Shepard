@@ -34,7 +34,7 @@ public class Someone extends Command implements Executable {
     public Someone() {
         super("bottlespin",
                 new String[] {"bottle", "someone"},
-                DESCRIPTION.tag,
+                "command.someone.description",
                 CommandCategory.FUN);
     }
 

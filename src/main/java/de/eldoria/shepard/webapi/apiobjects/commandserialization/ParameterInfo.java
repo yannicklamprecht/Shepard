@@ -28,8 +28,8 @@ public class ParameterInfo {
         this.command = command;
         this.commandName = commandName;
         this.shortCommand = shortCommand;
-        this.inputName = TextLocalizer.localizeAllAndReplace(inputName, EventWrapper.fakeEmpty());
-        this.inputDescription = TextLocalizer.localizeAllAndReplace(inputDescription, EventWrapper.fakeEmpty());
+        this.inputName = TextLocalizer.localizeByWrapper(inputName, EventWrapper.fakeEmpty());
+        this.inputDescription = TextLocalizer.localizeByWrapper(inputDescription, EventWrapper.fakeEmpty());
         this.required = required || command;
     }
 }

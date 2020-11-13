@@ -21,7 +21,7 @@ public class Oha extends Command implements Executable {
     public Oha() {
         super("oha",
                 new String[] {"ohad"},
-                DESCRIPTION.tag,
+                "command.oha.description",
                 CommandCategory.FUN);
     }
 

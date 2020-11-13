@@ -29,7 +29,7 @@ public class Joke extends Command implements ExecutableAsync {
     public Joke() {
         super("joke",
                 null,
-                DESCRIPTION.tag,
+                "command.randomJoke.description",
                 CommandCategory.FUN);
     }
 

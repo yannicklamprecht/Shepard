@@ -7,9 +7,9 @@ public class Cry extends Reaction {
     public Cry() {
         super("cry",
                 new String[]{"sad"},
-                ReactionLocale.DESCRIPTION_CRY.tag,
-                ReactionLocale.C_CRY_OTHER.tag,
-                ReactionLocale.C_CRY.tag);
+                "command.reaction.description.cry",
+                "command.reaction.command.otherCry",
+                "command.reaction.command.cry");
     }
 
     @Override

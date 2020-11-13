@@ -23,23 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_COMMAND_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_LIST_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_USERS;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_BOOLEAN;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_COMMAND_NAME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_LIST_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USERS;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.C_ADD_USER;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.C_REMOVE_USER;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.C_SET_ACTIVE;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.C_SET_LIST_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_ACTIVATED_CHECK;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_ADDED_USERS;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_CHANGED_LIST_TYPE;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_DEACTIVATED_CHECK;
-import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.M_REMOVED_USERS;
+import static de.eldoria.shepard.localization.enums.commands.botconfig.ManageContextUserLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**
@@ -55,25 +39,25 @@ public class ManageCommandUsers extends Command implements Executable, ReqParser
      */
     public ManageCommandUsers() {
         super("manageCommandUser",
-                new String[] {"mcu"},
-                DESCRIPTION.tag,
+                new String[]{"mcu"},
+                "command.manageContextUser.description",
                 SubCommand.builder("manageCommandUser")
-                        .addSubcommand(C_SET_ACTIVE.tag,
+                        .addSubcommand("command.manageContextUser.subcommand.setActive",
                                 Parameter.createCommand("setActive"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
-                                Parameter.createInput(A_BOOLEAN.tag, null, true))
-                        .addSubcommand(C_SET_LIST_TYPE.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true),
+                                Parameter.createInput("command.general.argument.boolean", null, true))
+                        .addSubcommand("command.manageContextUser.subcommand.setListType",
                                 Parameter.createCommand("setListType"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
-                                Parameter.createInput(A_LIST_TYPE.tag, AD_LIST_TYPE.tag, true))
-                        .addSubcommand(C_ADD_USER.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true),
+                                Parameter.createInput("command.general.argument.listType", "command.general.argumentDescription.listType", true))
+                        .addSubcommand("command.manageContextUser.subcommand.addUser",
                                 Parameter.createCommand("addUser"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
-                                Parameter.createInput(A_USERS.tag, AD_USERS.tag, true))
-                        .addSubcommand(C_REMOVE_USER.tag,
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true),
+                                Parameter.createInput("command.general.argument.users", "command.general.argumentDescription.users", true))
+                        .addSubcommand("command.manageContextUser.subcommand.removeUser",
                                 Parameter.createCommand("removeUser"),
-                                Parameter.createInput(A_COMMAND_NAME.tag, AD_COMMAND_NAME.tag, true),
-                                Parameter.createInput(A_USERS.tag, AD_USERS.tag, true))
+                                Parameter.createInput("command.general.argument.contextName", "command.general.argumentDescription.contextName", true),
+                                Parameter.createInput("command.general.argument.users", "command.general.argumentDescription.users", true))
                         .build(),
                 CommandCategory.BOT_CONFIG);
     }

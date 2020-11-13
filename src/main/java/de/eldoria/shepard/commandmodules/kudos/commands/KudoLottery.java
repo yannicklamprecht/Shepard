@@ -9,7 +9,6 @@ import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.kudos.data.KudoData;
 import de.eldoria.shepard.commandmodules.kudos.util.KudoLotteryEvaluator;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.minigameutil.ChannelEvaluator;
@@ -22,12 +21,6 @@ import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.util.OptionalInt;
-
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_AMOUNT;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_AMOUNT;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.C_MAX_BET;
-import static de.eldoria.shepard.localization.enums.commands.fun.KudoLotteryLocale.DESCRIPTION;
-import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**
  * Command to start a new KudoLottery.
@@ -44,13 +37,13 @@ public class KudoLottery extends Command implements Executable, ReqShardManager,
      */
     public KudoLottery(ChannelEvaluator<KudoLotteryEvaluator> evaluator) {
         super("kudoLottery",
-                new String[] {"lottery", "kl"},
-                DESCRIPTION.tag,
+                new String[]{"lottery", "kl"},
+                "command.kudoLottery.description",
                 SubCommand.builder("kudoLottery")
-                        .addSubcommand(C_MAX_BET.tag,
-                                Parameter.createInput(A_AMOUNT.tag, AD_AMOUNT.tag, false))
+                        .addSubcommand("command.kudoLottery.command.maxBet",
+                                Parameter.createInput("command.general.argument.amount", "command.general.argumentDescription.amount", false))
                         .build(),
-                KudoLotteryLocale.C_DEFAULT.tag,
+                "command.kudoLottery.command.default",
                 CommandCategory.FUN);
         this.evaluator = evaluator;
     }

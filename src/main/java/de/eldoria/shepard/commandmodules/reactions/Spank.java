@@ -6,10 +6,10 @@ public class Spank extends Reaction {
 
     public Spank() {
         super("spank",
-                null, 
-                ReactionLocale.DESCRIPTION_SPANK.tag, 
-                ReactionLocale.C_SPANK_OTHER.tag,
-                ReactionLocale.C_SPANK.tag);
+                null,
+                "command.reaction.description.spank",
+                "command.reaction.command.otherSpank",
+                "command.reaction.command.spank");
     }
 
     @Override

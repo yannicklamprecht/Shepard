@@ -19,9 +19,6 @@ import net.dv8tion.jda.api.entities.User;
 
 import java.io.File;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_USER;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USER;
-
 @CommandUsage(EventContext.GUILD)
 public class Avatar extends Command implements ExecutableAsync, ReqParser {
     private ArgumentParser parser;
@@ -32,12 +29,12 @@ public class Avatar extends Command implements ExecutableAsync, ReqParser {
     public Avatar() {
         super("avatar",
                 null,
-                AvatarLocale.DESCRIPTION.tag,
+                "command.avatar.description",
                 SubCommand.builder("avatar")
-                        .addSubcommand(AvatarLocale.C_OTHER.tag,
-                                Parameter.createInput(A_USER.tag, AD_USER.tag, false))
+                        .addSubcommand("command.avatar.command.other",
+                                Parameter.createInput("command.general.argument.user", "command.general.argumentDescription.user", false))
                         .build(),
-                AvatarLocale.C_DEFAULT.tag,
+                "command.avatar.command.default",
                 CommandCategory.UTIL);
     }
 

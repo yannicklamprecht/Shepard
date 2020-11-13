@@ -101,8 +101,8 @@ public final class Parameter {
      * @return Argument description.
      */
     public String getInputDesc() {
-        return "**" + (required ? "<" + inputName + ">" : "[" + inputName + "]") + "** -> "
-                + inputDescription.replace("\n", "\n> ");
+        return "**" + (required ? "<$" + inputName + "$>" : "[$" + inputName + "$]") + "** -> $" + inputDescription + "$";
+        //.replace("\n", "\n> ");
     }
 
     /**

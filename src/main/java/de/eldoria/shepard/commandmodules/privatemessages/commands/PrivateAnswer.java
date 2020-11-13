@@ -9,7 +9,6 @@ import de.eldoria.shepard.commandmodules.privatemessages.PrivateMessageCollectio
 import de.eldoria.shepard.commandmodules.privatemessages.util.PrivateMessageHelper;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.core.util.Normandy;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.modulebuilder.requirements.ReqNormandy;
@@ -20,10 +19,6 @@ import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_USER;
-import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.ANSWER_DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.admin.PrivateMessageLocale.A_MESSAGE;
 
 /**
  * Command to answer a received message by a bot instance.
@@ -40,11 +35,11 @@ public class PrivateAnswer extends Command implements Executable, ReqPrivateMess
     public PrivateAnswer() {
         super("privateAnswer",
                 new String[] {"reply", "answer"},
-                ANSWER_DESCRIPTION.tag,
+                "command.privateAnswer.description",
                 SubCommand.builder("privateAnswer")
                         .addSubcommand(null,
-                                Parameter.createInput(A_USER.tag, GeneralLocale.AD_USER.tag, true),
-                                Parameter.createInput(A_MESSAGE.tag, null, true))
+                                Parameter.createInput("command.general.argument.user", "command.general.argumentDescription.user", true),
+                                Parameter.createInput("command.general.argument.message", null, true))
                         .build(),
                 CommandCategory.EXCLUSIVE);
     }

@@ -19,14 +19,12 @@ import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
-import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
-import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllByChannel;
+import static de.eldoria.shepard.localization.util.TextLocalizer.*;
 import static java.lang.System.lineSeparator;
 
 @Slf4j
@@ -329,5 +327,9 @@ public final class MessageSender {
                 }
             }
         });
+    }
+
+    public static void sendLocalized(String message, EventWrapper wrapper) {
+        wrapper.getMessageChannel().sendMessage(TextLocalizer.localizeByWrapper(message, wrapper)).queue();
     }
 }

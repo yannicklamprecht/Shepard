@@ -23,8 +23,6 @@ import java.util.OptionalInt;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_AMOUNT;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_AMOUNT;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAll;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
@@ -50,11 +48,11 @@ public class KudoGamble extends Command implements ExecutableAsync, ReqDataSourc
      */
     public KudoGamble() {
         super("kudoGamble",
-                new String[] {"gamble"},
-                KudoGambleLocale.DESCRIPTION.tag,
+                new String[]{"gamble"},
+                "command.kudogamble.description",
                 SubCommand.builder("kudoGamble")
                         .addSubcommand(null,
-                                Parameter.createInput(A_AMOUNT.tag, AD_AMOUNT.tag, true))
+                                Parameter.createInput("command.general.argument.amount", "command.general.argumentDescription.amount", true))
                         .build(),
                 CommandCategory.FUN
         );

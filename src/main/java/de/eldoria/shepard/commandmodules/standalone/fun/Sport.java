@@ -6,7 +6,6 @@ import com.google.gson.stream.JsonReader;
 import de.eldoria.shepard.commandmodules.Command;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
-import de.eldoria.shepard.localization.enums.commands.GeneralLocale;
 import de.eldoria.shepard.localization.enums.commands.fun.SportLocale;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
 import de.eldoria.shepard.util.Colors;
@@ -25,7 +24,7 @@ public class Sport extends Command implements Executable {
     public Sport() {
         super("sport",
                 null,
-                SportLocale.DESCRIPTION.tag,
+                "command.sport.description",
                 CommandCategory.FUN);
 
         try (var in = ClassLoader.getSystemClassLoader().getResourceAsStream("sport/sport.json")) {
@@ -45,7 +44,7 @@ public class Sport extends Command implements Executable {
         Activities.Activity activity = activities.activities[ThreadLocalRandom.current().nextInt(activities.activities.length)];
         int reps = ThreadLocalRandom.current().nextInt(activity.min, activity.max + 1);
         MessageEmbed build = new LocalizedEmbedBuilder(wrapper)
-                .setTitle(activity.name + " | " + reps + " " + activity.type.localeCode)
+                .setTitle(activity.name + " | " + reps + " $" + activity.type.localeCode + "$")
                 .setImage(activity.image)
                 .setColor(Colors.Pastel.ORANGE)
                 .setFooter("https://darebee.com/")
@@ -66,7 +65,7 @@ public class Sport extends Command implements Executable {
         }
 
         private enum ExceciseType {
-            TIME(GeneralLocale.AD_SECONDS.tag), REPEAT(SportLocale.REPEAT.tag);
+            TIME("command.general.argumentDescription.seconds"), REPEAT("command.sport.repeat");
             private final String localeCode;
 
             ExceciseType(String localeCode) {

@@ -25,31 +25,8 @@ import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.regex.Pattern;
 
-import static de.eldoria.shepard.localization.enums.WordsLocale.ID;
-import static de.eldoria.shepard.localization.enums.WordsLocale.MESSAGE;
-import static de.eldoria.shepard.localization.enums.WordsLocale.TIME;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_ID;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_ID;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_MESSAGE;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.A_INTERVAL;
-import static de.eldoria.shepard.localization.enums.commands.GeneralLocale.AD_INTERVAL;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.AD_TIMESTAMP;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.A_TIMESTAMP;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_ADD;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_DELETE;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_LIST;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_RESTORE;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.C_SNOOZE;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.DESCRIPTION;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_CURRENT_REMINDERS;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_REMIND_DATE;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_REMIND_DISPLAY;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_REMIND_TIME;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_REMOVED;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_TITLE_CREATED;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_TITLE_REMOVED;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_TITLE_RESTORED;
-import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.M_TITLE_SNOOZED;
+import static de.eldoria.shepard.localization.enums.WordsLocale.*;
+import static de.eldoria.shepard.localization.enums.commands.util.ReminderLocal.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
 
 /**
@@ -67,23 +44,23 @@ public class Reminder extends Command implements Executable, ReqDataSource {
      */
     public Reminder() {
         super("remind",
-                new String[] {"reminder", "timer"},
-                DESCRIPTION.tag,
+                new String[]{"reminder", "timer"},
+                "command.reminder.description",
                 SubCommand.builder("remind")
-                        .addSubcommand(C_ADD.tag,
-                                Parameter.createInput(A_TIMESTAMP.tag, AD_TIMESTAMP.tag, true),
-                                Parameter.createInput(A_MESSAGE.tag, null, true))
-                        .addSubcommand(C_DELETE.tag,
+                        .addSubcommand("command.reminder.subcommand.add",
+                                Parameter.createInput("command.reminder.argument.timestamp", "command.reminder.argumentDescription.timestamp", true),
+                                Parameter.createInput("command.general.argument.message", null, true))
+                        .addSubcommand("command.reminder.subcommand.remove",
                                 Parameter.createCommand("delete"),
-                                Parameter.createInput(A_ID.tag, AD_ID.tag, true))
-                        .addSubcommand(C_SNOOZE.tag,
+                                Parameter.createInput("command.general.argument.id", "command.general.argumentDescription.id", true))
+                        .addSubcommand("command.reminder.subcommand.snooze",
                                 Parameter.createCommand("snooze"),
-                                Parameter.createInput(A_ID.tag, AD_ID.tag, true),
-                                Parameter.createInput(A_INTERVAL.tag, AD_INTERVAL.tag, true))
-                        .addSubcommand(C_RESTORE.tag,
+                                Parameter.createInput("command.general.argument.id", "command.general.argumentDescription.id", true),
+                                Parameter.createInput("command.reminder.argument.interval", "command.reminder.argumentDescription.interval", true))
+                        .addSubcommand("command.reminder.subcommand.restore",
                                 Parameter.createCommand("restore"),
-                                Parameter.createInput(A_ID.tag, AD_ID.tag, true))
-                        .addSubcommand(C_LIST.tag,
+                                Parameter.createInput("command.general.argument.id", "command.general.argumentDescription.id", true))
+                        .addSubcommand("command.reminder.subcommand.list",
                                 Parameter.createCommand("list"))
                         .build(),
                 CommandCategory.UTIL);
@@ -144,7 +121,7 @@ public class Reminder extends Command implements Executable, ReqDataSource {
 
         if (reminderData.restoreReminder(number.getAsLong(), wrapper)) {
             LocalizedEmbedBuilder builder = new LocalizedEmbedBuilder(wrapper)
-                    .setTitle(localizeAllAndReplace(M_TITLE_RESTORED.tag, wrapper,reminder.getReminderId()))
+                    .setTitle(localizeAllAndReplace(M_TITLE_RESTORED.tag, wrapper, reminder.getReminderId()))
                     .setDescription(localizeAllAndReplace("**" + M_REMIND_DISPLAY.tag + "**",
                             wrapper, reminder.getTimeString()) + System.lineSeparator() + reminder.getText())
                     .setColor(Colors.Pastel.ORANGE);

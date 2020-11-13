@@ -7,9 +7,9 @@ public class Blush extends Reaction {
     public Blush() {
         super("blush",
                 null,
-                ReactionLocale.DESCRIPTION_BLUSH.tag,
-                ReactionLocale.C_BLUSH_OTHER.tag,
-                ReactionLocale.C_BLUSH.tag);
+                "command.reaction.description.blush",
+                "command.reaction.command.otherBlush",
+                "command.reaction.command.blush");
     }
 
     @Override
