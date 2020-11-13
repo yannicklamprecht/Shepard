@@ -27,7 +27,7 @@ public abstract class QuoteCommand extends Command {
         if (quote == null) return;
         EmbedBuilder embed = new EmbedBuilder().setAuthor("#" + quote.getQuoteId())
                 .setDescription(quote.getQuote());
-        if (quote.getCreated().isAfter(LocalDateTime.parse("2020-11-09T10:00:00"))) {
+        if (quote.getCreated().isAfter(LocalDateTime.parse("2020-11-13T04:00:00"))) {
             embed.setTimestamp(quote.getCreated());
         }
         if (quote.getSource() != null) {
