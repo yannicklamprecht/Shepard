@@ -272,19 +272,18 @@ public class Greeting extends Command implements Executable, ReqShardManager, Re
         }
     }
 
-    private void setMessage(String[] args, EventWrapper messageContext) {
+    private void setMessage(String[] args, EventWrapper wrapper) {
         String message = ArgumentParser.getMessage(args, 1);
 
         if (message.length() > 1000) {
-            MessageSender.sendSimpleError(ErrorType.TEXT_TOO_LONG, messageContext,
+            MessageSender.sendSimpleError(ErrorType.TEXT_TOO_LONG, wrapper,
                     Replacement.create("COUNT", message.length()),
                     Replacement.create("MAX", 1000));
             return;
         }
 
-        if (data.setGreetingMessage(messageContext.getGuild().get(), message, messageContext)) {
-            MessageSender.sendSimpleTextBox("**$command.greeting.messages.setMessage$**",
-                    Replacer.applyUserPlaceholder(messageContext.getActor(), message), messageContext);
+        if (data.setGreetingMessage(wrapper.getGuild().get(), message, wrapper)) {
+            MessageSender.sendGreeting(wrapper.getActor(), data.getGreeting(wrapper.getGuild().get()), null, wrapper.getTextChannel().get());
         }
     }
 
