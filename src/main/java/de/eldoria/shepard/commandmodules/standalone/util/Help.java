@@ -112,6 +112,7 @@ public class Help extends Command implements Executable, ReqCommands, ReqExecuti
         fields.add(getCommandField(commands, CommandCategory.MODERATION, wrapper));
         fields.add(getCommandField(commands, CommandCategory.EXCLUSIVE, wrapper));
         fields.add(getCommandField(commands, CommandCategory.FUN, wrapper));
+        fields.add(getCommandField(commands, CommandCategory.REACTION, wrapper));
         fields.add(getCommandField(commands, CommandCategory.UTIL, wrapper));
         fields.add(new LocalizedField("", localizeAllAndReplace(HelpLocale.M_LIST_COMMANDS.tag,
                 wrapper,
@@ -143,7 +144,10 @@ public class Help extends Command implements Executable, ReqCommands, ReqExecuti
     }
 
     private String getCommandNames(List<Command> commands) {
-        return commands.stream().map(command -> "`" + command.getCommandName() + "`").collect(Collectors.joining(", "));
+        return commands.stream()
+                .map(command -> "`" + command.getCommandName()
+                        + command.getCommandAliasesHelp() + "`")
+                .collect(Collectors.joining(", "));
     }
 
     private LocalizedField getCommandField(Map<CommandCategory, List<Command>> commands, CommandCategory category,

@@ -245,4 +245,14 @@ public abstract class Command {
         }
         return Optional.empty();
     }
+
+    public String getCommandAliasesHelp() {
+        if (commandAliases.length == 0) return "";
+        String[] strings = Arrays.copyOfRange(commandAliases, 0, Math.min(commandAliases.length, 2));
+        String join = String.join(", ", strings);
+        if (commandAliases.length > 2) {
+            join += ", ...";
+        }
+        return " (" + join + ")";
+    }
 }

@@ -1,7 +1,5 @@
 package de.eldoria.shepard.commandmodules.util;
 
-import de.eldoria.shepard.localization.enums.commands.util.HelpLocale;
-
 /**
  * Enum to specify the category of a context.
  */
@@ -10,31 +8,31 @@ public enum CommandCategory {
     /**
      * Context is a command of category bot administration.
      */
-    ADMIN("⚙", HelpLocale.M_ADMIN.tag),
+    ADMIN("⚙", "command.help.message.admin"),
     /**
      * Context is a command of category bot administration.
      */
-    MODERATION("🔨", HelpLocale.M_MODERATOR.tag),
+    MODERATION("🔨", "command.help.message.moderation"),
     /**
      * Context is a command of category bot configuration.
      */
-    BOT_CONFIG("🔧", HelpLocale.M_BOT_CONFIG.tag),
+    BOT_CONFIG("🔧", "command.help.message.botConfig"),
     /**
      * Context is a command of category server exclusive.
      */
-    EXCLUSIVE("🎉", HelpLocale.M_EXCLUSIVE.tag),
+    EXCLUSIVE("🎉", "command.help.message.exclusive"),
     /**
      * Context is a command of category entertainment.
      */
-    FUN("🕹", HelpLocale.M_FUN.tag),
+    FUN("🕹", "command.help.message.fun"),
     /**
      * Context is a command of category utility.
      */
-    UTIL("⁉", HelpLocale.M_UTIL.tag),
+    UTIL("⁉", "command.help.message.util"),
     /**
-     * Context is keyword.
+     * Context is a command of category utility.
      */
-    KEYWORD("", "Keywords");
+    REACTION("😏", "command.help.message.reactions");
 
     /**
      * Formatted name of the category.
@@ -48,6 +46,6 @@ public enum CommandCategory {
      * @param tag   locale tag of the category
      */
     CommandCategory(String emoji, String tag) {
-        this.categoryName = emoji + " " + tag;
+        this.categoryName = emoji + " $" + tag + "$";
     }
 }

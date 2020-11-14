@@ -1,9 +1,6 @@
 package de.eldoria.shepard.localization.util;
 
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 
 public final class Replacement {
     private final String key;
@@ -79,6 +76,17 @@ public final class Replacement {
     public static Replacement createMention(Member value) {
         return create("USER", value.getAsMention());
     }
+
+    /**
+     * Creates a new replacement.
+     *
+     * @param value   value which provides the name of the player
+     * @return replacement with registered replacement
+     */
+    public static Replacement createMention(String key, IMentionable value) {
+        return create(key, value.getAsMention());
+    }
+
     /**
      * Creates a new replacement.
      *

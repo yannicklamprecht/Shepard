@@ -1,9 +1,9 @@
 package de.eldoria.shepard.commandmodules.reactions;
 
-public class Blush extends Reaction {
+public class Punish extends Reaction {
 
-    public Blush() {
-        super("blush",
+    public Punish() {
+        super("punish",
                 null);
     }
 
