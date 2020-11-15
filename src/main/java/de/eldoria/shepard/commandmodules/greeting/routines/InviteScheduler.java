@@ -28,11 +28,8 @@ public final class InviteScheduler implements ReqShardManager, ReqInit, ReqDataS
 
     @Override
     public void init() {
-        ScheduledExecutorService autoRegister = Executors.newScheduledThreadPool(2);
-        autoRegister.scheduleAtFixedRate(new RegisterInvites(shardManager, source), 30, 5, TimeUnit.SECONDS);
-
         ScheduledExecutorService refreshInvites = Executors.newSingleThreadScheduledExecutor();
-        refreshInvites.scheduleAtFixedRate(new RefreshInvites(shardManager, source), 30, 3600, TimeUnit.SECONDS);
+        refreshInvites.scheduleAtFixedRate(new RefreshInvites(shardManager, source), 3600, 7200, TimeUnit.SECONDS);
     }
 
     @Override

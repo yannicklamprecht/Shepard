@@ -20,6 +20,8 @@ import net.dv8tion.jda.api.audit.AuditLogKey;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
+import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.sharding.ShardManager;
@@ -27,6 +29,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +47,16 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
     private Statistics statistics;
 
     @Override
+    public void onGuildInviteCreate(@Nonnull GuildInviteCreateEvent event) {
+        inviteData.addInvite(event.getGuild(), event.getInvite().getInviter(), event.getInvite().getCode(), null, 0, null);
+    }
+
+    @Override
+    public void onGuildInviteDelete(@Nonnull GuildInviteDeleteEvent event) {
+        inviteData.removeInvite(event.getGuild(), event.getCode(), null);
+    }
+
+    @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         statistics.eventDispatched(event.getJDA());
         CompletableFuture.runAsync(() -> handleGreeting(event));
@@ -55,29 +68,9 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
 
         @Nullable GreetingSettings greeting = greetingData.getGreeting(guild);
 
-        Pair<Optional<DatabaseInvite>, Optional<Invite>> searchResult = searchAndUpdateInvite(guild);
+        Optional<DatabaseInvite> databaseInvite = searchAndUpdateInvite(guild);
 
-        Optional<DatabaseInvite> databaseInvite = searchResult.getLeft();
-        Optional<Invite> serverInvite = searchResult.getRight();
-
-        // We didnt found a matchin invite in our database which increased dount or was deleted.
-        // Check if we can find the source of the invite by searching for leatest.
-        Pair<String, User> unregisteredInvite = null;
-        if (databaseInvite.isEmpty()) {
-            unregisteredInvite = findUnregisteredInvite(guild);
-            inviteData.logInvite(guild, user, unregisteredInvite.getRight(), null);
-        } else {
-            // Just register it and we are happy tho.
-            inviteData.logInvite(guild, user, databaseInvite.get().getRefer(), databaseInvite.get().getSource());
-        }
-
-        if (databaseInvite.isEmpty()) {
-            if (unregisteredInvite.getRight() != null) {
-                // We have the invite. so lets wrap it in a database invite.
-                databaseInvite = Optional.of(
-                        new DatabaseInvite(unregisteredInvite.getLeft(), 0, null, null, unregisteredInvite.getRight()));
-            }
-        }
+        databaseInvite.ifPresent(i -> inviteData.logInvite(guild, user, i.getRefer(), i.getSource()));
 
         sendGreeting(user, databaseInvite, greeting);
         sendPrivateGreeting(user, greeting);
@@ -85,33 +78,9 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
         databaseInvite.ifPresent(i -> addInviteRoles(user, guild, i));
 
         addJoinRoles(user, guild, greeting);
-
     }
 
-    private Pair<String, User> findUnregisteredInvite(Guild guild) {
-        if (!guild.getSelfMember().hasPermission(Permission.VIEW_AUDIT_LOGS)) {
-            return Pair.of(null, null);
-        }
-
-        // Retrieve all registered invites in db
-        ImmutableMap<String, DatabaseInvite> databaseInvites = Maps.uniqueIndex(
-                inviteData.getInvites(guild, null), DatabaseInvite::getCode);
-
-        // Now we want to search for a fresh invite which was created in the last seconds and was not registered in our database.
-        List<AuditLogEntry> result = guild.retrieveAuditLogs().type(ActionType.INVITE_CREATE).complete();
-        // Lets iterate a bit.
-        for (AuditLogEntry entry : result) {
-            String code = entry.getChangeByKey(AuditLogKey.INVITE_CODE).getNewValue();
-            if (!databaseInvites.containsKey(code)) {
-                // Found it! Hopefully.
-                User user = guild.getJDA().getUserById(entry.getChangeByKey(AuditLogKey.INVITE_INVITER).getNewValue());
-                return Pair.of(code, user);
-            }
-        }
-        return Pair.of(null, null);
-    }
-
-    private Pair<Optional<DatabaseInvite>, Optional<Invite>> searchAndUpdateInvite(Guild guild) {
+    private Optional<DatabaseInvite> searchAndUpdateInvite(Guild guild) {
         ImmutableMap<String, Invite> serverInvites = Maps.uniqueIndex(
                 guild.retrieveInvites().complete(), Invite::getCode);
 
@@ -141,9 +110,7 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
         // Merge both lists. The count diffs take precendence.
         diffInvites.addAll(deletedInvites);
 
-
-        Optional<DatabaseInvite> databaseInvite = diffInvites.stream().findFirst();
-        return Pair.of(databaseInvite, databaseInvite.map(i -> serverInvites.get(i.getCode())));
+        return diffInvites.stream().findFirst();
     }
 
     private void refreshGuildInvites(Guild guild, List<DatabaseInvite> databaseInvites) {
