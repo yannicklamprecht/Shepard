@@ -60,6 +60,25 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
         Optional<DatabaseInvite> databaseInvite = searchResult.getLeft();
         Optional<Invite> serverInvite = searchResult.getRight();
 
+        // We didnt found a matchin invite in our database which increased dount or was deleted.
+        // Check if we can find the source of the invite by searching for leatest.
+        Pair<String, User> unregisteredInvite = null;
+        if (databaseInvite.isEmpty()) {
+            unregisteredInvite = findUnregisteredInvite(guild);
+            inviteData.logInvite(guild, user, unregisteredInvite.getRight(), null);
+        } else {
+            // Just register it and we are happy tho.
+            inviteData.logInvite(guild, user, databaseInvite.get().getRefer(), databaseInvite.get().getSource());
+        }
+
+        if (databaseInvite.isEmpty()) {
+            if (unregisteredInvite.getRight() != null) {
+                // We have the invite. so lets wrap it in a database invite.
+                databaseInvite = Optional.of(
+                        new DatabaseInvite(unregisteredInvite.getLeft(), 0, null, null, unregisteredInvite.getRight()));
+            }
+        }
+
         sendGreeting(user, databaseInvite, greeting);
         sendPrivateGreeting(user, greeting);
 
@@ -67,15 +86,6 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
 
         addJoinRoles(user, guild, greeting);
 
-        // We didnt found a matchin invite in our database which increased dount or was deleted.
-        // Check if we can find the source of the invite by searching for leatest.
-        if (databaseInvite.isEmpty()) {
-            Pair<String, User> unregisteredInvite = findUnregisteredInvite(guild);
-            inviteData.logInvite(guild, user, unregisteredInvite.getRight(), null);
-        } else {
-            // Just register it and we are happy tho.
-            inviteData.logInvite(guild, user, databaseInvite.get().getRefer(), databaseInvite.get().getSource());
-        }
     }
 
     private Pair<String, User> findUnregisteredInvite(Guild guild) {
@@ -156,7 +166,11 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
 
         if (greeting != null) {
             DatabaseInvite databaseInvite = diffInvites.get();
-            MessageSender.sendGreeting(user, greeting, databaseInvite.getSource(), greeting.getChannel());
+            String source = databaseInvite.getSource();
+            if (source == null && databaseInvite.getRefer() != null) {
+                source = databaseInvite.getRefer().getAsTag();
+            }
+            MessageSender.sendGreeting(user, greeting, source, greeting.getChannel());
         }
     }
 
