@@ -135,7 +135,7 @@ public class GreetingData extends QueryObject {
      * @param guild Guild object for lookup.
      * @return Greeting object
      */
-    public GreetingSettings getGreeting(Guild guild) {
+    public @Nullable GreetingSettings getGreeting(Guild guild) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT * FROM shepard_func.get_greeting_data(?)")) {
             statement.setLong(1, guild.getIdLong());

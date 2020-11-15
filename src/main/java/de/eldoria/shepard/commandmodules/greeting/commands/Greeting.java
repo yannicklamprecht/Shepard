@@ -26,6 +26,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 
 import javax.sql.DataSource;
 import java.util.Optional;
@@ -105,10 +106,10 @@ public class Greeting extends Command implements Executable, ReqShardManager, Re
     }
 
     private void config(String[] args, EventWrapper wrapper) {
-        GreetingSettings settings = data.getGreeting(wrapper.getGuild().get());
+        @Nullable GreetingSettings settings = data.getGreeting(wrapper.getGuild().get());
 
         String startText;
-        if (settings.getChannel() == null) {
+        if (settings != null && settings.getChannel() == null) {
             startText = TextLocalizer.localizeByWrapper("command.greeting.dialog.setChannel", wrapper);
         } else {
             startText = TextLocalizer.localizeByWrapper("command.greeting.dialog.changeChannel", wrapper,
@@ -120,7 +121,7 @@ public class Greeting extends Command implements Executable, ReqShardManager, Re
             private boolean greetingSet = false;
             private boolean privateGreetingSet = false;
             private boolean roleSet = false;
-            private GreetingSettings curSettings = settings;
+            @Nullable private GreetingSettings curSettings = settings;
 
             @Override
             public boolean invoke(EventWrapper wrapper, Message message) {
@@ -145,7 +146,7 @@ public class Greeting extends Command implements Executable, ReqShardManager, Re
                     }
                     channelSet = true;
                     curSettings = data.getGreeting(wrapper.getGuild().get());
-                    if (curSettings.getChannel() == null) {
+                    if (curSettings != null && curSettings.getChannel() == null) {
                         greetingSet = true;
                         if (curSettings.getPrivateMessage() != null) {
                             MessageSender.sendLocalized("command.greeting.dialog.currentPrivateGreeting", wrapper);
@@ -181,7 +182,7 @@ public class Greeting extends Command implements Executable, ReqShardManager, Re
                         MessageSender.sendGreeting(wrapper.getActor(), curSettings, null, wrapper.getTextChannel().get());
                     }
                     greetingSet = true;
-                    if (curSettings.getPrivateMessage() != null) {
+                    if (curSettings != null && curSettings.getPrivateMessage() != null) {
                         MessageSender.sendLocalized("command.greeting.dialog.currentPrivateGreeting", wrapper);
                         MessageSender.sendLocalized(Replacer.applyUserPlaceholder(wrapper.getActor(), curSettings.getPrivateMessage()), wrapper);
                         MessageSender.sendLocalized("command.greeting.dialog.changePrivateGreeting", wrapper);
@@ -210,7 +211,7 @@ public class Greeting extends Command implements Executable, ReqShardManager, Re
                         MessageSender.sendLocalized(Replacer.applyUserPlaceholder(wrapper.getActor(), content), wrapper);
                     }
                     privateGreetingSet = true;
-                    if (curSettings.getRole() != null) {
+                    if (curSettings != null && curSettings.getRole() != null) {
                         MessageSender.sendLocalized("command.greeting.dialog.currentRole", wrapper,
                                 Replacement.createMention(curSettings.getRole()));
                     } else {
