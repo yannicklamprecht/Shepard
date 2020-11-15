@@ -69,10 +69,12 @@ class RefreshInvites implements Runnable {
         guild.retrieveInvites().queue(i -> {
             ImmutableMap<String, Invite> serverInvites = Maps.uniqueIndex(
                     i, Invite::getCode);
+            ImmutableMap<String, DatabaseInvite> databaseInvite = Maps.uniqueIndex(
+                    databaseInvites, DatabaseInvite::getCode);
 
-            for (DatabaseInvite invite : databaseInvites) {
-                Invite serverInvite = serverInvites.get(invite.getCode());
-                inviteData.addInvite(guild, serverInvite.getInviter(), invite.getCode(), invite.getSource(), serverInvite.getUses(), null);
+            for (Invite invite : serverInvites.values()) {
+                DatabaseInvite serverInvite = databaseInvite.get(invite.getCode());
+                inviteData.addInvite(guild, invite.getInviter(), invite.getCode(), serverInvite.getSource(), invite.getUses(), null);
             }
         });
     }
