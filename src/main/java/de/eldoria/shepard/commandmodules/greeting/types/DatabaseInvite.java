@@ -2,13 +2,19 @@ package de.eldoria.shepard.commandmodules.greeting.types;
 
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
+import org.jetbrains.annotations.Nullable;
 
 @Getter
 public class DatabaseInvite {
     private final String code;
     private final int usedCount;
+    @Nullable
     private final String source;
+    @Nullable
     private final Role role;
+    @Nullable
+    private final User refer;
 
     /**
      * Creates a new database invite object.
@@ -18,37 +24,11 @@ public class DatabaseInvite {
      * @param source    source or name of the invite
      * @param role      role which should be assigned for this invite if present.
      */
-    public DatabaseInvite(String code, int usedCount, String source, Role role) {
+    public DatabaseInvite(String code, int usedCount, String source, Role role, User refer) {
         this.code = code;
         this.usedCount = usedCount;
         this.source = source;
         this.role = role;
-    }
-
-    /**
-     * Get the code of the invite.
-     *
-     * @return Code as string.
-     */
-    public String getCode() {
-        return code;
-    }
-
-    /**
-     * Get the count how often the invite was used.
-     *
-     * @return count as integer
-     */
-    public int getUses() {
-        return usedCount;
-    }
-
-    /**
-     * Get the source or name of the invite.
-     *
-     * @return Source or name as string
-     */
-    public String getSource() {
-        return source;
+        this.refer = refer;
     }
 }

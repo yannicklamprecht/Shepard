@@ -1,16 +1,19 @@
 package de.eldoria.shepard.commandmodules.greeting.routines;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import de.eldoria.shepard.commandmodules.greeting.data.GreetingData;
 import de.eldoria.shepard.commandmodules.greeting.data.InviteData;
-import de.eldoria.shepard.commandmodules.greeting.types.GreetingSettings;
+import de.eldoria.shepard.commandmodules.greeting.types.DatabaseInvite;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.sharding.ShardManager;
 
 import javax.sql.DataSource;
 import java.util.Iterator;
-import java.util.Objects;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
@@ -42,22 +45,35 @@ class RefreshInvites implements Runnable {
         while (iterator.hasNext()) {
             Guild guild = iterator.next();
 
-            GreetingSettings greeting = greetingData.getGreeting(guild);
-            if (greeting.getChannel() == null) continue;
+            if (!guild.getSelfMember().hasPermission(Permission.MANAGE_SERVER)) continue;
 
-            if (!Objects.requireNonNull(guild.getMember(shardManager.getShardById(0).getSelfUser()))
-                    .hasPermission(Permission.MANAGE_SERVER)) {
-                continue;
-            }
             guild.retrieveInvites().queue(invites -> {
-                if (inviteData.updateInvite(guild, invites, null)) {
+                // Lets first remove invites which are no longer present.
+                if (inviteData.updateInvite(guild, invites)) {
                     log.debug("Refreshed Invites for guild {}({})", guild.getName(), guild.getId());
                 }
+
+                List<DatabaseInvite> registeredInvites = inviteData.getInvites(guild, null);
+
+                refreshGuildInvites(guild, registeredInvites);
+
                 // will run when the last guild was updated successfully
                 if (counter.incrementAndGet() == guildCount) {
                     log.debug("Cleaned up Invites");
                 }
             });
         }
+    }
+
+    private void refreshGuildInvites(Guild guild, List<DatabaseInvite> databaseInvites) {
+        guild.retrieveInvites().queue(i -> {
+            ImmutableMap<String, Invite> serverInvites = Maps.uniqueIndex(
+                    i, Invite::getCode);
+
+            for (DatabaseInvite invite : databaseInvites) {
+                Invite serverInvite = serverInvites.get(invite.getCode());
+                inviteData.addInvite(guild, serverInvite.getInviter(), invite.getCode(), invite.getSource(), serverInvite.getUses(), null);
+            }
+        });
     }
 }

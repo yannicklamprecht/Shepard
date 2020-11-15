@@ -19,8 +19,8 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.File;
 import java.time.Instant;
@@ -220,9 +220,9 @@ public final class MessageSender {
      * @param source   invite source
      * @param greeting Greeting object
      */
-    public static void sendGreeting(User user, GreetingSettings greeting,
-                                    String source, @NotNull TextChannel channel) {
-        if (greeting.getMessage() == null) return;
+    public static void sendGreeting(User user, @Nullable GreetingSettings greeting,
+                                    String source, @Nullable TextChannel channel) {
+        if (greeting == null || greeting.getMessage() == null || channel == null) return;
         EmbedBuilder builder = new EmbedBuilder();
         if (source != null) {
             builder.setFooter("Joined via " + source);

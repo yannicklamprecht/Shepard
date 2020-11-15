@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static de.eldoria.shepard.localization.enums.commands.admin.InviteLocale.*;
 import static de.eldoria.shepard.localization.util.TextLocalizer.localizeAllAndReplace;
@@ -129,7 +130,7 @@ public class InviteDetection extends Command implements Executable, ReqDataSourc
 
     private void listInvites(EventWrapper wrapper) {
         Guild guild = wrapper.getGuild().get();
-        List<DatabaseInvite> invites = inviteData.getInvites(guild, wrapper);
+        List<DatabaseInvite> invites = inviteData.getInvites(guild, wrapper).stream().filter(i -> i.getSource() != null).collect(Collectors.toList());
 
         StringBuilder message = new StringBuilder();
         message.append(M_REGISTERED_INVITES.tag).append(lineSeparator());
@@ -143,7 +144,7 @@ public class InviteDetection extends Command implements Executable, ReqDataSourc
             tableBuilder.next();
             tableBuilder.setRow(
                     invite.getCode(),
-                    String.valueOf(invite.getUses()),
+                    String.valueOf(invite.getUsedCount()),
                     invite.getSource(),
                     invite.getRole() != null ? invite.getRole().getName() : localizeByWrapper("words.disabled", wrapper));
         }
@@ -153,7 +154,7 @@ public class InviteDetection extends Command implements Executable, ReqDataSourc
 
     private void refreshInvites(EventWrapper wrapper) {
         wrapper.getGuild().get().retrieveInvites().queue(invites -> {
-            if (inviteData.updateInvite(wrapper.getGuild().get(), invites, wrapper)) {
+            if (inviteData.updateInvite(wrapper.getGuild().get(), invites)) {
                 MessageSender.sendMessage(M_REMOVED_NON_EXISTENT_INVITES.tag, wrapper.getMessageChannel());
             }
         });
@@ -195,7 +196,7 @@ public class InviteDetection extends Command implements Executable, ReqDataSourc
             for (var invite : invites) {
                 if (invite.getCode().equals(code)) {
                     String name = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-                    if (inviteData.addInvite(wrapper.getGuild().get(), invite.getCode(), name,
+                    if (inviteData.addInvite(wrapper.getGuild().get(), invite.getInviter(), invite.getCode(), name,
                             invite.getUses(), wrapper)) {
                         MessageSender.sendMessage(localizeAllAndReplace(M_ADDED_INVITE.tag,
                                 wrapper,

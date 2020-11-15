@@ -6,6 +6,8 @@ import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
+import org.jetbrains.annotations.Nullable;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -36,14 +38,23 @@ public class InviteData extends QueryObject {
      * @param messageContext messageContext from command sending for error handling. Can be null.
      * @return true if the query execution was successful
      */
-    public boolean addInvite(Guild guild, String code, String name, int count,
+    public boolean addInvite(Guild guild, @Nullable User user, String code, @Nullable String name, int count,
                              EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_func.add_invite(?,?,?,?)")) {
+                .prepareStatement("SELECT shepard_func.add_invite(?,?,?,?,?)")) {
             statement.setLong(1, guild.getIdLong());
-            statement.setString(2, code);
-            statement.setString(3, name);
-            statement.setInt(4, count);
+            if (user == null) {
+                statement.setNull(2, Types.BIGINT);
+            } else {
+                statement.setLong(2, user.getIdLong());
+            }
+            statement.setString(3, code);
+            if (name == null) {
+                statement.setNull(4, Types.VARCHAR);
+            } else {
+                statement.setString(4, name);
+            }
+            statement.setInt(5, count);
             statement.execute();
         } catch (SQLException e) {
             handleException(e, messageContext);
@@ -55,7 +66,7 @@ public class InviteData extends QueryObject {
     /**
      * Gets the invites of a guild.
      *
-     * @param guild          Guild object for lookup
+     * @param guild   Guild object for lookup
      * @param wrapper messageContext from command sending for error handling. Can be null.
      * @return list of invite objects
      */
@@ -72,7 +83,8 @@ public class InviteData extends QueryObject {
                 String name = result.getString("inv_source");
                 long roleId = result.getLong("role_id");
                 Role role = guild.getRoleById(roleId);
-                invites.add(new DatabaseInvite(code, used, name, role));
+                User user = guild.getJDA().getUserById(roleId);
+                invites.add(new DatabaseInvite(code, used, name, role, user));
             }
             return invites;
         } catch (SQLException e) {
@@ -109,27 +121,9 @@ public class InviteData extends QueryObject {
      * @param code           Code of the invite for upcount
      * @param messageContext messageContext from command sending for error handling. Can be null.
      */
-    public void upCountInvite(Guild guild, String code, EventWrapper messageContext) {
-        try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_func.upcount_invite(?,?)")) {
-            statement.setLong(1, guild.getIdLong());
-            statement.setString(2, code);
-            statement.execute();
-        } catch (SQLException e) {
-            handleException(e, messageContext);
-        }
-    }
-
-    /**
-     * Sets the counter of a invite +1.
-     *
-     * @param guild          Guild object for lookup
-     * @param code           Code of the invite for upcount
-     * @param messageContext messageContext from command sending for error handling. Can be null.
-     */
     public boolean inviteRegistered(Guild guild, String code, EventWrapper messageContext) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_func.upcount_invite(?,?)")) {
+                .prepareStatement("SELECT shepard_func.invite_registered(?,?)")) {
             statement.setLong(1, guild.getIdLong());
             statement.setString(2, code);
             ResultSet resultSet = statement.executeQuery();
@@ -168,19 +162,17 @@ public class InviteData extends QueryObject {
             return false;
         }
         return true;
-
     }
 
 
     /**
      * Deletes all invites which are not present anymore.
      *
-     * @param guild          Guild object for lookup
-     * @param invites        List of invites of a guild
-     * @param messageContext messageContext from command sending for error handling. Can be null.
+     * @param guild   Guild object for lookup
+     * @param invites List of invites of a guild
      * @return true if the query execution was successful
      */
-    public boolean updateInvite(Guild guild, List<Invite> invites, EventWrapper messageContext) {
+    public boolean updateInvite(Guild guild, List<Invite> invites) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
                 .prepareStatement("SELECT shepard_func.update_invites(?,?)")) {
             statement.setLong(1, guild.getIdLong());
@@ -193,7 +185,30 @@ public class InviteData extends QueryObject {
             statement.setArray(2, codes);
             statement.execute();
         } catch (SQLException e) {
-            handleException(e, messageContext);
+            handleException(e, null);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean logInvite(Guild guild, User user, @Nullable User refer, @Nullable String inviteSource) {
+        try (var conn = source.getConnection(); PreparedStatement statement = conn
+                .prepareStatement("SELECT shepard_func.log_invite(?,?,?,?)")) {
+            statement.setLong(1, guild.getIdLong());
+            statement.setLong(2, user.getIdLong());
+            if (refer == null) {
+                statement.setNull(3, Types.BIGINT);
+            } else {
+                statement.setLong(3, refer.getIdLong());
+            }
+            if (inviteSource == null) {
+                statement.setNull(4, Types.VARCHAR);
+            } else {
+                statement.setString(4, inviteSource);
+            }
+            statement.execute();
+        } catch (SQLException e) {
+            handleException(e, null);
             return false;
         }
         return true;
