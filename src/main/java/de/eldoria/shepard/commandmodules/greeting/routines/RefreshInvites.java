@@ -74,7 +74,7 @@ class RefreshInvites implements Runnable {
 
             for (Invite invite : serverInvites.values()) {
                 DatabaseInvite serverInvite = databaseInvite.get(invite.getCode());
-                inviteData.addInvite(guild, invite.getInviter(), invite.getCode(), serverInvite.getSource(), invite.getUses(), null);
+                inviteData.addInvite(guild, invite.getInviter(), invite.getCode(), serverInvite == null ? null : serverInvite.getSource(), invite.getUses(), null);
             }
         });
     }
