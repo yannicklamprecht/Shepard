@@ -109,7 +109,7 @@ public class Greeting extends Command implements Executable, ReqShardManager, Re
         @Nullable GreetingSettings settings = data.getGreeting(wrapper.getGuild().get());
 
         String startText;
-        if (settings != null && settings.getChannel() == null) {
+        if (settings == null || settings.getChannel() == null) {
             startText = TextLocalizer.localizeByWrapper("command.greeting.dialog.setChannel", wrapper);
         } else {
             startText = TextLocalizer.localizeByWrapper("command.greeting.dialog.changeChannel", wrapper,
