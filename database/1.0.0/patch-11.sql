@@ -1,7 +1,7 @@
 ALTER TABLE shepard_data.greetings
     ALTER COLUMN message SET DEFAULT 'Welcome {user_mention}';
 
-CREATE TABLE invited_tracker (
+CREATE TABLE IF NOT EXISTS shepard_data.invite_tracker (
                                  guild_id BIGINT,
                                  user_id  BIGINT,
                                  refer_id BIGINT,
@@ -11,14 +11,14 @@ CREATE TABLE invited_tracker (
                                  joined   INTEGER   DEFAULT 1
 );
 
-CREATE INDEX invited_tracker_guild_id_refer_id_index
-    ON invited_tracker (guild_id, refer_id);
+CREATE INDEX invite_tracker_guild_id_refer_id_index
+    ON shepard_data.invite_tracker (guild_id, refer_id);
 
-CREATE UNIQUE INDEX invited_tracker_pk
-    ON invited_tracker (guild_id, user_id, refer_id);
+CREATE UNIQUE INDEX invite_tracker_pk
+    ON shepard_data.invite_tracker (guild_id, user_id, refer_id);
 
-CREATE UNIQUE INDEX invited_tracker_guild_id_user_id_uindex
-    ON invited_tracker (guild_id, user_id);
+CREATE UNIQUE INDEX invite_tracker_guild_id_user_id_uindex
+    ON shepard_data.invite_tracker (guild_id, user_id);
 
 
 CREATE OR REPLACE FUNCTION shepard_func.log_invite(_guild_id BIGINT, _user_id BIGINT, _refer_id BIGINT, _source TEXT) RETURNS VOID
@@ -27,7 +27,7 @@ AS
 $$
 BEGIN
 
-    INSERT INTO shepard_data.invited_tracker (guild_id, user_id, refer_id, source)
+    INSERT INTO shepard_data.invite_tracker (guild_id, user_id, refer_id, source)
     VALUES (_guild_id, _user_id, _refer_id, _source)
     ON CONFLICT (guild_id, user_id)
         DO UPDATE

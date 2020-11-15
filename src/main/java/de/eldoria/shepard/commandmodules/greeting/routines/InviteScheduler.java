@@ -32,7 +32,7 @@ public final class InviteScheduler implements ReqShardManager, ReqInit, ReqDataS
         autoRegister.scheduleAtFixedRate(new RegisterInvites(shardManager, source), 30, 5, TimeUnit.SECONDS);
 
         ScheduledExecutorService refreshInvites = Executors.newSingleThreadScheduledExecutor();
-        refreshInvites.scheduleAtFixedRate(new RefreshInvites(shardManager, source), 10, 3600, TimeUnit.SECONDS);
+        refreshInvites.scheduleAtFixedRate(new RefreshInvites(shardManager, source), 30, 3600, TimeUnit.SECONDS);
     }
 
     @Override

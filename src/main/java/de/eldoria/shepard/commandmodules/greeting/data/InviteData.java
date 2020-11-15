@@ -82,8 +82,9 @@ public class InviteData extends QueryObject {
                 int used = result.getInt("inv_used");
                 String name = result.getString("inv_source");
                 long roleId = result.getLong("role_id");
+                long userId = result.getLong("user_id");
                 Role role = guild.getRoleById(roleId);
-                User user = guild.getJDA().getUserById(roleId);
+                User user = guild.getJDA().getUserById(userId);
                 invites.add(new DatabaseInvite(code, used, name, role, user));
             }
             return invites;
