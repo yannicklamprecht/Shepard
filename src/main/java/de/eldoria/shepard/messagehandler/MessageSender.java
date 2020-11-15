@@ -222,11 +222,12 @@ public final class MessageSender {
      */
     public static void sendGreeting(User user, GreetingSettings greeting,
                                     String source, @NotNull TextChannel channel) {
+        if (greeting.getMessage() == null) return;
         EmbedBuilder builder = new EmbedBuilder();
         if (source != null) {
             builder.setFooter("Joined via " + source);
         }
-            builder.setTimestamp(Instant.now());
+        builder.setTimestamp(Instant.now());
         String message = Replacer.applyUserPlaceholder(user, greeting.getMessage());
         builder.addField(user.getAsTag(),
                 message, true)

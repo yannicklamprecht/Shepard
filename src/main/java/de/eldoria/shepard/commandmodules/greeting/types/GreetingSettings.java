@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.sharding.ShardManager;
+import org.jetbrains.annotations.Nullable;
 
 @Getter
 public class GreetingSettings {
@@ -15,14 +16,17 @@ public class GreetingSettings {
     /**
      * Private greeting message.
      */
+    @Nullable
     private final String privateMessage;
     /**
      * Greeting channel. Can be null.
      */
+    @Nullable
     private final TextChannel channel;
     /**
      * Join Role. Can be null.
      */
+    @Nullable
     private final Role role;
 
     /**
