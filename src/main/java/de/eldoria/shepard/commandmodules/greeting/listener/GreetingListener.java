@@ -46,12 +46,16 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
 
     @Override
     public void onGuildInviteCreate(@Nonnull GuildInviteCreateEvent event) {
+        log.debug("Invite {} was created on guild {} by {}.", event.getInvite(), event.getGuild().getId(), event.getInvite().getInviter().getIdLong());
         inviteData.addInvite(event.getGuild(), event.getInvite().getInviter(), event.getInvite().getCode(), null, 0, null);
     }
 
     @Override
     public void onGuildInviteDelete(@Nonnull GuildInviteDeleteEvent event) {
-        executor.schedule(() -> inviteData.removeInvite(event.getGuild(), event.getCode(), null), 10, TimeUnit.SECONDS);
+        executor.schedule(() -> {
+            log.debug("Invite {} was deleted.", event.getCode());
+            inviteData.removeInvite(event.getGuild(), event.getCode(), null)
+        }, 10, TimeUnit.SECONDS);
     }
 
     @Override
@@ -67,8 +71,10 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
         @Nullable GreetingSettings greeting = greetingData.getGreeting(guild);
 
         Optional<DatabaseInvite> databaseInvite = searchAndUpdateInvite(guild);
-
-        databaseInvite.ifPresent(i -> inviteData.logInvite(guild, user, i.getRefer(), i.getSource()));
+        databaseInvite.ifPresent(i -> {
+            log.debug("Invite {} created by {} was used by {}.", i.getCode(), i.getRefer() == null ? "unknown" : i.getRefer().getIdLong(), user.getIdLong());
+            inviteData.logInvite(guild, user, i.getRefer(), i.getSource());
+        });
 
         sendGreeting(user, databaseInvite, greeting);
         sendPrivateGreeting(user, greeting);
