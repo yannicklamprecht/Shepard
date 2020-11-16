@@ -198,9 +198,9 @@ public class InviteData extends QueryObject {
         return true;
     }
 
-    public boolean logInvite(Guild guild, User user, @Nullable User refer, @Nullable String inviteSource) {
+    public boolean logInvite(Guild guild, User user, @Nullable User refer, @Nullable String inviteSource, String code) {
         try (var conn = source.getConnection(); PreparedStatement statement = conn
-                .prepareStatement("SELECT shepard_func.log_invite(?,?,?,?)")) {
+                .prepareStatement("SELECT shepard_func.log_invite(?,?,?,?,?)")) {
             statement.setLong(1, guild.getIdLong());
             statement.setLong(2, user.getIdLong());
             if (refer == null) {
@@ -212,6 +212,11 @@ public class InviteData extends QueryObject {
                 statement.setNull(4, Types.VARCHAR);
             } else {
                 statement.setString(4, inviteSource);
+            }
+            if (code == null) {
+                statement.setNull(5, Types.VARCHAR);
+            } else {
+                statement.setString(5, code);
             }
             statement.execute();
         } catch (SQLException e) {

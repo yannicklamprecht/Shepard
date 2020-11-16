@@ -73,7 +73,7 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
         Optional<DatabaseInvite> databaseInvite = searchAndUpdateInvite(guild);
         databaseInvite.ifPresent(i -> {
             log.debug("Invite {} created by {} was used by {}.", i.getCode(), i.getRefer().getIdLong(), user.getIdLong());
-            inviteData.logInvite(guild, user, i.getRefer(), i.getSource());
+            inviteData.logInvite(guild, user, i.getRefer(), i.getSource(), i.getCode());
         });
 
         sendGreeting(user, databaseInvite, greeting);
