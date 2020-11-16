@@ -54,7 +54,7 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
     public void onGuildInviteDelete(@Nonnull GuildInviteDeleteEvent event) {
         executor.schedule(() -> {
             log.debug("Invite {} was deleted.", event.getCode());
-            inviteData.removeInvite(event.getGuild(), event.getCode(), null)
+            inviteData.removeInvite(event.getGuild(), event.getCode(), null);
         }, 10, TimeUnit.SECONDS);
     }
 
