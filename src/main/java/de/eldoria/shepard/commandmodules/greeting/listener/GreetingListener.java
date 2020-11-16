@@ -13,10 +13,6 @@ import de.eldoria.shepard.modulebuilder.requirements.ReqInit;
 import de.eldoria.shepard.modulebuilder.requirements.ReqShardManager;
 import de.eldoria.shepard.modulebuilder.requirements.ReqStatistics;
 import lombok.extern.slf4j.Slf4j;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.audit.ActionType;
-import net.dv8tion.jda.api.audit.AuditLogEntry;
-import net.dv8tion.jda.api.audit.AuditLogKey;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.User;
@@ -25,7 +21,6 @@ import net.dv8tion.jda.api.events.guild.invite.GuildInviteDeleteEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.sharding.ShardManager;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,7 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class GreetingListener extends ListenerAdapter implements ReqShardManager, ReqDataSource, ReqStatistics, ReqInit {
@@ -45,6 +42,7 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
     private DataSource source;
     private ShardManager shardManager;
     private Statistics statistics;
+    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
 
     @Override
     public void onGuildInviteCreate(@Nonnull GuildInviteCreateEvent event) {
@@ -53,13 +51,13 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
 
     @Override
     public void onGuildInviteDelete(@Nonnull GuildInviteDeleteEvent event) {
-        inviteData.removeInvite(event.getGuild(), event.getCode(), null);
+        executor.schedule(() -> inviteData.removeInvite(event.getGuild(), event.getCode(), null), 10, TimeUnit.SECONDS);
     }
 
     @Override
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         statistics.eventDispatched(event.getJDA());
-        CompletableFuture.runAsync(() -> handleGreeting(event));
+        executor.submit(() -> handleGreeting(event));
     }
 
     private void handleGreeting(GuildMemberJoinEvent event) {
