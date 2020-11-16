@@ -3,6 +3,7 @@ package de.eldoria.shepard.commandmodules.greeting.data;
 import de.eldoria.shepard.commandmodules.greeting.types.DatabaseInvite;
 import de.eldoria.shepard.database.QueryObject;
 import de.eldoria.shepard.wrapper.EventWrapper;
+import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Role;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import static de.eldoria.shepard.database.DbUtil.handleException;
 
+@Slf4j
 public class InviteData extends QueryObject {
 
     /**
@@ -85,6 +87,10 @@ public class InviteData extends QueryObject {
                 long userId = result.getLong("user_id");
                 Role role = guild.getRoleById(roleId);
                 User user = guild.getJDA().getUserById(userId);
+                if (user == null) {
+                    log.warn("Could not resolve user id {}. Will return fake user.", userId);
+                    user = User.fromId(userId);
+                }
                 invites.add(new DatabaseInvite(code, used, name, role, user));
             }
             return invites;

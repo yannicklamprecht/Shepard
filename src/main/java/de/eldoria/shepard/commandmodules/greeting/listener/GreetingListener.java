@@ -72,7 +72,7 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
 
         Optional<DatabaseInvite> databaseInvite = searchAndUpdateInvite(guild);
         databaseInvite.ifPresent(i -> {
-            log.debug("Invite {} created by {} was used by {}.", i.getCode(), i.getRefer() == null ? "unknown" : i.getRefer().getIdLong(), user.getIdLong());
+            log.debug("Invite {} created by {} was used by {}.", i.getCode(), i.getRefer().getIdLong(), user.getIdLong());
             inviteData.logInvite(guild, user, i.getRefer(), i.getSource());
         });
 
@@ -138,7 +138,7 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
         if (greeting != null) {
             DatabaseInvite databaseInvite = diffInvites.get();
             String source = databaseInvite.getSource();
-            if (source == null && databaseInvite.getRefer() != null) {
+            if (source == null && databaseInvite.getRefer() != null && !databaseInvite.isFakeRefer()) {
                 source = databaseInvite.getRefer().getAsTag();
             }
             MessageSender.sendGreeting(user, greeting, source, greeting.getChannel());
