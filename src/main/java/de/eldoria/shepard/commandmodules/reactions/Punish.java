@@ -9,6 +9,6 @@ public class Punish extends Reaction {
 
     @Override
     protected String[] getImages() {
-        return getREACTIONS().getBlush();
+        return getREACTIONS().getPunish();
     }
 }

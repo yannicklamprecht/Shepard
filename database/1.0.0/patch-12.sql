@@ -7,7 +7,7 @@ ALTER TABLE shepard_data.invite_tracker
 ALTER TABLE shepard_data.invite_tracker
     DROP COLUMN IF EXISTS joined;
 
-CREATE UNIQUE INDEX invite_tracker_guild_id_user_id_created_uindex
+CREATE UNIQUE INDEX IF NOT EXISTS invite_tracker_guild_id_user_id_created_uindex
     ON shepard_data.invite_tracker (guild_id ASC, user_id ASC, created DESC);
 
 DROP FUNCTION IF EXISTS shepard_func.log_invite(_guild_id BIGINT, _user_id BIGINT, _refer_id BIGINT, _source TEXT);

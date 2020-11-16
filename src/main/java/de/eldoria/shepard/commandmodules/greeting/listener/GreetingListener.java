@@ -76,12 +76,12 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
             inviteData.logInvite(guild, user, i.getRefer(), i.getSource(), i.getCode());
         });
 
-        sendGreeting(user, databaseInvite, greeting);
-        sendPrivateGreeting(user, greeting);
 
         databaseInvite.ifPresent(i -> addInviteRoles(user, guild, i));
 
         addJoinRoles(user, guild, greeting);
+        sendGreeting(user, databaseInvite, greeting);
+        sendPrivateGreeting(user, greeting);
     }
 
     private Optional<DatabaseInvite> searchAndUpdateInvite(Guild guild) {
