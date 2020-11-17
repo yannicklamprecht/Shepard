@@ -37,159 +37,167 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class GreetingListener extends ListenerAdapter implements ReqShardManager, ReqDataSource, ReqStatistics, ReqInit {
 
-    private GreetingData greetingData;
-    private InviteData inviteData;
-    private DataSource source;
-    private ShardManager shardManager;
-    private Statistics statistics;
-    private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
+	private GreetingData greetingData;
+	private InviteData inviteData;
+	private DataSource source;
+	private ShardManager shardManager;
+	private Statistics statistics;
+	private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
 
-    @Override
-    public void onGuildInviteCreate(@Nonnull GuildInviteCreateEvent event) {
-        log.debug("Invite {} was created on guild {} by {}.", event.getInvite(), event.getGuild().getId(), event.getInvite().getInviter().getIdLong());
-        inviteData.addInvite(event.getGuild(), event.getInvite().getInviter(), event.getInvite().getCode(), null, 0, null);
-    }
+	@Override
+	public void onGuildInviteCreate(@Nonnull GuildInviteCreateEvent event) {
+		User inviter = event.getInvite().getInviter();
+		if (inviter == null) {
+			Invite complete = Invite.resolve(event.getJDA(), event.getCode()).complete();
+			inviter = complete.getInviter();
+			if (inviter == null) {
+                inviter = User.fromId("0");
+			}
+		}
+		log.debug("Invite {} was created on guild {} by {}.", event.getInvite(), event.getGuild().getId(), inviter.getIdLong());
+		inviteData.addInvite(event.getGuild(), inviter, event.getInvite().getCode(), null, 0, null);
+	}
 
-    @Override
-    public void onGuildInviteDelete(@Nonnull GuildInviteDeleteEvent event) {
-        executor.schedule(() -> {
-            log.debug("Invite {} was deleted.", event.getCode());
-            inviteData.removeInvite(event.getGuild(), event.getCode(), null);
-        }, 10, TimeUnit.SECONDS);
-    }
+	@Override
+	public void onGuildInviteDelete(@Nonnull GuildInviteDeleteEvent event) {
+		executor.schedule(() -> {
+			log.debug("Invite {} was deleted.", event.getCode());
+			inviteData.removeInvite(event.getGuild(), event.getCode(), null);
+		}, 10, TimeUnit.SECONDS);
+	}
 
-    @Override
-    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
-        statistics.eventDispatched(event.getJDA());
-        executor.submit(() -> handleGreeting(event));
-    }
+	@Override
+	public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+		statistics.eventDispatched(event.getJDA());
+		executor.submit(() -> handleGreeting(event));
+	}
 
-    private void handleGreeting(GuildMemberJoinEvent event) {
-        User user = event.getUser();
-        Guild guild = event.getGuild();
+	private void handleGreeting(GuildMemberJoinEvent event) {
+		User user = event.getUser();
+		Guild guild = event.getGuild();
 
-        @Nullable GreetingSettings greeting = greetingData.getGreeting(guild);
+		@Nullable GreetingSettings greeting = greetingData.getGreeting(guild);
 
-        Optional<DatabaseInvite> databaseInvite = searchAndUpdateInvite(guild);
-        databaseInvite.ifPresent(i -> {
-            log.debug("Invite {} created by {} was used by {}.", i.getCode(), i.getRefer().getIdLong(), user.getIdLong());
-            inviteData.logInvite(guild, user, i.getRefer(), i.getSource(), i.getCode());
-        });
+		Optional<DatabaseInvite> databaseInvite = searchAndUpdateInvite(guild);
+		databaseInvite.ifPresent(i -> {
+			log.debug("Invite {} created by {} was used by {}.", i.getCode(), i.getRefer().getIdLong(), user.getIdLong());
+			inviteData.logInvite(guild, user, i.getRefer(), i.getSource(), i.getCode());
+		});
 
 
-        databaseInvite.ifPresent(i -> addInviteRoles(user, guild, i));
+		databaseInvite.ifPresent(i -> addInviteRoles(user, guild, i));
 
-        addJoinRoles(user, guild, greeting);
-        sendGreeting(user, databaseInvite, greeting);
-        sendPrivateGreeting(user, greeting);
-    }
+		addJoinRoles(user, guild, greeting);
+		sendGreeting(user, databaseInvite, greeting);
+		sendPrivateGreeting(user, greeting);
+	}
 
-    private Optional<DatabaseInvite> searchAndUpdateInvite(Guild guild) {
-        ImmutableMap<String, Invite> serverInvites = Maps.uniqueIndex(
-                guild.retrieveInvites().complete(), Invite::getCode);
+	private Optional<DatabaseInvite> searchAndUpdateInvite(Guild guild) {
+		ImmutableMap<String, Invite> serverInvites = Maps.uniqueIndex(
+				guild.retrieveInvites().complete(), Invite::getCode);
 
-        ImmutableMap<String, DatabaseInvite> databaseInvites = Maps.uniqueIndex(
-                inviteData.getInvites(guild, null), DatabaseInvite::getCode);
+		ImmutableMap<String, DatabaseInvite> databaseInvites = Maps.uniqueIndex(
+				inviteData.getInvites(guild, null), DatabaseInvite::getCode);
 
-        List<DatabaseInvite> diffInvites = new ArrayList<>();
-        List<DatabaseInvite> deletedInvites = new ArrayList<>();
+		List<DatabaseInvite> diffInvites = new ArrayList<>();
+		List<DatabaseInvite> deletedInvites = new ArrayList<>();
 
-        // Search for different usage count in invites
-        for (Map.Entry<String, DatabaseInvite> entry : databaseInvites.entrySet()) {
-            Invite invite = serverInvites.get(entry.getKey());
-            if (invite == null) {
-                // If the invite is deleted it is most probably a one time invite.
-                deletedInvites.add(entry.getValue());
-                continue;
-            }
+		// Search for different usage count in invites
+		for (Map.Entry<String, DatabaseInvite> entry : databaseInvites.entrySet()) {
+			Invite invite = serverInvites.get(entry.getKey());
+			if (invite == null) {
+				// If the invite is deleted it is most probably a one time invite.
+				deletedInvites.add(entry.getValue());
+				continue;
+			}
 
-            if (invite.getUses() == entry.getValue().getUsedCount()) continue;
+			if (invite.getUses() == entry.getValue().getUsedCount()) continue;
 
-            diffInvites.add(entry.getValue());
-        }
+			diffInvites.add(entry.getValue());
+		}
 
-        // Update all invited which differ. Because why not. Better safe than sorry.
-        refreshGuildInvites(guild, diffInvites);
+		// Update all invited which differ. Because why not. Better safe than sorry.
+		refreshGuildInvites(guild, diffInvites);
 
-        // Merge both lists. The count diffs take precendence.
-        diffInvites.addAll(deletedInvites);
+		// Merge both lists. The count diffs take precendence.
+		diffInvites.addAll(deletedInvites);
 
-        return diffInvites.stream().findFirst();
-    }
+		return diffInvites.stream().findFirst();
+	}
 
-    private void refreshGuildInvites(Guild guild, List<DatabaseInvite> databaseInvites) {
-        ImmutableMap<String, Invite> serverInvites = Maps.uniqueIndex(
-                guild.retrieveInvites().complete(), Invite::getCode);
+	private void refreshGuildInvites(Guild guild, List<DatabaseInvite> databaseInvites) {
+		ImmutableMap<String, Invite> serverInvites = Maps.uniqueIndex(
+				guild.retrieveInvites().complete(), Invite::getCode);
 
-        for (DatabaseInvite invite : databaseInvites) {
-            Invite serverInvite = serverInvites.get(invite.getCode());
-            inviteData.addInvite(guild, serverInvite.getInviter(), invite.getCode(), invite.getSource(), serverInvite.getUses(), null);
-        }
+		for (DatabaseInvite invite : databaseInvites) {
+			Invite serverInvite = serverInvites.get(invite.getCode());
+			inviteData.addInvite(guild, serverInvite.getInviter(), invite.getCode(), invite.getSource(), serverInvite.getUses(), null);
+		}
 
-    }
+	}
 
-    private void sendGreeting(User user, Optional<DatabaseInvite> diffInvites, GreetingSettings greeting) {
-        if (diffInvites.isEmpty() && greeting != null) {
-            //If no invite was found.
-            MessageSender.sendGreeting(user, greeting, null, greeting.getChannel());
-            return;
-        }
+	private void sendGreeting(User user, Optional<DatabaseInvite> diffInvites, GreetingSettings greeting) {
+		if (diffInvites.isEmpty() && greeting != null) {
+			//If no invite was found.
+			MessageSender.sendGreeting(user, greeting, null, greeting.getChannel());
+			return;
+		}
 
-        if (greeting != null) {
-            DatabaseInvite databaseInvite = diffInvites.get();
-            String source = databaseInvite.getSource();
-            if (source == null && databaseInvite.getRefer() != null && !databaseInvite.isFakeRefer()) {
-                source = databaseInvite.getRefer().getAsTag();
-            }
-            MessageSender.sendGreeting(user, greeting, source, greeting.getChannel());
-        }
-    }
+		if (greeting != null) {
+			DatabaseInvite databaseInvite = diffInvites.get();
+			String source = databaseInvite.getSource();
+			if (source == null && databaseInvite.getRefer() != null && !databaseInvite.isFakeRefer()) {
+				source = databaseInvite.getRefer().getAsTag();
+			}
+			MessageSender.sendGreeting(user, greeting, source, greeting.getChannel());
+		}
+	}
 
-    private void sendPrivateGreeting(User user, @Nullable GreetingSettings greeting) {
-        if (greeting != null && greeting.getPrivateMessage() != null) {
-            user.openPrivateChannel().queue(c -> {
-                c.sendMessage(greeting.getPrivateMessage()).queue();
-            }, e -> {
-                log.error("Could not send greeting message.", e);
-            });
-        }
+	private void sendPrivateGreeting(User user, @Nullable GreetingSettings greeting) {
+		if (greeting != null && greeting.getPrivateMessage() != null) {
+			user.openPrivateChannel().queue(c -> {
+				c.sendMessage(greeting.getPrivateMessage()).queue();
+			}, e -> {
+				log.error("Could not send greeting message.", e);
+			});
+		}
 
-    }
+	}
 
-    private void addInviteRoles(User user, Guild guild, DatabaseInvite invite) {
-        if (invite.getRole() != null) {
-            if (guild.getSelfMember().canInteract(invite.getRole())) {
-                guild.addRoleToMember(user.getIdLong(), invite.getRole()).queue();
-            }
-        }
-    }
+	private void addInviteRoles(User user, Guild guild, DatabaseInvite invite) {
+		if (invite.getRole() != null) {
+			if (guild.getSelfMember().canInteract(invite.getRole())) {
+				guild.addRoleToMember(user.getIdLong(), invite.getRole()).queue();
+			}
+		}
+	}
 
-    private void addJoinRoles(User user, Guild guild, @Nullable GreetingSettings greeting) {
-        if (greeting != null && greeting.getRole() != null) {
-            if (guild.getSelfMember().canInteract(greeting.getRole())) {
-                guild.addRoleToMember(user.getIdLong(), greeting.getRole()).queue();
-            }
-        }
-    }
+	private void addJoinRoles(User user, Guild guild, @Nullable GreetingSettings greeting) {
+		if (greeting != null && greeting.getRole() != null) {
+			if (guild.getSelfMember().canInteract(greeting.getRole())) {
+				guild.addRoleToMember(user.getIdLong(), greeting.getRole()).queue();
+			}
+		}
+	}
 
-    @Override
-    public void addDataSource(DataSource source) {
-        this.source = source;
-    }
+	@Override
+	public void addDataSource(DataSource source) {
+		this.source = source;
+	}
 
-    @Override
-    public void addShardManager(ShardManager shardManager) {
-        this.shardManager = shardManager;
-    }
+	@Override
+	public void addShardManager(ShardManager shardManager) {
+		this.shardManager = shardManager;
+	}
 
-    @Override
-    public void init() {
-        greetingData = new GreetingData(shardManager, source);
-        inviteData = new InviteData(source);
-    }
+	@Override
+	public void init() {
+		greetingData = new GreetingData(shardManager, source);
+		inviteData = new InviteData(source);
+	}
 
-    @Override
-    public void addStatistics(Statistics statistics) {
-        this.statistics = statistics;
-    }
+	@Override
+	public void addStatistics(Statistics statistics) {
+		this.statistics = statistics;
+	}
 }

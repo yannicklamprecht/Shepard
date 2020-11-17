@@ -10,7 +10,9 @@ import de.eldoria.shepard.commandmodules.command.CommandUsage;
 import de.eldoria.shepard.commandmodules.command.Executable;
 import de.eldoria.shepard.commandmodules.util.CommandCategory;
 import de.eldoria.shepard.localization.enums.commands.fun.LoveLocale;
+import de.eldoria.shepard.localization.util.Format;
 import de.eldoria.shepard.localization.util.LocalizedEmbedBuilder;
+import de.eldoria.shepard.localization.util.Replacement;
 import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.ErrorType;
 import de.eldoria.shepard.messagehandler.MessageSender;
@@ -84,10 +86,10 @@ public class Love extends Command implements Executable, ReqParser {
 
         MessageEmbed build = new LocalizedEmbedBuilder(event)
                 .setDescription(
-                        TextLocalizer.localizeAllAndReplace(LoveLocale.OTHER.tag, event,
-                                String.valueOf(simp),
-                                "**" + first.getEffectiveName() + "**",
-                                "**" + second.getEffectiveName() + "**"))
+                        TextLocalizer.localizeByWrapper("command.love.outputOther", event,
+                                Replacement.create("PERC", simp, Format.BOLD),
+                                Replacement.create("SOURCE", first.getEffectiveName(), Format.BOLD),
+                                Replacement.create("TARGET", second.getEffectiveName(), Format.BOLD)))
                 .setColor(Colors.Pastel.ORANGE)
                 .build();
         event.getMessageChannel().sendMessage(build).queue();
