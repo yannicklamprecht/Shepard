@@ -52,6 +52,7 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
 			inviter = complete.getInviter();
 			if (inviter == null) {
                 inviter = User.fromId("0");
+                log.warn("Could not resolve user of invite. Using fake user.");
 			}
 		}
 		log.debug("Invite {} was created on guild {} by {}.", event.getInvite(), event.getGuild().getId(), inviter.getIdLong());

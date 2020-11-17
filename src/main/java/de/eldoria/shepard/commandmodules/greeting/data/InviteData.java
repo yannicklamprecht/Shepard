@@ -88,7 +88,6 @@ public class InviteData extends QueryObject {
                 Role role = guild.getRoleById(roleId);
                 User user = guild.getJDA().getUserById(userId);
                 if (user == null) {
-                    log.warn("Could not resolve user id {}. Will return fake user.", userId);
                     user = User.fromId(userId);
                 }
                 invites.add(new DatabaseInvite(code, used, name, role, user));
