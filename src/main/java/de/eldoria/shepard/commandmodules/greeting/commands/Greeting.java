@@ -124,10 +124,8 @@ public class Greeting extends Command implements Executable, ReqShardManager, Re
             @Nullable private GreetingSettings curSettings = settings;
 
             @Override
-            public boolean invoke(EventWrapper wrapper, Message message) {
+            public boolean invoke(EventWrapper wrapper, Message message, boolean skip, boolean remove) {
                 String content = message.getContentRaw();
-                boolean skip = TextLocalizer.localizeByWrapper("dialog.skip", wrapper).equalsIgnoreCase(content);
-                boolean remove = TextLocalizer.localizeByWrapper("dialog.remove", wrapper).equalsIgnoreCase(content);
 
                 if (!channelSet) {
                     if (remove) {

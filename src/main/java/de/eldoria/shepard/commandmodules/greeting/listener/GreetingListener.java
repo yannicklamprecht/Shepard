@@ -51,8 +51,8 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
 			Invite complete = Invite.resolve(event.getJDA(), event.getCode()).complete();
 			inviter = complete.getInviter();
 			if (inviter == null) {
-                inviter = User.fromId("0");
-                log.warn("Could not resolve user of invite. Using fake user.");
+				inviter = User.fromId("0");
+				log.warn("Could not resolve user of invite. Using fake user.");
 			}
 		}
 		log.debug("Invite {} was created on guild {} by {}.", event.getInvite(), event.getGuild().getId(), inviter.getIdLong());
@@ -140,6 +140,7 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
 	private void sendGreeting(User user, Optional<DatabaseInvite> diffInvites, GreetingSettings greeting) {
 		if (diffInvites.isEmpty() && greeting != null) {
 			//If no invite was found.
+			log.debug("No invite was found.");
 			MessageSender.sendGreeting(user, greeting, null, greeting.getChannel());
 			return;
 		}
@@ -149,6 +150,8 @@ public class GreetingListener extends ListenerAdapter implements ReqShardManager
 			String source = databaseInvite.getSource();
 			if (source == null && databaseInvite.getRefer() != null && !databaseInvite.isFakeRefer()) {
 				source = databaseInvite.getRefer().getAsTag();
+			} else if (source == null && databaseInvite.getRefer() != null && databaseInvite.isFakeRefer()) {
+				log.warn("User of {} is fake. Can not create source.", databaseInvite);
 			}
 			MessageSender.sendGreeting(user, greeting, source, greeting.getChannel());
 		}

@@ -1,5 +1,6 @@
 package de.eldoria.shepard.basemodules.commanddispatching.dialogue;
 
+import de.eldoria.shepard.localization.util.TextLocalizer;
 import de.eldoria.shepard.messagehandler.MessageSender;
 import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.ISnowflake;
@@ -36,7 +37,10 @@ public class DialogHandler {
 
         Dialog dialog = getDialog(wrapper);
         if (dialog != null) {
-            if (dialog.invoke(wrapper, message)) {
+            boolean skip = TextLocalizer.localizeByWrapper("dialog.skip", wrapper).equalsIgnoreCase(content);
+            boolean remove = TextLocalizer.localizeByWrapper("dialog.remove", wrapper).equalsIgnoreCase(content);
+
+            if (dialog.invoke(wrapper, message, skip, remove)) {
                 removeDialog(guild, channel, actor);
                 MessageSender.sendLocalized("dialog.done", wrapper);
             }

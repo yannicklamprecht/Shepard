@@ -4,5 +4,5 @@ import de.eldoria.shepard.wrapper.EventWrapper;
 import net.dv8tion.jda.api.entities.Message;
 
 public interface Dialog {
-    boolean invoke(EventWrapper wrapper, Message message);
+    boolean invoke(EventWrapper wrapper, Message message, boolean skip, boolean remove);
 }
